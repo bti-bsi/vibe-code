@@ -6,7 +6,7 @@
 
 import type { ExtendedSystemInfo } from './systemInfo.js';
 import { t } from '../i18n/index.js';
-import { isCodingPlanConfig } from '@qwen-code/qwen-code-core';
+import { isCodingPlanConfig } from '@vibe-bti/vibe-code-core';
 
 /**
  * Field configuration for system information display
@@ -26,7 +26,7 @@ export function getSystemInfoFields(
 ): SystemInfoDisplayField[] {
   const fields: SystemInfoDisplayField[] = [];
 
-  addField(fields, t('Qwen Code'), formatCliVersion(info));
+  addField(fields, t('Vibe'), formatCliVersion(info));
   addField(fields, t('Runtime'), formatRuntime(info));
   addField(fields, t('IDE Client'), info.ideClient);
   addField(fields, t('OS'), formatOs(info));

@@ -4,15 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelDialog } from './ModelDialog.js';
 import { useKeypress } from '../hooks/useKeypress.js';
 import { DescriptiveRadioButtonSelect } from './shared/DescriptiveRadioButtonSelect.js';
+import { TextInput } from './shared/TextInput.js';
 import { ConfigContext } from '../contexts/ConfigContext.js';
 import { SettingsContext } from '../contexts/SettingsContext.js';
-import type { Config } from '@qwen-code/qwen-code-core';
-import { AuthType, DEFAULT_QWEN_MODEL } from '@qwen-code/qwen-code-core';
+import type { Config } from '@vibe-bti/vibe-code-core';
+import { AuthType, DEFAULT_QWEN_MODEL } from '@vibe-bti/vibe-code-core';
 import type { LoadedSettings } from '../../config/settings.js';
 import { SettingScope } from '../../config/settings.js';
 import { getFilteredQwenModels } from '../models/availableModels.js';
@@ -24,6 +25,12 @@ const mockedUseKeypress = vi.mocked(useKeypress);
 
 vi.mock('./shared/DescriptiveRadioButtonSelect.js', () => ({
   DescriptiveRadioButtonSelect: vi.fn(() => null),
+}));
+vi.mock('./shared/TextInput.js', () => ({
+  TextInput: vi.fn(() => null),
+}));
+vi.mock('../../utils/settingsUtils.js', () => ({
+  backupSettingsFile: vi.fn(),
 }));
 
 // Helper to create getAvailableModelsForAuthType mock
@@ -39,6 +46,7 @@ const createMockGetAvailableModelsForAuthType = () =>
     return [];
   });
 const mockedSelect = vi.mocked(DescriptiveRadioButtonSelect);
+const mockedTextInput = vi.mocked(TextInput);
 
 const renderComponent = (
   props: Partial<React.ComponentProps<typeof ModelDialog>> = {},
@@ -54,6 +62,8 @@ const renderComponent = (
     user: { settings: {} },
     workspace: { settings: {} },
     setValue: vi.fn(),
+    forScope: vi.fn(() => ({ path: '/mock/.qwen/settings.json' })),
+    merged: {},
   } as unknown as LoadedSettings;
 
   const mockConfig = {
@@ -79,6 +89,7 @@ const renderComponent = (
       authType: AuthType.QWEN_OAUTH,
       model: DEFAULT_QWEN_MODEL,
     })),
+    reloadModelProvidersConfig: vi.fn(),
     getUseModelRouter: vi.fn(() => false),
     getProxy: vi.fn(() => undefined),
 
@@ -124,9 +135,10 @@ describe('<ModelDialog />', () => {
     expect(mockedSelect).toHaveBeenCalledTimes(1);
 
     const props = mockedSelect.mock.calls[0][0];
-    expect(props.items).toHaveLength(getFilteredQwenModels().length);
+    expect(props.items).toHaveLength(getFilteredQwenModels().length + 1);
+    expect(props.items[0].value).toBe('__create_custom_model__');
     // coder-model is the only model and it has vision capability
-    expect(props.items[0].value).toBe(
+    expect(props.items[1].value).toBe(
       `${AuthType.QWEN_OAUTH}::${DEFAULT_QWEN_MODEL}`,
     );
     expect(props.showNumbers).toBe(true);
@@ -151,7 +163,7 @@ describe('<ModelDialog />', () => {
     );
     expect(mockedSelect).toHaveBeenCalledWith(
       expect.objectContaining({
-        initialIndex: expectedIndex,
+        initialIndex: expectedIndex + 1,
       }),
       undefined,
     );
@@ -162,7 +174,7 @@ describe('<ModelDialog />', () => {
 
     expect(mockedSelect).toHaveBeenCalledWith(
       expect.objectContaining({
-        initialIndex: 0,
+        initialIndex: 1,
       }),
       undefined,
     );
@@ -336,6 +348,157 @@ describe('<ModelDialog />', () => {
     expect(typeof childOnHighlight).toBe('function');
   });
 
+  it('creates and saves a custom model from the model dialog', async () => {
+    const switchModel = vi.fn().mockResolvedValue(undefined);
+    const reloadModelProvidersConfig = vi.fn();
+    const { mockConfig, mockSettings, props } = renderComponent(
+      {},
+      {
+        getAuthType: vi.fn(() => AuthType.USE_OPENAI),
+        getModel: vi.fn(() => 'gpt-4'),
+        switchModel,
+        reloadModelProvidersConfig,
+        getAllConfiguredModels: vi.fn(() => [
+          {
+            id: 'gpt-4',
+            label: 'GPT-4',
+            description: 'GPT-4 model',
+            authType: AuthType.USE_OPENAI,
+          },
+        ]),
+        getContentGeneratorConfig: vi.fn(() => ({
+          authType: AuthType.USE_OPENAI,
+          model: 'gpt-4',
+        })),
+      } as unknown as Partial<Config>,
+    );
+
+    const selectInitial = mockedSelect.mock.calls[0][0];
+    await act(async () => {
+      await selectInitial.onSelect('__create_custom_model__');
+    });
+
+    const authTypeSelect = mockedSelect.mock.calls.at(-1)?.[0];
+    await act(async () => {
+      await authTypeSelect?.onSelect(AuthType.USE_OPENAI);
+    });
+
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onChange(
+        'https://api.example.com/v1',
+      );
+    });
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();
+    });
+
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onChange('secret-key');
+    });
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();
+    });
+
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onChange('custom-model');
+    });
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();
+    });
+
+    const reasoningSelect = mockedSelect.mock.calls.at(-1)?.[0];
+    await act(async () => {
+      await reasoningSelect?.onSelect('high');
+    });
+
+    expect(reloadModelProvidersConfig).toHaveBeenCalled();
+    expect(switchModel).toHaveBeenCalledWith(
+      AuthType.USE_OPENAI,
+      'custom-model',
+    );
+    expect(mockSettings.setValue).toHaveBeenCalledWith(
+      SettingScope.User,
+      'model.name',
+      'custom-model',
+    );
+    expect(mockSettings.setValue).toHaveBeenCalledWith(
+      SettingScope.User,
+      'security.auth.selectedType',
+      AuthType.USE_OPENAI,
+    );
+    expect(mockSettings.setValue).toHaveBeenCalledWith(
+      SettingScope.User,
+      'modelProviders.openai',
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'custom-model',
+          baseUrl: 'https://api.example.com/v1',
+          generationConfig: {
+            useStreaming: true,
+            reasoning: { effort: 'high' },
+          },
+        }),
+      ]),
+    );
+    expect(mockSettings.setValue).toHaveBeenCalledWith(
+      SettingScope.User,
+      expect.stringMatching(/^env\.QWEN_CUSTOM_MODEL_API_KEY_OPENAI_/),
+      'secret-key',
+    );
+    expect(props.onClose).toHaveBeenCalledTimes(1);
+    expect(mockConfig).toBeDefined();
+  });
+
+  it('remounts each custom-model text input with a clean displayed value between steps', async () => {
+    renderComponent(
+      {},
+      {
+        getAuthType: vi.fn(() => AuthType.USE_OPENAI),
+        getModel: vi.fn(() => 'gpt-4'),
+        getAllConfiguredModels: vi.fn(() => [
+          {
+            id: 'gpt-4',
+            label: 'GPT-4',
+            description: 'GPT-4 model',
+            authType: AuthType.USE_OPENAI,
+          },
+        ]),
+      } as unknown as Partial<Config>,
+    );
+
+    const selectInitial = mockedSelect.mock.calls[0][0];
+    await act(async () => {
+      await selectInitial.onSelect('__create_custom_model__');
+    });
+
+    const authTypeSelect = mockedSelect.mock.calls.at(-1)?.[0];
+    await act(async () => {
+      await authTypeSelect?.onSelect(AuthType.USE_OPENAI);
+    });
+
+    expect(mockedTextInput.mock.calls.at(-1)?.[0].value).toBe('');
+
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onChange(
+        'https://api.example.com/v1',
+      );
+    });
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();
+    });
+
+    expect(mockedTextInput.mock.calls.at(-1)?.[0].value).toBe('');
+
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onChange('secret-key');
+    });
+    await act(async () => {
+      mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();
+    });
+
+    expect(mockedTextInput.mock.calls.at(-1)?.[0].value).toBe('');
+  });
+
   it('calls onClose prop when "escape" key is pressed', () => {
     const { props } = renderComponent();
 
@@ -401,8 +564,8 @@ describe('<ModelDialog />', () => {
       </SettingsContext.Provider>,
     );
 
-    // DEFAULT_QWEN_MODEL (coder-model) is at index 0
-    expect(mockedSelect.mock.calls[0][0].initialIndex).toBe(0);
+    // The custom-model action occupies index 0, so coder-model shifts to 1.
+    expect(mockedSelect.mock.calls[0][0].initialIndex).toBe(1);
 
     mockGetModel.mockReturnValue(DEFAULT_QWEN_MODEL);
     const newMockConfig = {
@@ -434,6 +597,8 @@ describe('<ModelDialog />', () => {
     const expectedCoderIndex = qwenModels.findIndex(
       (m) => m.id === DEFAULT_QWEN_MODEL,
     );
-    expect(mockedSelect.mock.calls[1][0].initialIndex).toBe(expectedCoderIndex);
+    expect(mockedSelect.mock.calls[1][0].initialIndex).toBe(
+      expectedCoderIndex + 1,
+    );
   });
 });

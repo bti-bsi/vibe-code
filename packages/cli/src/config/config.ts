@@ -31,7 +31,7 @@ import {
   isBareMode,
   isToolEnabled,
   type MCPServerConfig,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { extensionsCommand } from '../commands/extensions.js';
 import { hooksCommand } from '../commands/hooks.js';
 import type { Settings } from './settings.js';

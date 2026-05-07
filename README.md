@@ -1,11 +1,11 @@
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/@qwen-code/qwen-code.svg)](https://www.npmjs.com/package/@qwen-code/qwen-code)
-[![License](https://img.shields.io/github/license/QwenLM/qwen-code.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/@vibe-bti/vibe-code.svg)](https://www.npmjs.com/package/@vibe-bti/vibe-code)
+[![License](https://img.shields.io/github/license/vibe-bti/vibe-code.svg)](./LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org/)
-[![Downloads](https://img.shields.io/npm/dm/@qwen-code/qwen-code.svg)](https://www.npmjs.com/package/@qwen-code/qwen-code)
+[![Downloads](https://img.shields.io/npm/dm/@vibe-bti/vibe-code.svg)](https://www.npmjs.com/package/@vibe-bti/vibe-code)
 
-<a href="https://trendshift.io/repositories/15287" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15287" alt="QwenLM%2Fqwen-code | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/15287" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15287" alt="vibe-bti%2Fvibe-code | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
 **An open-source AI agent that lives in your terminal.**
 
@@ -68,7 +68,7 @@ Make sure you have Node.js 20 or later installed. Download it from [nodejs.org](
 #### NPM
 
 ```bash
-npm install -g @qwen-code/qwen-code@latest
+npm install -g @vibe-bti/vibe-code@latest
 ```
 
 #### Homebrew (macOS, Linux)
@@ -114,7 +114,7 @@ Copy the prompt below and paste it into your agent:
 
 ```
 Use Qwen Code as a coding agent. First, fetch and read this skill reference:
-https://raw.githubusercontent.com/QwenLM/qwen-code/refs/heads/main/.qwen/skills/qwen-code-claw/SKILL.md
+https://raw.githubusercontent.com/vibe-bti/vibe-code/refs/heads/main/.qwen/skills/qwen-code-claw/SKILL.md
 Then follow the instructions inside to install, authenticate, and use Qwen Code via acpx for all coding tasks.
 ```
 

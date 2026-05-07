@@ -15,8 +15,8 @@ import {
   MCPOAuthProvider,
   MCPOAuthTokenStorage,
   getErrorMessage,
-} from '@qwen-code/qwen-code-core';
-import type { OAuthDisplayPayload } from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
+import type { OAuthDisplayPayload } from '@vibe-bti/vibe-code-core';
 import { appEvents, AppEvent } from '../../../../utils/events.js';
 
 type AuthState = 'idle' | 'authenticating' | 'success' | 'error';

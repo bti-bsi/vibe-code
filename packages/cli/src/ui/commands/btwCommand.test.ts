@@ -34,7 +34,7 @@ const mockGetCacheSafeParams = vi.hoisted(() =>
   }),
 );
 
-vi.mock('@qwen-code/qwen-code-core', () => ({
+vi.mock('@vibe-bti/vibe-code-core', () => ({
   runForkedAgent: mockRunForkedAgent,
   getCacheSafeParams: mockGetCacheSafeParams,
 }));

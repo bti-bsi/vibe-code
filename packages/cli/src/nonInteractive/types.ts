@@ -2,7 +2,7 @@
 import type {
   SubagentConfig,
   McpToolProgressData,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 
 /**
  * Annotation for attaching metadata to content blocks

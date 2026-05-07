@@ -19,7 +19,7 @@ import { useReverseSearchCompletion } from '../hooks/useReverseSearchCompletion.
 import { useCommandCompletion } from '../hooks/useCommandCompletion.js';
 import { useExportCompletion } from '../hooks/useExportCompletion.js';
 import { useFollowupSuggestionsCLI } from '../hooks/useFollowupSuggestions.js';
-import type { Config } from '@qwen-code/qwen-code-core';
+import type { Config } from '@vibe-bti/vibe-code-core';
 import type { Key } from '../hooks/useKeypress.js';
 import { keyMatchers, Command } from '../keyMatchers.js';
 import type { CommandContext, SlashCommand } from '../commands/types.js';
@@ -27,7 +27,7 @@ import {
   ApprovalMode,
   Storage,
   createDebugLogger,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import {
   parseInputForHighlighting,
   buildSegmentsForVisualSlice,

@@ -548,10 +548,21 @@ function processContent(
   }
 
   if (contentParts.length > 0) {
+    const textOnlyContent = contentParts.every((part) => part.type === 'text')
+      ? contentParts
+          .filter(
+            (part): part is OpenAI.Chat.ChatCompletionContentPartText =>
+              part.type === 'text',
+          )
+          .map((part) => part.text)
+          .join('')
+      : null;
+
     messages.push({
       role: 'user',
       content:
-        contentParts as unknown as OpenAI.Chat.ChatCompletionContentPart[],
+        textOnlyContent ??
+        (contentParts as unknown as OpenAI.Chat.ChatCompletionContentPart[]),
     });
   }
 }

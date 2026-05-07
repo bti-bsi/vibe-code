@@ -23,7 +23,7 @@ import type {
   Config,
   McpToolProgressData,
   FileDiff,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { AgentExecutionDisplay } from '../subagents/index.js';
 import { ToolConfirmationMessage } from './ToolConfirmationMessage.js';
 import { PlanSummaryDisplay } from '../PlanSummaryDisplay.js';

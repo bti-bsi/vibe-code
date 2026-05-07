@@ -37,13 +37,13 @@ describe('<Header />', () => {
 
   it('renders the ASCII logo on wide terminal', () => {
     const { lastFrame } = render(<Header {...defaultProps} />);
-    expect(lastFrame()).toContain('██╔═══██╗');
+    expect(lastFrame()).toContain('██╗██████╗');
   });
 
   it('hides the ASCII logo on narrow terminal', () => {
     useTerminalSizeMock.mockReturnValue({ columns: 60, rows: 24 });
     const { lastFrame } = render(<Header {...defaultProps} />);
-    expect(lastFrame()).not.toContain('██╔═══██╗');
+    expect(lastFrame()).not.toContain('██╗██████╗');
     expect(lastFrame()).toContain('>_ Qwen Code');
   });
 
@@ -98,6 +98,6 @@ describe('<Header />', () => {
 
     const { lastFrame } = render(<Header {...defaultProps} />);
 
-    expect(lastFrame()).toContain('██╔═══██╗');
+    expect(lastFrame()).toContain('██╗██████╗');
   });
 });

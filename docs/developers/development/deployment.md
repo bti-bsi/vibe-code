@@ -15,7 +15,7 @@ This is the recommended way for end-users to install Qwen Code. It involves down
 - **Global install:**
 
   ```bash
-  npm install -g @qwen-code/qwen-code
+  npm install -g @vibe-bti/vibe-code
   ```
 
   Then, run the CLI from anywhere:
@@ -28,7 +28,7 @@ This is the recommended way for end-users to install Qwen Code. It involves down
 
   ```bash
   # Execute the latest version from NPM without a global install
-  npx @qwen-code/qwen-code
+  npx @vibe-bti/vibe-code
   ```
 
 ---
@@ -80,8 +80,7 @@ You can run the most recently committed version of Qwen Code directly from the G
 
 ```bash
 # Execute the CLI directly from the main branch on GitHub
-npx https://github.com/QwenLM/qwen-code
-```
+npx https://github.com/vibe-bti/vibe-code ```
 
 ## Deployment architecture
 
@@ -91,8 +90,8 @@ The execution methods described above are made possible by the following archite
 
 Qwen Code project is a monorepo that publishes core packages to the NPM registry:
 
-- `@qwen-code/qwen-code-core`: The backend, handling logic and tool execution.
-- `@qwen-code/qwen-code`: The user-facing frontend.
+- `@vibe-bti/vibe-code-core`: The backend, handling logic and tool execution.
+- `@vibe-bti/vibe-code`: The user-facing frontend.
 
 These packages are used when performing the standard installation and when running Qwen Code from the source.
 
@@ -100,7 +99,7 @@ These packages are used when performing the standard installation and when runni
 
 There are two distinct build processes used, depending on the distribution channel:
 
-- **NPM publication:** For publishing to the NPM registry, the TypeScript source code in `@qwen-code/qwen-code-core` and `@qwen-code/qwen-code` is transpiled into standard JavaScript using the TypeScript Compiler (`tsc`). The resulting `dist/` directory is what gets published in the NPM package. This is a standard approach for TypeScript libraries.
+- **NPM publication:** For publishing to the NPM registry, the TypeScript source code in `@vibe-bti/vibe-code-core` and `@vibe-bti/vibe-code` is transpiled into standard JavaScript using the TypeScript Compiler (`tsc`). The resulting `dist/` directory is what gets published in the NPM package. This is a standard approach for TypeScript libraries.
 
 - **GitHub `npx` execution:** When running the latest version of Qwen Code directly from GitHub, a different process is triggered by the `prepare` script in `package.json`. This script uses `esbuild` to bundle the entire application and its dependencies into a single, self-contained JavaScript file. This bundle is created on-the-fly on the user's machine and is not checked into the repository.
 

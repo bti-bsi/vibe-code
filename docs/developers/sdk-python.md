@@ -1,14 +1,14 @@
 # Python SDK
 
-## `qwen-code-sdk`
+## `vibe-code-sdk`
 
-`qwen-code-sdk` is an experimental Python SDK for Qwen Code. v1 targets the
+`vibe-code-sdk` is an experimental Python SDK for Qwen Code. v1 targets the
 existing `stream-json` CLI protocol and keeps the transport surface small and
 testable.
 
 ## Scope
 
-- Package name: `qwen-code-sdk`
+- Package name: `vibe-code-sdk`
 - Import path: `qwen_code_sdk`
 - Runtime requirement: Python `>=3.10`
 - CLI dependency: external `qwen` executable is required in v1
@@ -18,7 +18,7 @@ testable.
 ## Install
 
 ```bash
-pip install qwen-code-sdk
+pip install vibe-code-sdk
 ```
 
 If `qwen` is not on `PATH`, pass `path_to_qwen_executable` explicitly.

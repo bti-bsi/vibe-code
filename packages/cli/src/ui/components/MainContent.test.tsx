@@ -84,6 +84,8 @@ const createUIState = (overrides: Partial<UIState> = {}): UIState =>
     isSettingsDialogOpen: false,
     isMemoryDialogOpen: false,
     isModelDialogOpen: false,
+    isEditModelDialogOpen: false,
+    isRemoveModelDialogOpen: false,
     isFastModelMode: false,
     isManageModelsDialogOpen: false,
     isTrustDialogOpen: false,

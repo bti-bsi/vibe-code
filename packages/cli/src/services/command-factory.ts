@@ -10,7 +10,7 @@
  */
 
 import path from 'node:path';
-import { createDebugLogger } from '@qwen-code/qwen-code-core';
+import { createDebugLogger } from '@vibe-bti/vibe-code-core';
 import type {
   CommandContext,
   CommandSource,

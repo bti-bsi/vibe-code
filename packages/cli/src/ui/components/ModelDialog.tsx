@@ -9,21 +9,25 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import {
   AuthType,
+  MAINLINE_CODER_MODEL,
   ModelSlashCommandEvent,
   logModelSlashCommand,
-  MAINLINE_CODER_MODEL,
   type AvailableModel as CoreAvailableModel,
   type ContentGeneratorConfig,
   type InputModalities,
-} from '@qwen-code/qwen-code-core';
+  type ModelProvidersConfig,
+  type ProviderModelConfig,
+} from '@vibe-bti/vibe-code-core';
 import { useKeypress } from '../hooks/useKeypress.js';
 import { theme } from '../semantic-colors.js';
 import { DescriptiveRadioButtonSelect } from './shared/DescriptiveRadioButtonSelect.js';
+import { TextInput } from './shared/TextInput.js';
 import { ConfigContext } from '../contexts/ConfigContext.js';
 import { UIStateContext, type UIState } from '../contexts/UIStateContext.js';
 import { useSettings } from '../contexts/SettingsContext.js';
 import { getPersistScopeForModelSelection } from '../../config/modelProvidersScope.js';
 import { t } from '../../i18n/index.js';
+import { backupSettingsFile } from '../../utils/settingsUtils.js';
 
 function formatModalities(modalities?: InputModalities): string {
   if (!modalities) return t('text-only');
@@ -39,6 +43,39 @@ function formatModalities(modalities?: InputModalities): string {
 interface ModelDialogProps {
   onClose: () => void;
   isFastModelMode?: boolean;
+}
+
+const CREATE_CUSTOM_MODEL_VALUE = '__create_custom_model__';
+
+type CustomModelAuthType =
+  | AuthType.USE_OPENAI
+  | AuthType.USE_ANTHROPIC
+  | AuthType.USE_GEMINI;
+
+type DialogMode =
+  | 'select'
+  | 'create-auth-type'
+  | 'create-base-url'
+  | 'create-api-key'
+  | 'create-model-id'
+  | 'create-reasoning-effort';
+
+type ReasoningEffort = 'low' | 'medium' | 'high' | 'max';
+
+function normalizeConfigToken(value: string): string {
+  return value
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+function generateCustomModelEnvKey(
+  authType: CustomModelAuthType,
+  baseUrl: string,
+): string {
+  return `QWEN_CUSTOM_MODEL_API_KEY_${normalizeConfigToken(authType)}_${normalizeConfigToken(baseUrl)}`;
 }
 
 function maskApiKey(apiKey: string | undefined): string {
@@ -65,6 +102,20 @@ function persistAuthTypeSelection(
 ): void {
   const scope = getPersistScopeForModelSelection(settings);
   settings.setValue(scope, 'security.auth.selectedType', authType);
+}
+
+function isCustomModelAuthType(value: AuthType | undefined): value is CustomModelAuthType {
+  return (
+    value === AuthType.USE_OPENAI ||
+    value === AuthType.USE_ANTHROPIC ||
+    value === AuthType.USE_GEMINI
+  );
+}
+
+function getInitialCustomModelAuthType(
+  authType: AuthType | undefined,
+): CustomModelAuthType {
+  return isCustomModelAuthType(authType) ? authType : AuthType.USE_OPENAI;
 }
 
 interface HandleModelSwitchSuccessParams {
@@ -138,31 +189,33 @@ export function ModelDialog({
   const config = useContext(ConfigContext);
   const uiState = useContext(UIStateContext);
   const settings = useSettings();
+  const authType = config?.getAuthType();
 
-  // Local error state for displaying errors within the dialog
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [highlightedValue, setHighlightedValue] = useState<string | null>(null);
-
-  const authType = config?.getAuthType();
+  const [dialogMode, setDialogMode] = useState<DialogMode>('select');
+  const [customModelAuthType, setCustomModelAuthType] =
+    useState<CustomModelAuthType>(getInitialCustomModelAuthType(authType));
+  const [customBaseUrl, setCustomBaseUrl] = useState('');
+  const [customApiKey, setCustomApiKey] = useState('');
+  const [customModelId, setCustomModelId] = useState('');
+  const [customReasoningEffort, setCustomReasoningEffort] =
+    useState<ReasoningEffort>('medium');
 
   const availableModelEntries = useMemo(() => {
     const allModels = config ? config.getAllConfiguredModels() : [];
-
-    // Separate runtime models from registry models
     const runtimeModels = allModels.filter((m) => m.isRuntimeModel);
     const registryModels = allModels.filter((m) => !m.isRuntimeModel);
 
-    // Group registry models by authType
     const modelsByAuthTypeMap = new Map<AuthType, CoreAvailableModel[]>();
     for (const model of registryModels) {
-      const authType = model.authType;
-      if (!modelsByAuthTypeMap.has(authType)) {
-        modelsByAuthTypeMap.set(authType, []);
+      const modelAuthType = model.authType;
+      if (!modelsByAuthTypeMap.has(modelAuthType)) {
+        modelsByAuthTypeMap.set(modelAuthType, []);
       }
-      modelsByAuthTypeMap.get(authType)!.push(model);
+      modelsByAuthTypeMap.get(modelAuthType)?.push(model);
     }
 
-    // Fixed order: qwen-oauth first, then others in a stable order
     const authTypeOrder: AuthType[] = [
       AuthType.QWEN_OAUTH,
       AuthType.USE_OPENAI,
@@ -171,13 +224,11 @@ export function ModelDialog({
       AuthType.USE_VERTEX_AI,
     ];
 
-    // Filter to only include authTypes that have registry models and maintain order
     const availableAuthTypes = new Set(modelsByAuthTypeMap.keys());
-    const orderedAuthTypes = authTypeOrder.filter((t) =>
-      availableAuthTypes.has(t),
+    const orderedAuthTypes = authTypeOrder.filter((item) =>
+      availableAuthTypes.has(item),
     );
 
-    // Build ordered list: runtime models first, then registry models grouped by authType
     const result: Array<{
       authType: AuthType;
       model: CoreAvailableModel;
@@ -185,7 +236,6 @@ export function ModelDialog({
       snapshotId?: string;
     }> = [];
 
-    // Add all runtime models first
     for (const runtimeModel of runtimeModels) {
       result.push({
         authType: runtimeModel.authType,
@@ -195,25 +245,36 @@ export function ModelDialog({
       });
     }
 
-    // Add registry models grouped by authType
-    for (const t of orderedAuthTypes) {
-      for (const model of modelsByAuthTypeMap.get(t) ?? []) {
-        result.push({ authType: t, model, isRuntime: false });
+    for (const item of orderedAuthTypes) {
+      for (const model of modelsByAuthTypeMap.get(item) ?? []) {
+        result.push({ authType: item, model, isRuntime: false });
       }
     }
 
     return result;
   }, [config]);
 
-  const MODEL_OPTIONS = useMemo(
-    () =>
-      availableModelEntries.map(
-        ({ authType: t2, model, isRuntime, snapshotId }) => {
-          // Runtime models use snapshotId directly (format: $runtime|${authType}|${modelId})
+  const modelOptions = useMemo(
+    () => [
+      {
+        value: CREATE_CUSTOM_MODEL_VALUE,
+        title: (
+          <Text color={theme.text.accent}>
+            [{t('Custom')}] {t('Create New Model')}
+          </Text>
+        ),
+        description: t(
+          'Add a custom provider model by entering API type, base URL, API key, model ID, and reasoning mode.',
+        ),
+        key: CREATE_CUSTOM_MODEL_VALUE,
+      },
+      ...availableModelEntries.map(
+        ({ authType: entryAuthType, model, isRuntime, snapshotId }) => {
           const value =
-            isRuntime && snapshotId ? snapshotId : `${t2}::${model.id}`;
-
-          const isQwenOAuth = t2 === AuthType.QWEN_OAUTH;
+            isRuntime && snapshotId
+              ? snapshotId
+              : `${entryAuthType}::${model.id}`;
+          const isQwenOAuth = entryAuthType === AuthType.QWEN_OAUTH;
 
           const title = (
             <Text>
@@ -227,24 +288,24 @@ export function ModelDialog({
                       : theme.text.accent
                 }
               >
-                [{t2}]
+                [{entryAuthType}]
               </Text>
               <Text>{` ${model.label}`}</Text>
               {isRuntime && (
                 <Text color={theme.status.warning}> (Runtime)</Text>
               )}
               {isQwenOAuth && !isRuntime && (
-                <Text color={theme.status.warning}> ({t('Discontinued')})</Text>
+                <Text color={theme.status.warning}>
+                  {' '}
+                  ({t('Discontinued')})
+                </Text>
               )}
             </Text>
           );
 
-          // Include runtime / discontinued indicator in description
           let description = model.description || '';
           if (isRuntime) {
-            description = description
-              ? `${description} (Runtime)`
-              : 'Runtime model';
+            description = description ? `${description} (Runtime)` : 'Runtime model';
           }
           if (isQwenOAuth && !isRuntime) {
             description = t('Discontinued — switch to Coding Plan or API Key');
@@ -258,19 +319,17 @@ export function ModelDialog({
           };
         },
       ),
+    ],
     [availableModelEntries],
   );
 
-  // In fast model mode, default to the currently configured fast model
   const fastModelSetting = settings?.merged?.fastModel as string | undefined;
   const preferredModelId =
     isFastModelMode && fastModelSetting
       ? fastModelSetting
       : config?.getModel() || MAINLINE_CODER_MODEL;
-  // Check if current model is a runtime model
-  // Runtime snapshot ID is already in $runtime|${authType}|${modelId} format
   const activeRuntimeSnapshot = isFastModelMode
-    ? undefined // fast model is never a runtime model
+    ? undefined
     : config?.getActiveRuntimeModelSnapshot?.();
   const preferredKey = activeRuntimeSnapshot
     ? activeRuntimeSnapshot.id
@@ -278,9 +337,45 @@ export function ModelDialog({
       ? `${authType}::${preferredModelId}`
       : '';
 
+  const resetCustomModelFlow = useCallback(() => {
+    setCustomModelAuthType(getInitialCustomModelAuthType(authType));
+    setCustomBaseUrl('');
+    setCustomApiKey('');
+    setCustomModelId('');
+    setCustomReasoningEffort('medium');
+    setErrorMessage(null);
+    setDialogMode('select');
+  }, [authType]);
+
   useKeypress(
     (key) => {
-      if (key.name === 'escape' || (key.name === 'left' && isFastModelMode)) {
+      if (dialogMode !== 'select' && key.name === 'escape') {
+        setErrorMessage(null);
+        switch (dialogMode) {
+          case 'create-auth-type':
+            resetCustomModelFlow();
+            return;
+          case 'create-base-url':
+            setDialogMode('create-auth-type');
+            return;
+          case 'create-api-key':
+            setDialogMode('create-base-url');
+            return;
+          case 'create-model-id':
+            setDialogMode('create-api-key');
+            return;
+          case 'create-reasoning-effort':
+            setDialogMode('create-model-id');
+            return;
+          default:
+            return;
+        }
+      }
+
+      if (
+        dialogMode === 'select' &&
+        (key.name === 'escape' || (key.name === 'left' && isFastModelMode))
+      ) {
         onClose();
       }
     },
@@ -288,11 +383,9 @@ export function ModelDialog({
   );
 
   const initialIndex = useMemo(() => {
-    const index = MODEL_OPTIONS.findIndex(
-      (option) => option.value === preferredKey,
-    );
+    const index = modelOptions.findIndex((option) => option.value === preferredKey);
     return index === -1 ? 0 : index;
-  }, [MODEL_OPTIONS, preferredKey]);
+  }, [modelOptions, preferredKey]);
 
   const handleHighlight = useCallback((value: string) => {
     setHighlightedValue(value);
@@ -301,20 +394,138 @@ export function ModelDialog({
   const highlightedEntry = useMemo(() => {
     const key = highlightedValue ?? preferredKey;
     return availableModelEntries.find(
-      ({ authType: t2, model, isRuntime, snapshotId }) => {
-        const v = isRuntime && snapshotId ? snapshotId : `${t2}::${model.id}`;
-        return v === key;
+      ({ authType: entryAuthType, model, isRuntime, snapshotId }) => {
+        const value =
+          isRuntime && snapshotId
+            ? snapshotId
+            : `${entryAuthType}::${model.id}`;
+        return value === key;
       },
     );
-  }, [highlightedValue, preferredKey, availableModelEntries]);
+  }, [availableModelEntries, highlightedValue, preferredKey]);
+
+  const saveCustomModel = useCallback(async (reasoningOverride?: ReasoningEffort) => {
+    if (!config) {
+      return;
+    }
+
+    const trimmedBaseUrl = customBaseUrl.trim();
+    const trimmedApiKey = customApiKey.trim();
+    const trimmedModelId = customModelId.trim();
+    const effectiveReasoningEffort =
+      reasoningOverride ?? customReasoningEffort;
+
+    if (!trimmedBaseUrl) {
+      setErrorMessage(t('API URL cannot be empty.'));
+      setDialogMode('create-base-url');
+      return;
+    }
+    if (!/^https?:\/\//i.test(trimmedBaseUrl)) {
+      setErrorMessage(t('API URL must start with http:// or https://.'));
+      setDialogMode('create-base-url');
+      return;
+    }
+    if (!trimmedApiKey) {
+      setErrorMessage(t('API key cannot be empty.'));
+      setDialogMode('create-api-key');
+      return;
+    }
+    if (!trimmedModelId) {
+      setErrorMessage(t('Model ID cannot be empty.'));
+      setDialogMode('create-model-id');
+      return;
+    }
+
+    const persistScope = getPersistScopeForModelSelection(settings);
+    const previousModelProviders = settings.merged
+      .modelProviders as ModelProvidersConfig | undefined;
+    const existingConfigs: ProviderModelConfig[] =
+      previousModelProviders?.[customModelAuthType] ?? [];
+    const envKey = generateCustomModelEnvKey(
+      customModelAuthType,
+      trimmedBaseUrl,
+    );
+    const nextModelConfig: ProviderModelConfig = {
+      id: trimmedModelId,
+      name: trimmedModelId,
+      baseUrl: trimmedBaseUrl,
+      envKey,
+      generationConfig: {
+        useStreaming: true,
+        reasoning: { effort: effectiveReasoningEffort },
+      } as ProviderModelConfig['generationConfig'],
+    };
+    const updatedConfigs: ProviderModelConfig[] = [
+      nextModelConfig,
+      ...existingConfigs.filter((entry) => entry.id !== trimmedModelId),
+    ];
+    const updatedModelProviders = {
+      ...(previousModelProviders ?? {}),
+      [customModelAuthType]: updatedConfigs,
+    } satisfies ModelProvidersConfig;
+
+    process.env[envKey] = trimmedApiKey;
+    config.reloadModelProvidersConfig(updatedModelProviders);
+
+    try {
+      await config.switchModel(customModelAuthType, trimmedModelId);
+
+      const settingsFile = settings.forScope(persistScope);
+      backupSettingsFile(settingsFile.path);
+      settings.setValue(persistScope, `env.${envKey}`, trimmedApiKey);
+      settings.setValue(
+        persistScope,
+        `modelProviders.${customModelAuthType}`,
+        updatedConfigs,
+      );
+      settings.setValue(
+        persistScope,
+        'security.auth.selectedType',
+        customModelAuthType,
+      );
+      settings.setValue(persistScope, 'model.name', trimmedModelId);
+
+      uiState?.historyManager.addItem(
+        {
+          type: 'success',
+          text: t(
+            'Custom model "{{modelId}}" saved to settings.json and selected.',
+            { modelId: trimmedModelId },
+          ),
+        },
+        Date.now(),
+      );
+
+      resetCustomModelFlow();
+      onClose();
+    } catch (error) {
+      config.reloadModelProvidersConfig(previousModelProviders);
+      setErrorMessage(error instanceof Error ? error.message : String(error));
+    }
+  }, [
+    config,
+    customApiKey,
+    customBaseUrl,
+    customModelAuthType,
+    customModelId,
+    customReasoningEffort,
+    onClose,
+    resetCustomModelFlow,
+    settings,
+    uiState,
+  ]);
 
   const handleSelect = useCallback(
     async (selected: string) => {
       setErrorMessage(null);
 
-      // Fast model mode: just save the model ID and close
+      if (selected === CREATE_CUSTOM_MODEL_VALUE) {
+        setCustomModelAuthType(getInitialCustomModelAuthType(authType));
+        setDialogMode('create-auth-type');
+        return;
+      }
+
       if (isFastModelMode) {
-        // Extract model ID from selection key (format: "authType::modelId" or "$runtime|authType|modelId")
         let modelId: string;
         if (selected.includes('::')) {
           modelId = selected.split('::').slice(1).join('::');
@@ -324,9 +535,9 @@ export function ModelDialog({
         } else {
           modelId = selected;
         }
+
         const scope = getPersistScopeForModelSelection(settings);
         settings.setValue(scope, 'fastModel', modelId);
-        // Sync the runtime Config so forked agents pick up the change immediately.
         config?.setFastModel(modelId);
         uiState?.historyManager.addItem(
           {
@@ -339,9 +550,6 @@ export function ModelDialog({
         return;
       }
 
-      // Block selection of discontinued qwen-oauth models
-      // (only block non-runtime OAuth; runtime OAuth models from existing
-      //  cached tokens are still allowed to work until the server rejects them)
       const isQwenOAuthSelection =
         selected.startsWith(`${AuthType.QWEN_OAUTH}::`) ||
         (selected.startsWith('$runtime|') &&
@@ -369,30 +577,31 @@ export function ModelDialog({
       }
 
       try {
-        // Determine if this is a runtime model selection
-        // Runtime model format: $runtime|${authType}|${modelId}
         isRuntime = selected.startsWith('$runtime|');
 
         let selectedAuthType: AuthType;
         let modelId: string;
 
         if (isRuntime) {
-          // For runtime models, extract authType from the snapshot ID
-          // Format: $runtime|${authType}|${modelId}
           const parts = selected.split('|');
           if (parts.length >= 2 && parts[0] === '$runtime') {
             selectedAuthType = parts[1] as AuthType;
           } else {
             selectedAuthType = authType as AuthType;
           }
-          modelId = selected; // Pass the full snapshot ID to switchModel
+          modelId = selected;
         } else {
-          const sep = '::';
-          const idx = selected.indexOf(sep);
+          const separator = '::';
+          const separatorIndex = selected.indexOf(separator);
           selectedAuthType = (
-            idx >= 0 ? selected.slice(0, idx) : authType
+            separatorIndex >= 0
+              ? selected.slice(0, separatorIndex)
+              : authType
           ) as AuthType;
-          modelId = idx >= 0 ? selected.slice(idx + sep.length) : selected;
+          modelId =
+            separatorIndex >= 0
+              ? selected.slice(separatorIndex + separator.length)
+              : selected;
         }
 
         await config.switchModel(
@@ -414,8 +623,9 @@ export function ModelDialog({
           | undefined;
         effectiveAuthType = after?.authType ?? selectedAuthType ?? authType;
         effectiveModelId = after?.model ?? modelId;
-      } catch (e) {
-        const baseErrorMessage = e instanceof Error ? e.message : String(e);
+      } catch (error) {
+        const baseErrorMessage =
+          error instanceof Error ? error.message : String(error);
         const errorPrefix = isRuntime
           ? 'Failed to switch to runtime model.'
           : `Failed to switch model to '${effectiveModelId ?? selected}'.`;
@@ -433,18 +643,11 @@ export function ModelDialog({
       });
       onClose();
     },
-    [
-      authType,
-      config,
-      onClose,
-      settings,
-      uiState,
-      setErrorMessage,
-      isFastModelMode,
-    ],
+    [authType, config, isFastModelMode, onClose, settings, uiState],
   );
 
-  const hasModels = MODEL_OPTIONS.length > 0;
+  const hasModels = modelOptions.length > 0;
+  const isCreateMode = dialogMode !== 'select';
 
   return (
     <Box
@@ -456,7 +659,7 @@ export function ModelDialog({
     >
       <Text bold>{t('Select Model')}</Text>
 
-      {!hasModels ? (
+      {!hasModels && !isCreateMode ? (
         <Box marginTop={1} flexDirection="column">
           <Text color={theme.status.warning}>
             {t(
@@ -474,19 +677,186 @@ export function ModelDialog({
             </Text>
           </Box>
         </Box>
-      ) : (
+      ) : dialogMode === 'select' ? (
         <Box marginTop={1}>
           <DescriptiveRadioButtonSelect
-            items={MODEL_OPTIONS}
+            items={modelOptions}
             onSelect={handleSelect}
             onHighlight={handleHighlight}
             initialIndex={initialIndex}
             showNumbers={true}
           />
         </Box>
+      ) : dialogMode === 'create-auth-type' ? (
+        <Box marginTop={1} flexDirection="column">
+          <Text color={theme.text.secondary}>
+            {t('Select the API type for the new custom model')}
+          </Text>
+          <Box marginTop={1}>
+            <DescriptiveRadioButtonSelect
+              key="create-auth-type"
+              items={[
+                {
+                  key: AuthType.USE_OPENAI,
+                  value: AuthType.USE_OPENAI,
+                  title: 'OpenAI',
+                  description: t(
+                    'Use an OpenAI-compatible API endpoint for this custom model.',
+                  ),
+                },
+                {
+                  key: AuthType.USE_ANTHROPIC,
+                  value: AuthType.USE_ANTHROPIC,
+                  title: 'Anthropic',
+                  description: t(
+                    'Use an Anthropic-compatible API endpoint for this custom model.',
+                  ),
+                },
+                {
+                  key: AuthType.USE_GEMINI,
+                  value: AuthType.USE_GEMINI,
+                  title: 'Gemini',
+                  description: t(
+                    'Use a Gemini-compatible API endpoint for this custom model.',
+                  ),
+                },
+              ]}
+              initialIndex={
+                customModelAuthType === AuthType.USE_OPENAI
+                  ? 0
+                  : customModelAuthType === AuthType.USE_ANTHROPIC
+                    ? 1
+                    : 2
+              }
+              onSelect={(value) => {
+                setErrorMessage(null);
+                setCustomModelAuthType(value as CustomModelAuthType);
+                setDialogMode('create-base-url');
+              }}
+              showNumbers={true}
+            />
+          </Box>
+        </Box>
+      ) : dialogMode === 'create-base-url' ? (
+        <Box marginTop={1} flexDirection="column">
+          <Text color={theme.text.secondary}>
+            {t('Create custom model for {{authType}}', {
+              authType: customModelAuthType,
+            })}
+          </Text>
+          <Box marginTop={1}>
+            <TextInput
+              key="create-base-url"
+              value={customBaseUrl}
+              onChange={setCustomBaseUrl}
+              onSubmit={() => {
+                setErrorMessage(null);
+                setDialogMode('create-api-key');
+              }}
+              placeholder={t('Enter Base URL')}
+            />
+          </Box>
+        </Box>
+      ) : dialogMode === 'create-api-key' ? (
+        <Box marginTop={1} flexDirection="column">
+          <Text color={theme.text.secondary}>
+            {t('Enter API key for {{baseUrl}}', {
+              baseUrl: customBaseUrl || t('(unset)'),
+            })}
+          </Text>
+          <Box marginTop={1}>
+            <TextInput
+              key="create-api-key"
+              value={customApiKey}
+              onChange={setCustomApiKey}
+              onSubmit={() => {
+                setErrorMessage(null);
+                setDialogMode('create-model-id');
+              }}
+              placeholder={t('Enter API Key')}
+            />
+          </Box>
+        </Box>
+      ) : dialogMode === 'create-model-id' ? (
+        <Box marginTop={1} flexDirection="column">
+          <Text color={theme.text.secondary}>
+            {t('Enter the model ID to save in settings.json')}
+          </Text>
+          <Box marginTop={1}>
+            <TextInput
+              key="create-model-id"
+              value={customModelId}
+              onChange={setCustomModelId}
+              onSubmit={() => {
+                setErrorMessage(null);
+                setDialogMode('create-reasoning-effort');
+              }}
+              placeholder={t('Enter Model ID')}
+            />
+          </Box>
+        </Box>
+      ) : (
+        <Box marginTop={1} flexDirection="column">
+          <Text color={theme.text.secondary}>
+            {t('Select reasoning effort for this custom model')}
+          </Text>
+          <Box marginTop={1}>
+            <DescriptiveRadioButtonSelect
+              key="create-reasoning-effort"
+              items={[
+                {
+                  key: 'reasoning-low',
+                  value: 'low',
+                  title: 'low',
+                  description: t(
+                    'Use lower reasoning cost and faster responses.',
+                  ),
+                },
+                {
+                  key: 'reasoning-medium',
+                  value: 'medium',
+                  title: 'medium',
+                  description: t(
+                    'Use balanced reasoning for general chat sessions.',
+                  ),
+                },
+                {
+                  key: 'reasoning-high',
+                  value: 'high',
+                  title: 'high',
+                  description: t(
+                    'Use deeper reasoning for harder chat requests.',
+                  ),
+                },
+                {
+                  key: 'reasoning-max',
+                  value: 'max',
+                  title: 'max',
+                  description: t(
+                    'Use the strongest reasoning tier for compatible providers.',
+                  ),
+                },
+              ]}
+              initialIndex={
+                customReasoningEffort === 'low'
+                  ? 0
+                  : customReasoningEffort === 'medium'
+                    ? 1
+                    : customReasoningEffort === 'high'
+                      ? 2
+                      : 3
+              }
+              onSelect={(value) => {
+                setCustomReasoningEffort(value as ReasoningEffort);
+                void saveCustomModel(value as ReasoningEffort);
+              }}
+              showNumbers={true}
+            />
+          </Box>
+        </Box>
       )}
 
-      {highlightedEntry && (
+      {dialogMode === 'select' && highlightedEntry && (
         <Box marginTop={1} flexDirection="column">
           <Box
             borderStyle="single"
@@ -510,9 +880,7 @@ export function ModelDialog({
           />
           <DetailRow
             label={t('Context Window')}
-            value={formatContextWindow(
-              highlightedEntry.model.contextWindowSize,
-            )}
+            value={formatContextWindow(highlightedEntry.model.contextWindowSize)}
           />
           {highlightedEntry.authType !== AuthType.QWEN_OAUTH && (
             <>
@@ -539,7 +907,9 @@ export function ModelDialog({
 
       <Box marginTop={1} flexDirection="column">
         <Text color={theme.text.secondary}>
-          {t('Enter to select, ↑↓ to navigate, Esc to close')}
+          {dialogMode === 'select'
+            ? t('Enter to select, ↑↓ to navigate, Esc to close')
+            : t('Enter to continue, Esc to go back')}
         </Text>
       </Box>
     </Box>

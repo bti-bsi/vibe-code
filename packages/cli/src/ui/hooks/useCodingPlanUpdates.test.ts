@@ -12,7 +12,7 @@ import {
   getCodingPlanConfig,
   CodingPlanRegion,
   AuthType,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 
 // Get region configs for testing
 const chinaConfig = getCodingPlanConfig(CodingPlanRegion.CHINA);

@@ -26,7 +26,7 @@ import {
   ToolConfirmationOutcome,
   IdeClient,
   type SessionListItem,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { useSessionStats } from '../contexts/SessionContext.js';
 import type {
   Message,
@@ -89,6 +89,8 @@ export interface SlashCommandProcessorActions {
   openMemoryDialog: () => void;
   openSettingsDialog: () => void;
   openModelDialog: (options?: { fastModelMode?: boolean }) => void;
+  openEditModelDialog: () => void;
+  openRemoveModelDialog: () => void;
   openManageModelsDialog: () => void;
   openTrustDialog: () => void;
   openPermissionsDialog: () => void;
@@ -598,6 +600,12 @@ export const useSlashCommandProcessor = (
                       return { type: 'handled' };
                     case 'model':
                       actions.openModelDialog();
+                      return { type: 'handled' };
+                    case 'edit-model':
+                      actions.openEditModelDialog();
+                      return { type: 'handled' };
+                    case 'remove-model':
+                      actions.openRemoveModelDialog();
                       return { type: 'handled' };
                     case 'fast-model':
                       actions.openModelDialog({ fastModelMode: true });

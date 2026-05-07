@@ -12,7 +12,7 @@ export const authCommand: SlashCommand = {
   name: 'auth',
   altNames: ['login'],
   get description() {
-    return t('Configure authentication information for login');
+    return t('Configure a custom API provider');
   },
   kind: CommandKind.BUILT_IN,
   supportedModes: ['interactive'] as const,

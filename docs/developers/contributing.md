@@ -71,7 +71,7 @@ This section guides contributors on how to build, modify, and understand the dev
 To clone the repository:
 
 ```bash
-git clone https://github.com/QwenLM/qwen-code.git # Or your fork's URL
+git clone https://github.com/vibe-bti/vibe-code.git # Or your fork's URL
 cd qwen-code
 ```
 

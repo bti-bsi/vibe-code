@@ -5,8 +5,8 @@
  */
 
 import type { Part } from '@google/genai';
-import { ToolNames } from '@qwen-code/qwen-code-core';
-import type { ChatRecord, Config, Kind } from '@qwen-code/qwen-code-core';
+import { ToolNames } from '@vibe-bti/vibe-code-core';
+import type { ChatRecord, Config, Kind } from '@vibe-bti/vibe-code-core';
 import { buildTruncatedDiffPreviewText } from '../../../utils/truncatedDiffPreview.js';
 import type { ExportMessage, ExportSessionData } from './types.js';
 

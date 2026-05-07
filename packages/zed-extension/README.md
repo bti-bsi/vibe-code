@@ -1,6 +1,6 @@
 # Qwen Code Agent Server Extension for Zed
 
-A [Zed](https://zed.dev) extension that integrates [Qwen Code](https://github.com/QwenLM/qwen-code) as an AI agent server using the [Agent Client Protocol (ACP)](https://agentclientprotocol.com).
+A [Zed](https://zed.dev) extension that integrates [Qwen Code](https://github.com/vibe-bti/vibe-code) as an AI agent server using the [Agent Client Protocol (ACP)](https://agentclientprotocol.com).
 
 ## Features
 
@@ -92,8 +92,8 @@ If the agent server starts successfully but you experience problems during use:
 
 You can report issues at either:
 
-- [Qwen Code Issues](https://github.com/QwenLM/qwen-code/issues)
-- [Qwen Code Zed Extension Issues](https://github.com/QwenLM/qwen-code-zed-extension/issues)
+- [Qwen Code Issues](https://github.com/vibe-bti/vibe-code/issues)
+- [Qwen Code Zed Extension Issues](https://github.com/vibe-bti/qwen-code-zed-extension/issues)
 
 ## Documentation
 
@@ -103,8 +103,8 @@ You can report issues at either:
 
 ## Support
 
-- [Report Issues](https://github.com/QwenLM/qwen-code/issues)
-- [Qwen Code Discussions](https://github.com/QwenLM/qwen-code/discussions)
+- [Report Issues](https://github.com/vibe-bti/vibe-code/issues)
+- [Qwen Code Discussions](https://github.com/vibe-bti/vibe-code/discussions)
 - [Zed Community](https://zed.dev/community)
 
 ## License

@@ -9,7 +9,7 @@
 @tailwind utilities;
 
 /**
- * Default CSS variables for @qwen-code/webui
+ * Default CSS variables for @vibe-bti/vibe-code-webui
  * These provide fallback values when running outside of VSCode.
  * In VSCode, these will be overridden by VSCode's design tokens.
  */

@@ -10,7 +10,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { Storage } from '@qwen-code/qwen-code-core';
+import { Storage } from '@vibe-bti/vibe-code-core';
 
 interface TipHistoryEntry {
   totalShown: number;

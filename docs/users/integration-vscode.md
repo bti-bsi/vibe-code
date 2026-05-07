@@ -22,7 +22,7 @@
 
 ### Installation
 
-Download and install the extension from the [Visual Studio Code Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion).
+Download and install the extension from the [Visual Studio Code Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion).
 
 ## Troubleshooting
 

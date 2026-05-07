@@ -21,7 +21,7 @@ import {
   type SDKMessage,
   type ControlMessage,
   type ToolUseBlock,
-} from '@qwen-code/sdk';
+} from '@vibe-bti/vibe-code-sdk';
 import {
   SDKTestHelper,
   createSharedTestOptions,

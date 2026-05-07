@@ -11,7 +11,7 @@ import type {
   GitService,
   Logger,
   SessionListItem,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type {
   HistoryItemWithoutId,
   HistoryItem,
@@ -172,6 +172,8 @@ export interface OpenDialogActionReturn {
     | 'settings'
     | 'memory'
     | 'model'
+    | 'edit-model'
+    | 'remove-model'
     | 'fast-model'
     | 'manage-models'
     | 'subagent_create'

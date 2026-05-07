@@ -33,7 +33,7 @@ import {
   readQwenSettingsForVSCode,
   clearPersistedAuth,
 } from '../../services/settingsWriter.js';
-import { parseInsightMessage } from '@qwen-code/qwen-code-core';
+import { parseInsightMessage } from '@vibe-bti/vibe-code-core';
 
 /** Threshold (ms) before a completed task triggers a notification. */
 const LONG_TASK_THRESHOLD_MS = 20_000;

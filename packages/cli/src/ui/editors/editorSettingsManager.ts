@@ -8,7 +8,7 @@ import {
   allowEditorTypeInSandbox,
   checkHasEditorType,
   type EditorType,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 
 export interface EditorDisplay {
   name: string;

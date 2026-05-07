@@ -41,7 +41,7 @@ import { SessionSummaryDisplay } from './SessionSummaryDisplay.js';
 import { Help } from './Help.js';
 import type { SlashCommand } from '../commands/types.js';
 import { ExtensionsList } from './views/ExtensionsList.js';
-import { getMCPServerStatus } from '@qwen-code/qwen-code-core';
+import { getMCPServerStatus } from '@vibe-bti/vibe-code-core';
 import { SkillsList } from './views/SkillsList.js';
 import { ToolsList } from './views/ToolsList.js';
 import { McpStatus } from './views/McpStatus.js';
@@ -104,7 +104,6 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
   const itemForDisplay = useMemo(() => escapeAnsiCtrlCodes(item), [item]);
   const contentWidth = terminalWidth - 4;
   const boxWidth = mainAreaWidth || contentWidth;
-
   return (
     <Box
       flexDirection="column"

@@ -6,7 +6,7 @@
 
 import type { ICommandLoader } from './types.js';
 import type { SlashCommand } from '../ui/commands/types.js';
-import type { Config } from '@qwen-code/qwen-code-core';
+import type { Config } from '@vibe-bti/vibe-code-core';
 import { aboutCommand } from '../ui/commands/aboutCommand.js';
 import { tasksCommand } from '../ui/commands/tasksCommand.js';
 import { agentsCommand } from '../ui/commands/agentsCommand.js';
@@ -29,7 +29,7 @@ import { extensionsCommand } from '../ui/commands/extensionsCommand.js';
 import { helpCommand } from '../ui/commands/helpCommand.js';
 import { hooksCommand } from '../ui/commands/hooksCommand.js';
 import { ideCommand } from '../ui/commands/ideCommand.js';
-import { createDebugLogger } from '@qwen-code/qwen-code-core';
+import { createDebugLogger } from '@vibe-bti/vibe-code-core';
 import { initCommand } from '../ui/commands/initCommand.js';
 import { languageCommand } from '../ui/commands/languageCommand.js';
 import { mcpCommand } from '../ui/commands/mcpCommand.js';
@@ -37,6 +37,8 @@ import { dreamCommand } from '../ui/commands/dreamCommand.js';
 import { forgetCommand } from '../ui/commands/forgetCommand.js';
 import { memoryCommand } from '../ui/commands/memoryCommand.js';
 import { modelCommand } from '../ui/commands/modelCommand.js';
+import { editModelCommand } from '../ui/commands/editModelCommand.js';
+import { removeModelCommand } from '../ui/commands/removeModelCommand.js';
 import { manageModelsCommand } from '../ui/commands/manageModelsCommand.js';
 import { rememberCommand } from '../ui/commands/rememberCommand.js';
 import { planCommand } from '../ui/commands/planCommand.js';
@@ -121,6 +123,8 @@ export class BuiltinCommandLoader implements ICommandLoader {
         : []),
       memoryCommand,
       modelCommand,
+      editModelCommand,
+      removeModelCommand,
       manageModelsCommand,
       rememberCommand,
       planCommand,

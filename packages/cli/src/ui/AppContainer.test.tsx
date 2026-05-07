@@ -21,7 +21,7 @@ import {
   makeFakeConfig,
   type GeminiClient,
   type SubagentManager,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { LoadedSettings } from '../config/settings.js';
 import type { InitializationResult } from '../core/initializer.js';
 import { UIStateContext, type UIState } from './contexts/UIStateContext.js';
@@ -64,6 +64,8 @@ vi.mock('./auth/useAuth.js');
 vi.mock('./hooks/useEditorSettings.js');
 vi.mock('./hooks/useSettingsCommand.js');
 vi.mock('./hooks/useModelCommand.js');
+vi.mock('./hooks/useEditModelCommand.js');
+vi.mock('./hooks/useRemoveModelCommand.js');
 vi.mock('./hooks/slashCommandProcessor.js');
 vi.mock('./hooks/useTerminalSize.js', () => ({
   useTerminalSize: vi.fn(() => ({ columns: 80, rows: 24 })),
@@ -110,6 +112,8 @@ import { useAuthCommand } from './auth/useAuth.js';
 import { useEditorSettings } from './hooks/useEditorSettings.js';
 import { useSettingsCommand } from './hooks/useSettingsCommand.js';
 import { useModelCommand } from './hooks/useModelCommand.js';
+import { useEditModelCommand } from './hooks/useEditModelCommand.js';
+import { useRemoveModelCommand } from './hooks/useRemoveModelCommand.js';
 import { useSlashCommandProcessor } from './hooks/slashCommandProcessor.js';
 import { useGeminiStream } from './hooks/useGeminiStream.js';
 import { useVim } from './hooks/vim.js';
@@ -124,7 +128,7 @@ import { useTextBuffer } from './components/shared/text-buffer.js';
 import { useLogger } from './hooks/useLogger.js';
 import { useLoadingIndicator } from './hooks/useLoadingIndicator.js';
 import { useTerminalSize } from './hooks/useTerminalSize.js';
-import { ShellExecutionService } from '@qwen-code/qwen-code-core';
+import { ShellExecutionService } from '@vibe-bti/vibe-code-core';
 
 describe('AppContainer State Management', () => {
   let mockConfig: Config;
@@ -138,6 +142,8 @@ describe('AppContainer State Management', () => {
   const mockedUseEditorSettings = useEditorSettings as Mock;
   const mockedUseSettingsCommand = useSettingsCommand as Mock;
   const mockedUseModelCommand = useModelCommand as Mock;
+  const mockedUseEditModelCommand = useEditModelCommand as Mock;
+  const mockedUseRemoveModelCommand = useRemoveModelCommand as Mock;
   const mockedUseSlashCommandProcessor = useSlashCommandProcessor as Mock;
   const mockedUseGeminiStream = useGeminiStream as Mock;
   const mockedUseVim = useVim as Mock;
@@ -221,6 +227,16 @@ describe('AppContainer State Management', () => {
       isModelDialogOpen: false,
       openModelDialog: vi.fn(),
       closeModelDialog: vi.fn(),
+    });
+    mockedUseEditModelCommand.mockReturnValue({
+      isEditModelDialogOpen: false,
+      openEditModelDialog: vi.fn(),
+      closeEditModelDialog: vi.fn(),
+    });
+    mockedUseRemoveModelCommand.mockReturnValue({
+      isRemoveModelDialogOpen: false,
+      openRemoveModelDialog: vi.fn(),
+      closeRemoveModelDialog: vi.fn(),
     });
     mockedUseSlashCommandProcessor.mockReturnValue({
       handleSlashCommand: vi.fn(),
@@ -1718,6 +1734,46 @@ describe('AppContainer State Management', () => {
       // Verify that the actions are correctly passed through context
       capturedUIActions.closeModelDialog();
       expect(mockCloseModelDialog).toHaveBeenCalled();
+    });
+
+    it('should mark dialogsVisible when edit model dialog is open', () => {
+      mockedUseEditModelCommand.mockReturnValue({
+        isEditModelDialogOpen: true,
+        openEditModelDialog: vi.fn(),
+        closeEditModelDialog: vi.fn(),
+      });
+
+      render(
+        <AppContainer
+          config={mockConfig}
+          settings={mockSettings}
+          version="1.0.0"
+          initializationResult={mockInitResult}
+        />,
+      );
+
+      expect(capturedUIState.isEditModelDialogOpen).toBe(true);
+      expect(capturedUIState.dialogsVisible).toBe(true);
+    });
+
+    it('should mark dialogsVisible when remove model dialog is open', () => {
+      mockedUseRemoveModelCommand.mockReturnValue({
+        isRemoveModelDialogOpen: true,
+        openRemoveModelDialog: vi.fn(),
+        closeRemoveModelDialog: vi.fn(),
+      });
+
+      render(
+        <AppContainer
+          config={mockConfig}
+          settings={mockSettings}
+          version="1.0.0"
+          initializationResult={mockInitResult}
+        />,
+      );
+
+      expect(capturedUIState.isRemoveModelDialogOpen).toBe(true);
+      expect(capturedUIState.dialogsVisible).toBe(true);
     });
   });
 });

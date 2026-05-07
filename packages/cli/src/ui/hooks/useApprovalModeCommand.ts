@@ -5,7 +5,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import type { ApprovalMode, Config } from '@qwen-code/qwen-code-core';
+import type { ApprovalMode, Config } from '@vibe-bti/vibe-code-core';
 import type { LoadedSettings, SettingScope } from '../../config/settings.js';
 
 interface UseApprovalModeCommandReturn {

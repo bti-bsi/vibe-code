@@ -21,7 +21,7 @@
 1. Install Qwen Code CLI:
 
    ```bash
-   npm install -g @qwen-code/qwen-code
+   npm install -g @vibe-bti/vibe-code
    ```
 
 2. Open your JetBrains IDE and navigate to AI Chat tool window.
@@ -43,7 +43,7 @@
 1. Install Qwen Code CLI:
 
    ```bash
-   npm install -g @qwen-code/qwen-code
+   npm install -g @vibe-bti/vibe-code
    ```
 
 2. Open your JetBrains IDE and navigate to AI Chat tool window.

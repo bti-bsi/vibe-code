@@ -19,8 +19,8 @@ import type {
   ModelMetrics,
   ModelMetricsCore,
   ToolCallStats,
-} from '@qwen-code/qwen-code-core';
-import { uiTelemetryService } from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
+import { uiTelemetryService } from '@vibe-bti/vibe-code-core';
 
 export enum ToolCallDecision {
   ACCEPT = 'accept',

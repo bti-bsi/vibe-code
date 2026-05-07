@@ -22,6 +22,8 @@ import { EditorSettingsDialog } from './EditorSettingsDialog.js';
 import { TrustDialog } from './TrustDialog.js';
 import { PermissionsDialog } from './PermissionsDialog.js';
 import { ModelDialog } from './ModelDialog.js';
+import { EditModelDialog } from './EditModelDialog.js';
+import { RemoveModelDialog } from './RemoveModelDialog.js';
 import { ManageModelsDialog } from './ManageModelsDialog.js';
 import { ArenaStartDialog } from './arena/ArenaStartDialog.js';
 import { ArenaSelectDialog } from './arena/ArenaSelectDialog.js';
@@ -34,7 +36,7 @@ import { useUIActions } from '../contexts/UIActionsContext.js';
 import { useConfig } from '../contexts/ConfigContext.js';
 import { useSettings } from '../contexts/SettingsContext.js';
 import { AuthState } from '../types.js';
-import { AuthType } from '@qwen-code/qwen-code-core';
+import { AuthType } from '@vibe-bti/vibe-code-core';
 import process from 'node:process';
 import { type UseHistoryManagerReturn } from '../hooks/useHistoryManager.js';
 import { IdeTrustChangeDialog } from './IdeTrustChangeDialog.js';
@@ -218,6 +220,12 @@ export const DialogManager = ({
       />
     );
   }
+  if (uiState.isEditModelDialogOpen) {
+    return <EditModelDialog onClose={uiActions.closeEditModelDialog} />;
+  }
+  if (uiState.isRemoveModelDialogOpen) {
+    return <RemoveModelDialog onClose={uiActions.closeRemoveModelDialog} />;
+  }
   if (uiState.isManageModelsDialogOpen) {
     return (
       <ManageModelsDialog
@@ -317,7 +325,7 @@ export const DialogManager = ({
   if (uiState.isAuthDialogOpen || uiState.authError) {
     return (
       <Box flexDirection="column">
-        <AuthDialog />
+        <AuthDialog startInApiKeyFlow />
       </Box>
     );
   }
@@ -340,8 +348,8 @@ export const DialogManager = ({
       );
     }
 
-    // OpenAI authentication now handled through AuthDialog with coding-plan/custom sub-modes
-    // Qwen OAuth remains as a separate flow
+    // Custom API authentication is handled through AuthDialog.
+    // Qwen OAuth remains as a separate legacy progress flow.
     if (uiState.pendingAuthType === AuthType.QWEN_OAUTH) {
       return (
         <QwenOAuthProgress

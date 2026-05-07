@@ -193,7 +193,7 @@ curl -qL https://www.npmjs.com/install.sh | sh
 ### NPM Installation
 
 ```bash
-npm install -g @qwen-code/qwen-code@latest
+npm install -g @vibe-bti/vibe-code@latest
 ```
 
 ### Homebrew (macOS, Linux)

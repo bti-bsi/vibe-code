@@ -12,7 +12,7 @@ import {
   saveWelcomeBackRestartChoice,
   type ProjectSummaryInfo,
   type Config,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { type Settings } from '../../config/settingsSchema.js';
 
 export interface WelcomeBackState {

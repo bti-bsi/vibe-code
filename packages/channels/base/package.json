@@ -1,5 +1,5 @@
 {
-  "name": "@qwen-code/channel-base",
+  "name": "@vibe-bti/vibe-code-channel-base",
   "version": "0.15.6",
   "description": "Base channel infrastructure for Qwen Code",
   "type": "module",

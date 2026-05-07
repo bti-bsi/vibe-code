@@ -1,5 +1,5 @@
 {
-  "name": "@qwen-code/qwen-code",
+  "name": "@vibe-bti/vibe-code",
   "version": "0.15.6",
   "engines": {
     "node": ">=20.0.0"
@@ -15,10 +15,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QwenLM/qwen-code.git"
+    "url": "git+https://github.com/vibe-bti/vibe-code.git"
   },
   "config": {
-    "sandboxImageUri": "ghcr.io/qwenlm/qwen-code:0.15.6"
+    "sandboxImageUri": "ghcr.io/vibe-bti/vibe-code:0.15.6"
   },
   "scripts": {
     "start": "cross-env node scripts/start.js",
@@ -81,7 +81,7 @@
     "normalize-package-data": "^7.0.1"
   },
   "bin": {
-    "qwen": "dist/cli.js"
+    "vibe": "dist/cli.js"
   },
   "files": [
     "dist/",

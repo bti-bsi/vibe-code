@@ -32,7 +32,7 @@ import {
   type Config,
   type MemoryTaskRecord,
   type MonitorEntry,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 
 // Cap on retained terminal dream entries surfaced via the dialog.
 // `MemoryManager.tasks` has no eviction; without this cap the list

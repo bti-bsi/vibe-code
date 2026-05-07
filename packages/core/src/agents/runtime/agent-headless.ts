@@ -198,6 +198,20 @@ export class AgentHeadless {
     const initialMessagesOverride = context.get('initial_messages_override') as
       | Content[]
       | undefined;
+    // Set up abort signal propagation
+    const abortController = new AbortController();
+    const onExternalAbort = () => {
+      abortController.abort();
+    };
+    if (externalSignal) {
+      externalSignal.addEventListener('abort', onExternalAbort);
+    }
+    if (externalSignal?.aborted) {
+      abortController.abort();
+    }
+
+    const toolsList = await this.core.prepareTools();
+
     // Record the initial user turn in the observable message log before
     // anything that can throw — createChat / prepareTools failures still
     // get a transcript showing the task that was asked, which is what
@@ -216,20 +230,6 @@ export class AgentHeadless {
       this.terminateMode = AgentTerminateMode.ERROR;
       return;
     }
-
-    // Set up abort signal propagation
-    const abortController = new AbortController();
-    const onExternalAbort = () => {
-      abortController.abort();
-    };
-    if (externalSignal) {
-      externalSignal.addEventListener('abort', onExternalAbort);
-    }
-    if (externalSignal?.aborted) {
-      abortController.abort();
-    }
-
-    const toolsList = await this.core.prepareTools();
 
     const initialMessages =
       initialMessagesOverride && initialMessagesOverride.length > 0

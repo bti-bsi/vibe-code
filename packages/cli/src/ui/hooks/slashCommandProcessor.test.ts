@@ -27,15 +27,15 @@ import {
   SlashCommandStatus,
   ToolConfirmationOutcome,
   makeFakeConfig,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 
 const { logSlashCommand } = vi.hoisted(() => ({
   logSlashCommand: vi.fn(),
 }));
 
-vi.mock('@qwen-code/qwen-code-core', async (importOriginal) => {
+vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@qwen-code/qwen-code-core')>();
+    await importOriginal<typeof import('@vibe-bti/vibe-code-core')>();
   return {
     ...original,
     logSlashCommand,
@@ -116,6 +116,8 @@ describe('useSlashCommandProcessor', () => {
   const mockOpenAuthDialog = vi.fn();
   const mockOpenMemoryDialog = vi.fn();
   const mockOpenModelDialog = vi.fn();
+  const mockOpenEditModelDialog = vi.fn();
+  const mockOpenRemoveModelDialog = vi.fn();
   const mockSetQuittingMessages = vi.fn();
 
   const mockConfig = makeFakeConfig({});
@@ -132,6 +134,8 @@ describe('useSlashCommandProcessor', () => {
     openMemoryDialog: mockOpenMemoryDialog,
     openSettingsDialog: vi.fn(),
     openModelDialog: mockOpenModelDialog,
+    openEditModelDialog: mockOpenEditModelDialog,
+    openRemoveModelDialog: mockOpenRemoveModelDialog,
     openManageModelsDialog: vi.fn(),
     openTrustDialog: vi.fn(),
     openPermissionsDialog: vi.fn(),
@@ -158,6 +162,8 @@ describe('useSlashCommandProcessor', () => {
     mockFileLoadCommands.mockResolvedValue([]);
     mockMcpLoadCommands.mockResolvedValue([]);
     mockOpenModelDialog.mockClear();
+    mockOpenEditModelDialog.mockClear();
+    mockOpenRemoveModelDialog.mockClear();
     mockOpenMemoryDialog.mockClear();
   });
 
@@ -447,10 +453,10 @@ describe('useSlashCommandProcessor', () => {
       expect(mockOpenThemeDialog).toHaveBeenCalled();
     });
 
-    it('should handle "dialog: model" action', async () => {
-      const command = createTestCommand({
-        name: 'modelcmd',
-        action: vi.fn().mockResolvedValue({ type: 'dialog', dialog: 'model' }),
+      it('should handle "dialog: model" action', async () => {
+        const command = createTestCommand({
+          name: 'modelcmd',
+          action: vi.fn().mockResolvedValue({ type: 'dialog', dialog: 'model' }),
       });
       const result = setupProcessorHook([command]);
       await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
@@ -459,11 +465,45 @@ describe('useSlashCommandProcessor', () => {
         await result.current.handleSlashCommand('/modelcmd');
       });
 
-      expect(mockOpenModelDialog).toHaveBeenCalled();
-    });
+        expect(mockOpenModelDialog).toHaveBeenCalled();
+      });
 
-    it('should handle "dialog: memory" action', async () => {
-      const command = createTestCommand({
+      it('should handle "dialog: edit-model" action', async () => {
+        const command = createTestCommand({
+          name: 'editmodelcmd',
+          action: vi
+            .fn()
+            .mockResolvedValue({ type: 'dialog', dialog: 'edit-model' }),
+        });
+        const result = setupProcessorHook([command]);
+        await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
+
+        await act(async () => {
+          await result.current.handleSlashCommand('/editmodelcmd');
+        });
+
+        expect(mockOpenEditModelDialog).toHaveBeenCalled();
+      });
+
+      it('should handle "dialog: remove-model" action', async () => {
+        const command = createTestCommand({
+          name: 'removemodelcmd',
+          action: vi
+            .fn()
+            .mockResolvedValue({ type: 'dialog', dialog: 'remove-model' }),
+        });
+        const result = setupProcessorHook([command]);
+        await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
+
+        await act(async () => {
+          await result.current.handleSlashCommand('/removemodelcmd');
+        });
+
+        expect(mockOpenRemoveModelDialog).toHaveBeenCalled();
+      });
+
+      it('should handle "dialog: memory" action', async () => {
+        const command = createTestCommand({
         name: 'memorycmd',
         action: vi.fn().mockResolvedValue({ type: 'dialog', dialog: 'memory' }),
       });

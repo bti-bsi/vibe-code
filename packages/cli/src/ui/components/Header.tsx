@@ -7,7 +7,7 @@
 import type React from 'react';
 import { Box, Text } from 'ink';
 import Gradient from 'ink-gradient';
-import { shortenPath, tildeifyPath } from '@qwen-code/qwen-code-core';
+import { shortenPath, tildeifyPath } from '@vibe-bti/vibe-code-core';
 import { theme } from '../semantic-colors.js';
 import { shortAsciiLogo } from './AsciiArt.js';
 import { getAsciiArtWidth, getCachedStringWidth } from '../utils/textUtils.js';
@@ -141,7 +141,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Title line: >_ Qwen Code (v{version}) */}
         <Text>
           <Text bold color={theme.text.accent}>
-            &gt;_ Qwen Code
+            &gt;_ Vibe Code
           </Text>
           <Text color={theme.text.secondary}> (v{version})</Text>
         </Text>

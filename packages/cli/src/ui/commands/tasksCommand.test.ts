@@ -12,7 +12,7 @@ import type {
   BackgroundShellEntry,
   BackgroundTaskEntry,
   MonitorEntry,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 
 type AgentTaskTestEntry = BackgroundTaskEntry & {
   resumeBlockedReason?: string;

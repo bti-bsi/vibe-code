@@ -12,8 +12,8 @@ import type {
   ToolRegistry,
   AnyDeclarativeTool,
   AnyToolInvocation,
-} from '@qwen-code/qwen-code-core';
-import { Kind, ToolNames } from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
+import { Kind, ToolNames } from '@vibe-bti/vibe-code-core';
 import type { Part } from '@google/genai';
 
 // Helper to create mock message parts for tests

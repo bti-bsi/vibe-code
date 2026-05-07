@@ -1,4 +1,4 @@
-# @qwen-code/sdk
+# @vibe-bti/vibe-code-sdk
 
 A minimum experimental TypeScript SDK for programmatic access to Qwen Code.
 
@@ -7,7 +7,7 @@ Feel free to submit a feature request/issue/PR.
 ## Installation
 
 ```bash
-npm install @qwen-code/sdk
+npm install @vibe-bti/vibe-code-sdk
 ```
 
 ## Requirements
@@ -19,7 +19,7 @@ npm install @qwen-code/sdk
 ## Quick Start
 
 ```typescript
-import { query } from '@qwen-code/sdk';
+import { query } from '@vibe-bti/vibe-code-sdk';
 
 // Single-turn query
 const result = query({
@@ -112,7 +112,7 @@ import {
   isSDKSystemMessage,
   isSDKResultMessage,
   isSDKPartialAssistantMessage,
-} from '@qwen-code/sdk';
+} from '@vibe-bti/vibe-code-sdk';
 
 for await (const message of result) {
   if (isSDKAssistantMessage(message)) {
@@ -177,7 +177,7 @@ The first matching rule wins.
 ### Multi-turn Conversation
 
 ```typescript
-import { query, type SDKUserMessage } from '@qwen-code/sdk';
+import { query, type SDKUserMessage } from '@vibe-bti/vibe-code-sdk';
 
 async function* generateMessages(): AsyncIterable<SDKUserMessage> {
   yield {
@@ -211,7 +211,7 @@ for await (const message of result) {
 ### Custom Permission Handler
 
 ```typescript
-import { query, type CanUseTool } from '@qwen-code/sdk';
+import { query, type CanUseTool } from '@vibe-bti/vibe-code-sdk';
 
 const canUseTool: CanUseTool = async (toolName, input, { signal }) => {
   // Allow all read operations
@@ -240,7 +240,7 @@ const result = query({
 ### With External MCP Servers
 
 ```typescript
-import { query } from '@qwen-code/sdk';
+import { query } from '@vibe-bti/vibe-code-sdk';
 
 const result = query({
   prompt: 'Use the custom tool from my MCP server',
@@ -259,7 +259,7 @@ const result = query({
 ### Override the System Prompt
 
 ```typescript
-import { query } from '@qwen-code/sdk';
+import { query } from '@vibe-bti/vibe-code-sdk';
 
 const result = query({
   prompt: 'Say hello in one sentence.',
@@ -272,7 +272,7 @@ const result = query({
 ### Append to the Built-in System Prompt
 
 ```typescript
-import { query } from '@qwen-code/sdk';
+import { query } from '@vibe-bti/vibe-code-sdk';
 
 const result = query({
   prompt: 'Review the current directory.',
@@ -330,7 +330,7 @@ Returns a `McpSdkServerConfigWithInstance` object that can be passed directly to
 
 ```typescript
 import { z } from 'zod';
-import { query, tool, createSdkMcpServer } from '@qwen-code/sdk';
+import { query, tool, createSdkMcpServer } from '@vibe-bti/vibe-code-sdk';
 
 // Define a tool with Zod schema
 const calculatorTool = tool(
@@ -367,7 +367,7 @@ for await (const message of result) {
 ### Abort a Query
 
 ```typescript
-import { query, isAbortError } from '@qwen-code/sdk';
+import { query, isAbortError } from '@vibe-bti/vibe-code-sdk';
 
 const abortController = new AbortController();
 
@@ -399,7 +399,7 @@ try {
 The SDK provides an `AbortError` class for handling aborted queries:
 
 ```typescript
-import { AbortError, isAbortError } from '@qwen-code/sdk';
+import { AbortError, isAbortError } from '@vibe-bti/vibe-code-sdk';
 
 try {
   // ... query operations
@@ -420,7 +420,7 @@ If you're using SDK version **0.1.0**, please note the following requirements:
 
 #### Qwen Code Installation Required
 
-Version 0.1.0 requires [Qwen Code](https://github.com/QwenLM/qwen-code) **>= 0.4.0** to be installed separately and accessible in your PATH.
+Version 0.1.0 requires [Qwen Code](https://github.com/vibe-bti/vibe-code) **>= 0.4.0** to be installed separately and accessible in your PATH.
 
 ```bash
 # Install Qwen Code globally

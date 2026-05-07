@@ -9,7 +9,7 @@ import open from 'open';
 import { bugCommand } from './bugCommand.js';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
 import { GIT_COMMIT_INFO } from '../../generated/git-commit.js';
-import { AuthType } from '@qwen-code/qwen-code-core';
+import { AuthType } from '@vibe-bti/vibe-code-core';
 import * as systemInfoUtils from '../../utils/systemInfo.js';
 
 // Mock dependencies
@@ -71,7 +71,7 @@ Sandbox: test
 Proxy: no proxy
 Memory Usage: 100 MB`;
     const expectedUrl =
-      'https://github.com/QwenLM/qwen-code/issues/new?template=bug_report.yml&title=A%20test%20bug&info=%0A' +
+      'https://github.com/vibe-bti/vibe-code/issues/new?template=bug_report.yml&title=A%20test%20bug&info=%0A' +
       encodeURIComponent(expectedInfo) +
       '%0A';
 
@@ -180,7 +180,7 @@ Sandbox: test
 Proxy: no proxy
 Memory Usage: 100 MB`;
     const expectedUrl =
-      'https://github.com/QwenLM/qwen-code/issues/new?template=bug_report.yml&title=OpenAI%20bug&info=%0A' +
+      'https://github.com/vibe-bti/vibe-code/issues/new?template=bug_report.yml&title=OpenAI%20bug&info=%0A' +
       encodeURIComponent(expectedInfo) +
       '%0A';
 

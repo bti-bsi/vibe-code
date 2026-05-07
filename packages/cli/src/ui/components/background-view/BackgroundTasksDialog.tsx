@@ -28,7 +28,7 @@ import {
   ToolNames,
   type BackgroundTaskEntry,
   type MonitorEntry,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { formatDuration, formatTokenCount } from '../../utils/formatters.js';
 import {
   type AgentDialogEntry,
@@ -646,7 +646,7 @@ const AgentDetailBody: React.FC<{
 };
 
 const ShellDetailBody: React.FC<{
-  entry: import('@qwen-code/qwen-code-core').BackgroundShellEntry;
+  entry: import('@vibe-bti/vibe-code-core').BackgroundShellEntry;
   maxHeight: number;
   maxWidth: number;
 }> = ({ entry, maxHeight, maxWidth }) => {

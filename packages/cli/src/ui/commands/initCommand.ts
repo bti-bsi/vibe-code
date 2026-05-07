@@ -11,7 +11,7 @@ import type {
   SlashCommand,
   SlashCommandActionReturn,
 } from './types.js';
-import { getCurrentGeminiMdFilename } from '@qwen-code/qwen-code-core';
+import { getCurrentGeminiMdFilename } from '@vibe-bti/vibe-code-core';
 import { CommandKind } from './types.js';
 import { Text } from 'ink';
 import React from 'react';

@@ -11,7 +11,7 @@ import { writeStdoutLine, writeStderrLine } from '../../utils/stdioHelpers.js';
 import type {
   MCPServerConfig,
   MCPOAuthConfig,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 
 async function addMcpServer(
   name: string,

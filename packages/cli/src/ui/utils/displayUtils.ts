@@ -5,7 +5,7 @@
  */
 
 import { theme } from '../semantic-colors.js';
-import { AgentStatus } from '@qwen-code/qwen-code-core';
+import { AgentStatus } from '@vibe-bti/vibe-code-core';
 
 // --- Status Labels ---
 

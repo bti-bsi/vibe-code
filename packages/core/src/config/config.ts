@@ -714,6 +714,7 @@ export class Config {
   private messageBus?: MessageBus;
   private readonly memoryManager: MemoryManager;
   private readonly modelChangeListeners = new Set<(model: string) => void>();
+  private uiDebugMessageSink?: (message: string) => void;
 
   constructor(params: ConfigParameters) {
     this.sessionId = params.sessionId ?? randomUUID();
@@ -2233,6 +2234,16 @@ export class Config {
    */
   setMessageBus(messageBus: MessageBus): void {
     this.messageBus = messageBus;
+  }
+
+  setUiDebugMessageSink(
+    sink: ((message: string) => void) | undefined,
+  ): void {
+    this.uiDebugMessageSink = sink;
+  }
+
+  emitUiDebugMessage(message: string): void {
+    this.uiDebugMessageSink?.(message);
   }
 
   /**

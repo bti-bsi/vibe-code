@@ -22,7 +22,7 @@ import {
   SessionStartSource,
   SessionEndReason,
   type PermissionMode,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import {
   AgentSideConnection,
   RequestError,

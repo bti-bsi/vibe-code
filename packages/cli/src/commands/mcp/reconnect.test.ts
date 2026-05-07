@@ -7,7 +7,7 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { reconnectCommand } from './reconnect.js';
 import { loadSettings } from '../../config/settings.js';
-import { Config, ExtensionManager } from '@qwen-code/qwen-code-core';
+import { Config, ExtensionManager } from '@vibe-bti/vibe-code-core';
 
 const mockWriteStdoutLine = vi.hoisted(() => vi.fn());
 const mockWriteStderrLine = vi.hoisted(() => vi.fn());
@@ -26,7 +26,7 @@ vi.mock('../../config/trustedFolders.js', () => ({
   isWorkspaceTrusted: vi.fn().mockReturnValue(true),
 }));
 
-vi.mock('@qwen-code/qwen-code-core', () => ({
+vi.mock('@vibe-bti/vibe-code-core', () => ({
   Config: vi.fn(),
   FileDiscoveryService: vi.fn(),
   ExtensionManager: vi.fn(),

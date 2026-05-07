@@ -18,7 +18,7 @@ import {
   isSDKResultMessage,
   type SDKMessage,
   type SDKUserMessage,
-} from '@qwen-code/sdk';
+} from '@vibe-bti/vibe-code-sdk';
 import {
   SDKTestHelper,
   extractText,

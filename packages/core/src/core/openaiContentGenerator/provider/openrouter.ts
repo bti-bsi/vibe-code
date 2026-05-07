@@ -24,7 +24,7 @@ export class OpenRouterOpenAICompatibleProvider extends DefaultOpenAICompatibleP
     // Add OpenRouter-specific headers
     return {
       ...baseHeaders,
-      'HTTP-Referer': 'https://github.com/QwenLM/qwen-code.git',
+      'HTTP-Referer': 'https://github.com/vibe-bti/vibe-code.git',
       'X-OpenRouter-Title': 'Qwen Code',
     };
   }

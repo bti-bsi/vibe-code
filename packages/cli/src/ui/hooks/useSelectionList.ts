@@ -5,7 +5,7 @@
  */
 
 import { useReducer, useRef, useEffect } from 'react';
-import { createDebugLogger } from '@qwen-code/qwen-code-core';
+import { createDebugLogger } from '@vibe-bti/vibe-code-core';
 import { useKeypress } from './useKeypress.js';
 
 export interface SelectionListItem<T> {

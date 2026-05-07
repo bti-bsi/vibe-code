@@ -9,9 +9,9 @@ import * as path from 'path';
 import * as os from 'os';
 import * as readline from 'readline';
 import * as crypto from 'crypto';
-import { getProjectHash } from '@qwen-code/qwen-code-core/src/utils/paths.js';
+import { getProjectHash } from '@vibe-bti/vibe-code-core/src/utils/paths.js';
 import { truncatePanelTitle } from '../webview/utils/panelTitleUtils.js';
-import { getGitBranch } from '@qwen-code/qwen-code-core/src/utils/gitUtils.js';
+import { getGitBranch } from '@vibe-bti/vibe-code-core/src/utils/gitUtils.js';
 
 export interface QwenMessage {
   id: string;

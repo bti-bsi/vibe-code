@@ -15,7 +15,7 @@ import {
   isSDKResultMessage,
   type TextBlock,
   type SDKUserMessage,
-} from '@qwen-code/sdk';
+} from '@vibe-bti/vibe-code-sdk';
 import {
   SDKTestHelper,
   createSharedTestOptions,

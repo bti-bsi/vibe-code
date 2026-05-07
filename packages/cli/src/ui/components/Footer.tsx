@@ -15,12 +15,12 @@ import { BackgroundTasksPill } from './background-view/BackgroundTasksPill.js';
 import { MCPHealthPill } from './mcp/MCPHealthPill.js';
 import { isNarrowWidth } from '../utils/isNarrowWidth.js';
 
-import { useStatusLine } from '../hooks/useStatusLine.js';
+import { MAX_STATUS_LINES, useStatusLine } from '../hooks/useStatusLine.js';
 import { useConfigInitMessage } from '../hooks/useConfigInitMessage.js';
 import { useUIState } from '../contexts/UIStateContext.js';
 import { useConfig } from '../contexts/ConfigContext.js';
 import { useVimMode } from '../contexts/VimModeContext.js';
-import { ApprovalMode } from '@qwen-code/qwen-code-core';
+import { ApprovalMode } from '@vibe-bti/vibe-code-core';
 import { GeminiSpinner } from './GeminiRespondingSpinner.js';
 import { t } from '../../i18n/index.js';
 
@@ -54,10 +54,16 @@ export const Footer: React.FC = () => {
 
   const contextWindowSize =
     config.getContentGeneratorConfig()?.contextWindowSize;
+  const debugMessageLines = (uiState.debugMessage ?? '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .slice(0, MAX_STATUS_LINES);
 
   // Hide "? for shortcuts" when a custom status line is active (it already
   // occupies the footer, so the hint is redundant). Matches upstream behavior.
-  const suppressHint = statusLineLines.length > 0;
+  const suppressHint =
+    statusLineLines.length > 0 || debugMessageLines.length > 0;
 
   // MCP init progress lives in this row (not a standalone component above the
   // input) so the live area's height is constant in the default case, avoiding
@@ -142,6 +148,14 @@ export const Footer: React.FC = () => {
           !uiState.ctrlDPressedOnce &&
           statusLineLines.map((line, i) => (
             <Text key={`status-line-${i}`} dimColor wrap="truncate">
+              {line}
+            </Text>
+          ))}
+        {debugMessageLines.length > 0 &&
+          !uiState.ctrlCPressedOnce &&
+          !uiState.ctrlDPressedOnce &&
+          debugMessageLines.map((line, i) => (
+            <Text key={`debug-line-${i}`} color={theme.text.secondary} wrap="truncate">
               {line}
             </Text>
           ))}

@@ -37,7 +37,7 @@ jobs:
   prepare:
     runs-on: 'ubuntu-latest'
     if: |-
-      ${{ github.repository == 'QwenLM/qwen-code' }}
+      ${{ github.repository == 'vibe-bti/qwen-code' }}
     permissions:
       contents: 'read'
     outputs:
@@ -137,7 +137,7 @@ jobs:
         if: |-
           ${{ github.event.inputs.force_skip_tests != 'true' }}
         run: |
-          npm run build --workspace=@qwen-code/webui
+          npm run build --workspace=@vibe-bti/vibe-code-webui
 
       - name: 'Run Tests'
         if: |-
@@ -220,7 +220,7 @@ jobs:
           VSCODE_TARGET: '${{ matrix.target }}'
         run: |
           # Build and stage the extension + bundled CLI
-          npm --workspace=qwen-code-vscode-ide-companion run prepackage
+          npm --workspace=vibe-code-vscode-ide-companion run prepackage
 
       - name: 'Package VSIX (platform-specific)'
         if: "${{ matrix.target != '' }}"

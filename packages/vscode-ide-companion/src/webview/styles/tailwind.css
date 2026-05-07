@@ -6,7 +6,7 @@
  * VSCode IDE Companion - Tailwind CSS
  * 
  * Only Tailwind directives and minimal VSCode-specific utilities.
- * Component styles are in @qwen-code/webui package.
+ * Component styles are in @vibe-bti/vibe-code-webui package.
  */
 
 @tailwind base;

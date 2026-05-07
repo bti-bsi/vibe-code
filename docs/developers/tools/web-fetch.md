@@ -58,7 +58,7 @@ web_fetch(url="https://arxiv.org/abs/2401.0001", prompt="What are the key findin
 Analyze GitHub documentation:
 
 ```
-web_fetch(url="https://github.com/QwenLM/Qwen/blob/main/README.md", prompt="What are the installation steps and main features?")
+web_fetch(url="https://github.com/vibe-bti/Qwen/blob/main/README.md", prompt="What are the installation steps and main features?")
 ```
 
 Get markdown content (for servers supporting Markdown for Agents):

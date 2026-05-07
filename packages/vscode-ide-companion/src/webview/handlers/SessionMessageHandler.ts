@@ -15,7 +15,7 @@ import {
 } from '../utils/imageHandler.js';
 import { isAuthenticationRequiredError } from '../../utils/authErrors.js';
 import { getErrorMessage } from '../../utils/errorMessage.js';
-import { stripZeroWidthSpaces } from '@qwen-code/webui';
+import { stripZeroWidthSpaces } from '@vibe-bti/vibe-code-webui';
 import {
   exportSessionToFile,
   parseExportSlashCommand,
@@ -1188,7 +1188,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
         });
         return;
       }
-      // Matches SESSION_TITLE_MAX_LENGTH from @qwen-code/qwen-code-core/sessionService
+      // Matches SESSION_TITLE_MAX_LENGTH from @vibe-bti/vibe-code-core/sessionService
       if (trimmedTitle.length > 200) {
         this.sendToWebView({
           type: 'error',

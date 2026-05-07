@@ -141,7 +141,7 @@ Planned improvements for upcoming releases:
 
 For support, bug reports, or contributions:
 
-- Issue Tracker: https://github.com/QwenLM/qwen-code/issues
+- Issue Tracker: https://github.com/vibe-bti/vibe-code/issues
 - Documentation: Refer to README.md and Javadoc
 - Contributions: Pull requests are welcome following the project's contribution guidelines
 

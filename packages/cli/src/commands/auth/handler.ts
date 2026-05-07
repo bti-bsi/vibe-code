@@ -9,7 +9,7 @@ import {
   getErrorMessage,
   type Config,
   type ProviderModelConfig as ModelConfig,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { writeStdoutLine, writeStderrLine } from '../../utils/stdioHelpers.js';
 import { t } from '../../i18n/index.js';
 import { getPersistScopeForModelSelection } from '../../config/modelProvidersScope.js';
@@ -27,7 +27,6 @@ import { InteractiveSelector } from './interactiveSelector.js';
 import {
   ALIBABA_STANDARD_API_KEY_ENDPOINTS,
   DASHSCOPE_STANDARD_API_KEY_ENV_KEY,
-  type AlibabaStandardRegion,
 } from '../../constants/alibabaStandardApiKey.js';
 import {
   applyOpenRouterModelsConfiguration,
@@ -39,6 +38,25 @@ import {
 
 function formatElapsedTime(startMs: number): string {
   return `${((Date.now() - startMs) / 1000).toFixed(2)}s`;
+}
+
+function generateCustomApiKeyEnvKey(protocol: string, baseUrl: string): string {
+  const normalize = (value: string) =>
+    value
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_+|_+$/g, '');
+
+  return `QWEN_CUSTOM_API_KEY_${normalize(protocol)}_${normalize(baseUrl)}`;
+}
+
+function normalizeCustomModelIds(modelIdsInput: string): string[] {
+  return modelIdsInput
+    .split(',')
+    .map((id) => id.trim())
+    .filter((id, index, array) => id.length > 0 && array.indexOf(id) === index);
 }
 
 interface QwenAuthOptions {
@@ -510,55 +528,7 @@ async function promptForKey(
  * Runs the interactive authentication flow
  */
 export async function runInteractiveAuth() {
-  const selector = new InteractiveSelector(
-    [
-      {
-        value: 'openrouter' as const,
-        label: t('OpenRouter'),
-        description: t(
-          'API key setup · OpenAI-compatible provider via OpenRouter',
-        ),
-      },
-      {
-        value: 'coding-plan' as const,
-        label: t('Alibaba Cloud Coding Plan'),
-        description: t(
-          'Paid · Up to 6,000 requests/5 hrs · All Alibaba Cloud Coding Plan Models',
-        ),
-      },
-      {
-        value: 'api-key' as const,
-        label: t('API Key'),
-        description: t('Bring your own API key'),
-      },
-      {
-        value: 'qwen-oauth' as const,
-        label: t('Qwen OAuth'),
-        description: t('Discontinued — switch to Coding Plan or API Key'),
-      },
-    ],
-    t('Select authentication method:'),
-  );
-
-  let choice = await selector.select();
-
-  // If user selects discontinued Qwen OAuth, warn and re-prompt
-  while (choice === 'qwen-oauth') {
-    writeStdoutLine(
-      t(
-        '\n⚠ Qwen OAuth free tier was discontinued on 2026-04-15. Please select another option.\n',
-      ),
-    );
-    choice = await selector.select();
-  }
-
-  if (choice === 'coding-plan') {
-    await handleQwenAuth('coding-plan', {});
-  } else if (choice === 'api-key') {
-    await handleApiKeyAuth();
-  } else if (choice === 'openrouter') {
-    await handleQwenAuth('openrouter', {});
-  }
+  await handleApiKeyAuth();
 }
 
 /**
@@ -566,213 +536,157 @@ export async function runInteractiveAuth() {
  */
 export async function handleApiKeyAuth() {
   try {
-    const selector = new InteractiveSelector(
-      [
-        {
-          value: 'alibaba-standard' as const,
-          label: t('Alibaba Cloud ModelStudio Standard API Key'),
-          description: t('Quick setup for Model Studio (China/International)'),
-        },
-        {
-          value: 'custom' as const,
-          label: t('Custom API Key'),
-          description: t(
-            'For other OpenAI / Anthropic / Gemini-compatible providers',
-          ),
-        },
-      ],
-      t('Select API key type:'),
-    );
-
-    const choice = await selector.select();
-
-    if (choice === 'alibaba-standard') {
-      await handleAlibabaStandardApiKeyAuth();
-    } else if (choice === 'custom') {
-      handleCustomApiKeyAuth();
-    }
-  } catch (error) {
-    writeStderrLine(getErrorMessage(error));
-    process.exit(1);
-  }
-}
-
-/**
- * Handles Alibaba Cloud ModelStudio Standard API Key authentication
- */
-async function handleAlibabaStandardApiKeyAuth(): Promise<void> {
-  try {
     const settings = loadSettings();
     const config = await loadAuthConfig(settings);
+    const protocol = await promptForCustomProtocol();
+    const defaultBaseUrl = getDefaultCustomBaseUrl(protocol);
+    const baseUrl = (
+      await promptForInput(
+        t('Enter base URL (default: {{default}}): ', {
+          default: defaultBaseUrl,
+        }),
+        { defaultValue: defaultBaseUrl },
+      )
+    ).trim();
+    if (!baseUrl) {
+      writeStderrLine(t('Base URL cannot be empty.'));
+      process.exit(1);
+    }
+    if (!/^https?:\/\//i.test(baseUrl)) {
+      writeStderrLine(t('Base URL must start with http:// or https://.'));
+      process.exit(1);
+    }
 
-    // Step 1: Select region
-    const region = await promptForStandardRegion();
-
-    // Step 2: Enter API key
-    const apiKey = await promptForKey(t('Enter your API key: '));
-    const trimmedApiKey = apiKey.trim();
-    if (!trimmedApiKey) {
+    const apiKey = (await promptForKey(t('Enter your API key: '))).trim();
+    if (!apiKey) {
       writeStderrLine(t('API key cannot be empty.'));
       process.exit(1);
     }
 
-    // Step 3: Enter model IDs
-    const modelIdsInput = await promptForModelIds();
-    const modelIds = modelIdsInput
-      .split(',')
-      .map((id) => id.trim())
-      .filter(
-        (id, index, array) => id.length > 0 && array.indexOf(id) === index,
-      );
+    const modelIds = normalizeCustomModelIds(
+      await promptForInput(t('Enter model IDs (comma-separated): ')),
+    );
     if (modelIds.length === 0) {
       writeStderrLine(t('Model IDs cannot be empty.'));
       process.exit(1);
     }
 
-    writeStdoutLine(
-      t('Processing Alibaba Cloud ModelStudio Standard API Key...'),
-    );
-
-    // Persist settings
-    const baseUrl = ALIBABA_STANDARD_API_KEY_ENDPOINTS[region];
-    const persistScope = getPersistScopeForModelSelection(settings);
-    const settingsFile = settings.forScope(persistScope);
-    backupSettingsFile(settingsFile.path);
-
-    // Store API key
-    settings.setValue(
-      persistScope,
-      `env.${DASHSCOPE_STANDARD_API_KEY_ENV_KEY}`,
-      trimmedApiKey,
-    );
-    process.env[DASHSCOPE_STANDARD_API_KEY_ENV_KEY] = trimmedApiKey;
-
-    // Build model configs
-    const newConfigs: ModelConfig[] = modelIds.map((modelId) => ({
-      id: modelId,
-      name: `[ModelStudio Standard] ${modelId}`,
+    await handleCustomApiKeyAuth(
+      config,
+      settings,
+      protocol,
       baseUrl,
-      envKey: DASHSCOPE_STANDARD_API_KEY_ENV_KEY,
-    }));
-
-    // Get existing configs and filter out old Alibaba Standard entries
-    const existingConfigs =
-      (settings.merged.modelProviders as Record<string, ModelConfig[]>)?.[
-        AuthType.USE_OPENAI
-      ] || [];
-
-    const nonReplacedConfigs = existingConfigs.filter(
-      (existing) =>
-        // Filter out old Alibaba Standard entries
-        !(
-          existing.envKey === DASHSCOPE_STANDARD_API_KEY_ENV_KEY &&
-          typeof existing.baseUrl === 'string' &&
-          Object.values(ALIBABA_STANDARD_API_KEY_ENDPOINTS).includes(
-            existing.baseUrl,
-          )
-        ) &&
-        // Filter out Coding Plan entries (their key will be cleared)
-        !isCodingPlanConfig(existing.baseUrl, existing.envKey),
+      apiKey,
+      modelIds,
     );
-
-    const updatedConfigs = [...newConfigs, ...nonReplacedConfigs];
-
-    // Persist model providers and auth settings
-    settings.setValue(
-      persistScope,
-      `modelProviders.${AuthType.USE_OPENAI}`,
-      updatedConfigs,
-    );
-    settings.setValue(
-      persistScope,
-      'security.auth.selectedType',
-      AuthType.USE_OPENAI,
-    );
-    settings.setValue(persistScope, 'model.name', modelIds[0]);
-
-    // Clear stale Coding Plan state to avoid incorrect status/update prompts
-    delete process.env[CODING_PLAN_ENV_KEY];
-    settings.setValue(persistScope, `env.${CODING_PLAN_ENV_KEY}`, '');
-    settings.setValue(persistScope, 'codingPlan.region', '');
-    settings.setValue(persistScope, 'codingPlan.version', '');
-
-    // Reload and refresh
-    const updatedModelProviders: Record<string, ModelConfig[]> = {
-      ...(settings.merged.modelProviders as Record<string, ModelConfig[]>),
-      [AuthType.USE_OPENAI]: updatedConfigs,
-    };
-    config.reloadModelProvidersConfig(updatedModelProviders);
-    await config.refreshAuth(AuthType.USE_OPENAI);
-
-    writeStdoutLine(
-      t(
-        'Successfully configured Alibaba Cloud ModelStudio Standard API Key with {{modelCount}} model(s).',
-        { modelCount: String(modelIds.length) },
-      ),
-    );
-    process.exit(0);
   } catch (error) {
     writeStderrLine(getErrorMessage(error));
     process.exit(1);
   }
 }
 
-/**
- * Handles Custom API Key - prints docs link
- */
-function handleCustomApiKeyAuth(): void {
-  writeStdoutLine(
-    t(
-      '\nYou can configure your API key and models in settings.json.\nRefer to the documentation for setup instructions:\n  https://qwenlm.github.io/qwen-code-docs/en/users/configuration/model-providers/\n',
-    ),
-  );
-  process.exit(0);
+function getDefaultCustomBaseUrl(
+  protocol: AuthType.USE_OPENAI | AuthType.USE_ANTHROPIC | AuthType.USE_GEMINI,
+): string {
+  switch (protocol) {
+    case AuthType.USE_ANTHROPIC:
+      return 'https://api.anthropic.com/v1';
+    case AuthType.USE_GEMINI:
+      return 'https://generativelanguage.googleapis.com';
+    case AuthType.USE_OPENAI:
+    default:
+      return 'https://api.openai.com/v1';
+  }
 }
 
-/**
- * Prompts the user to select a region for ModelStudio Standard API Key
- */
-async function promptForStandardRegion(): Promise<AlibabaStandardRegion> {
+async function promptForCustomProtocol(): Promise<
+  AuthType.USE_OPENAI | AuthType.USE_ANTHROPIC | AuthType.USE_GEMINI
+> {
   const selector = new InteractiveSelector(
     [
       {
-        value: 'cn-beijing' as AlibabaStandardRegion,
-        label: t('China (Beijing)'),
-        description: ALIBABA_STANDARD_API_KEY_ENDPOINTS['cn-beijing'],
+        value: AuthType.USE_OPENAI as const,
+        label: t('OpenAI-compatible'),
+        description: t(
+          'OpenAI Chat Completions API (OpenRouter, vLLM, Ollama, LM Studio, Fireworks, etc.)',
+        ),
       },
       {
-        value: 'sg-singapore' as AlibabaStandardRegion,
-        label: t('Singapore'),
-        description: ALIBABA_STANDARD_API_KEY_ENDPOINTS['sg-singapore'],
+        value: AuthType.USE_ANTHROPIC as const,
+        label: t('Anthropic-compatible'),
+        description: t('Anthropic Messages API'),
       },
       {
-        value: 'us-virginia' as AlibabaStandardRegion,
-        label: t('US (Virginia)'),
-        description: ALIBABA_STANDARD_API_KEY_ENDPOINTS['us-virginia'],
-      },
-      {
-        value: 'cn-hongkong' as AlibabaStandardRegion,
-        label: t('China (Hong Kong)'),
-        description: ALIBABA_STANDARD_API_KEY_ENDPOINTS['cn-hongkong'],
+        value: AuthType.USE_GEMINI as const,
+        label: t('Gemini-compatible'),
+        description: t('Google Gemini API'),
       },
     ],
-    t('Select region:'),
+    t('Select custom API protocol:'),
   );
 
-  return await selector.select();
+  return selector.select();
 }
 
-/**
- * Prompts the user to enter comma-separated model IDs
- */
-async function promptForModelIds(): Promise<string> {
-  const defaultModels = 'qwen3.5-plus,glm-5,kimi-k2.5';
-  return promptForInput(
-    t('Enter model IDs (comma-separated, default: {{default}}): ', {
-      default: defaultModels,
-    }),
-    { defaultValue: defaultModels },
-  );
+async function handleCustomApiKeyAuth(
+  config: Config,
+  settings: LoadedSettings,
+  protocol: AuthType.USE_OPENAI | AuthType.USE_ANTHROPIC | AuthType.USE_GEMINI,
+  baseUrl: string,
+  apiKey: string,
+  modelIds: string[],
+): Promise<void> {
+  try {
+    const persistScope = getPersistScopeForModelSelection(settings);
+    const settingsFile = settings.forScope(persistScope);
+    backupSettingsFile(settingsFile.path);
+
+    const generatedEnvKey = generateCustomApiKeyEnvKey(protocol, baseUrl);
+    settings.setValue(persistScope, `env.${generatedEnvKey}`, apiKey);
+    process.env[generatedEnvKey] = apiKey;
+
+    const newConfigs: ModelConfig[] = modelIds.map((modelId) => ({
+      id: modelId,
+      name: modelId,
+      baseUrl,
+      envKey: generatedEnvKey,
+    }));
+
+    const existingConfigs =
+      (settings.merged.modelProviders as Record<string, ModelConfig[]>)?.[
+        protocol
+      ] || [];
+    const preservedConfigs = existingConfigs.filter(
+      (existing) => existing.envKey !== generatedEnvKey,
+    );
+    const updatedConfigs = [...newConfigs, ...preservedConfigs];
+
+    settings.setValue(
+      persistScope,
+      `modelProviders.${protocol}`,
+      updatedConfigs,
+    );
+    settings.setValue(persistScope, 'security.auth.selectedType', protocol);
+    settings.setValue(persistScope, 'model.name', modelIds[0]);
+
+    const updatedModelProviders: Record<string, ModelConfig[]> = {
+      ...(settings.merged.modelProviders as Record<string, ModelConfig[]>),
+      [protocol]: updatedConfigs,
+    };
+    config.reloadModelProvidersConfig(updatedModelProviders);
+    await config.refreshAuth(protocol);
+
+    writeStdoutLine(
+      t(
+        'Custom API Key authenticated successfully. Settings updated with generated env key and model provider config.',
+      ),
+    );
+    writeStdoutLine(t('Tip: Use /model to switch between configured models.'));
+    process.exit(0);
+  } catch (error) {
+    writeStderrLine(getErrorMessage(error));
+    process.exit(1);
+  }
 }
 
 /**
@@ -791,22 +705,7 @@ export async function showAuthStatus(): Promise<void> {
     if (!selectedType) {
       writeStdoutLine(t('⚠️  No authentication method configured.\n'));
       writeStdoutLine(t('Run one of the following commands to get started:\n'));
-      writeStdoutLine(
-        t('  qwen auth openrouter      - Configure OpenRouter API key'),
-      );
-      writeStdoutLine(
-        t(
-          '  qwen auth coding-plan    - Authenticate with Alibaba Cloud Coding Plan',
-        ),
-      );
-      writeStdoutLine(
-        t('  qwen auth api-key        - Authenticate with an API key'),
-      );
-      writeStdoutLine(
-        t(
-          '  qwen auth qwen-oauth     - Authenticate with Qwen OAuth (discontinued)\n',
-        ),
-      );
+      writeStdoutLine(t('  qwen auth api-key        - Authenticate with an API key'));
       writeStdoutLine(t('Or simply run:'));
       writeStdoutLine(
         t('  qwen auth                - Interactive authentication setup\n'),

@@ -17,7 +17,7 @@ import type {
   AnsiOutput,
   AnsiOutputDisplay,
   Config,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { LoadedSettings } from '../../../config/settings.js';
 
 vi.mock('../TerminalOutput.js', () => ({

@@ -16,7 +16,7 @@ import {
   encodeInsightProgressMessage,
   encodeInsightReadyMessage,
   Storage,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import open from 'open';
 
 const logger = createDebugLogger('DataProcessor');

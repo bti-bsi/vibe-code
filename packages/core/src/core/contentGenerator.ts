@@ -132,8 +132,12 @@ export type ContentGeneratorConfig = {
   // LM Studio) reject anything else with HTTP 400 "Invalid 'messages' in
   // payload". Enable this for any provider that strictly validates tool
   // message content. Default: false (preserves prior behavior for permissive
-  // providers). See QwenLM/qwen-code#3616.
+  // providers). See vibe-bti/vibe-code#3616.
   splitToolMedia?: boolean;
+  // Controls whether chat requests should use the streaming API path.
+  // Set to false for providers that reject SSE/streaming and only support
+  // full-response chat completions.
+  useStreaming?: boolean;
 };
 
 // Keep the public ContentGeneratorConfigSources API, but reuse the generic

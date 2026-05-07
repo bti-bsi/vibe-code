@@ -6,7 +6,7 @@ export default {
   terminal: { title: 'qwen-code', cwd: '../../..' },
   flow: [
     {
-      type: '/review https://github.com/QwenLM/qwen-code/pull/2371',
+      type: '/review https://github.com/vibe-bti/vibe-code/pull/2371',
       streaming: {
         delayMs: 5000,
         intervalMs: 10000, // Every 10s

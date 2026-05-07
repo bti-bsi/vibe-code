@@ -5,7 +5,7 @@
  */
 
 import * as vscode from 'vscode';
-import { Storage } from '@qwen-code/qwen-code-core';
+import { Storage } from '@vibe-bti/vibe-code-core';
 
 export function getLocalResourceRoots(
   extensionUri: vscode.Uri,

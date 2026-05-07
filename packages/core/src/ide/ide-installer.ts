@@ -123,7 +123,7 @@ class VsCodeInstaller implements IdeInstaller {
         isWindows ? `"${commandPath}"` : commandPath,
         [
           '--install-extension',
-          'qwenlm.qwen-code-vscode-ide-companion',
+          'qwenlm.vibe-code-vscode-ide-companion',
           '--force',
         ],
         { stdio: 'pipe', shell: isWindows },

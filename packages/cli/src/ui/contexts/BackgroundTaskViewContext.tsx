@@ -19,7 +19,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { type Config, createDebugLogger } from '@qwen-code/qwen-code-core';
+import { type Config, createDebugLogger } from '@vibe-bti/vibe-code-core';
 import {
   type DialogEntry,
   useBackgroundTaskView,

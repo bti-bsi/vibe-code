@@ -111,10 +111,10 @@ const {
   }>,
 }));
 
-vi.mock('@qwen-code/qwen-code-core', async () => {
+vi.mock('@vibe-bti/vibe-code-core', async () => {
   const actual = await vi.importActual<
-    typeof import('@qwen-code/qwen-code-core')
-  >('@qwen-code/qwen-code-core');
+    typeof import('@vibe-bti/vibe-code-core')
+  >('@vibe-bti/vibe-code-core');
   return {
     ...actual,
     Storage: {

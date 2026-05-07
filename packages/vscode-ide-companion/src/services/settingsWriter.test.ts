@@ -13,9 +13,9 @@ const { mockGetGlobalSettingsPath } = vi.hoisted(() => ({
   mockGetGlobalSettingsPath: vi.fn(),
 }));
 
-vi.mock('@qwen-code/qwen-code-core', async (importOriginal) => {
+vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@qwen-code/qwen-code-core')>();
+    await importOriginal<typeof import('@vibe-bti/vibe-code-core')>();
   return {
     ...actual,
     Storage: {
@@ -25,7 +25,7 @@ vi.mock('@qwen-code/qwen-code-core', async (importOriginal) => {
   };
 });
 
-import { CODING_PLAN_ENV_KEY, AuthType } from '@qwen-code/qwen-code-core';
+import { CODING_PLAN_ENV_KEY, AuthType } from '@vibe-bti/vibe-code-core';
 import {
   readQwenSettingsForVSCode,
   writeCodingPlanConfig,

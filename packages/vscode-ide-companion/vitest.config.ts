@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
-      '@qwen-code/qwen-code/export': path.resolve(
+      '@vibe-bti/vibe-code/export': path.resolve(
         __dirname,
         '../cli/src/export/index.ts',
       ),

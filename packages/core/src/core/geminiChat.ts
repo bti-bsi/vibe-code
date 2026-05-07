@@ -847,16 +847,14 @@ export class GeminiChat {
     params: SendMessageParameters,
     prompt_id: string,
   ): Promise<AsyncGenerator<GenerateContentResponse>> {
-    const apiCall = () =>
-      this.config.getContentGenerator().generateContentStream(
-        {
-          model,
-          contents: requestContents,
-          config: { ...this.generationConfig, ...params.config },
-        },
-        prompt_id,
-      );
-    const streamResponse = await retryWithBackoff(apiCall, {
+    const request = {
+      model,
+      contents: requestContents,
+      config: { ...this.generationConfig, ...params.config },
+    };
+    const useStreaming =
+      this.config.getContentGeneratorConfig()?.useStreaming !== false;
+    const retryOptions = {
       shouldRetryOnError: (error: unknown) => {
         if (error instanceof Error) {
           if (isSchemaDepthError(error.message)) return false;
@@ -873,13 +871,28 @@ export class GeminiChat {
       authType: this.config.getContentGeneratorConfig()?.authType,
       persistentMode: isUnattendedMode(),
       signal: params.config?.abortSignal,
-      heartbeatFn: (info) => {
+      heartbeatFn: (info: { attempt: number; remainingMs: number }) => {
         process.stderr.write(
           `[qwen-code] Waiting for API capacity... attempt ${info.attempt}, retry in ${Math.ceil(info.remainingMs / 1000)}s\n`,
         );
       },
-    });
+    };
 
+    if (useStreaming) {
+      const streamResponse = await retryWithBackoff(
+        () => this.config.getContentGenerator().generateContentStream(request, prompt_id),
+        retryOptions,
+      );
+      return this.processStreamResponse(model, streamResponse);
+    }
+
+    const response = await retryWithBackoff(
+      () => this.config.getContentGenerator().generateContent(request, prompt_id),
+      retryOptions,
+    );
+    const streamResponse = (async function* () {
+      yield response;
+    })();
     return this.processStreamResponse(model, streamResponse);
   }
 

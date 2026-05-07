@@ -71,7 +71,7 @@ import { pathToFileURL } from 'node:url';
 const coreSourceUrl = '${coreSourceUrl}';
 
 export function resolve(specifier, context, nextResolve) {
-  if (specifier === '@qwen-code/qwen-code-core') {
+  if (specifier === '@vibe-bti/vibe-code-core') {
     return {
       shortCircuit: true,
       url: coreSourceUrl,
@@ -107,17 +107,36 @@ const env = {
   NODE_OPTIONS: `${existingNodeOptions} ${importFlag}`.trim(),
 };
 
-// On Windows, use tsx.cmd; on Unix, use tsx directly
 const isWin = platform() === 'win32';
-const tsxCmd = isWin ? 'tsx.cmd' : 'tsx';
 const tsxArgs = [cliEntry, ...process.argv.slice(2)];
 
-const child = spawn(tsxCmd, tsxArgs, {
-  stdio: 'inherit',
-  env,
-  cwd: process.cwd(),
-  shell: isWin, // Use shell on Windows to resolve .cmd files
-});
+function quoteForCmd(arg) {
+  if (arg.length === 0) {
+    return '""';
+  }
+
+  if (!/[\s"]/u.test(arg)) {
+    return arg;
+  }
+
+  return `"${arg.replace(/"/g, '""')}"`;
+}
+
+const child = isWin
+  ? spawn(
+      process.env.ComSpec || 'cmd.exe',
+      ['/d', '/s', '/c', `tsx.cmd ${tsxArgs.map(quoteForCmd).join(' ')}`],
+      {
+        stdio: 'inherit',
+        env,
+        cwd: process.cwd(),
+      },
+    )
+  : spawn('tsx', tsxArgs, {
+      stdio: 'inherit',
+      env,
+      cwd: process.cwd(),
+    });
 
 child.on('error', (err) => {
   console.error('Failed to start dev server:', err.message);

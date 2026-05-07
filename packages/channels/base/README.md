@@ -1,4 +1,4 @@
-# @qwen-code/channel-base
+# @vibe-bti/vibe-code-channel-base
 
 Base infrastructure for building Qwen Code channel adapters. Provides the abstract base class, access control, session routing, and the ACP bridge that communicates with the agent.
 
@@ -7,7 +7,7 @@ If you're building a channel plugin, this is your only dependency.
 ## Install
 
 ```bash
-npm install @qwen-code/channel-base
+npm install @vibe-bti/vibe-code-channel-base
 ```
 
 ## Quick start
@@ -15,12 +15,12 @@ npm install @qwen-code/channel-base
 Subclass `ChannelBase` and implement three methods:
 
 ```typescript
-import { ChannelBase } from '@qwen-code/channel-base';
+import { ChannelBase } from '@vibe-bti/vibe-code-channel-base';
 import type {
   ChannelConfig,
   Envelope,
   AcpBridge,
-} from '@qwen-code/channel-base';
+} from '@vibe-bti/vibe-code-channel-base';
 
 class MyChannel extends ChannelBase {
   async connect(): Promise<void> {
@@ -42,7 +42,7 @@ class MyChannel extends ChannelBase {
 Export a `ChannelPlugin` object so the extension loader can discover it:
 
 ```typescript
-import type { ChannelPlugin } from '@qwen-code/channel-base';
+import type { ChannelPlugin } from '@vibe-bti/vibe-code-channel-base';
 
 export const plugin: ChannelPlugin = {
   channelType: 'my-platform',
@@ -53,7 +53,7 @@ export const plugin: ChannelPlugin = {
 };
 ```
 
-For a complete working example, see [`@qwen-code/channel-plugin-example`](../plugin-example/).
+For a complete working example, see [`@vibe-bti/vibe-code-channel-plugin-example`](../plugin-example/).
 
 ## Architecture
 
@@ -292,4 +292,4 @@ Block streaming and `onResponseChunk` work independently — plugins can overrid
 ## Further reading
 
 - [Channel Plugin Developer Guide](../../docs/developers/channel-plugins.md)
-- [`@qwen-code/channel-plugin-example`](../plugin-example/) — working reference implementation
+- [`@vibe-bti/vibe-code-channel-plugin-example`](../plugin-example/) — working reference implementation

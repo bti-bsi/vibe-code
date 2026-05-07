@@ -37,7 +37,7 @@ This guide provides solutions to common issues and debugging tips, including top
 ## Frequently asked questions (FAQs)
 
 - **Q: How do I update Qwen Code to the latest version?**
-  - A: If you installed it globally via `npm`, update it using the command `npm install -g @qwen-code/qwen-code@latest`. If you compiled it from source, pull the latest changes from the repository, and then rebuild using the command `npm run build`.
+  - A: If you installed it globally via `npm`, update it using the command `npm install -g @vibe-bti/vibe-code@latest`. If you compiled it from source, pull the latest changes from the repository, and then rebuild using the command `npm run build`.
 
 - **Q: Where are the Qwen Code configuration or settings files stored?**
   - A: The Qwen Code configuration is stored in two `settings.json` files:
@@ -60,7 +60,7 @@ This guide provides solutions to common issues and debugging tips, including top
   - **Cause:** The CLI is not correctly installed or it is not in your system's `PATH`.
   - **Solution:**
     The update depends on how you installed Qwen Code:
-    - If you installed `qwen` globally, check that your `npm` global binary directory is in your `PATH`. You can update using the command `npm install -g @qwen-code/qwen-code@latest`.
+    - If you installed `qwen` globally, check that your `npm` global binary directory is in your `PATH`. You can update using the command `npm install -g @vibe-bti/vibe-code@latest`.
     - If you are running `qwen` from source, ensure you are using the correct command to invoke it (e.g. `node packages/cli/dist/index.js ...`). To update, pull the latest changes from the repository, and then rebuild using the command `npm run build`.
 
 - **Error: `MODULE_NOT_FOUND` or import errors.**
@@ -126,4 +126,4 @@ The Qwen Code uses specific exit codes to indicate the reason for termination. T
 
 ## Existing GitHub Issues similar to yours or creating new Issues
 
-If you encounter an issue that was not covered here in this _Troubleshooting guide_, consider searching the Qwen Code [Issue tracker on GitHub](https://github.com/QwenLM/qwen-code/issues). If you can't find an issue similar to yours, consider creating a new GitHub Issue with a detailed description. Pull requests are also welcome!
+If you encounter an issue that was not covered here in this _Troubleshooting guide_, consider searching the Qwen Code [Issue tracker on GitHub](https://github.com/vibe-bti/vibe-code/issues). If you can't find an issue similar to yours, consider creating a new GitHub Issue with a detailed description. Pull requests are also welcome!

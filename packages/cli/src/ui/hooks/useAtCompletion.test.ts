@@ -13,12 +13,12 @@ import type {
   Config,
   FileSearch,
   FileSystemStructure,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import {
   FileSearchFactory,
   createTmpDir,
   cleanupTmpDir,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { useState } from 'react';
 import type { Suggestion } from '../components/SuggestionsDisplay.js';
 

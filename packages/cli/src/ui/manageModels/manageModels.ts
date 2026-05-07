@@ -9,7 +9,7 @@ import {
   type Config,
   type ProviderModelConfig as ModelConfig,
   type ModelProvidersConfig,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { LoadedSettings } from '../../config/settings.js';
 import { getPersistScopeForModelSelection } from '../../config/modelProvidersScope.js';
 import {

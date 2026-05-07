@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { ZERO_WIDTH_SPACE, stripZeroWidthSpaces } from '@qwen-code/webui';
+import { ZERO_WIDTH_SPACE, stripZeroWidthSpaces } from '@vibe-bti/vibe-code-webui';
 import { shouldSendMessage } from './useMessageSubmit.js';
 
 describe('ZERO_WIDTH_SPACE and stripZeroWidthSpaces', () => {

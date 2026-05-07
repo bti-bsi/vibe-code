@@ -23,8 +23,8 @@ import type {
   PermissionManager,
   RuleWithSource,
   RuleType,
-} from '@qwen-code/qwen-code-core';
-import { isPathWithinRoot, parseRule } from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
+import { isPathWithinRoot, parseRule } from '@vibe-bti/vibe-code-core';
 
 // ---------------------------------------------------------------------------
 // Types

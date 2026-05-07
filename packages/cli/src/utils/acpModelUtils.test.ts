@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { AuthType } from '@qwen-code/qwen-code-core';
+import { AuthType } from '@vibe-bti/vibe-code-core';
 import {
   formatAcpModelId,
   parseAcpBaseModelId,

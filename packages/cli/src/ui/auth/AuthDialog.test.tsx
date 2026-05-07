@@ -5,10 +5,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AuthDialog } from './AuthDialog.js';
+import { AuthDialog, AuthDialogWithMode } from './AuthDialog.js';
 import { LoadedSettings } from '../../config/settings.js';
-import type { Config } from '@qwen-code/qwen-code-core';
-import { AuthType } from '@qwen-code/qwen-code-core';
+import type { Config } from '@vibe-bti/vibe-code-core';
+import { AuthType } from '@vibe-bti/vibe-code-core';
 import { renderWithProviders } from '../../test-utils/render.js';
 import { UIStateContext } from '../contexts/UIStateContext.js';
 import { UIActionsContext } from '../contexts/UIActionsContext.js';
@@ -51,6 +51,7 @@ const renderAuthDialog = (
   uiActionsOverrides: Partial<UIActions> = {},
   configAuthType: AuthType | undefined = undefined,
   configApiKey: string | undefined = undefined,
+  startInApiKeyFlow = false,
 ) => {
   const uiState = createMockUIState(uiStateOverrides);
   const uiActions = createMockUIActions(uiActionsOverrides);
@@ -63,7 +64,7 @@ const renderAuthDialog = (
   return renderWithProviders(
     <UIStateContext.Provider value={uiState}>
       <UIActionsContext.Provider value={uiActions}>
-        <AuthDialog />
+        {startInApiKeyFlow ? <AuthDialogWithMode startInApiKeyFlow /> : <AuthDialog />}
       </UIActionsContext.Provider>
     </UIStateContext.Provider>,
     { settings, config: mockConfig },
@@ -116,33 +117,14 @@ const pressEnterAndWaitFor = async (
   });
 };
 
-const moveDownAndWaitForSelection = async (
-  stdin: { write: (s: string) => void },
-  lastFrame: () => string | undefined,
-  label: string,
-) => {
-  stdin.write('\u001b[B');
-  await waitForSelectedOption(lastFrame, label);
-};
-
 const navigateToCustomProtocolSelect = async (
   stdin: { write: (s: string) => void },
   lastFrame: () => string | undefined,
 ) => {
-  await waitForSelectedOption(lastFrame, 'OAuth');
-  await moveDownAndWaitForSelection(
-    stdin,
-    lastFrame,
-    'Alibaba Cloud Coding Plan',
-  );
-  await moveDownAndWaitForSelection(stdin, lastFrame, 'API Key');
-  await pressEnterAndWaitFor(stdin, lastFrame, 'Select API Key Type');
-  await waitForSelectedOption(
-    lastFrame,
-    'Alibaba Cloud ModelStudio Standard API Key',
-  );
-  await moveDownAndWaitForSelection(stdin, lastFrame, 'Custom API Key');
-  await pressEnterAndWaitFor(stdin, lastFrame, 'Step 1/6 · Protocol');
+  await waitForSelectedOption(lastFrame, 'OpenAI-compatible');
+  await vi.waitFor(() => {
+    expect(lastFrame()).toContain('Select Custom API Protocol');
+  });
 };
 
 const navigateToCustomBaseUrlInput = async (
@@ -196,6 +178,49 @@ describe('AuthDialog', () => {
 
   afterEach(() => {
     process.env = originalEnv;
+  });
+
+  it('should start directly in API key flow when requested', async () => {
+    const settings: LoadedSettings = new LoadedSettings(
+      {
+        settings: { ui: { customThemes: {} }, mcpServers: {} },
+        originalSettings: { ui: { customThemes: {} }, mcpServers: {} },
+        path: '',
+      },
+      {
+        settings: {},
+        originalSettings: {},
+        path: '',
+      },
+      {
+        settings: { ui: { customThemes: {} }, mcpServers: {} },
+        originalSettings: { ui: { customThemes: {} }, mcpServers: {} },
+        path: '',
+      },
+      {
+        settings: { ui: { customThemes: {} }, mcpServers: {} },
+        originalSettings: { ui: { customThemes: {} }, mcpServers: {} },
+        path: '',
+      },
+      true,
+      new Set(),
+    );
+
+    const { lastFrame } = renderAuthDialog(
+      settings,
+      {},
+      {},
+      undefined,
+      undefined,
+      true,
+    );
+
+    await vi.waitFor(() => {
+      expect(lastFrame()).toContain('Select Custom API Protocol');
+      expect(lastFrame()).toContain('OpenAI-compatible');
+      expect(lastFrame()).toContain('Anthropic-compatible');
+      expect(lastFrame()).toContain('Gemini-compatible');
+    });
   });
 
   it('should show an error if the initial auth type is invalid', () => {
@@ -286,9 +311,7 @@ describe('AuthDialog', () => {
 
       const { lastFrame } = renderAuthDialog(settings);
 
-      // Since the auth dialog shows API Key option now,
-      // it won't show GEMINI_API_KEY messages
-      expect(lastFrame()).toContain('API Key');
+      expect(lastFrame()).toContain('OpenAI-compatible');
     });
 
     it('should not show the GEMINI_API_KEY message if QWEN_DEFAULT_AUTH_TYPE is set to something else', () => {
@@ -374,17 +397,13 @@ describe('AuthDialog', () => {
 
       const { lastFrame } = renderAuthDialog(settings);
 
-      // Since the auth dialog shows API Key option now,
-      // it won't show GEMINI_API_KEY messages
-      expect(lastFrame()).toContain('API Key');
+      expect(lastFrame()).toContain('OpenAI-compatible');
     });
   });
 
   describe('QWEN_DEFAULT_AUTH_TYPE environment variable', () => {
     it('should select the auth type specified by QWEN_DEFAULT_AUTH_TYPE', () => {
-      // QWEN_OAUTH is the only valid AuthType that can be selected via env var
-      // API-KEY is not an AuthType enum value, so it cannot be selected this way
-      process.env['QWEN_DEFAULT_AUTH_TYPE'] = AuthType.QWEN_OAUTH;
+      process.env['QWEN_DEFAULT_AUTH_TYPE'] = AuthType.USE_ANTHROPIC;
 
       const settings: LoadedSettings = new LoadedSettings(
         {
@@ -421,8 +440,7 @@ describe('AuthDialog', () => {
 
       const { lastFrame } = renderAuthDialog(settings);
 
-      // QWEN_OAUTH maps to 'OAUTH' in the new three-option main menu
-      expect(lastFrame()).toContain('OAuth');
+      expect(lastFrame()).toContain('Anthropic-compatible');
     });
 
     it('should fall back to default if QWEN_DEFAULT_AUTH_TYPE is not set', () => {
@@ -461,8 +479,7 @@ describe('AuthDialog', () => {
 
       const { lastFrame } = renderAuthDialog(settings);
 
-      // Default is Coding Plan (first option); Qwen OAuth is last (discontinued)
-      expect(lastFrame()).toContain('Alibaba Cloud Coding Plan');
+      expect(lastFrame()).toContain('OpenAI-compatible');
     });
 
     it('should show an error and fall back to default if QWEN_DEFAULT_AUTH_TYPE is invalid', () => {
@@ -503,9 +520,7 @@ describe('AuthDialog', () => {
 
       const { lastFrame } = renderAuthDialog(settings);
 
-      // Since the auth dialog doesn't show QWEN_DEFAULT_AUTH_TYPE errors anymore,
-      // it will just show the default OAuth option
-      expect(lastFrame()).toContain('OAuth');
+      expect(lastFrame()).toContain('OpenAI-compatible');
     });
   });
 
@@ -559,7 +574,7 @@ describe('AuthDialog', () => {
     // Should show error message instead of calling handleAuthSelect
     await vi.waitFor(() => {
       const frame = lastFrame();
-      expect(frame).toContain('You must select an auth method');
+      expect(frame).toContain('You must configure API authentication to proceed.');
       expect(frame).toContain('Press Ctrl+C again to exit');
     });
     expect(handleAuthSelect).not.toHaveBeenCalled();
@@ -672,7 +687,7 @@ describe('AuthDialog', () => {
     unmount();
   });
 
-  it('should show OpenRouter in API key options', async () => {
+  it('should show custom protocol choices on first screen', async () => {
     const settings: LoadedSettings = new LoadedSettings(
       {
         settings: { ui: { customThemes: {} }, mcpServers: {} },
@@ -706,17 +721,14 @@ describe('AuthDialog', () => {
       new Set(),
     );
 
-    const { stdin, lastFrame, unmount } = renderAuthDialog(settings);
-    await wait();
-
-    // OAuth is selected by default, press Enter to enter OAuth provider list
-    stdin.write('\r');
+    const { lastFrame, unmount } = renderAuthDialog(settings);
     await wait();
 
     await vi.waitFor(() => {
       const frame = lastFrame();
-      expect(frame).toContain('OpenRouter');
-      expect(frame).toContain('Browser OAuth');
+      expect(frame).toContain('OpenAI-compatible');
+      expect(frame).toContain('Anthropic-compatible');
+      expect(frame).toContain('Gemini-compatible');
     });
 
     unmount();
@@ -762,6 +774,30 @@ describe('AuthDialog Custom API Key Wizard', () => {
       true,
       new Set(),
     );
+
+  itWhenTuiInputReliable(
+    'shows preset base URL choices before API key input',
+    async () => {
+      const settings = createStandardSettings();
+
+      const { stdin, lastFrame, unmount } = renderAuthDialog(settings);
+
+      await navigateToCustomBaseUrlInput(stdin, lastFrame);
+
+      await vi.waitFor(() => {
+        const frame = lastFrame();
+        expect(frame).toContain('https://api.mistral.ai/v1');
+        expect(frame).toContain('https://api.openai.com/v1');
+        expect(frame).toContain('https://api.groq.com/openai/v1');
+        expect(frame).toContain(
+          'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
+        );
+        expect(frame).toContain('Custom');
+      });
+
+      unmount();
+    },
+  );
 
   itWhenTuiInputReliable(
     'shows review screen with JSON after entering model IDs',

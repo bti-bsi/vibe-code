@@ -13,8 +13,8 @@ import {
 import { MessageType, type HistoryItemSkillsList } from '../types.js';
 import { t } from '../../i18n/index.js';
 import { AsyncFzf } from 'fzf';
-import type { SkillConfig } from '@qwen-code/qwen-code-core';
-import { createDebugLogger } from '@qwen-code/qwen-code-core';
+import type { SkillConfig } from '@vibe-bti/vibe-code-core';
+import { createDebugLogger } from '@vibe-bti/vibe-code-core';
 
 const debugLogger = createDebugLogger('SKILLS_COMMAND');
 

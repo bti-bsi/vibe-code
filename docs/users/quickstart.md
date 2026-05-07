@@ -43,7 +43,7 @@ Make sure you have Node.js 20 or later installed. Download it from [nodejs.org](
 **NPM**
 
 ```bash
-npm install -g @qwen-code/qwen-code@latest
+npm install -g @vibe-bti/vibe-code@latest
 ```
 
 **Homebrew (macOS, Linux)**
@@ -276,4 +276,4 @@ build a dashboard showing products that are most frequently returned by our UK c
 
 - **In Qwen Code**: Type `/help` or ask "how do I..."
 - **Documentation**: You're here! Browse other guides
-- **Community**: Join our [GitHub Discussion](https://github.com/QwenLM/qwen-code/discussions) for tips and support
+- **Community**: Join our [GitHub Discussion](https://github.com/vibe-bti/vibe-code/discussions) for tips and support

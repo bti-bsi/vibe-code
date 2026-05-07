@@ -23,7 +23,7 @@
 1. Install Qwen Code CLI:
 
 ```bash
-npm install -g @qwen-code/qwen-code
+npm install -g @vibe-bti/vibe-code
 ```
 
 2. Download and install [Zed Editor](https://zed.dev/)
@@ -39,7 +39,7 @@ npm install -g @qwen-code/qwen-code
 1. Install Qwen Code CLI:
 
 ```bash
-npm install -g @qwen-code/qwen-code
+npm install -g @vibe-bti/vibe-code
 ```
 
 2. Download and install [Zed Editor](https://zed.dev/)

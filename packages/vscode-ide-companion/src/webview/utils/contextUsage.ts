@@ -5,7 +5,7 @@
  */
 
 import type { ModelInfo } from '@agentclientprotocol/sdk';
-import type { ContextUsage } from '@qwen-code/webui';
+import type { ContextUsage } from '@vibe-bti/vibe-code-webui';
 import type { UsageStatsPayload } from '../../types/chatTypes.js';
 
 export function computeContextUsage(

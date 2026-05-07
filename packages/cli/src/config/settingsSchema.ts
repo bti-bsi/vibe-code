@@ -11,12 +11,12 @@ import type {
   AuthType,
   ChatCompressionSettings,
   ModelProvidersConfig,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import {
   ApprovalMode,
   DEFAULT_TRUNCATE_TOOL_OUTPUT_LINES,
   DEFAULT_TRUNCATE_TOOL_OUTPUT_THRESHOLD,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { CustomTheme } from '../ui/themes/theme.js';
 import { getLanguageSettingsOptions } from '../i18n/languages.js';
 
@@ -942,7 +942,18 @@ const SETTINGS_SCHEMA = {
             requiresRestart: false,
             default: false,
             description:
-              'When true, media (images / audio / video / files) returned by MCP tool calls is split into a follow-up user message instead of being embedded in the tool message. Required for strict OpenAI-compatible servers (e.g., LM Studio) that reject non-text content on `role: "tool"` messages with HTTP 400 "Invalid \'messages\' in payload". Default false preserves the prior behavior for permissive providers. See QwenLM/qwen-code#3616.',
+              'When true, media (images / audio / video / files) returned by MCP tool calls is split into a follow-up user message instead of being embedded in the tool message. Required for strict OpenAI-compatible servers (e.g., LM Studio) that reject non-text content on `role: "tool"` messages with HTTP 400 "Invalid \'messages\' in payload". Default false preserves the prior behavior for permissive providers. See vibe-bti/vibe-code#3616.',
+            parentKey: 'generationConfig',
+            showInDialog: false,
+          },
+          useStreaming: {
+            type: 'boolean',
+            label: 'Use Streaming',
+            category: 'Generation Configuration',
+            requiresRestart: false,
+            default: true,
+            description:
+              'When false, Qwen Code uses non-streaming chat requests for this model. Useful for custom providers that reject SSE or streaming responses.',
             parentKey: 'generationConfig',
             showInDialog: false,
           },

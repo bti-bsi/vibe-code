@@ -8,7 +8,7 @@
  * Contextual tip registry — defines tips, their conditions, and display rules.
  */
 
-import { DEFAULT_TOKEN_LIMIT } from '@qwen-code/qwen-code-core';
+import { DEFAULT_TOKEN_LIMIT } from '@vibe-bti/vibe-code-core';
 
 export type TipTrigger = 'startup' | 'post-response';
 

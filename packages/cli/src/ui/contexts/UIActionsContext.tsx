@@ -14,7 +14,7 @@ import {
   type EditorType,
   type ApprovalMode,
   type CodingPlanRegion,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { type SettingScope } from '../../config/settings.js';
 import { type AlibabaStandardRegion } from '../../constants/alibabaStandardApiKey.js';
 import type { AuthState, HistoryItem } from '../types.js';
@@ -83,6 +83,10 @@ export interface UIActions {
   closeMemoryDialog: () => void;
   closeModelDialog: () => void;
   openModelDialog: (options?: { fastModelMode?: boolean }) => void;
+  openEditModelDialog: () => void;
+  closeEditModelDialog: () => void;
+  openRemoveModelDialog: () => void;
+  closeRemoveModelDialog: () => void;
   openManageModelsDialog: () => void;
   closeManageModelsDialog: () => void;
   openArenaDialog: (type: Exclude<ArenaDialogType, null>) => void;

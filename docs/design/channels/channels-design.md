@@ -159,7 +159,7 @@ qwen extensions remove <name>                 # uninstall
 
 ```
 packages/channels/
-├── base/                    # @qwen-code/channel-base
+├── base/                    # @vibe-bti/vibe-code-channel-base
 │   └── src/
 │       ├── AcpBridge.ts     # ACP process lifecycle, session management
 │       ├── SessionRouter.ts # sender ↔ session mapping, persistence
@@ -168,9 +168,9 @@ packages/channels/
 │       ├── PairingStore.ts  # pairing code generation + approval
 │       ├── ChannelBase.ts   # abstract base: routing, slash commands
 │       └── types.ts         # Envelope, ChannelConfig, etc.
-├── telegram/                # @qwen-code/channel-telegram
-├── weixin/                  # @qwen-code/channel-weixin
-└── dingtalk/                # @qwen-code/channel-dingtalk
+├── telegram/                # @vibe-bti/vibe-code-channel-telegram
+├── weixin/                  # @vibe-bti/vibe-code-channel-weixin
+└── dingtalk/                # @vibe-bti/vibe-code-channel-dingtalk
 ```
 
 ## Future Work

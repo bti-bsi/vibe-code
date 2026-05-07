@@ -11,7 +11,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ToolCallRouter } from './index.js';
 
-vi.mock('@qwen-code/webui', async () => {
+vi.mock('@vibe-bti/vibe-code-webui', async () => {
   const React = await vi.importActual<typeof import('react')>('react');
 
   // Use a data attribute to record which component was selected by the
@@ -45,8 +45,8 @@ vi.mock('@qwen-code/webui', async () => {
     getToolCallComponent: realGetToolCallComponent,
     isAgentExecutionToolCall,
   } =
-    await vi.importActual<typeof import('@qwen-code/webui')>(
-      '@qwen-code/webui',
+    await vi.importActual<typeof import('@vibe-bti/vibe-code-webui')>(
+      '@vibe-bti/vibe-code-webui',
     );
 
   // Map each real component to its label-based mock.

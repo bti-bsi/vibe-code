@@ -1,14 +1,14 @@
 # Package Overview
 
-This monorepo contains two main packages: `@qwen-code/qwen-code` and `@qwen-code/qwen-code-core`.
+This monorepo contains two main packages: `@vibe-bti/vibe-code` and `@vibe-bti/vibe-code-core`.
 
-## `@qwen-code/qwen-code`
+## `@vibe-bti/vibe-code`
 
 This is the main package for Qwen Code. It is responsible for the user interface, command parsing, and all other user-facing functionality.
 
-When this package is published, it is bundled into a single executable file. This bundle includes all of the package's dependencies, including `@qwen-code/qwen-code-core`. This means that whether a user installs the package with `npm install -g @qwen-code/qwen-code` or runs it directly with `npx @qwen-code/qwen-code`, they are using this single, self-contained executable.
+When this package is published, it is bundled into a single executable file. This bundle includes all of the package's dependencies, including `@vibe-bti/vibe-code-core`. This means that whether a user installs the package with `npm install -g @vibe-bti/vibe-code` or runs it directly with `npx @vibe-bti/vibe-code`, they are using this single, self-contained executable.
 
-## `@qwen-code/qwen-code-core`
+## `@vibe-bti/vibe-code-core`
 
 This package contains the core logic for the CLI. It is responsible for making API requests to configured providers, handling authentication, and managing the local cache.
 
@@ -20,7 +20,7 @@ This project follows a structured release process to ensure that all packages ar
 
 ## How To Release
 
-Releases are managed through the [release.yml](https://github.com/QwenLM/qwen-code/actions/workflows/release.yml) GitHub Actions workflow. To perform a manual release for a patch or hotfix:
+Releases are managed through the [release.yml](https://github.com/vibe-bti/vibe-code/actions/workflows/release.yml) GitHub Actions workflow. To perform a manual release for a patch or hotfix:
 
 1.  Navigate to the **Actions** tab of the repository.
 2.  Select the **Release** workflow from the list.
@@ -59,13 +59,13 @@ To install the latest version of each type:
 
 ```bash
 # Stable (default)
-npm install -g @qwen-code/qwen-code
+npm install -g @vibe-bti/vibe-code
 
 # Preview
-npm install -g @qwen-code/qwen-code@preview
+npm install -g @vibe-bti/vibe-code@preview
 
 # Nightly
-npm install -g @qwen-code/qwen-code@nightly
+npm install -g @vibe-bti/vibe-code@nightly
 ```
 
 ### Release Process Details
@@ -87,9 +87,9 @@ If any step in the release workflow fails, it will automatically create a new is
 
 After pushing a new release smoke testing should be performed to ensure that the packages are working as expected. This can be done by installing the packages locally and running a set of tests to ensure that they are functioning correctly.
 
-- `npx -y @qwen-code/qwen-code@latest --version` to validate the push worked as expected if you were not doing a rc or dev tag
-- `npx -y @qwen-code/qwen-code@<release tag> --version` to validate the tag pushed appropriately
-- _This is destructive locally_ `npm uninstall @qwen-code/qwen-code && npm uninstall -g @qwen-code/qwen-code && npm cache clean --force &&  npm install @qwen-code/qwen-code@<version>`
+- `npx -y @vibe-bti/vibe-code@latest --version` to validate the push worked as expected if you were not doing a rc or dev tag
+- `npx -y @vibe-bti/vibe-code@<release tag> --version` to validate the tag pushed appropriately
+- _This is destructive locally_ `npm uninstall @vibe-bti/vibe-code && npm uninstall -g @vibe-bti/vibe-code && npm cache clean --force &&  npm install @vibe-bti/vibe-code@<version>`
 - Smoke testing a basic run through of exercising a few llm commands and tools is recommended to ensure that the packages are working as expected. We'll codify this more in the future.
 
 ## When to merge the version change, or not?
@@ -141,7 +141,7 @@ You typically do not merge release branches for pre-releases back into `main`.
 
 If you need to test the release process without actually publishing to NPM or creating a public GitHub release, you can trigger the workflow manually from the GitHub UI.
 
-1.  Go to the [Actions tab](https://github.com/QwenLM/qwen-code/actions/workflows/release.yml) of the repository.
+1.  Go to the [Actions tab](https://github.com/vibe-bti/vibe-code/actions/workflows/release.yml) of the repository.
 2.  Click on the "Run workflow" dropdown.
 3.  Leave the `dry_run` option checked (`true`).
 4.  Click the "Run workflow" button.
@@ -255,4 +255,4 @@ This tells NPM that any folder inside the `packages` directory is a separate pac
 
 - **Simplified Dependency Management**: Running `npm install` from the root of the project will install all dependencies for all packages in the workspace and link them together. This means you don't need to run `npm install` in each package's directory.
 - **Automatic Linking**: Packages within the workspace can depend on each other. When you run `npm install`, NPM will automatically create symlinks between the packages. This means that when you make changes to one package, the changes are immediately available to other packages that depend on it.
-- **Simplified Script Execution**: You can run scripts in any package from the root of the project using the `--workspace` flag. For example, to run the `build` script in the `cli` package, you can run `npm run build --workspace @qwen-code/qwen-code`.
+- **Simplified Script Execution**: You can run scripts in any package from the root of the project using the `--workspace` flag. For example, to run the `build` script in the `cli` package, you can run `npm run build --workspace @vibe-bti/vibe-code`.

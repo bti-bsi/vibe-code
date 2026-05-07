@@ -26,7 +26,7 @@ import {
   type AgentInteractive,
   type ApprovalMode,
   type Config,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { useArenaInProcess } from '../hooks/useArenaInProcess.js';
 
 // ─── Types ──────────────────────────────────────────────────

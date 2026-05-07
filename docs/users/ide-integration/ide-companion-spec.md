@@ -2,7 +2,7 @@
 
 > Last Updated: September 15, 2025
 
-This document defines the contract for building a companion plugin to enable Qwen Code's IDE mode. For VS Code, these features (native diffing, context awareness) are provided by the official extension ([marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion)). This specification is for contributors who wish to bring similar functionality to other editors like JetBrains IDEs, Sublime Text, etc.
+This document defines the contract for building a companion plugin to enable Qwen Code's IDE mode. For VS Code, these features (native diffing, context awareness) are provided by the official extension ([marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion)). This specification is for contributors who wish to bring similar functionality to other editors like JetBrains IDEs, Sublime Text, etc.
 
 ## I. The Communication Interface
 

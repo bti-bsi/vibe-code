@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Tool call component factory - routes to specialized components by kind
- * All UI components are now imported from @qwen-code/webui
+ * All UI components are now imported from @vibe-bti/vibe-code-webui
  */
 
-import { shouldShowToolCall, getToolCallComponent } from '@qwen-code/webui';
+import { shouldShowToolCall, getToolCallComponent } from '@vibe-bti/vibe-code-webui';
 import type { FC } from 'react';
-import type { BaseToolCallProps } from '@qwen-code/webui';
+import type { BaseToolCallProps } from '@vibe-bti/vibe-code-webui';
 
 /**
  * Main tool call component that routes to specialized implementations
@@ -32,4 +32,4 @@ export const ToolCallRouter: FC<BaseToolCallProps> = ({
 };
 
 // Re-export types for convenience
-export type { BaseToolCallProps, ToolCallData } from '@qwen-code/webui';
+export type { BaseToolCallProps, ToolCallData } from '@vibe-bti/vibe-code-webui';

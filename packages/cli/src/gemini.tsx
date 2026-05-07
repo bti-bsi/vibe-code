@@ -5,7 +5,6 @@
  */
 
 import {
-  AuthType,
   InputFormat,
   isDebugLoggingDegraded,
   isBareMode,
@@ -15,7 +14,7 @@ import {
   SessionService,
   type Config,
   createDebugLogger,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { render } from 'ink';
 import dns from 'node:dns';
 import os from 'node:os';
@@ -669,12 +668,6 @@ export async function main() {
         })),
         ...getSettingsWarnings(settings),
         ...config.getWarnings(),
-        ...(config.getModelsConfig().getCurrentAuthType() ===
-        AuthType.QWEN_OAUTH
-          ? [
-              'Qwen OAuth free tier was discontinued on 2026-04-15. Run /auth to switch to Coding Plan or another provider.',
-            ]
-          : []),
       ]),
     ];
 

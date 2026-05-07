@@ -17,7 +17,7 @@ ChannelBase  →  calls your sendMessage() with the agent's response
 Your extension entry point exports a `plugin` conforming to `ChannelPlugin`:
 
 ```typescript
-import type { ChannelPlugin } from '@qwen-code/channel-base';
+import type { ChannelPlugin } from '@vibe-bti/vibe-code-channel-base';
 import { MyChannel } from './MyChannel.js';
 
 export const plugin: ChannelPlugin = {
@@ -34,8 +34,8 @@ export const plugin: ChannelPlugin = {
 Extend `ChannelBase` and implement three methods:
 
 ```typescript
-import { ChannelBase } from '@qwen-code/channel-base';
-import type { Envelope } from '@qwen-code/channel-base';
+import { ChannelBase } from '@vibe-bti/vibe-code-channel-base';
+import type { Envelope } from '@vibe-bti/vibe-code-channel-base';
 
 export class MyChannel extends ChannelBase {
   async connect(): Promise<void> {

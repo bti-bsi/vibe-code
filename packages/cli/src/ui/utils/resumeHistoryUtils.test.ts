@@ -12,7 +12,7 @@ import type {
   Config,
   ConversationRecord,
   ResumedSessionData,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { Part } from '@google/genai';
 
 const makeConfig = (tools: Record<string, AnyDeclarativeTool>) =>

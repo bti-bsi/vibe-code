@@ -7,8 +7,8 @@
 import type {
   Config,
   ConfigInitializeOptions,
-} from '@qwen-code/qwen-code-core';
-import { createDebugLogger, SendMessageType } from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
+import { createDebugLogger, SendMessageType } from '@vibe-bti/vibe-code-core';
 import { StreamJsonInputReader } from './io/StreamJsonInputReader.js';
 import { StreamJsonOutputAdapter } from './io/StreamJsonOutputAdapter.js';
 import { ControlContext } from './control/ControlContext.js';

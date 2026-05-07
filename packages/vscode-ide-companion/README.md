@@ -1,11 +1,11 @@
 # Qwen Code Companion
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/qwenlm.qwen-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion)
-[![VS Code Installs](https://img.shields.io/visual-studio-marketplace/i/qwenlm.qwen-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion)
-[![Open VSX Downloads](https://img.shields.io/open-vsx/dt/qwenlm/qwen-code-vscode-ide-companion)](https://open-vsx.org/extension/qwenlm/qwen-code-vscode-ide-companion)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/qwenlm.qwen-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/qwenlm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion)
+[![VS Code Installs](https://img.shields.io/visual-studio-marketplace/i/qwenlm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion)
+[![Open VSX Downloads](https://img.shields.io/open-vsx/dt/qwenlm/vibe-code-vscode-ide-companion)](https://open-vsx.org/extension/qwenlm/vibe-code-vscode-ide-companion)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/qwenlm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion)
 
-Seamlessly integrate [Qwen Code](https://github.com/QwenLM/qwen-code) into Visual Studio Code with native IDE features and an intuitive chat interface. This extension bundles everything you need — no additional installation required.
+Seamlessly integrate [Qwen Code](https://github.com/vibe-bti/vibe-code) into Visual Studio Code with native IDE features and an intuitive chat interface. This extension bundles everything you need — no additional installation required.
 
 ## Demo
 
@@ -29,7 +29,7 @@ Seamlessly integrate [Qwen Code](https://github.com/QwenLM/qwen-code) into Visua
 
 ## Quick Start
 
-1. **Install** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion) or [Open VSX Registry](https://open-vsx.org/extension/qwenlm/qwen-code-vscode-ide-companion)
+1. **Install** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion) or [Open VSX Registry](https://open-vsx.org/extension/qwenlm/vibe-code-vscode-ide-companion)
 
 2. **Open the Chat panel** using one of these methods:
    - Click the **Qwen icon** in the top-right corner of the editor
@@ -48,14 +48,14 @@ Seamlessly integrate [Qwen Code](https://github.com/QwenLM/qwen-code) into Visua
 
 ## Feedback & Issues
 
-- 🐛 [Report bugs](https://github.com/QwenLM/qwen-code/issues/new?template=bug_report.yml&labels=bug,vscode-ide-companion)
-- 💡 [Request features](https://github.com/QwenLM/qwen-code/issues/new?template=feature_request.yml&labels=enhancement,vscode-ide-companion)
+- 🐛 [Report bugs](https://github.com/vibe-bti/vibe-code/issues/new?template=bug_report.yml&labels=bug,vscode-ide-companion)
+- 💡 [Request features](https://github.com/vibe-bti/vibe-code/issues/new?template=feature_request.yml&labels=enhancement,vscode-ide-companion)
 - 📖 [Documentation](https://qwenlm.github.io/qwen-code-docs/)
-- 📋 [Changelog](https://github.com/QwenLM/qwen-code/releases)
+- 📋 [Changelog](https://github.com/vibe-bti/vibe-code/releases)
 
 ## Contributing
 
-We welcome contributions! See our [Contributing Guide](https://github.com/QwenLM/qwen-code/blob/main/CONTRIBUTING.md) for details on:
+We welcome contributions! See our [Contributing Guide](https://github.com/vibe-bti/vibe-code/blob/main/CONTRIBUTING.md) for details on:
 
 - Setting up the development environment
 - Building and debugging the extension locally
@@ -67,4 +67,4 @@ By installing this extension, you agree to the [Terms of Service](https://qwenlm
 
 ## License
 
-[Apache-2.0](https://github.com/QwenLM/qwen-code/blob/main/LICENSE)
+[Apache-2.0](https://github.com/vibe-bti/vibe-code/blob/main/LICENSE)

@@ -1,4 +1,4 @@
-# qwen-code-sdk
+# vibe-code-sdk
 
 Experimental Python SDK for programmatic access to Qwen Code through the
 `stream-json` protocol.
@@ -6,7 +6,7 @@ Experimental Python SDK for programmatic access to Qwen Code through the
 ## Installation
 
 ```bash
-pip install qwen-code-sdk
+pip install vibe-code-sdk
 ```
 
 ## Requirements

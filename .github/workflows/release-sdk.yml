@@ -52,7 +52,7 @@ jobs:
       name: 'production-release'
       url: '${{ github.server_url }}/${{ github.repository }}/releases/tag/sdk-typescript-${{ steps.version.outputs.RELEASE_TAG }}'
     if: |-
-      ${{ github.repository == 'QwenLM/qwen-code' }}
+      ${{ github.repository == 'vibe-bti/qwen-code' }}
     permissions:
       contents: 'write'
       packages: 'write'
@@ -100,7 +100,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
-          scope: '@qwen-code'
+          scope: '@vibe-bti'
 
       - name: 'Install Dependencies'
         run: |-
@@ -165,7 +165,7 @@ jobs:
         run: |-
           # Ensure the package version matches the computed release version.
           # This is required for nightly/preview because npm does not allow re-publishing the same version.
-          npm version -w @qwen-code/sdk "${RELEASE_VERSION}" --no-git-tag-version --allow-same-version
+          npm version -w @vibe-bti/vibe-code-sdk "${RELEASE_VERSION}" --no-git-tag-version --allow-same-version
 
       - name: 'Determine CLI source and version'
         id: 'cli_source'
@@ -185,7 +185,7 @@ jobs:
         id: 'cli_version_npm'
         if: "steps.cli_source.outputs.mode == 'npm_latest'"
         run: |
-          CLI_VERSION=$(npm view @qwen-code/qwen-code version --tag=latest)
+          CLI_VERSION=$(npm view @vibe-bti/vibe-code version --tag=latest)
           if [[ -z "${CLI_VERSION}" ]]; then
             echo '::error::Could not get latest stable CLI version from npm'
             exit 1
@@ -204,12 +204,12 @@ jobs:
           echo "CLI_TMP_DIR=${CLI_TMP_DIR}" >> "$GITHUB_OUTPUT"
 
           # Download CLI package
-          echo "Downloading @qwen-code/qwen-code@${CLI_VERSION}..."
-          npm pack "@qwen-code/qwen-code@${CLI_VERSION}" --pack-destination "${CLI_TMP_DIR}"
+          echo "Downloading @vibe-bti/vibe-code@${CLI_VERSION}..."
+          npm pack "@vibe-bti/vibe-code@${CLI_VERSION}" --pack-destination "${CLI_TMP_DIR}"
 
           # Extract package
           cd "${CLI_TMP_DIR}"
-          tar -xzf qwen-code-qwen-code-*.tgz
+          tar -xzf vibe-code-vibe-code-*.tgz
 
           echo "CLI package extracted to: ${CLI_TMP_DIR}/package"
           echo "CLI package contents:"
@@ -291,7 +291,7 @@ jobs:
           echo "${CLI_VERSION}" > packages/sdk-typescript/dist/BUNDLED_CLI_VERSION
           echo "Bundled CLI version: ${CLI_VERSION}"
 
-      - name: 'Publish @qwen-code/sdk'
+      - name: 'Publish @vibe-bti/vibe-code-sdk'
         working-directory: 'packages/sdk-typescript'
         run: |-
           npm publish --access public --tag=${{ steps.version.outputs.NPM_TAG }} ${{ steps.vars.outputs.is_dry_run == 'true' && '--dry-run' || '' }}

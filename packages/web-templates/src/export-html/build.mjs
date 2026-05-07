@@ -1,6 +1,6 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { build } from 'esbuild';
 import { buildConfig } from './esbuild.config.mjs';
 import prettier from 'prettier';
@@ -9,29 +9,17 @@ const assetsDir = dirname(fileURLToPath(import.meta.url));
 const srcDir = join(assetsDir, 'src');
 const assetsDistDir = join(assetsDir, 'dist');
 const generatedDir = join(assetsDir, '..', 'generated');
+const repoRoot = resolve(assetsDir, '..', '..', '..', '..');
 await mkdir(generatedDir, { recursive: true });
 await mkdir(assetsDistDir, { recursive: true });
 
 const templateModulePath = join(generatedDir, 'exportHtmlTemplate.ts');
-const packageJsonPath = join(assetsDir, 'package.json');
-const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
-const dependencyVersions = packageJson?.dependencies ?? {};
 
-const getDependencyVersion = (name) => {
-  const version = dependencyVersions[name];
-  if (!version) {
-    throw new Error(`Missing ${name} dependency version in package.json.`);
-  }
-  // Handle various version formats:
-  // - "^0.1.0" -> "0.1.0"
-  // - "~1.2.3" -> "1.2.3"
-  // - "latest" -> "latest"
-  // - "^0.1.0@latest" -> "0.1.0" (remove npm tag suffix)
-  const versionWithoutPrefix = version.replace(/^[^0-9a-zA-Z]+/, '');
-  // Remove npm tag suffix (e.g., "0.1.0@latest" -> "0.1.0")
-  return versionWithoutPrefix.replace(/@.+$/, '');
-};
-const webuiVersion = getDependencyVersion('@qwen-code/webui');
+// Read webui version directly from the workspace package
+const webuiPackageJson = JSON.parse(
+  await readFile(join(repoRoot, 'packages', 'webui', 'package.json'), 'utf8'),
+);
+const webuiVersion = webuiPackageJson.version || '0.0.0';
 const reactUmdVersion = '18.2.0';
 const reactDomUmdVersion = '18.2.0';
 

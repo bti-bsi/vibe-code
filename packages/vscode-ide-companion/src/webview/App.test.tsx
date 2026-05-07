@@ -207,7 +207,7 @@ vi.mock('./components/AccountInfoDialog.js', () => ({
   AccountInfoDialog: () => null,
 }));
 
-vi.mock('@qwen-code/webui', () => ({
+vi.mock('@vibe-bti/vibe-code-webui', () => ({
   AssistantMessage: () => null,
   UserMessage: () => null,
   ThinkingMessage: () => null,

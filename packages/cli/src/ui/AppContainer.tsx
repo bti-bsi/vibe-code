@@ -56,7 +56,7 @@ import {
   type PermissionMode,
   ToolConfirmationOutcome,
   type WaitingToolCall,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import { buildResumedHistoryItems } from './utils/resumeHistoryUtils.js';
 import {
   getStickyTodos,
@@ -76,6 +76,8 @@ import { useAuthCommand } from './auth/useAuth.js';
 import { useEditorSettings } from './hooks/useEditorSettings.js';
 import { useSettingsCommand } from './hooks/useSettingsCommand.js';
 import { useModelCommand } from './hooks/useModelCommand.js';
+import { useEditModelCommand } from './hooks/useEditModelCommand.js';
+import { useRemoveModelCommand } from './hooks/useRemoveModelCommand.js';
 import { useManageModelsCommand } from './hooks/useManageModelsCommand.js';
 import { useArenaCommand } from './hooks/useArenaCommand.js';
 import { useApprovalModeCommand } from './hooks/useApprovalModeCommand.js';
@@ -649,6 +651,16 @@ export const AppContainer = (props: AppContainerProps) => {
     closeModelDialog,
   } = useModelCommand();
   const {
+    isEditModelDialogOpen,
+    openEditModelDialog,
+    closeEditModelDialog,
+  } = useEditModelCommand();
+  const {
+    isRemoveModelDialogOpen,
+    openRemoveModelDialog,
+    closeRemoveModelDialog,
+  } = useRemoveModelCommand();
+  const {
     isManageModelsDialogOpen,
     openManageModelsDialog,
     closeManageModelsDialog,
@@ -718,6 +730,8 @@ export const AppContainer = (props: AppContainerProps) => {
       openMemoryDialog,
       openSettingsDialog,
       openModelDialog,
+      openEditModelDialog,
+      openRemoveModelDialog,
       openManageModelsDialog,
       openTrustDialog,
       openArenaDialog,
@@ -750,6 +764,8 @@ export const AppContainer = (props: AppContainerProps) => {
       openMemoryDialog,
       openSettingsDialog,
       openModelDialog,
+      openEditModelDialog,
+      openRemoveModelDialog,
       openManageModelsDialog,
       openArenaDialog,
       setDebugMessage,
@@ -805,6 +821,25 @@ export const AppContainer = (props: AppContainerProps) => {
     },
     [config],
   );
+
+  useEffect(() => {
+    (
+      config as Config & {
+        setUiDebugMessageSink?: (sink: ((message: string) => void) | undefined) => void;
+      }
+    ).setUiDebugMessageSink?.(setDebugMessage);
+    return () => {
+      (
+        config as Config & {
+          setUiDebugMessageSink?: (
+            sink: ((message: string) => void) | undefined,
+          ) => void;
+        }
+      ).setUiDebugMessageSink?.(undefined);
+    };
+  }, [config]);
+
+  // NOTE: API debug display (api_debug history items) has been removed.
 
   const performMemoryRefresh = useCallback(async () => {
     historyManager.addItem(
@@ -1618,6 +1653,8 @@ export const AppContainer = (props: AppContainerProps) => {
     isSettingsDialogOpen ||
     isMemoryDialogOpen ||
     isModelDialogOpen ||
+    isEditModelDialogOpen ||
+    isRemoveModelDialogOpen ||
     isManageModelsDialogOpen ||
     isTrustDialogOpen ||
     activeArenaDialog !== null ||
@@ -2319,6 +2356,8 @@ export const AppContainer = (props: AppContainerProps) => {
       isSettingsDialogOpen,
       isMemoryDialogOpen,
       isModelDialogOpen,
+      isEditModelDialogOpen,
+      isRemoveModelDialogOpen,
       isFastModelMode,
       isManageModelsDialogOpen,
       isTrustDialogOpen,
@@ -2440,6 +2479,8 @@ export const AppContainer = (props: AppContainerProps) => {
       isSettingsDialogOpen,
       isMemoryDialogOpen,
       isModelDialogOpen,
+      isEditModelDialogOpen,
+      isRemoveModelDialogOpen,
       isFastModelMode,
       isManageModelsDialogOpen,
       isTrustDialogOpen,
@@ -2568,6 +2609,10 @@ export const AppContainer = (props: AppContainerProps) => {
       closeMemoryDialog,
       closeModelDialog,
       openModelDialog,
+      openEditModelDialog,
+      closeEditModelDialog,
+      openRemoveModelDialog,
+      closeRemoveModelDialog,
       openManageModelsDialog,
       closeManageModelsDialog,
       openArenaDialog,
@@ -2642,6 +2687,10 @@ export const AppContainer = (props: AppContainerProps) => {
       closeMemoryDialog,
       closeModelDialog,
       openModelDialog,
+      openEditModelDialog,
+      closeEditModelDialog,
+      openRemoveModelDialog,
+      closeRemoveModelDialog,
       openManageModelsDialog,
       closeManageModelsDialog,
       openArenaDialog,

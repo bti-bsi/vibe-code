@@ -9,7 +9,7 @@ import type {
   ToolRegistry,
   ServerGeminiStreamEvent,
   SessionMetrics,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { CLIUserMessage } from './nonInteractive/types.js';
 import {
   executeToolCall,
@@ -21,7 +21,7 @@ import {
   FatalInputError,
   ApprovalMode,
   SendMessageType,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { Part } from '@google/genai';
 import { runNonInteractive } from './nonInteractiveCli.js';
 import { vi, type Mock, type MockInstance } from 'vitest';
@@ -36,9 +36,9 @@ import {
 
 // Mock core modules
 vi.mock('./ui/hooks/atCommandProcessor.js');
-vi.mock('@qwen-code/qwen-code-core', async (importOriginal) => {
+vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@qwen-code/qwen-code-core')>();
+    await importOriginal<typeof import('@vibe-bti/vibe-code-core')>();
 
   class MockChatRecordingService {
     initialize = vi.fn();

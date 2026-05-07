@@ -72,7 +72,9 @@ describe('ContentGenerationPipeline', () => {
     } as unknown as ErrorHandler;
 
     // Mock configs
-    mockCliConfig = {} as Config;
+    mockCliConfig = {
+      emitUiDebugMessage: vi.fn(),
+    } as unknown as Config;
     mockContentGeneratorConfig = {
       model: 'test-model',
       authType: 'openai' as AuthType,
@@ -850,6 +852,76 @@ describe('ContentGenerationPipeline', () => {
       // Assert
       expect(results).toHaveLength(1); // Empty response should be filtered out
       expect(results[0]).toBe(mockValidResponse);
+    });
+
+    it('should retry streaming requests without stream_options after a 422 compatibility error', async () => {
+      const request: GenerateContentParameters = {
+        model: 'test-model',
+        contents: [{ parts: [{ text: 'Hello' }], role: 'user' }],
+      };
+      const userPromptId = 'test-prompt-id';
+
+      const mockMessages = [
+        { role: 'user', content: 'Hello' },
+      ] as OpenAI.Chat.ChatCompletionMessageParam[];
+      const mockGeminiResponse = new GenerateContentResponse();
+      mockGeminiResponse.candidates = [
+        { content: { parts: [{ text: 'Hello response' }], role: 'model' } },
+      ];
+      const mockStream = {
+        async *[Symbol.asyncIterator]() {
+          yield {
+            id: 'chunk-1',
+            choices: [
+              {
+                delta: { content: 'Hello response' },
+                finish_reason: 'stop',
+              },
+            ],
+          } as OpenAI.Chat.ChatCompletionChunk;
+        },
+      };
+
+      (mockConverter.convertGeminiRequestToOpenAI as Mock).mockReturnValue(
+        mockMessages,
+      );
+      (mockConverter.convertOpenAIChunkToGemini as Mock).mockReturnValue(
+        mockGeminiResponse,
+      );
+      (mockClient.chat.completions.create as Mock)
+        .mockRejectedValueOnce({
+          name: 'UnprocessableEntityError',
+          status: 422,
+          message: '422 status code (no body)',
+          headers: new Headers(),
+        })
+        .mockResolvedValueOnce(mockStream);
+
+      const resultGenerator = await pipeline.executeStream(
+        request,
+        userPromptId,
+      );
+      const results: GenerateContentResponse[] = [];
+      for await (const result of resultGenerator) {
+        results.push(result);
+      }
+
+      expect(results).toHaveLength(1);
+      expect(mockClient.chat.completions.create).toHaveBeenCalledTimes(2);
+
+      const firstRequest = (mockClient.chat.completions.create as Mock).mock
+        .calls[0][0] as OpenAI.Chat.ChatCompletionCreateParams;
+      const secondRequest = (mockClient.chat.completions.create as Mock).mock
+        .calls[1][0] as OpenAI.Chat.ChatCompletionCreateParams;
+
+      expect(firstRequest).toMatchObject({
+        stream: true,
+        stream_options: { include_usage: true },
+      });
+      expect(secondRequest).toMatchObject({
+        stream: true,
+      });
+      expect(secondRequest).not.toHaveProperty('stream_options');
     });
 
     it('should handle streaming errors and reset tool calls', async () => {

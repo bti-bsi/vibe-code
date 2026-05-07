@@ -12,7 +12,7 @@ import {
   tryGenerateSessionTitle,
   type Config,
   type SessionTitleFailureReason,
-} from '@qwen-code/qwen-code-core';
+} from '@vibe-bti/vibe-code-core';
 import type { SlashCommand, SlashCommandActionReturn } from './types.js';
 import { CommandKind } from './types.js';
 import { t } from '../../i18n/index.js';

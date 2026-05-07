@@ -7,13 +7,13 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { basename, join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { ChannelBase } from '@qwen-code/channel-base';
+import { ChannelBase } from '@vibe-bti/vibe-code-channel-base';
 import type {
   ChannelConfig,
   ChannelBaseOptions,
   Envelope,
   AcpBridge,
-} from '@qwen-code/channel-base';
+} from '@vibe-bti/vibe-code-channel-base';
 import { loadAccount, DEFAULT_BASE_URL } from './accounts.js';
 import { startPollLoop, getContextToken } from './monitor.js';
 import type { CdnRef, FileCdnRef } from './monitor.js';

@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SkillCommandLoader } from './SkillCommandLoader.js';
 import { CommandKind } from '../ui/commands/types.js';
-import type { Config, SkillConfig } from '@qwen-code/qwen-code-core';
+import type { Config, SkillConfig } from '@vibe-bti/vibe-code-core';
 
 function makeSkill(overrides: Partial<SkillConfig> = {}): SkillConfig {
   return {
