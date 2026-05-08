@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code",
-  "version": "0.15.6",
+  "version": "0.15.8",
   "engines": {
     "node": ">=20.0.0"
   },
@@ -18,7 +18,7 @@
     "url": "git+https://github.com/vibe-bti/vibe-code.git"
   },
   "config": {
-    "sandboxImageUri": "ghcr.io/vibe-bti/vibe-code:0.15.6"
+    "sandboxImageUri": "ghcr.io/vibe-bti/vibe-code:0.15.8"
   },
   "scripts": {
     "start": "cross-env node scripts/start.js",
@@ -129,6 +129,14 @@
   },
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
+    "data-uri-to-buffer": "^6.0.0",
+    "ecdsa-sig-formatter": "^1.0.11",
+    "eventsource": "^2.0.2",
+    "extend": "^3.0.2",
+    "fetch-blob": "^4.0.0",
+    "formdata-polyfill": "^4.0.10",
+    "json-bigint": "^1.0.0",
+    "jws": "^4.0.0",
     "simple-git": "^3.28.0"
   },
   "optionalDependencies": {

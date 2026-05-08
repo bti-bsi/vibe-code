@@ -2,7 +2,7 @@
   "name": "vibe-code-vscode-ide-companion",
   "displayName": "Qwen Code Companion",
   "description": "Enable Qwen Code with direct access to your VS Code workspace.",
-  "version": "0.15.7",
+  "version": "0.15.8",
   "publisher": "qwenlm",
   "icon": "assets/icon.png",
   "repository": {
@@ -39,7 +39,7 @@
   "contributes": {
     "jsonValidation": [
       {
-        "fileMatch": "**/.qwen/settings.json",
+        "fileMatch": "**/.vibe/settings.json",
         "url": "./schemas/settings.schema.json"
       }
     ],
@@ -214,7 +214,7 @@
             "Configured via Qwen Code: Auth or the onboarding button"
           ],
           "default": "coding-plan",
-          "markdownDescription": "**Coding Plan**: enter API Key + Region here to sync `~/.qwen/settings.json`.\n\n**API Key**: use **Qwen Code: Auth** or the onboarding button to configure ModelStudio or custom OpenAI-compatible providers."
+          "markdownDescription": "**Coding Plan**: enter API Key + Region here to sync `~/.vibe/settings.json`.\n\n**API Key**: use **Qwen Code: Auth** or the onboarding button to configure ModelStudio or custom OpenAI-compatible providers."
         },
         "qwen-code.apiKey": {
           "order": 1,
