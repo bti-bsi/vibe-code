@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code",
-  "version": "0.15.9",
+  "version": "0.15.10",
   "description": "Vibe Code",
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
     "dist"
   ],
   "config": {
-    "sandboxImageUri": "ghcr.io/vibe-bti/vibe-code:0.15.9"
+    "sandboxImageUri": "ghcr.io/vibe-bti/vibe-code:0.15.10"
   },
   "dependencies": {
     "@agentclientprotocol/sdk": "^0.14.1",
@@ -68,6 +68,7 @@
     "p-limit": "^7.3.0",
     "prompts": "^2.4.2",
     "react": "^19.1.0",
+    "react-devtools-core": "^6.1.2",
     "read-package-up": "^11.0.0",
     "shell-quote": "^1.8.3",
     "simple-git": "^3.28.0",
