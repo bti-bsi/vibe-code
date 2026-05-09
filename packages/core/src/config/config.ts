@@ -2236,9 +2236,7 @@ export class Config {
     this.messageBus = messageBus;
   }
 
-  setUiDebugMessageSink(
-    sink: ((message: string) => void) | undefined,
-  ): void {
+  setUiDebugMessageSink(sink: ((message: string) => void) | undefined): void {
     this.uiDebugMessageSink = sink;
   }
 
@@ -2876,9 +2874,8 @@ export class Config {
       return new TodoWriteTool(this);
     });
     await registerLazy(ToolNames.ASK_USER_QUESTION, async () => {
-      const { AskUserQuestionTool } = await import(
-        '../tools/askUserQuestion.js'
-      );
+      const { AskUserQuestionTool } =
+        await import('../tools/askUserQuestion.js');
       return new AskUserQuestionTool(this);
     });
     if (!this.sdkMode) {
@@ -2891,6 +2888,24 @@ export class Config {
       const { WebFetchTool } = await import('../tools/web-fetch.js');
       return new WebFetchTool(this);
     });
+    await registerLazy(ToolNames.SCOPUS_SEARCH, async () => {
+      const { ScopusSearchTool } = await import('../tools/scopus-search.js');
+      return new ScopusSearchTool();
+    });
+    await registerLazy(ToolNames.SCOPUS_ABSTRACT_PDF, async () => {
+      const { ScopusAbstractPDFTool } =
+        await import('../tools/scopus-abstract-pdf.js');
+      return new ScopusAbstractPDFTool(this);
+    });
+    await registerLazy(ToolNames.FILE_DOWNLOAD, async () => {
+      const { FileDownloadTool } = await import('../tools/file-download.js');
+      return new FileDownloadTool();
+    });
+    await registerLazy(ToolNames.PDF_EXTRACT, async () => {
+      const { PDFExtractTool } = await import('../tools/pdf-extract.js');
+      return new PDFExtractTool();
+    });
+
     if (this.isLspEnabled() && this.getLspClient()) {
       await registerLazy(ToolNames.LSP, async () => {
         const { LspTool } = await import('../tools/lsp.js');

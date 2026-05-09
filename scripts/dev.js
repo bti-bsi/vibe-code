@@ -107,36 +107,21 @@ const env = {
   NODE_OPTIONS: `${existingNodeOptions} ${importFlag}`.trim(),
 };
 
-const isWin = platform() === 'win32';
+const _isWin = platform() === 'win32';
 const tsxArgs = [cliEntry, ...process.argv.slice(2)];
 
-function quoteForCmd(arg) {
-  if (arg.length === 0) {
-    return '""';
-  }
+// Resolve tsx path from node_modules
+const tsxMain = join(root, 'node_modules', 'tsx', 'dist', 'cli.mjs');
 
-  if (!/[\s"]/u.test(arg)) {
-    return arg;
-  }
-
-  return `"${arg.replace(/"/g, '""')}"`;
-}
-
-const child = isWin
-  ? spawn(
-      process.env.ComSpec || 'cmd.exe',
-      ['/d', '/s', '/c', `tsx.cmd ${tsxArgs.map(quoteForCmd).join(' ')}`],
-      {
-        stdio: 'inherit',
-        env,
-        cwd: process.cwd(),
-      },
-    )
-  : spawn('tsx', tsxArgs, {
-      stdio: 'inherit',
-      env,
-      cwd: process.cwd(),
-    });
+const child = spawn(
+  'node',
+  ['--import', pathToFileURL(registerPath).href, tsxMain, ...tsxArgs],
+  {
+    stdio: 'inherit',
+    env,
+    cwd: process.cwd(),
+  },
+);
 
 child.on('error', (err) => {
   console.error('Failed to start dev server:', err.message);

@@ -116,6 +116,9 @@ export enum ToolErrorType {
   WEB_FETCH_FALLBACK_FAILED = 'web_fetch_fallback_failed',
   WEB_FETCH_PROCESSING_ERROR = 'web_fetch_processing_error',
 
+  // ScopusSearch-specific errors
+  SCOPE_SEARCH_FAILED = 'scopus_search_failed',
+
   // Truncation Errors
   OUTPUT_TRUNCATED = 'output_truncated',
 
