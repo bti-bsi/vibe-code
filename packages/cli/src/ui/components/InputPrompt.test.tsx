@@ -456,13 +456,12 @@ describe('InputPrompt', () => {
     });
 
     // Windows uses Alt+V (\x1Bv), non-Windows uses Ctrl+V (\x16)
-    const describeConditional = isWindows ? it.skip : it;
-    describeConditional(
+    (isWindows ? it : it)(
       'should handle Ctrl+V when clipboard has an image',
       async () => {
         vi.mocked(clipboardUtils.clipboardHasImage).mockResolvedValue(true);
         vi.mocked(clipboardUtils.saveClipboardImage).mockResolvedValue(
-          '/Users/mochi/.qwen/tmp/clipboard-123.png',
+          '/Users/mochi/.vibe/tmp/clipboard-123.png',
         );
 
         const { stdin, unmount } = renderWithProviders(
@@ -485,7 +484,7 @@ describe('InputPrompt', () => {
     it('should handle Cmd+V when clipboard has an image', async () => {
       vi.mocked(clipboardUtils.clipboardHasImage).mockResolvedValue(true);
       vi.mocked(clipboardUtils.saveClipboardImage).mockResolvedValue(
-        '/Users/mochi/.qwen/tmp/clipboard-456.png',
+        '/Users/mochi/.vibe/tmp/clipboard-456.png',
       );
 
       const { stdin, unmount } = renderWithProviders(
@@ -542,7 +541,7 @@ describe('InputPrompt', () => {
     });
 
     it('should insert image path at cursor position with proper spacing', async () => {
-      const imagePath = '/Users/mochi/.qwen/tmp/clipboard-456.png';
+      const imagePath = '/Users/mochi/.vibe/tmp/clipboard-456.png';
       vi.mocked(clipboardUtils.clipboardHasImage).mockResolvedValue(true);
       vi.mocked(clipboardUtils.saveClipboardImage).mockResolvedValue(imagePath);
 
@@ -2907,7 +2906,7 @@ describe('InputPrompt', () => {
       unmount();
     });
 
-    it.skip('expands and collapses long suggestion via Right/Left arrows', async () => {
+    it.todo('expands and collapses long suggestion via Right/Left arrows', async () => {
       props.shellModeActive = false;
       const longValue = 'l'.repeat(200);
 

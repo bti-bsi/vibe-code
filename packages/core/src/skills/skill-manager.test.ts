@@ -188,7 +188,7 @@ describe('SkillManager', () => {
     name: 'test-skill',
     description: 'A test skill',
     level: 'project',
-    filePath: '/test/project/.qwen/skills/test-skill/SKILL.md',
+    filePath: '/test/project/.vibe/skills/test-skill/SKILL.md',
     body: 'You are a helpful assistant with this skill.',
   };
 
@@ -382,8 +382,8 @@ Body.
     });
 
     it('should determine level from file path', () => {
-      const projectPath = '/test/project/.qwen/skills/test-skill/SKILL.md';
-      const userPath = '/home/user/.qwen/skills/test-skill/SKILL.md';
+      const projectPath = '/test/project/.vibe/skills/test-skill/SKILL.md';
+      const userPath = '/home/user/.vibe/skills/test-skill/SKILL.md';
 
       const projectConfig = manager.parseSkillContent(
         validMarkdown,
@@ -1668,12 +1668,10 @@ Skill content`;
       expect(config.hooks?.PostToolUse).toHaveLength(1);
       const hook = config.hooks?.PostToolUse?.[0]?.hooks?.[0];
       expect(hook?.type).toBe('http');
-      if (hook?.type === 'http') {
-        expect(hook.url).toBe('https://audit.example.com/log');
-        expect(hook.headers).toEqual({ Authorization: 'Bearer token' });
-        expect(hook.allowedEnvVars).toEqual(['API_KEY']);
-        expect(hook.timeout).toBe(10);
-      }
+      expect((hook as NonNullable<typeof hook>).url).toBe('https://audit.example.com/log');
+      expect((hook as NonNullable<typeof hook>).headers).toEqual({ Authorization: 'Bearer token' });
+      expect((hook as NonNullable<typeof hook>).allowedEnvVars).toEqual(['API_KEY']);
+      expect((hook as NonNullable<typeof hook>).timeout).toBe(10);
     });
 
     it('should ignore unknown hook events', () => {

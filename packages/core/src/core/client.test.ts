@@ -1135,7 +1135,7 @@ hello
         selectedDocs: [
           {
             type: 'user',
-            filePath: '/test/project/root/.qwen/memory/user.md',
+            filePath: '/test/project/root/.vibe/memory/user.md',
             relativePath: 'user.md',
             filename: 'user.md',
             title: 'User Memory',
@@ -1192,7 +1192,7 @@ hello
           selectedDocs: [
             {
               type: 'user',
-              filePath: '/test/project/root/.qwen/memory/user.md',
+              filePath: '/test/project/root/.vibe/memory/user.md',
               relativePath: 'user.md',
               filename: 'user.md',
               title: 'User Memory',
@@ -1244,7 +1244,7 @@ hello
         'Keep it short again',
         expect.objectContaining({
           excludedFilePaths: new Set([
-            '/test/project/root/.qwen/memory/user.md',
+            '/test/project/root/.vibe/memory/user.md',
           ]),
         }),
       );
@@ -1631,23 +1631,9 @@ Other open files:
       // The test should demonstrate that the infinite loop protection works:
       // - If checkNextSpeaker is called many times (close to MAX_TURNS), it shows the loop was happening
       // - If it's only called once, the recursive behavior might not be triggered
-      if (callCount === 0) {
-        throw new Error(
-          'checkNextSpeaker was never called - the recursive condition was not met',
-        );
-      } else if (callCount === 1) {
-        // This might be expected behavior if the turn has pending tool calls or other conditions prevent recursion
-        console.log(
-          'checkNextSpeaker called only once - no infinite loop occurred',
-        );
-      } else {
-        console.log(
-          `checkNextSpeaker called ${callCount} times - infinite loop protection worked`,
-        );
-        // If called multiple times, we expect it to be stopped before MAX_TURNS
-        expect(callCount).toBeLessThanOrEqual(100); // Should not exceed MAX_TURNS
-      }
-
+      expect(mockCheckNextSpeaker).toHaveBeenCalled();
+      expect(callCount).toBeGreaterThan(0);
+      expect(callCount).toBeLessThanOrEqual(100);
       // The stream should produce events and eventually terminate
       expect(eventCount).toBeGreaterThanOrEqual(1);
       expect(eventCount).toBeLessThan(200); // Should not exceed our safety limit
@@ -2034,6 +2020,7 @@ Other open files:
             addHistory: (typeof vi)['fn'];
           };
 
+          expect(mockChat.addHistory).toHaveBeenCalledTimes(shouldSendContext ? 1 : 0);
           if (shouldSendContext) {
             expect(mockChat.addHistory).toHaveBeenCalledWith(
               expect.objectContaining({
@@ -2046,9 +2033,8 @@ Other open files:
                 ]),
               }),
             );
-          } else {
-            expect(mockChat.addHistory).not.toHaveBeenCalled();
           }
+          expect(mockChat.addHistory).toHaveBeenCalledTimes(shouldSendContext ? 1 : 0);
         },
       );
 

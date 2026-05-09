@@ -176,7 +176,7 @@ describe('SharedTokenManager', () => {
     mockPath.dirname.mockImplementation((filePath) => {
       // Handle undefined/null input gracefully
       if (!filePath || typeof filePath !== 'string') {
-        return '/home/user/.qwen'; // Return the expected directory path
+        return '/home/user/.vibe'; // Return the expected directory path
       }
       const parts = filePath.split('/');
       const result = parts.slice(0, -1).join('/');
@@ -887,19 +887,16 @@ describe('SharedTokenManager', () => {
       mockFs.rename.mockResolvedValue(undefined);
       mockFs.unlink.mockResolvedValue(undefined);
 
-      try {
-        await tokenManager.getValidCredentials(mockClient);
-        expect.fail('Expected TokenManagerError to be thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(TokenManagerError);
-        expect((error as TokenManagerError).type).toBe(
-          TokenError.REFRESH_FAILED,
-        );
-        expect((error as TokenManagerError).message).toBe('Test error message');
-        expect((error as TokenManagerError).originalError).toBeInstanceOf(
-          CredentialsClearRequiredError,
-        );
-      }
+      await expect(
+        tokenManager.getValidCredentials(mockClient),
+      ).rejects.toSatisfy((error: unknown) => {
+        if (!(error instanceof TokenManagerError)) return false;
+        if (error.type !== TokenError.REFRESH_FAILED) return false;
+        if (error.message !== 'Test error message') return false;
+        if (!(error.originalError instanceof CredentialsClearRequiredError))
+          return false;
+        return true;
+      });
     });
 
     it('should properly clean up timeout when file operation completes before timeout', async () => {
