@@ -192,6 +192,16 @@ interface ScopusSearchResult {
 }
 
 /**
+ * Scopus API search response structure
+ */
+interface ScopusSearchResponse {
+  'search-results'?: {
+    'opensearch:totalResults'?: string;
+    entry?: ScopusSearchResult[];
+  };
+}
+
+/**
  * Implementation of the ScopusSearch tool invocation logic
  */
 class ScopusSearchToolInvocation extends BaseToolInvocation<
@@ -291,10 +301,8 @@ class ScopusSearchToolInvocation extends BaseToolInvocation<
     }
   }
 
-  private formatSearchResults(data: Record<string, unknown>): ToolResult {
-    const searchResults = data?.['search-results'] as
-      | Record<string, unknown>
-      | undefined;
+  private formatSearchResults(data: ScopusSearchResponse): ToolResult {
+    const searchResults = data?.['search-results'];
     if (!searchResults) {
       return {
         llmContent: 'No search results found in Scopus response',
@@ -330,7 +338,7 @@ class ScopusSearchToolInvocation extends BaseToolInvocation<
     results.push('');
 
     for (let i = 0; i < items.length; i++) {
-      const item = items[i] as ScopusSearchResult;
+      const item = items[i];
 
       const title = item['dc:title'] || 'No title';
       const authors = parseAuthors(item['dc:creator']);
