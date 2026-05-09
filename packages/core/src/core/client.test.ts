@@ -1563,9 +1563,8 @@ Other open files:
 
     it('should stop infinite loop after MAX_TURNS when nextSpeaker always returns model', async () => {
       // Get the mocked checkNextSpeaker function and configure it to trigger infinite loop
-      const { checkNextSpeaker } = await import(
-        '../utils/nextSpeakerChecker.js'
-      );
+      const { checkNextSpeaker } =
+        await import('../utils/nextSpeakerChecker.js');
       const mockCheckNextSpeaker = vi.mocked(checkNextSpeaker);
       mockCheckNextSpeaker.mockResolvedValue({
         next_speaker: 'model',
@@ -1775,9 +1774,8 @@ Other open files:
       // someone tries to bypass it by calling with a very large turns value
 
       // Get the mocked checkNextSpeaker function and configure it to trigger infinite loop
-      const { checkNextSpeaker } = await import(
-        '../utils/nextSpeakerChecker.js'
-      );
+      const { checkNextSpeaker } =
+        await import('../utils/nextSpeakerChecker.js');
       const mockCheckNextSpeaker = vi.mocked(checkNextSpeaker);
       mockCheckNextSpeaker.mockResolvedValue({
         next_speaker: 'model',
@@ -2020,21 +2018,24 @@ Other open files:
             addHistory: (typeof vi)['fn'];
           };
 
-          expect(mockChat.addHistory).toHaveBeenCalledTimes(shouldSendContext ? 1 : 0);
-          if (shouldSendContext) {
-            expect(mockChat.addHistory).toHaveBeenCalledWith(
-              expect.objectContaining({
-                parts: expect.arrayContaining([
-                  expect.objectContaining({
-                    text: expect.stringContaining(
-                      "Here is a summary of changes in the user's editor context",
-                    ),
-                  }),
-                ]),
-              }),
+          const wasCalled = mockChat.addHistory.mock.calls.length > 0;
+          expect(wasCalled).toBe(shouldSendContext);
+          // Verify addHistory was called correct number of times
+          expect(mockChat.addHistory).toHaveBeenCalledTimes(
+            shouldSendContext ? 1 : 0,
+          );
+
+          // Verify call content when context should be sent
+          const historyCalls = mockChat.addHistory.mock.calls;
+          expect(historyCalls.length).toBe(shouldSendContext ? 1 : 0);
+          const hasCorrectContent =
+            historyCalls.length > 0 &&
+            historyCalls[0][0].parts?.some((p: { text?: string }) =>
+              p.text?.includes(
+                "Here is a summary of changes in the user's editor context",
+              ),
             );
-          }
-          expect(mockChat.addHistory).toHaveBeenCalledTimes(shouldSendContext ? 1 : 0);
+          expect(hasCorrectContent).toBe(shouldSendContext);
         },
       );
 
@@ -2447,9 +2448,8 @@ Other open files:
 
     it('should not call checkNextSpeaker when turn.run() yields an error', async () => {
       // Arrange
-      const { checkNextSpeaker } = await import(
-        '../utils/nextSpeakerChecker.js'
-      );
+      const { checkNextSpeaker } =
+        await import('../utils/nextSpeakerChecker.js');
       const mockCheckNextSpeaker = vi.mocked(checkNextSpeaker);
 
       const mockStream = (async function* () {
@@ -2482,9 +2482,8 @@ Other open files:
 
     it('should not call checkNextSpeaker when turn.run() yields a value then an error', async () => {
       // Arrange
-      const { checkNextSpeaker } = await import(
-        '../utils/nextSpeakerChecker.js'
-      );
+      const { checkNextSpeaker } =
+        await import('../utils/nextSpeakerChecker.js');
       const mockCheckNextSpeaker = vi.mocked(checkNextSpeaker);
 
       const mockStream = (async function* () {

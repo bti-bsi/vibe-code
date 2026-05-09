@@ -456,30 +456,32 @@ describe('InputPrompt', () => {
     });
 
     // Windows uses Alt+V (\x1Bv), non-Windows uses Ctrl+V (\x16)
-    (isWindows ? it : it)(
-      'should handle Ctrl+V when clipboard has an image',
-      async () => {
-        vi.mocked(clipboardUtils.clipboardHasImage).mockResolvedValue(true);
-        vi.mocked(clipboardUtils.saveClipboardImage).mockResolvedValue(
-          '/Users/mochi/.vibe/tmp/clipboard-123.png',
-        );
+    it('should handle Ctrl+V when clipboard has an image', async () => {
+      if (isWindows) {
+        // Skip on Windows as it uses different key combination
+        return;
+      }
 
-        const { stdin, unmount } = renderWithProviders(
-          <InputPrompt {...props} />,
-        );
-        await wait();
+      vi.mocked(clipboardUtils.clipboardHasImage).mockResolvedValue(true);
+      vi.mocked(clipboardUtils.saveClipboardImage).mockResolvedValue(
+        '/Users/mochi/.vibe/tmp/clipboard-123.png',
+      );
 
-        // Send Ctrl+V
-        stdin.write('\x16'); // Ctrl+V
-        await wait();
+      const { stdin, unmount } = renderWithProviders(
+        <InputPrompt {...props} />,
+      );
+      await wait();
 
-        expect(clipboardUtils.clipboardHasImage).toHaveBeenCalled();
-        expect(clipboardUtils.saveClipboardImage).toHaveBeenCalled();
-        expect(clipboardUtils.cleanupOldClipboardImages).toHaveBeenCalled();
-        // Note: The new implementation adds images as attachments rather than inserting into buffer
-        unmount();
-      },
-    );
+      // Send Ctrl+V
+      stdin.write('\x16'); // Ctrl+V
+      await wait();
+
+      expect(clipboardUtils.clipboardHasImage).toHaveBeenCalled();
+      expect(clipboardUtils.saveClipboardImage).toHaveBeenCalled();
+      expect(clipboardUtils.cleanupOldClipboardImages).toHaveBeenCalled();
+      // Note: The new implementation adds images as attachments rather than inserting into buffer
+      unmount();
+    });
 
     it('should handle Cmd+V when clipboard has an image', async () => {
       vi.mocked(clipboardUtils.clipboardHasImage).mockResolvedValue(true);
@@ -2906,44 +2908,49 @@ describe('InputPrompt', () => {
       unmount();
     });
 
-    it.todo('expands and collapses long suggestion via Right/Left arrows', async () => {
-      props.shellModeActive = false;
-      const longValue = 'l'.repeat(200);
+    it.todo(
+      'expands and collapses long suggestion via Right/Left arrows',
+      async () => {
+        props.shellModeActive = false;
+        const longValue = 'l'.repeat(200);
 
-      vi.mocked(useReverseSearchCompletion).mockReturnValue({
-        ...mockReverseSearchCompletion,
-        suggestions: [{ label: longValue, value: longValue, matchedIndex: 0 }],
-        showSuggestions: true,
-        activeSuggestionIndex: 0,
-        visibleStartIndex: 0,
-        isLoadingSuggestions: false,
-      });
+        vi.mocked(useReverseSearchCompletion).mockReturnValue({
+          ...mockReverseSearchCompletion,
+          suggestions: [
+            { label: longValue, value: longValue, matchedIndex: 0 },
+          ],
+          showSuggestions: true,
+          activeSuggestionIndex: 0,
+          visibleStartIndex: 0,
+          isLoadingSuggestions: false,
+        });
 
-      const { stdin, stdout, unmount } = renderWithProviders(
-        <InputPrompt {...props} />,
-      );
-      await wait();
+        const { stdin, stdout, unmount } = renderWithProviders(
+          <InputPrompt {...props} />,
+        );
+        await wait();
 
-      stdin.write('\x12');
-      await wait();
+        stdin.write('\x12');
+        await wait();
 
-      expect(clean(stdout.lastFrame())).toContain('→');
+        expect(clean(stdout.lastFrame())).toContain('→');
 
-      stdin.write('\u001B[C');
-      await wait(200);
-      expect(clean(stdout.lastFrame())).toContain('←');
-      expect(stdout.lastFrame()).toMatchSnapshot(
-        'command-search-expanded-match',
-      );
+        stdin.write('\u001B[C');
+        await wait(200);
+        expect(clean(stdout.lastFrame())).toContain('←');
+        expect(stdout.lastFrame()).toMatchSnapshot(
+          'command-search-expanded-match',
+        );
 
-      stdin.write('\u001B[D');
-      await wait();
-      expect(clean(stdout.lastFrame())).toContain('→');
-      expect(stdout.lastFrame()).toMatchSnapshot(
-        'command-search-collapsed-match',
-      );
-      unmount();
-    });
+        stdin.write('\u001B[D');
+        await wait();
+        expect(clean(stdout.lastFrame())).toContain('→');
+        expect(stdout.lastFrame()).toMatchSnapshot(
+          'command-search-collapsed-match',
+        );
+        unmount();
+      },
+    );
 
     it('renders match window and expanded view (snapshots)', async () => {
       props.shellModeActive = false;
