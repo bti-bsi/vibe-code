@@ -142,7 +142,7 @@ async function collectMdFiles(dir: string): Promise<string[]> {
 }
 
 /**
- * Discover and load rule files from a single `.qwen/rules/` directory.
+ * Discover and load rule files from a single `.vibe/rules/` directory.
  * Scans recursively; files are sorted alphabetically for deterministic ordering.
  *
  * @param excludes - Glob patterns to skip (matched against absolute paths).
@@ -203,7 +203,7 @@ export function formatRules(rules: RuleFile[], projectRoot: string): string {
       // Normalize to forward slashes for cross-platform consistency in the
       // system prompt. Glob patterns in `paths:` use forward slashes, so
       // display paths should match — otherwise Windows shows `.qwen\rules\foo.md`
-      // and Linux shows `.qwen/rules/foo.md`, which is confusing in diffs/tests.
+      // and Linux shows `.vibe/rules/foo.md`, which is confusing in diffs/tests.
       const displayPath = rawDisplayPath.replace(/\\/g, '/');
       return (
         `--- Rule from: ${displayPath} ---\n` +
@@ -300,8 +300,8 @@ export class ConditionalRulesRegistry {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Load rules from both global (`~/.qwen/rules/`) and project-level
- * (`.qwen/rules/`) directories.
+ * Load rules from both global (`~/.vibe/rules/`) and project-level
+ * (`.vibe/rules/`) directories.
  *
  * Baseline rules (no `paths:`) are returned in `content` for immediate
  * injection into the system prompt. Conditional rules (with `paths:`) are

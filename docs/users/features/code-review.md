@@ -109,7 +109,7 @@ Found 3 issues with auto-fixable suggestions. Apply auto-fixes? (y/n)
 
 ## Worktree Isolation
 
-When reviewing a PR, `/review` creates a temporary git worktree (`.qwen/tmp/review-pr-<number>`) instead of switching your current branch. This means:
+When reviewing a PR, `/review` creates a temporary git worktree (`.vibe/tmp/review-pr-<number>`) instead of switching your current branch. This means:
 
 - Your working tree, staged changes, and current branch are **never touched**
 - Dependencies are installed in the worktree (`npm ci`, etc.) so linting and build/test work
@@ -184,14 +184,14 @@ Note: `fix these issues` is only available for local reviews. For PR reviews, us
 
 You can customize review criteria per project. `/review` reads rules from these files (in order):
 
-1. `.qwen/review-rules.md` (Qwen Code native)
+1. `.vibe/review-rules.md` (Qwen Code native)
 2. `.github/copilot-instructions.md` (preferred) or `copilot-instructions.md` (fallback — only one is loaded, not both)
 3. `AGENTS.md` — `## Code Review` section
 4. `QWEN.md` — `## Code Review` section
 
 Rules are injected into the LLM review agents (1-6) as additional criteria. For PR reviews, rules are read from the **base branch** to prevent a malicious PR from injecting bypass rules.
 
-Example `.qwen/review-rules.md`:
+Example `.vibe/review-rules.md`:
 
 ```markdown
 # Review Rules
@@ -230,11 +230,11 @@ If you switch models (via `/model`) and re-review the same PR, `/review` detects
 # → "Previous review used qwen3-coder. Running full review with gpt-4o for a second opinion."
 ```
 
-Cache is stored in `.qwen/review-cache/` and tracks both the commit SHA and model ID. Make sure this directory is in your `.gitignore` (a broader rule like `.qwen/*` also works). If the cached commit was rebased away, it falls back to a full review.
+Cache is stored in `.vibe/review-cache/` and tracks both the commit SHA and model ID. Make sure this directory is in your `.gitignore` (a broader rule like `.vibe/*` also works). If the cached commit was rebased away, it falls back to a full review.
 
 ## Review Reports
 
-For same-repo reviews, results are saved as a Markdown file in your project's `.qwen/reviews/` directory (cross-repo lightweight reviews skip report persistence):
+For same-repo reviews, results are saved as a Markdown file in your project's `.vibe/reviews/` directory (cross-repo lightweight reviews skip report persistence):
 
 ```
 .qwen/reviews/2026-04-06-143022-pr-123.md

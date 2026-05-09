@@ -279,7 +279,7 @@ class GitWorktreeManager:
         project_id = re.sub(r'[^a-zA-Z0-9]', '-', str(worktree_dir))
 
         # Build the chats directory path
-        qwen_dir = Path.home() / ".qwen"
+        qwen_dir = Path.home() / ".vibe"
         chats_dir = qwen_dir / "projects" / project_id / "chats"
 
         if not chats_dir.exists():

@@ -361,11 +361,11 @@ You can override trust requirements for specific servers in their configuration:
 
 ### Debugging
 
-LSP debug logs are automatically written to session log files in `~/.qwen/debug/`. To check LSP-related entries:
+LSP debug logs are automatically written to session log files in `~/.vibe/debug/`. To check LSP-related entries:
 
 ```bash
 # View the latest session log
-grep '\[LSP\]' ~/.qwen/debug/latest
+grep '\[LSP\]' ~/.vibe/debug/latest
 
 # Common error messages to look for:
 #   "command path is unsafe"  → relative path escapes workspace, use absolute path or add to PATH
@@ -402,7 +402,7 @@ qwen --experimental-lsp
 
 ### Q: How do I know which language servers are running?
 
-Check the debug log for `[LSP]` entries (`grep '\[LSP\]' ~/.qwen/debug/latest`), or verify the process directly with `ps aux | grep <server-name>`.
+Check the debug log for `[LSP]` entries (`grep '\[LSP\]' ~/.vibe/debug/latest`), or verify the process directly with `ps aux | grep <server-name>`.
 
 ### Q: Can I use multiple language servers for the same file type?
 

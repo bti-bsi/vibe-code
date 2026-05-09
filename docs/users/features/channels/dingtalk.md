@@ -21,7 +21,7 @@ DingTalk Stream mode uses an outbound WebSocket connection — no public URL or 
 
 ## Configuration
 
-Add the channel to `~/.qwen/settings.json`:
+Add the channel to `~/.vibe/settings.json`:
 
 ```json
 {

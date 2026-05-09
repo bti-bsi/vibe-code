@@ -421,7 +421,7 @@ export interface QueryOptions {
    * - 'qwen-oauth': Use Qwen OAuth authentication
    *
    * Though we support 'qwen-oauth', it's not recommended to use it in the SDK.
-   * Because the credentials are stored in `~/.qwen` and may need to refresh periodically.
+   * Because the credentials are stored in `~/.vibe` and may need to refresh periodically.
    */
   authType?: AuthType;
 

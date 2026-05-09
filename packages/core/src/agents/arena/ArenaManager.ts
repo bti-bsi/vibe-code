@@ -1247,7 +1247,7 @@ export class ArenaManager {
    * All status and control files are stored here.
    *
    * Returns the absolute path to the session directory, e.g.
-   * `~/.qwen/worktrees/<sessionId>/`.  The directory contains:
+   * `~/.vibe/worktrees/<sessionId>/`.  The directory contains:
    * - `config.json` — consolidated session config + per-agent status
    * - `agents/<safeAgentId>.json` — individual agent status files
    * - `control/` — control signals (shutdown, cancel)

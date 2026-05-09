@@ -225,7 +225,7 @@ When `requireMention` is `true` (default), group messages are only processed if 
 constructor(channelName: string)
 ```
 
-Persists pairing state to `~/.qwen/channels/{channelName}-pairing.json` and `{channelName}-allowlist.json`.
+Persists pairing state to `~/.vibe/channels/{channelName}-pairing.json` and `{channelName}-allowlist.json`.
 
 | Method                                | Description                                                                                               |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------- |

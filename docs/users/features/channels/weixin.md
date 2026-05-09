@@ -17,11 +17,11 @@ WeChat uses QR code authentication instead of a static bot token. Run the login 
 qwen channel configure-weixin
 ```
 
-This will display a QR code URL. Scan it with your WeChat mobile app to authenticate. Your credentials are saved to `~/.qwen/channels/weixin/account.json`.
+This will display a QR code URL. Scan it with your WeChat mobile app to authenticate. Your credentials are saved to `~/.vibe/channels/weixin/account.json`.
 
 ### 2. Configure the channel
 
-Add the channel to `~/.qwen/settings.json`:
+Add the channel to `~/.vibe/settings.json`:
 
 ```json
 {

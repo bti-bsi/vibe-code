@@ -30,7 +30,7 @@ This guide provides solutions to common issues and debugging tips, including top
 - **Issue: Unable to display UI after authentication failure**
   - **Cause:** If authentication fails after selecting an authentication type, the `security.auth.selectedType` setting may be persisted in `settings.json`. On restart, the CLI may get stuck trying to authenticate with the failed auth type and fail to display the UI.
   - **Solution:** Clear the `security.auth.selectedType` configuration item in your `settings.json` file:
-    - Open `~/.qwen/settings.json` (or `./.qwen/settings.json` for project-specific settings)
+    - Open `~/.vibe/settings.json` (or `./.vibe/settings.json` for project-specific settings)
     - Remove the `security.auth.selectedType` field
     - Restart the CLI to allow it to prompt for authentication again
 
@@ -41,8 +41,8 @@ This guide provides solutions to common issues and debugging tips, including top
 
 - **Q: Where are the Qwen Code configuration or settings files stored?**
   - A: The Qwen Code configuration is stored in two `settings.json` files:
-    1. In your home directory: `~/.qwen/settings.json`.
-    2. In your project's root directory: `./.qwen/settings.json`.
+    1. In your home directory: `~/.vibe/settings.json`.
+    2. In your project's root directory: `./.vibe/settings.json`.
 
     Refer to [Qwen Code Configuration](../configuration/settings) for more details.
 
@@ -82,7 +82,7 @@ This guide provides solutions to common issues and debugging tips, including top
 - **DEBUG mode not working from project .env file**
   - **Issue:** Setting `DEBUG=true` in a project's `.env` file doesn't enable debug mode for the CLI.
   - **Cause:** The `DEBUG` and `DEBUG_MODE` variables are automatically excluded from project `.env` files to prevent interference with the CLI behavior.
-  - **Solution:** Use a `.qwen/.env` file instead, or configure the `advanced.excludedEnvVars` setting in your `settings.json` to exclude fewer variables.
+  - **Solution:** Use a `.vibe/.env` file instead, or configure the `advanced.excludedEnvVars` setting in your `settings.json` to exclude fewer variables.
 
 ## IDE Companion not connecting
 

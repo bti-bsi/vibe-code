@@ -339,7 +339,7 @@ export interface LoadServerHierarchicalMemoryOptions {
 
 /**
  * Loads hierarchical QWEN.md files and concatenates their content.
- * Also loads path-based context rules from `.qwen/rules/` directories.
+ * Also loads path-based context rules from `.vibe/rules/` directories.
  * This function is intended for use by the server.
  *
  * @param contextRuleExcludes - Glob patterns to skip when loading rules.

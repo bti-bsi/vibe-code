@@ -72,7 +72,7 @@ After authentication, use the `/model` command to switch between all Alibaba Clo
 
 ### Alternative: configure via `settings.json`
 
-If you prefer to skip the interactive `/auth` flow, add the following to `~/.qwen/settings.json`:
+If you prefer to skip the interactive `/auth` flow, add the following to `~/.vibe/settings.json`:
 
 ```json
 {
@@ -111,7 +111,7 @@ Use this if you want to connect to third-party providers such as OpenAI, Anthrop
 
 ### Recommended: One-file setup via `settings.json`
 
-The simplest way to get started with API Key authentication is to put everything in a single `~/.qwen/settings.json` file. Here's a complete, ready-to-use example:
+The simplest way to get started with API Key authentication is to put everything in a single `~/.vibe/settings.json` file. Here's a complete, ready-to-use example:
 
 ```json
 {
@@ -155,7 +155,7 @@ After saving the file, just run `qwen` — no interactive `/auth` setup needed.
 >
 > The sections below explain each part in more detail. If the quick example above works for you, feel free to skip ahead to [Security notes](#security-notes).
 
-The key concept is **Model Providers** (`modelProviders`): Qwen Code supports multiple API protocols, not just OpenAI. You configure which providers and models are available by editing `~/.qwen/settings.json`, then switch between them at runtime with the `/model` command.
+The key concept is **Model Providers** (`modelProviders`): Qwen Code supports multiple API protocols, not just OpenAI. You configure which providers and models are available by editing `~/.vibe/settings.json`, then switch between them at runtime with the `/model` command.
 
 #### Supported protocols
 
@@ -165,15 +165,15 @@ The key concept is **Model Providers** (`modelProviders`): Qwen Code supports mu
 | Anthropic         | `anthropic`          | `ANTHROPIC_API_KEY`, `ANTHROPIC_BASE_URL`, `ANTHROPIC_MODEL` | Anthropic Claude                                                                            |
 | Google GenAI      | `gemini`             | `GEMINI_API_KEY`, `GEMINI_MODEL`                             | Google Gemini                                                                               |
 
-#### Step 1: Configure models and providers in `~/.qwen/settings.json`
+#### Step 1: Configure models and providers in `~/.vibe/settings.json`
 
 Define which models are available for each protocol. Each model entry requires at minimum an `id` and an `envKey` (the environment variable name that holds your API key).
 
 > [!important]
 >
-> It is recommended to define `modelProviders` in the user-scope `~/.qwen/settings.json` to avoid merge conflicts between project and user settings.
+> It is recommended to define `modelProviders` in the user-scope `~/.vibe/settings.json` to avoid merge conflicts between project and user settings.
 
-Edit `~/.qwen/settings.json` (create it if it doesn't exist). You can mix multiple protocols in a single file — here is a multi-provider example showing just the `modelProviders` section:
+Edit `~/.vibe/settings.json` (create it if it doesn't exist). You can mix multiple protocols in a single file — here is a multi-provider example showing just the `modelProviders` section:
 
 ```json
 {
@@ -253,21 +253,21 @@ Qwen Code auto-loads the **first** `.env` file it finds (variables are **not mer
 
 Search order (from the current directory, walking upward toward `/`):
 
-1. `.qwen/.env` (preferred — keeps Qwen Code variables isolated from other tools)
+1. `.vibe/.env` (preferred — keeps Qwen Code variables isolated from other tools)
 2. `.env`
 
 If nothing is found, it falls back to your **home directory**:
 
-3. `~/.qwen/.env`
+3. `~/.vibe/.env`
 4. `~/.env`
 
 > [!tip]
 >
-> `.qwen/.env` is recommended over `.env` to avoid conflicts with other tools. Some variables (like `DEBUG` and `DEBUG_MODE`) are excluded from project-level `.env` files to avoid interfering with Qwen Code behavior.
+> `.vibe/.env` is recommended over `.env` to avoid conflicts with other tools. Some variables (like `DEBUG` and `DEBUG_MODE`) are excluded from project-level `.env` files to avoid interfering with Qwen Code behavior.
 
 **3. `settings.json` → `env` field (lowest priority)**
 
-You can also define API keys directly in `~/.qwen/settings.json` under the `env` key. These are loaded as the **lowest-priority fallback** — only applied when a variable is not already set by the system environment or `.env` files.
+You can also define API keys directly in `~/.vibe/settings.json` under the `env` key. These are loaded as the **lowest-priority fallback** — only applied when a variable is not already set by the system environment or `.env` files.
 
 ```json
 {
@@ -369,5 +369,5 @@ qwen auth status
 ## Security notes
 
 - Don't commit API keys to version control.
-- Prefer `.qwen/.env` for project-local secrets (and keep it out of git).
+- Prefer `.vibe/.env` for project-local secrets (and keep it out of git).
 - Treat your terminal output as sensitive if it prints credentials for verification.

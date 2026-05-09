@@ -199,7 +199,7 @@ export async function parseArguments(): Promise<CliArgs> {
     .locale('en')
     .scriptName('qwen')
     .usage(
-      'Usage: qwen [options] [command]\n\nQwen Code - Launch an interactive CLI, use -p/--prompt for non-interactive mode',
+      'Usage: qwen [options] [command]\n.vibe Code - Launch an interactive CLI, use -p/--prompt for non-interactive mode',
     )
     .option('telemetry', {
       type: 'boolean',
@@ -1151,7 +1151,7 @@ export async function loadCliConfig(
       sessionId = argv.resume;
       sessionData = await sessionService.loadSession(argv.resume);
       if (!sessionData) {
-        const message = `No saved session found with ID ${argv.resume}. Run \`qwen --resume\` without an ID to choose from existing sessions.`;
+        const message = `No saved session found with ID ${argv.resume}. Run .vibe --resume\` without an ID to choose from existing sessions.`;
         writeStderrLine(message);
         process.exit(1);
       }

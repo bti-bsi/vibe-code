@@ -42,8 +42,8 @@ qwen mcp
 
 Most users only need these two scopes:
 
-- **Project scope (default)**: `.qwen/settings.json` in your project root
-- **User scope**: `~/.qwen/settings.json` across all projects on your machine
+- **Project scope (default)**: `.vibe/settings.json` in your project root
+- **User scope**: `~/.vibe/settings.json` across all projects on your machine
 
 Write to user scope:
 
@@ -75,7 +75,7 @@ Both approaches produce the same `mcpServers` entries in your `settings.json`—
 
 #### Stdio server (local process)
 
-JSON (`.qwen/settings.json`):
+JSON (`.vibe/settings.json`):
 
 ```json
 {
@@ -225,7 +225,7 @@ OAuth configuration properties:
 
 OAuth tokens are automatically:
 
-- **Stored securely** in `~/.qwen/mcp-oauth-tokens.json`
+- **Stored securely** in `~/.vibe/mcp-oauth-tokens.json`
 - **Refreshed** when expired (if refresh tokens are available)
 - **Validated** before each connection attempt
 

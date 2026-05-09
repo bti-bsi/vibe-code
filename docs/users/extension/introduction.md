@@ -165,11 +165,11 @@ qwen extensions update --all
 
 ## How it works
 
-On startup, Qwen Code looks for extensions in `<home>/.qwen/extensions`
+On startup, Qwen Code looks for extensions in `<home>/.vibe/extensions`
 
 Extensions exist as a directory that contains a `qwen-extension.json` file. For example:
 
-`<home>/.qwen/extensions/my-extension/qwen-extension.json`
+`<home>/.vibe/extensions/my-extension/qwen-extension.json`
 
 ### `qwen-extension.json`
 
@@ -251,8 +251,8 @@ qwen extensions settings unset <extension-name> <setting-name> [--scope user|wor
 
 Settings can be configured at two levels:
 
-- **User level** (default): Settings apply across all projects (`~/.qwen/.env`)
-- **Workspace level**: Settings apply only to the current project (`.qwen/.env`)
+- **User level** (default): Settings apply across all projects (`~/.vibe/.env`)
+- **Workspace level**: Settings apply only to the current project (`.vibe/.env`)
 
 Workspace settings take precedence over user settings. Sensitive settings are stored securely and never displayed in plain text.
 
@@ -333,6 +333,6 @@ Qwen Code extensions allow variable substitution in `qwen-extension.json`. This 
 
 | variable                   | description                                                                                                                                                   |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `${extensionPath}`         | The fully-qualified path of the extension in the user's filesystem e.g., '/Users/username/.qwen/extensions/example-extension'. This will not unwrap symlinks. |
+| `${extensionPath}`         | The fully-qualified path of the extension in the user's filesystem e.g., '/Users/username/.vibe/extensions/example-extension'. This will not unwrap symlinks. |
 | `${workspacePath}`         | The fully-qualified path of the current workspace.                                                                                                            |
 | `${/} or ${pathSeparator}` | The path separator (differs per OS).                                                                                                                          |

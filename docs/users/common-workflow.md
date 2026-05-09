@@ -186,7 +186,7 @@ Then select "create" and follow the prompts to define:
 
 > [!tip]
 >
-> - Create project-specific subagents in `.qwen/agents/` for team sharing
+> - Create project-specific subagents in `.vibe/agents/` for team sharing
 > - Use descriptive `description` fields to enable automatic delegation
 > - Limit tool access to what each subagent actually needs
 > - Know more about [Sub Agents](./features/sub-agents)

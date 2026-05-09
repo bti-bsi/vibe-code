@@ -122,7 +122,7 @@ This type of action can be used to invoke a general-purpose, conversational Qwen
 
 - <a name="__input_prompt"></a><a href="#user-content-__input_prompt"><code>prompt</code></a>: _(Optional, default: `You are a helpful assistant.`)_ A string passed to the Qwen Code CLI's [`--prompt` argument](https://github.com/vibe-bti/qwen-code-action/blob/main/docs/cli/configuration.md#command-line-arguments).
 
-- <a name="__input_settings"></a><a href="#user-content-__input_settings"><code>settings</code></a>: _(Optional)_ A JSON string written to `.qwen/settings.json` to configure the CLI's _project_ settings.
+- <a name="__input_settings"></a><a href="#user-content-__input_settings"><code>settings</code></a>: _(Optional)_ A JSON string written to `.vibe/settings.json` to configure the CLI's _project_ settings.
   For more details, see the documentation on [settings files](https://github.com/vibe-bti/qwen-code-action/blob/main/docs/cli/configuration.md#settings-files).
 
 - <a name="__input_use_qwen_code_assist"></a><a href="#user-content-__input_use_qwen_code_assist"><code>use*qwen_code_assist</code></a>: *(Optional, default: `false`)\_ Whether to use Code Assist for Qwen Code model access instead of the default Qwen Code API key.
@@ -233,6 +233,7 @@ follow for a given repository.
 Contributions are welcome! Check out the Qwen Code CLI **Contributing Guide** for more details on how to get started.
 
 [secrets]: https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
+
 [Qwen Code]: https://github.com/vibe-bti/vibe-code [DashScope]: https://dashscope.console.aliyun.com/apiKey
 [Qwen Code CLI]: https://github.com/vibe-bti/qwen-code-action/
 [variables]: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-variables#creating-configuration-variables-for-a-repository

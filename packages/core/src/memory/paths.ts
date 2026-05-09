@@ -81,7 +81,7 @@ function findCanonicalGitRoot(startPath: string): string | null {
 
 /**
  * Returns the base directory for all auto-memory storage.
- * Defaults to `~/.qwen`; overridable via QWEN_CODE_MEMORY_BASE_DIR for tests.
+ * Defaults to `~/.vibe`; overridable via QWEN_CODE_MEMORY_BASE_DIR for tests.
  */
 export function getMemoryBaseDir(): string {
   if (process.env['QWEN_CODE_MEMORY_BASE_DIR']) {

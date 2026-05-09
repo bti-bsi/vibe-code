@@ -175,19 +175,19 @@ For local development and debugging, you can capture telemetry data locally:
 
 ### File-based Output (Recommended)
 
-1. Enable telemetry in your `.qwen/settings.json`:
+1. Enable telemetry in your `.vibe/settings.json`:
    ```json
    {
      "telemetry": {
        "enabled": true,
        "target": "local",
        "otlpEndpoint": "",
-       "outfile": ".qwen/telemetry.log"
+       "outfile": ".vibe/telemetry.log"
      }
    }
    ```
 2. Run Qwen Code and send prompts.
-3. View logs and metrics in the specified file (e.g., `.qwen/telemetry.log`).
+3. View logs and metrics in the specified file (e.g., `.vibe/telemetry.log`).
 
 ### Collector-Based Export (Advanced)
 

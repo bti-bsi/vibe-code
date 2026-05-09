@@ -25,7 +25,7 @@ qwen extensions link ./node_modules/@vibe-bti/vibe-code-channel-plugin-example
 
 ### 3. Configure the channel
 
-Add a channel entry to `~/.qwen/settings.json`:
+Add a channel entry to `~/.vibe/settings.json`:
 
 ```json
 {

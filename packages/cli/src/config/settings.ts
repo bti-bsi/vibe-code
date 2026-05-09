@@ -143,7 +143,7 @@ export function getSystemSettingsPath(): string {
   if (platform() === 'darwin') {
     return '/Library/Application Support/QwenCode/settings.json';
   } else if (platform() === 'win32') {
-    return 'C:\\ProgramData\\qwen-code\\settings.json';
+    return 'C:\\ProgramData.vibe-code\\settings.json';
   } else {
     return '/etc/qwen-code/settings.json';
   }

@@ -16,7 +16,7 @@ All channels share one agent process with isolated sessions per user. Each chann
 ## Quick Start
 
 1. Set up a bot on your messaging platform (see channel-specific guides: [Telegram](./telegram), [WeChat](./weixin), [DingTalk](./dingtalk))
-2. Add the channel configuration to `~/.qwen/settings.json`
+2. Add the channel configuration to `~/.vibe/settings.json`
 3. Run `qwen channel start` to start all channels, or `qwen channel start <name>` for a single channel
 
 Want to connect a platform that isn't built in? See [Plugins](./plugins) to add a custom adapter as an extension.
@@ -107,7 +107,7 @@ When `senderPolicy` is set to `"pairing"`, unknown senders go through an approva
 qwen channel pairing approve my-channel VEQDDWXJ
 ```
 
-Once approved, the user's ID is saved to `~/.qwen/channels/<name>-allowlist.json` and all future messages go through normally.
+Once approved, the user's ID is saved to `~/.vibe/channels/<name>-allowlist.json` and all future messages go through normally.
 
 ### Pairing CLI Commands
 
@@ -125,7 +125,7 @@ qwen channel pairing approve my-channel <CODE>
 - Codes expire after 1 hour
 - Maximum 3 pending requests per channel at a time — additional requests are ignored until one expires or is approved
 - Users listed in `allowedUsers` in `settings.json` always skip pairing
-- Approved users are stored in `~/.qwen/channels/<name>-allowlist.json` — treat this file as sensitive
+- Approved users are stored in `~/.vibe/channels/<name>-allowlist.json` — treat this file as sensitive
 
 ## Group Chats
 
@@ -320,7 +320,7 @@ Each channel uses its own `cwd` from its config, so different channels can work 
 
 ### Service Management
 
-The channel service uses a PID file (`~/.qwen/channels/service.pid`) to track the running instance:
+The channel service uses a PID file (`~/.vibe/channels/service.pid`) to track the running instance:
 
 - **Duplicate prevention**: Running `qwen channel start` while a service is already running will show an error instead of starting a second instance
 - **`qwen channel stop`**: Gracefully stops the running service from another terminal
@@ -330,7 +330,7 @@ The channel service uses a PID file (`~/.qwen/channels/service.pid`) to track th
 
 If the agent process crashes unexpectedly, the channel service automatically restarts it and attempts to restore all active sessions. Users can continue their conversations without starting over.
 
-- Sessions are persisted to `~/.qwen/channels/sessions.json` while the service is running
+- Sessions are persisted to `~/.vibe/channels/sessions.json` while the service is running
 - On crash: the agent restarts within 3 seconds and reloads saved sessions
 - After 3 consecutive crashes, the service exits with an error
 - On clean shutdown (Ctrl+C or `qwen channel stop`): session data is cleared — the next start is always fresh

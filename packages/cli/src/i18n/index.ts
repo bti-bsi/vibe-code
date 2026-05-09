@@ -19,7 +19,7 @@ export type { SupportedLanguage };
 export { getLanguageNameFromLocale };
 
 // State
-let currentLanguage: SupportedLanguage = 'en';
+let currentLanguage: SupportedLanguage = 'id';
 let translations: Record<string, string | string[]> = {};
 
 // Cache
@@ -74,7 +74,7 @@ export function detectSystemLanguage(): SupportedLanguage {
     // Fallback to default
   }
 
-  return 'en';
+  return 'id';
 }
 
 // Translation loading

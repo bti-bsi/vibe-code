@@ -67,7 +67,7 @@ Command hooks execute commands via child processes. Input JSON is passed through
         "hooks": [
           {
             "type": "command",
-            "command": "$QWEN_PROJECT_DIR/.qwen/hooks/security-check.sh",
+            "command": "$QWEN_PROJECT_DIR/.vibe/hooks/security-check.sh",
             "name": "security-check",
             "timeout": 10000
           }
@@ -756,7 +756,7 @@ Hook output supports three categories of fields:
 
 ## Hook Configuration
 
-Hooks are configured in Qwen Code settings, typically in `.qwen/settings.json` or user configuration files:
+Hooks are configured in Qwen Code settings, typically in `.vibe/settings.json` or user configuration files:
 
 ```json
 {
@@ -820,7 +820,7 @@ Only `command` type supports asynchronous execution. Setting `"async": true` run
         "hooks": [
           {
             "type": "command",
-            "command": "$QWEN_PROJECT_DIR/.qwen/hooks/run-tests-async.sh",
+            "command": "$QWEN_PROJECT_DIR/.vibe/hooks/run-tests-async.sh",
             "async": true,
             "timeout": 300000
           }
@@ -895,7 +895,7 @@ echo '{
 exit 0
 ```
 
-Configure in `.qwen/settings.json`:
+Configure in `.vibe/settings.json`:
 
 ```json
 {

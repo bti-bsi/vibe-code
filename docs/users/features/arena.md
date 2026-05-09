@@ -40,7 +40,7 @@ If you omit `--models`, an interactive model selection dialog appears, letting y
 
 ### What happens when you start
 
-1. **Worktree setup**: Qwen Code creates isolated Git worktrees for each agent at `~/.qwen/arena/<session-id>/worktrees/<model-name>/`. Each worktree mirrors your current working directory state exactly — including staged changes, unstaged changes, and untracked files.
+1. **Worktree setup**: Qwen Code creates isolated Git worktrees for each agent at `~/.vibe/arena/<session-id>/worktrees/<model-name>/`. Each worktree mirrors your current working directory state exactly — including staged changes, unstaged changes, and untracked files.
 2. **Agent spawning**: Each agent starts in its own worktree with full tool access and its configured model. Agents are launched sequentially but execute in parallel.
 3. **Execution**: All agents work on the task independently with no shared state or communication. You can monitor their progress and interact with any of them.
 4. **Completion**: When all agents finish (or fail), you enter the result comparison phase.
@@ -109,7 +109,7 @@ Arena behavior can be customized in [settings.json](/users/configuration/setting
 ```json
 {
   "arena": {
-    "worktreeBaseDir": "~/.qwen/arena",
+    "worktreeBaseDir": "~/.vibe/arena",
     "maxRoundsPerAgent": 50,
     "timeoutSeconds": 600
   }
@@ -118,7 +118,7 @@ Arena behavior can be customized in [settings.json](/users/configuration/setting
 
 | Setting                   | Description                        | Default         |
 | :------------------------ | :--------------------------------- | :-------------- |
-| `arena.worktreeBaseDir`   | Base directory for arena worktrees | `~/.qwen/arena` |
+| `arena.worktreeBaseDir`   | Base directory for arena worktrees | `~/.vibe/arena` |
 | `arena.maxRoundsPerAgent` | Maximum reasoning rounds per agent | `50`            |
 | `arena.timeoutSeconds`    | Timeout for each agent in seconds  | `600`           |
 
@@ -168,7 +168,7 @@ For routine changes like renaming a variable or updating a config file, a single
 
 - Verify that each model in `--models` is properly configured with valid API credentials
 - Check that your working directory is a Git repository (worktrees require Git)
-- Ensure you have write access to the worktree base directory (`~/.qwen/arena/` by default)
+- Ensure you have write access to the worktree base directory (`~/.vibe/arena/` by default)
 
 ### Worktree creation fails
 

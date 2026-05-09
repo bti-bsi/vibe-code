@@ -14,6 +14,7 @@ import { ShellModeIndicator } from './ShellModeIndicator.js';
 import { BackgroundTasksPill } from './background-view/BackgroundTasksPill.js';
 import { MCPHealthPill } from './mcp/MCPHealthPill.js';
 import { isNarrowWidth } from '../utils/isNarrowWidth.js';
+import { formatTokenCount } from '../utils/formatters.js';
 
 import { MAX_STATUS_LINES, useStatusLine } from '../hooks/useStatusLine.js';
 import { useConfigInitMessage } from '../hooks/useConfigInitMessage.js';
@@ -31,10 +32,23 @@ export const Footer: React.FC = () => {
   const { lines: statusLineLines } = useStatusLine();
   const configInitMessage = useConfigInitMessage(uiState.isConfigInitialized);
 
-  const { promptTokenCount, showAutoAcceptIndicator } = {
+  const { promptTokenCount, showAutoAcceptIndicator, sessionStats } = {
     promptTokenCount: uiState.sessionStats.lastPromptTokenCount,
     showAutoAcceptIndicator: uiState.showAutoAcceptIndicator,
+    sessionStats: uiState.sessionStats,
   };
+
+  // Calculate total tokens from session metrics
+  const metrics = sessionStats.metrics;
+  let totalInputTokens = 0;
+  let totalOutputTokens = 0;
+  for (const modelName of Object.keys(metrics.models ?? {})) {
+    const modelMetrics = metrics.models[modelName];
+    totalInputTokens += modelMetrics.tokens.prompt ?? 0;
+    totalOutputTokens += modelMetrics.tokens.candidates ?? 0;
+  }
+  const totalTokens = totalInputTokens + totalOutputTokens;
+  const currentModel = config.getModel();
 
   const { columns: terminalWidth } = useTerminalSize();
   const isNarrow = isNarrowWidth(terminalWidth);
@@ -131,50 +145,101 @@ export const Footer: React.FC = () => {
     });
   }
 
+  // Token stats and model info bar
+  const tokenStatsBar =
+    totalInputTokens > 0 || totalOutputTokens > 0 ? (
+      <Box flexDirection="row" gap={1} paddingX={2}>
+        <Text color={theme.text.secondary}>
+          Model:{' '}
+          <Text color={theme.text.primary}>{currentModel || 'unknown'}</Text>
+        </Text>
+        <Text color={theme.text.secondary}>|</Text>
+        <Text color={theme.text.secondary}>
+          Input:{' '}
+          <Text color={theme.text.primary}>
+            {formatTokenCount(totalInputTokens)}
+          </Text>
+        </Text>
+        <Text color={theme.text.secondary}>|</Text>
+        <Text color={theme.text.secondary}>
+          Output:{' '}
+          <Text color={theme.text.primary}>
+            {formatTokenCount(totalOutputTokens)}
+          </Text>
+        </Text>
+        <Text color={theme.text.secondary}>|</Text>
+        <Text color={theme.text.secondary}>
+          Total:{' '}
+          <Text color={theme.text.primary}>
+            {formatTokenCount(totalTokens)}
+          </Text>
+        </Text>
+        {contextWindowSize && (
+          <>
+            <Text color={theme.text.secondary}>|</Text>
+            <Text color={theme.text.secondary}>
+              Context Window:{' '}
+              <Text color={theme.text.primary}>
+                {formatTokenCount(contextWindowSize)}
+              </Text>
+            </Text>
+          </>
+        )}
+      </Box>
+    ) : null;
+
   // Layout matches upstream: left column has status line (top) + hints/mode
   // (bottom), right section has indicators. Status line and hints coexist.
   return (
-    <Box
-      flexDirection={isNarrow ? 'column' : 'row'}
-      justifyContent={isNarrow ? 'flex-start' : 'space-between'}
-      width="100%"
-      paddingX={2}
-      gap={isNarrow ? 0 : 1}
-    >
-      {/* Left column — status line on top, hints/mode on bottom */}
-      <Box flexDirection="column" flexShrink={isNarrow ? 0 : 1}>
-        {statusLineLines.length > 0 &&
-          !uiState.ctrlCPressedOnce &&
-          !uiState.ctrlDPressedOnce &&
-          statusLineLines.map((line, i) => (
-            <Text key={`status-line-${i}`} dimColor wrap="truncate">
-              {line}
-            </Text>
-          ))}
-        {debugMessageLines.length > 0 &&
-          !uiState.ctrlCPressedOnce &&
-          !uiState.ctrlDPressedOnce &&
-          debugMessageLines.map((line, i) => (
-            <Text key={`debug-line-${i}`} color={theme.text.secondary} wrap="truncate">
-              {line}
-            </Text>
-          ))}
-        <Box flexDirection="row" flexShrink={1}>
-          <Text wrap="truncate">{leftBottomContent}</Text>
-          <BackgroundTasksPill />
-          <MCPHealthPill />
-        </Box>
-      </Box>
-
-      {/* Right Section — never compressed, aligns to top so multi-line
-          status lines on the left don't push the indicators to the center. */}
-      <Box flexShrink={0} gap={1} alignItems="flex-start">
-        {rightItems.map(({ key, node }, index) => (
-          <Box key={key} alignItems="center">
-            {index > 0 && <Text color={theme.text.secondary}> | </Text>}
-            {node}
+    <Box flexDirection="column" width="100%">
+      {/* Token stats bar - shown above footer when we have token data */}
+      {tokenStatsBar}
+      <Box
+        flexDirection={isNarrow ? 'column' : 'row'}
+        justifyContent={isNarrow ? 'flex-start' : 'space-between'}
+        width="100%"
+        paddingX={2}
+        gap={isNarrow ? 0 : 1}
+      >
+        {/* Left column — status line on top, hints/mode on bottom */}
+        <Box flexDirection="column" flexShrink={isNarrow ? 0 : 1}>
+          {statusLineLines.length > 0 &&
+            !uiState.ctrlCPressedOnce &&
+            !uiState.ctrlDPressedOnce &&
+            statusLineLines.map((line, i) => (
+              <Text key={`status-line-${i}`} dimColor wrap="truncate">
+                {line}
+              </Text>
+            ))}
+          {debugMessageLines.length > 0 &&
+            !uiState.ctrlCPressedOnce &&
+            !uiState.ctrlDPressedOnce &&
+            debugMessageLines.map((line, i) => (
+              <Text
+                key={`debug-line-${i}`}
+                color={theme.text.secondary}
+                wrap="truncate"
+              >
+                {line}
+              </Text>
+            ))}
+          <Box flexDirection="row" flexShrink={1}>
+            <Text wrap="truncate">{leftBottomContent}</Text>
+            <BackgroundTasksPill />
+            <MCPHealthPill />
           </Box>
-        ))}
+        </Box>
+
+        {/* Right Section — never compressed, aligns to top so multi-line
+          status lines on the left don't push the indicators to the center. */}
+        <Box flexShrink={0} gap={1} alignItems="flex-start">
+          {rightItems.map(({ key, node }, index) => (
+            <Box key={key} alignItems="center">
+              {index > 0 && <Text color={theme.text.secondary}> | </Text>}
+              {node}
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Box>
   );

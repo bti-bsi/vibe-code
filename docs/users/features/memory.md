@@ -26,7 +26,7 @@ Don't include things Qwen can figure out by reading your code. QWEN.md works bes
 
 | File                          | Who it applies to                             |
 | ----------------------------- | --------------------------------------------- |
-| `~/.qwen/QWEN.md`             | You, across all your projects                 |
+| `~/.vibe/QWEN.md`             | You, across all your projects                 |
 | `QWEN.md` in the project root | Your whole team (commit it to source control) |
 
 You can have both. Qwen loads all QWEN.md files it finds when you start a session — your personal one plus any in the project.
@@ -74,7 +74,7 @@ Qwen doesn't save everything — only things that would actually be useful next 
 
 ### Where it's stored
 
-Auto-memory files live at `~/.qwen/projects/<project>/memory/`. All branches and worktrees of the same repository share the same memory folder, so what Qwen learns in one branch is available in others.
+Auto-memory files live at `~/.vibe/projects/<project>/memory/`. All branches and worktrees of the same repository share the same memory folder, so what Qwen learns in one branch is available in others.
 
 Everything saved is plain markdown — you can open, edit, or delete any file at any time.
 
@@ -88,7 +88,7 @@ While cleanup is running, **✦ dreaming** appears in the corner of the screen. 
 
 Auto-memory is on by default. To toggle it, open `/memory` and use the switches at the top. You can turn off just the automatic saving, just the periodic cleanup, or both.
 
-You can also set them in `~/.qwen/settings.json` (applies to all projects) or `.qwen/settings.json` (this project only):
+You can also set them in `~/.vibe/settings.json` (applies to all projects) or `.vibe/settings.json` (this project only):
 
 ```json
 {
@@ -109,7 +109,7 @@ Opens the Memory panel. From here you can:
 
 - Turn auto-memory saving on or off
 - Turn periodic cleanup (dream) on or off
-- Open your personal QWEN.md (`~/.qwen/QWEN.md`)
+- Open your personal QWEN.md (`~/.vibe/QWEN.md`)
 - Open the project QWEN.md
 - Browse the auto-memory folder
 
@@ -148,7 +148,7 @@ Runs the memory cleanup now instead of waiting for the automatic schedule:
 
 ### Qwen isn't following my QWEN.md
 
-Open `/memory` to see which files are loaded. If your file isn't listed, Qwen can't see it — make sure it's in the project root or `~/.qwen/`.
+Open `/memory` to see which files are loaded. If your file isn't listed, Qwen can't see it — make sure it's in the project root or `~/.vibe/`.
 
 Instructions work better when they're specific:
 

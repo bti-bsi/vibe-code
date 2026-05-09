@@ -46,7 +46,7 @@ import {
 
 const debugLogger = createDebugLogger('SKILL_MANAGER');
 
-const QWEN_CONFIG_DIR = '.qwen';
+const QWEN_CONFIG_DIR = '.vibe';
 const SKILLS_CONFIG_DIR = 'skills';
 const SKILL_MANIFEST_FILE = 'SKILL.md';
 

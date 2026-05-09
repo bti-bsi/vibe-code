@@ -8,10 +8,10 @@
 // the **base branch** of a PR and emit a combined Markdown file.
 //
 // Rules are loaded from the base branch (not the PR branch) so a malicious
-// PR cannot inject `.qwen/review-rules.md` content that bypasses scrutiny.
+// PR cannot inject `.vibe/review-rules.md` content that bypasses scrutiny.
 // Sources, in order:
 //
-//   1. `.qwen/review-rules.md`
+//   1. `.vibe/review-rules.md`
 //   2. `.github/copilot-instructions.md` (preferred)
 //      OR `copilot-instructions.md` (fallback — only one is loaded)
 //   3. `AGENTS.md` — only the `## Code Review` section

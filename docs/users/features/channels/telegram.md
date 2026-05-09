@@ -24,7 +24,7 @@ The easiest way to find it:
 
 ## Configuration
 
-Add the channel to `~/.qwen/settings.json`:
+Add the channel to `~/.vibe/settings.json`:
 
 ```json
 {

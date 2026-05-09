@@ -252,8 +252,8 @@ Default Mode → Auto-Edit Mode → YOLO Mode → Plan Mode → Default Mode
 ### Persistent Configuration
 
 ```
-// Project-level: ./.qwen/settings.json
-// User-level: ~/.qwen/settings.json
+// Project-level: ./.vibe/settings.json
+// User-level: ~/.vibe/settings.json
 {
   "permissions": {
 "defaultMode": "auto-edit",  // or "plan" or "yolo"

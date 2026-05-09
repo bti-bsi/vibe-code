@@ -33,7 +33,7 @@ To disambiguate the argument type: if the argument is a pure integer, treat it a
 
 1. Check if any git remote URL matches the URL's owner/repo: run `git remote -v` and look for a remote whose URL contains the owner/repo (e.g., `openjdk/jdk`). This handles forks — a local clone of `wenshao/jdk` with an `upstream` remote pointing to `openjdk/jdk` can still review `openjdk/jdk` PRs.
 2. If a matching remote is found, proceed with the **normal worktree flow** — use that remote name (instead of hardcoded `origin`) for `git fetch <remote> pull/<number>/head:qwen-review/pr-<number>`. In Step 9, use the owner/repo from the URL for posting comments.
-3. If **no remote matches**, use **lightweight mode**: run `gh pr diff <url>` to get the diff directly. Skip Steps 2 (no local rules), 3 (no local linter), 8 (no local files to fix), 10 (no local cache). In Step 11, skip worktree removal (none was created) but still clean up temp files (`.qwen/tmp/qwen-review-{target}-*`). Also fetch existing PR comments using the URL's owner/repo (`gh api repos/{owner}/{repo}/pulls/{number}/comments`) to avoid duplicating human feedback. In Step 9, use the owner/repo from the URL. Inform the user: "Cross-repo review: running in lightweight mode (no build/test, no linter, no autofix)."
+3. If **no remote matches**, use **lightweight mode**: run `gh pr diff <url>` to get the diff directly. Skip Steps 2 (no local rules), 3 (no local linter), 8 (no local files to fix), 10 (no local cache). In Step 11, skip worktree removal (none was created) but still clean up temp files (`.vibe/tmp/qwen-review-{target}-*`). Also fetch existing PR comments using the URL's owner/repo (`gh api repos/{owner}/{repo}/pulls/{number}/comments`) to avoid duplicating human feedback. In Step 9, use the owner/repo from the URL. Inform the user: "Cross-repo review: running in lightweight mode (no build/test, no linter, no autofix)."
 
 Otherwise (not a URL, not an integer), treat the argument as a file path.
 
@@ -44,7 +44,7 @@ Based on the remaining arguments:
   - If both diffs are empty, inform the user there are no changes to review and stop here — do not proceed to the review agents
 
 - **PR number or same-repo URL** (e.g., `123` or a URL whose owner/repo matches the current repo — cross-repo URLs are handled by the lightweight mode above):
-  - **Run `qwen review fetch-pr`** to set up the working state in one pass — it cleans any stale worktree, fetches the PR HEAD into `qwen-review/pr-<n>`, queries `gh pr view` for metadata, and creates an ephemeral worktree at `.qwen/tmp/review-pr-<n>`:
+  - **Run `qwen review fetch-pr`** to set up the working state in one pass — it cleans any stale worktree, fetches the PR HEAD into `qwen-review/pr-<n>`, queries `gh pr view` for metadata, and creates an ephemeral worktree at `.vibe/tmp/review-pr-<n>`:
 
     ```bash
     qwen review fetch-pr <pr_number> <owner>/<repo> \
@@ -52,11 +52,11 @@ Based on the remaining arguments:
       --out .qwen/tmp/qwen-review-pr-<pr_number>-fetch.json
     ```
 
-    `<remote>` is the matched remote from the URL-based detection above (e.g. `upstream` for fork workflows), or `origin` by default for pure integer PR numbers. Read `.qwen/tmp/qwen-review-pr-<n>-fetch.json` for: `worktreePath`, `baseRefName`, `headRefName`, `fetchedSha` (use as the **pre-autofix HEAD commit SHA** for Step 9), `isCrossRepository`, `diffStat` (files / additions / deletions). If the command fails (auth, network, PR not found), inform the user and stop.
+    `<remote>` is the matched remote from the URL-based detection above (e.g. `upstream` for fork workflows), or `origin` by default for pure integer PR numbers. Read `.vibe/tmp/qwen-review-pr-<n>-fetch.json` for: `worktreePath`, `baseRefName`, `headRefName`, `fetchedSha` (use as the **pre-autofix HEAD commit SHA** for Step 9), `isCrossRepository`, `diffStat` (files / additions / deletions). If the command fails (auth, network, PR not found), inform the user and stop.
 
     Worktree isolation: all subsequent steps (linting, agents, build/test, autofix) operate inside `worktreePath`, not the user's working tree. Cache and reports (Step 10) are written to the **main project directory**, not the worktree.
 
-  - **Incremental review check**: if `.qwen/review-cache/pr-<n>.json` exists, read `lastCommitSha` and `lastModelId`. Compare to `fetchedSha` from the fetch report and the current model ID (`{{model}}`):
+  - **Incremental review check**: if `.vibe/review-cache/pr-<n>.json` exists, read `lastCommitSha` and `lastModelId`. Compare to `fetchedSha` from the fetch report and the current model ID (`{{model}}`):
     - If SHAs differ → continue with the worktree just created. Compute the incremental diff (`git diff <lastCommitSha>..HEAD` inside the worktree) and use as the review scope; if the cached commit was rebased away, fall back to the full diff and log a warning.
     - If SHAs match **and** model matches **and** `--comment` was NOT specified → inform the user "No new changes since last review", run `qwen review cleanup pr-<n>` to remove the worktree just created, and stop.
     - If SHAs match **and** model matches **but** `--comment` WAS specified → run the full review anyway. Inform the user: "No new code changes. Running review to post inline comments."
@@ -91,7 +91,7 @@ qwen review load-rules <resolved_base_ref> \
 
 `<resolved_base_ref>` is the base ref to load from: prefer `<base>` if it exists locally, otherwise `<remote>/<base>` (run `git fetch <remote> <base>` first if not yet fetched). For local-uncommitted or file-path reviews use `HEAD`.
 
-The subcommand reads (in order, all sources combined): `.qwen/review-rules.md`, then either `.github/copilot-instructions.md` or root-level `copilot-instructions.md` (only one — preferred wins), then the `## Code Review` section of `AGENTS.md`, then the `## Code Review` section of `QWEN.md`. Missing files are silently skipped. The output file is empty when no rules are found — the subcommand reports `No review rules found on <ref>` to stdout in that case; skip rule injection in Step 4.
+The subcommand reads (in order, all sources combined): `.vibe/review-rules.md`, then either `.github/copilot-instructions.md` or root-level `copilot-instructions.md` (only one — preferred wins), then the `## Code Review` section of `AGENTS.md`, then the `## Code Review` section of `QWEN.md`. Missing files are silently skipped. The output file is empty when no rules are found — the subcommand reports `No review rules found on <ref>` to stdout in that case; skip rule injection in Step 4.
 
 If the output file is non-empty, prepend its content to each **LLM-based review agent's** (Agents 1-6) instructions:
 "In addition to the standard review criteria, you MUST also enforce these project-specific rules:
@@ -487,7 +487,7 @@ qwen review presubmit \
   [--new-findings .qwen/tmp/qwen-review-{target}-findings.json]
 ```
 
-Read `.qwen/tmp/qwen-review-{target}-presubmit.json`. Schema:
+Read `.vibe/tmp/qwen-review-{target}-presubmit.json`. Schema:
 
 ```typescript
 {
@@ -528,7 +528,7 @@ Read `.qwen/tmp/qwen-review-{target}-presubmit.json`. Schema:
 
 ⚠️ **Findings that can be mapped to a diff line → go in `comments` array (with `line` field). Findings that CANNOT be mapped to a specific diff line → go in `body` field.** Every entry in the `comments` array MUST have a valid `line` number. Do NOT put a comment in the `comments` array without a `line` — it creates an orphaned comment with no code reference.
 
-**Build the review JSON** with `write_file` to create `.qwen/tmp/qwen-review-{target}-review.json`. Every high-confidence Critical/Suggestion finding that can be mapped to a diff line MUST be an entry in the `comments` array:
+**Build the review JSON** with `write_file` to create `.vibe/tmp/qwen-review-{target}-review.json`. Every high-confidence Critical/Suggestion finding that can be mapped to a diff line MUST be an entry in the `comments` array:
 
 ````json
 {
@@ -586,13 +586,13 @@ Clean up the JSON file in Step 11.
 
 Save the review results to a Markdown file for future reference:
 
-- Local changes review → `.qwen/reviews/<YYYY-MM-DD>-<HHMMSS>-local.md`
-- PR review → `.qwen/reviews/<YYYY-MM-DD>-<HHMMSS>-pr-<number>.md`
-- File review → `.qwen/reviews/<YYYY-MM-DD>-<HHMMSS>-<filename>.md`
+- Local changes review → `.vibe/reviews/<YYYY-MM-DD>-<HHMMSS>-local.md`
+- PR review → `.vibe/reviews/<YYYY-MM-DD>-<HHMMSS>-pr-<number>.md`
+- File review → `.vibe/reviews/<YYYY-MM-DD>-<HHMMSS>-<filename>.md`
 
 Include hours/minutes/seconds in the filename to avoid overwriting on same-day re-reviews.
 
-Create the `.qwen/reviews/` directory if it doesn't exist. **For PR worktree mode, use absolute paths to the main project directory** (not the worktree) — e.g., `mkdir -p /absolute/path/to/project/.qwen/reviews/`. Relative paths would land inside the worktree and be deleted in Step 11.
+Create the `.vibe/reviews/` directory if it doesn't exist. **For PR worktree mode, use absolute paths to the main project directory** (not the worktree) — e.g., `mkdir -p /absolute/path/to/project/.vibe/reviews/`. Relative paths would land inside the worktree and be deleted in Step 11.
 
 Report content should include:
 
@@ -606,8 +606,8 @@ Report content should include:
 
 If reviewing a PR, update the review cache for incremental review support:
 
-1. Create `.qwen/review-cache/` directory if it doesn't exist
-2. Write `.qwen/review-cache/pr-<number>.json` with:
+1. Create `.vibe/review-cache/` directory if it doesn't exist
+2. Write `.vibe/review-cache/pr-<number>.json` with:
 
    ```json
    {
@@ -619,7 +619,7 @@ If reviewing a PR, update the review cache for incremental review support:
    }
    ```
 
-3. Ensure `.qwen/reviews/` and `.qwen/review-cache/` are ignored by `.gitignore` — a broader rule like `.qwen/*` also satisfies this. Only warn the user if those paths are not ignored at all.
+3. Ensure `.vibe/reviews/` and `.vibe/review-cache/` are ignored by `.gitignore` — a broader rule like `.vibe/*` also satisfies this. Only warn the user if those paths are not ignored at all.
 
 ## Step 11: Clean up
 
@@ -629,9 +629,9 @@ Run the bundled cleanup subcommand:
 qwen review cleanup <target>
 ```
 
-`<target>` is the same suffix used throughout (`pr-<n>`, `local`, or filename). The command removes the worktree at `.qwen/tmp/review-pr-<n>` (PR targets only), deletes the local branch ref `qwen-review/pr-<n>`, and clears any `.qwen/tmp/qwen-review-<target>-*` side files (review JSON, PR context, presubmit / findings reports). It is idempotent — missing files are silent OK.
+`<target>` is the same suffix used throughout (`pr-<n>`, `local`, or filename). The command removes the worktree at `.vibe/tmp/review-pr-<n>` (PR targets only), deletes the local branch ref `qwen-review/pr-<n>`, and clears any `.vibe/tmp/qwen-review-<target>-*` side files (review JSON, PR context, presubmit / findings reports). It is idempotent — missing files are silent OK.
 
-**If Step 8 flagged the worktree for preservation** (autofix commit/push failure), skip Step 11 entirely. The user needs the worktree intact to recover the autofix commit. Inform the user the worktree is preserved at `.qwen/tmp/review-pr-<n>` and they should run `qwen review cleanup pr-<n>` manually after recovering the commit.
+**If Step 8 flagged the worktree for preservation** (autofix commit/push failure), skip Step 11 entirely. The user needs the worktree intact to recover the autofix commit. Inform the user the worktree is preserved at `.vibe/tmp/review-pr-<n>` and they should run `qwen review cleanup pr-<n>` manually after recovering the commit.
 
 This step runs **after** Step 9 and Step 10 to ensure all review outputs are saved before cleanup.
 

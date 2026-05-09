@@ -24,7 +24,7 @@ Add to `settings.json`:
   "messageRewrite": {
     "enabled": true,
     "target": "all",
-    "promptFile": ".qwen/rewrite-prompt.txt",
+    "promptFile": ".vibe/rewrite-prompt.txt",
     "model": "qwen3-plus",
     "contextTurns": 1,
     "timeoutMs": 60000

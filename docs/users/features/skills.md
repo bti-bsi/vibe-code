@@ -38,10 +38,10 @@ Skills are stored as directories containing a `SKILL.md` file.
 
 ### Personal Skills
 
-Personal Skills are available across all your projects. Store them in `~/.qwen/skills/`:
+Personal Skills are available across all your projects. Store them in `~/.vibe/skills/`:
 
 ```bash
-mkdir -p ~/.qwen/skills/my-skill-name
+mkdir -p ~/.vibe/skills/my-skill-name
 ```
 
 Use personal Skills for:
@@ -52,7 +52,7 @@ Use personal Skills for:
 
 ### Project Skills
 
-Project Skills are shared with your team. Store them in `.qwen/skills/` within your project:
+Project Skills are shared with your team. Store them in `.vibe/skills/` within your project:
 
 ```bash
 mkdir -p .qwen/skills/my-skill-name
@@ -149,8 +149,8 @@ python scripts/helper.py input.txt
 
 Qwen Code discovers Skills from:
 
-- Personal Skills: `~/.qwen/skills/`
-- Project Skills: `.qwen/skills/`
+- Personal Skills: `~/.vibe/skills/`
+- Project Skills: `.vibe/skills/`
 - Extension Skills: Skills provided by installed extensions
 
 ### Extension Skills
@@ -179,13 +179,13 @@ Or inspect the filesystem:
 
 ```bash
 # List personal Skills
-ls ~/.qwen/skills/
+ls ~/.vibe/skills/
 
 # List project Skills (if in a project directory)
 ls .qwen/skills/
 
 # View a specific Skill's content
-cat ~/.qwen/skills/my-skill/SKILL.md
+cat ~/.vibe/skills/my-skill/SKILL.md
 ```
 
 ## Test a Skill
@@ -220,12 +220,12 @@ description: Extract text and tables from PDF files, fill forms, merge documents
 
 ### Verify file path
 
-- Personal Skills: `~/.qwen/skills/<skill-name>/SKILL.md`
-- Project Skills: `.qwen/skills/<skill-name>/SKILL.md`
+- Personal Skills: `~/.vibe/skills/<skill-name>/SKILL.md`
+- Project Skills: `.vibe/skills/<skill-name>/SKILL.md`
 
 ```bash
 # Personal
-ls ~/.qwen/skills/my-skill/SKILL.md
+ls ~/.vibe/skills/my-skill/SKILL.md
 
 # Project
 ls .qwen/skills/my-skill/SKILL.md
@@ -257,7 +257,7 @@ qwen --debug
 
 You can share Skills through project repositories:
 
-1. Add the Skill under `.qwen/skills/`
+1. Add the Skill under `.vibe/skills/`
 2. Commit and push
 3. Teammates pull the changes
 
@@ -273,7 +273,7 @@ Edit `SKILL.md` directly:
 
 ```bash
 # Personal Skill
-code ~/.qwen/skills/my-skill/SKILL.md
+code ~/.vibe/skills/my-skill/SKILL.md
 
 # Project Skill
 code .qwen/skills/my-skill/SKILL.md
@@ -287,7 +287,7 @@ Delete the Skill directory:
 
 ```bash
 # Personal
-rm -rf ~/.qwen/skills/my-skill
+rm -rf ~/.vibe/skills/my-skill
 
 # Project
 rm -rf .qwen/skills/my-skill

@@ -20,8 +20,8 @@ The plugin **MUST** run a local HTTP server that implements the **Model Context 
 
 For Qwen Code to connect, it needs to discover what port your server is using. The plugin **MUST** facilitate this by creating a "lock file" and setting the port environment variable.
 
-- **How the CLI Finds the File:** The CLI reads the port from `QWEN_CODE_IDE_SERVER_PORT`, then reads `~/.qwen/ide/<PORT>.lock`. (Legacy fallbacks exist for older extensions; see note below.)
-- **File Location:** The file must be created in a specific directory: `~/.qwen/ide/`. Your plugin must create this directory if it doesn't exist.
+- **How the CLI Finds the File:** The CLI reads the port from `QWEN_CODE_IDE_SERVER_PORT`, then reads `~/.vibe/ide/<PORT>.lock`. (Legacy fallbacks exist for older extensions; see note below.)
+- **File Location:** The file must be created in a specific directory: `~/.vibe/ide/`. Your plugin must create this directory if it doesn't exist.
 - **File Naming Convention:** The filename is critical and **MUST** follow the pattern:
   `<PORT>.lock`
   - `<PORT>`: The port your MCP server is listening on.
@@ -36,6 +36,7 @@ For Qwen Code to connect, it needs to discover what port your server is using. T
     "ideName": "VS Code"
   }
   ```
+
   - `port` (number, required): The port of the MCP server.
   - `workspacePath` (string, required): A list of all open workspace root paths, delimited by the OS-specific path separator (`:` for Linux/macOS, `;` for Windows). The CLI uses this path to ensure it's running in the same project folder that's open in the IDE. If the CLI's current working directory is not a sub-directory of `workspacePath`, the connection will be rejected. Your plugin **MUST** provide the correct, absolute path(s) to the root of the open workspace(s).
   - `authToken` (string, required): A secret token for securing the connection. The CLI will include this token in an `Authorization: Bearer <token>` header on all requests.
