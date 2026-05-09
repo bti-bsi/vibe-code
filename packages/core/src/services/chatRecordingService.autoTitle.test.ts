@@ -91,10 +91,10 @@ describe('ChatRecordingService - auto-title trigger', () => {
       storage: {
         getProjectTempDir: vi
           .fn()
-          .mockReturnValue('/test/project/root/.qwen/tmp/hash'),
+          .mockReturnValue('/test/project/root/.vibe/tmp/hash'),
         getProjectDir: vi
           .fn()
-          .mockReturnValue('/test/project/root/.qwen/projects/test-project'),
+          .mockReturnValue('/test/project/root/.vibe/projects/test-project'),
       },
       getModel: vi.fn().mockReturnValue('qwen-plus'),
       getFastModel: vi.fn(() => fastModelValue),

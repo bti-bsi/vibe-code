@@ -649,7 +649,7 @@ describe('QwenLogger', () => {
       const event = new HookCallEvent(
         'PreToolUse',
         'command',
-        '/home/user/.qwen/hooks/check-secrets.sh --api-key=secret123',
+        '/home/user/.vibe/hooks/check-secrets.sh --api-key=secret123',
         { tool_name: 'read_file' },
         100,
         true,

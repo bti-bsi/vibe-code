@@ -61,7 +61,7 @@ const renderComponent = (
       },
     },
     setValue: vi.fn(),
-    forScope: vi.fn(() => ({ path: '/mock/.qwen/settings.json' })),
+    forScope: vi.fn(() => ({ path: '/mock/.vibe/settings.json' })),
   } as unknown as LoadedSettings;
 
   const mockConfig = {
@@ -123,9 +123,7 @@ describe('<EditModelDialog />', () => {
     );
 
     await act(async () => {
-      mockedTextInput.mock.calls.at(-1)?.[0].onChange(
-        'https://api.new/v1',
-      );
+      mockedTextInput.mock.calls.at(-1)?.[0].onChange('https://api.new/v1');
     });
     await act(async () => {
       mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();

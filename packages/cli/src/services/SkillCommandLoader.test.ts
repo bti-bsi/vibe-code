@@ -14,7 +14,7 @@ function makeSkill(overrides: Partial<SkillConfig> = {}): SkillConfig {
     name: 'my-skill',
     description: 'My skill description',
     level: 'user',
-    filePath: '/home/user/.qwen/skills/my-skill/SKILL.md',
+    filePath: '/home/user/.vibe/skills/my-skill/SKILL.md',
     body: 'Skill body content.',
     ...overrides,
   };

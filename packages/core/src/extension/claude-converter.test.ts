@@ -540,9 +540,9 @@ describe('performVariableReplacement for Claude extensions', () => {
     performVariableReplacement(extDir);
 
     const result = fs.readFileSync(path.join(extDir, 'setup.sh'), 'utf-8');
-    expect(result).toContain('$HOME/.qwen/config');
-    expect(result).toContain('~/.qwen/cache');
-    expect(result).toContain('./.qwen/local');
+    expect(result).toContain('$HOME/.vibe/config');
+    expect(result).toContain('~/.vibe/cache');
+    expect(result).toContain('./.vibe/local');
     expect(result).not.toContain('.claude');
   });
 

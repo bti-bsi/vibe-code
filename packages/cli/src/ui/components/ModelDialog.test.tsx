@@ -62,7 +62,7 @@ const renderComponent = (
     user: { settings: {} },
     workspace: { settings: {} },
     setValue: vi.fn(),
-    forScope: vi.fn(() => ({ path: '/mock/.qwen/settings.json' })),
+    forScope: vi.fn(() => ({ path: '/mock/.vibe/settings.json' })),
     merged: {},
   } as unknown as LoadedSettings;
 
@@ -351,27 +351,24 @@ describe('<ModelDialog />', () => {
   it('creates and saves a custom model from the model dialog', async () => {
     const switchModel = vi.fn().mockResolvedValue(undefined);
     const reloadModelProvidersConfig = vi.fn();
-    const { mockConfig, mockSettings, props } = renderComponent(
-      {},
-      {
-        getAuthType: vi.fn(() => AuthType.USE_OPENAI),
-        getModel: vi.fn(() => 'gpt-4'),
-        switchModel,
-        reloadModelProvidersConfig,
-        getAllConfiguredModels: vi.fn(() => [
-          {
-            id: 'gpt-4',
-            label: 'GPT-4',
-            description: 'GPT-4 model',
-            authType: AuthType.USE_OPENAI,
-          },
-        ]),
-        getContentGeneratorConfig: vi.fn(() => ({
+    const { mockConfig, mockSettings, props } = renderComponent({}, {
+      getAuthType: vi.fn(() => AuthType.USE_OPENAI),
+      getModel: vi.fn(() => 'gpt-4'),
+      switchModel,
+      reloadModelProvidersConfig,
+      getAllConfiguredModels: vi.fn(() => [
+        {
+          id: 'gpt-4',
+          label: 'GPT-4',
+          description: 'GPT-4 model',
           authType: AuthType.USE_OPENAI,
-          model: 'gpt-4',
-        })),
-      } as unknown as Partial<Config>,
-    );
+        },
+      ]),
+      getContentGeneratorConfig: vi.fn(() => ({
+        authType: AuthType.USE_OPENAI,
+        model: 'gpt-4',
+      })),
+    } as unknown as Partial<Config>);
 
     const selectInitial = mockedSelect.mock.calls[0][0];
     await act(async () => {
@@ -384,9 +381,9 @@ describe('<ModelDialog />', () => {
     });
 
     await act(async () => {
-      mockedTextInput.mock.calls.at(-1)?.[0].onChange(
-        'https://api.example.com/v1',
-      );
+      mockedTextInput.mock.calls
+        .at(-1)?.[0]
+        .onChange('https://api.example.com/v1');
     });
     await act(async () => {
       mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();
@@ -450,21 +447,18 @@ describe('<ModelDialog />', () => {
   });
 
   it('remounts each custom-model text input with a clean displayed value between steps', async () => {
-    renderComponent(
-      {},
-      {
-        getAuthType: vi.fn(() => AuthType.USE_OPENAI),
-        getModel: vi.fn(() => 'gpt-4'),
-        getAllConfiguredModels: vi.fn(() => [
-          {
-            id: 'gpt-4',
-            label: 'GPT-4',
-            description: 'GPT-4 model',
-            authType: AuthType.USE_OPENAI,
-          },
-        ]),
-      } as unknown as Partial<Config>,
-    );
+    renderComponent({}, {
+      getAuthType: vi.fn(() => AuthType.USE_OPENAI),
+      getModel: vi.fn(() => 'gpt-4'),
+      getAllConfiguredModels: vi.fn(() => [
+        {
+          id: 'gpt-4',
+          label: 'GPT-4',
+          description: 'GPT-4 model',
+          authType: AuthType.USE_OPENAI,
+        },
+      ]),
+    } as unknown as Partial<Config>);
 
     const selectInitial = mockedSelect.mock.calls[0][0];
     await act(async () => {
@@ -479,9 +473,9 @@ describe('<ModelDialog />', () => {
     expect(mockedTextInput.mock.calls.at(-1)?.[0].value).toBe('');
 
     await act(async () => {
-      mockedTextInput.mock.calls.at(-1)?.[0].onChange(
-        'https://api.example.com/v1',
-      );
+      mockedTextInput.mock.calls
+        .at(-1)?.[0]
+        .onChange('https://api.example.com/v1');
     });
     await act(async () => {
       mockedTextInput.mock.calls.at(-1)?.[0].onSubmit?.();

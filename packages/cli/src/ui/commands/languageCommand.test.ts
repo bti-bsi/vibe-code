@@ -64,10 +64,10 @@ vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
   return {
     ...actual,
     Storage: {
-      getGlobalQwenDir: vi.fn().mockReturnValue('/mock/.qwen'),
+      getGlobalQwenDir: vi.fn().mockReturnValue('/mock/.vibe'),
       getGlobalSettingsPath: vi
         .fn()
-        .mockReturnValue('/mock/.qwen/settings.json'),
+        .mockReturnValue('/mock/.vibe/settings.json'),
     },
   };
 });

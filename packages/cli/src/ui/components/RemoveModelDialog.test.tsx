@@ -61,7 +61,7 @@ const renderComponent = (
       },
     },
     setValue: vi.fn(),
-    forScope: vi.fn(() => ({ path: '/mock/.qwen/settings.json' })),
+    forScope: vi.fn(() => ({ path: '/mock/.vibe/settings.json' })),
   } as unknown as LoadedSettings;
 
   const mockConfig = {

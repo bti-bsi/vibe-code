@@ -38,7 +38,7 @@ vi.mock('../i18n/index.js', () => ({
 // Mock @vibe-bti/vibe-code-core
 vi.mock('@vibe-bti/vibe-code-core', () => ({
   Storage: {
-    getGlobalQwenDir: vi.fn(() => '/mock/home/.qwen'),
+    getGlobalQwenDir: vi.fn(() => '/mock/home/.vibe'),
   },
 }));
 
@@ -180,7 +180,7 @@ describe('languageUtils', () => {
     it('should create directory and write file', () => {
       writeOutputLanguageFile('Chinese');
 
-      const globalDir = '/mock/home/.qwen';
+      const globalDir = '/mock/home/.vibe';
       const expectedDir = path.join(globalDir);
       const expectedFilePath = path.join(globalDir, 'output-language.md');
 
@@ -424,8 +424,8 @@ describe('languageUtils', () => {
 
   describe('output-language.md path resolution priority', () => {
     it('should prefer project-level path over global path', () => {
-      const projectPath = '/project/.qwen/output-language.md';
-      const globalPath = '/mock/home/.qwen/output-language.md';
+      const projectPath = '/project/.vibe/output-language.md';
+      const globalPath = '/mock/home/.vibe/output-language.md';
 
       vi.mocked(fs.existsSync).mockImplementation((p) => {
         if (p.toString() === projectPath) return true;
@@ -444,8 +444,8 @@ describe('languageUtils', () => {
     });
 
     it('should fall back to global path when project-level does not exist', () => {
-      const projectPath = '/project/.qwen/output-language.md';
-      const globalPath = '/mock/home/.qwen/output-language.md';
+      const projectPath = '/project/.vibe/output-language.md';
+      const globalPath = '/mock/home/.vibe/output-language.md';
 
       vi.mocked(fs.existsSync).mockImplementation((p) => {
         if (p.toString() === projectPath) return false;
@@ -464,8 +464,8 @@ describe('languageUtils', () => {
     });
 
     it('should return undefined when neither path exists', () => {
-      const projectPath = '/project/.qwen/output-language.md';
-      const globalPath = '/mock/home/.qwen/output-language.md';
+      const projectPath = '/project/.vibe/output-language.md';
+      const globalPath = '/mock/home/.vibe/output-language.md';
 
       vi.mocked(fs.existsSync).mockReturnValue(false);
 
