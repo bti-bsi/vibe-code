@@ -28,12 +28,12 @@ vi.mock('fs', async (importOriginal) => {
 vi.mock('@vibe-bti/vibe-code-core', () => {
   class Storage {
     getProjectTempDir(): string {
-      return path.join('/test/home/', '.qwen', 'tmp', 'mocked_hash');
+      return path.join('/test/home/', '.vibe', 'tmp', 'mocked_hash');
     }
     getHistoryFilePath(): string {
       return path.join(
         '/test/home/',
-        '.qwen',
+        '.vibe',
         'tmp',
         'mocked_hash',
         'shell_history',
@@ -59,7 +59,7 @@ const MOCKED_PROJECT_HASH = 'mocked_hash';
 
 const MOCKED_HISTORY_DIR = path.join(
   MOCKED_HOME_DIR,
-  '.qwen',
+  '.vibe',
   'tmp',
   MOCKED_PROJECT_HASH,
 );

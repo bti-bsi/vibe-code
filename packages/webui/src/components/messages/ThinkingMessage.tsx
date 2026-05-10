@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -49,7 +49,7 @@ const ThinkingMessageBase: FC<ThinkingMessageProps> = ({
 
   return (
     <div
-      className={`qwen-message message-item thinking-message thinking-status-${status}`}
+      className={`vibe-message message-item thinking-message thinking-status-${status}`}
     >
       <div className="thinking-content-wrapper">
         <button

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -18,7 +18,7 @@ import { sendNotification } from '../../services/notificationService.js';
 
 export const LONG_TASK_NOTIFICATION_THRESHOLD_SECONDS = 20;
 
-const NOTIFICATION_TITLE = 'Qwen Code';
+const NOTIFICATION_TITLE = 'Vibe Code';
 
 interface UseAttentionNotificationsOptions {
   isFocused: boolean;
@@ -63,8 +63,8 @@ export const useAttentionNotifications = ({
       terminalBellEnabled
     ) {
       const message = awaitingToolName
-        ? `Qwen Code needs your permission to use ${awaitingToolName}`
-        : 'Qwen Code is waiting for your input';
+        ? `Vibe Code needs your permission to use ${awaitingToolName}`
+        : 'Vibe Code is waiting for your input';
 
       sendNotification(
         { message, title: NOTIFICATION_TITLE },
@@ -99,7 +99,7 @@ export const useAttentionNotifications = ({
       if (wasLongTask && !isFocused && terminalBellEnabled) {
         sendNotification(
           {
-            message: 'Qwen Code is waiting for your input',
+            message: 'Vibe Code is waiting for your input',
             title: NOTIFICATION_TITLE,
           },
           terminal,
@@ -115,7 +115,7 @@ export const useAttentionNotifications = ({
         if (hooksEnabled && messageBus) {
           fireNotificationHook(
             messageBus,
-            'Qwen Code is waiting for your input',
+            'Vibe Code is waiting for your input',
             NotificationType.IdlePrompt,
             'Waiting for input',
           ).catch(() => {

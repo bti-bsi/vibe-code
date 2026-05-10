@@ -1,7 +1,7 @@
 {
   "name": "@vibe-bti/vibe-code-webui",
   "version": "0.15.11",
-  "description": "Shared UI components for Qwen Code packages",
+  "description": "Shared UI components for Vibe Code packages",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -72,11 +72,11 @@
     "vite-plugin-dts": "^4.5.4"
   },
   "keywords": [
-    "qwen",
+    "vibe",
     "ui",
     "components",
     "shared"
   ],
-  "author": "Qwen Team",
+  "author": "Vibe Team",
   "license": "MIT"
 }

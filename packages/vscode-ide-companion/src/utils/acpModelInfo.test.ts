@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,17 +15,17 @@ describe('extractSessionModelState', () => {
     const result = extractSessionModelState({
       sessionId: 's',
       models: {
-        currentModelId: 'qwen3-coder-plus',
+        currentModelId: 'vibe3-coder-plus',
         availableModels: [
           {
-            modelId: 'qwen3-coder-plus',
-            name: 'Qwen3 Coder Plus',
+            modelId: 'vibe3-coder-plus',
+            name: 'Vibe3 Coder Plus',
             description: null,
             _meta: { contextLimit: 123 },
           },
           {
-            modelId: 'qwen3-coder',
-            name: 'Qwen3 Coder',
+            modelId: 'vibe3-coder',
+            name: 'Vibe3 Coder',
             description: 'Standard model',
             _meta: { contextLimit: 64 },
           },
@@ -34,17 +34,17 @@ describe('extractSessionModelState', () => {
     });
 
     expect(result).toEqual({
-      currentModelId: 'qwen3-coder-plus',
+      currentModelId: 'vibe3-coder-plus',
       availableModels: [
         {
-          modelId: 'qwen3-coder-plus',
-          name: 'Qwen3 Coder Plus',
+          modelId: 'vibe3-coder-plus',
+          name: 'Vibe3 Coder Plus',
           description: null,
           _meta: { contextLimit: 123 },
         },
         {
-          modelId: 'qwen3-coder',
-          name: 'Qwen3 Coder',
+          modelId: 'vibe3-coder',
+          name: 'Vibe3 Coder',
           description: 'Standard model',
           _meta: { contextLimit: 64 },
         },
@@ -140,17 +140,17 @@ describe('extractSessionModelState', () => {
   it('derives contextLimit for known models when the ACP payload omits it', () => {
     const result = extractSessionModelState({
       models: {
-        currentModelId: 'qwen3-max',
-        availableModels: [{ modelId: 'qwen3-max', name: 'Qwen3 Max' }],
+        currentModelId: 'vibe3-max',
+        availableModels: [{ modelId: 'vibe3-max', name: 'Vibe3 Max' }],
       },
     });
 
     expect(result).toEqual({
-      currentModelId: 'qwen3-max',
+      currentModelId: 'vibe3-max',
       availableModels: [
         {
-          modelId: 'qwen3-max',
-          name: 'Qwen3 Max',
+          modelId: 'vibe3-max',
+          name: 'Vibe3 Max',
           _meta: { contextLimit: 262144 },
         },
       ],
@@ -164,11 +164,11 @@ describe('extractModelInfoFromNewSessionResult', () => {
       extractModelInfoFromNewSessionResult({
         sessionId: 's',
         models: {
-          currentModelId: 'qwen3-coder-plus',
+          currentModelId: 'vibe3-coder-plus',
           availableModels: [
             {
-              modelId: 'qwen3-coder-plus',
-              name: 'Qwen3 Coder Plus',
+              modelId: 'vibe3-coder-plus',
+              name: 'Vibe3 Coder Plus',
               description: null,
               _meta: { contextLimit: 123 },
             },
@@ -176,8 +176,8 @@ describe('extractModelInfoFromNewSessionResult', () => {
         },
       }),
     ).toEqual({
-      modelId: 'qwen3-coder-plus',
-      name: 'Qwen3 Coder Plus',
+      modelId: 'vibe3-coder-plus',
+      name: 'Vibe3 Coder Plus',
       description: null,
       _meta: { contextLimit: 123 },
     });
@@ -230,14 +230,14 @@ describe('extractModelInfoFromNewSessionResult', () => {
     expect(
       extractModelInfoFromNewSessionResult({
         model: {
-          name: 'Qwen3 Max',
-          modelId: 'qwen3-max',
+          name: 'Vibe3 Max',
+          modelId: 'vibe3-max',
           _meta: null,
         },
       }),
     ).toEqual({
-      name: 'Qwen3 Max',
-      modelId: 'qwen3-max',
+      name: 'Vibe3 Max',
+      modelId: 'vibe3-max',
       _meta: { contextLimit: 262144 },
     });
   });

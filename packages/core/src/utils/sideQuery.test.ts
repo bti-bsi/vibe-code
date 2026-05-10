@@ -21,7 +21,7 @@ describe('runSideQuery', () => {
     } as unknown as BaseLlmClient;
     mockConfig = {
       getBaseLlmClient: vi.fn().mockReturnValue(mockBaseLlmClient),
-      getModel: vi.fn().mockReturnValue('qwen3-coder-plus'),
+      getModel: vi.fn().mockReturnValue('vibe3-coder-plus'),
     } as unknown as Config;
   });
 
@@ -46,7 +46,7 @@ describe('runSideQuery', () => {
     expect(result).toEqual({ decision: 'user' });
     expect(mockBaseLlmClient.generateJson).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: 'qwen3-coder-plus',
+        model: 'vibe3-coder-plus',
         promptId: 'side-query:next-speaker',
         abortSignal: abortController.signal,
       }),

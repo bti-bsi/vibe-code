@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -164,7 +164,7 @@ describe('speculationToolGate', () => {
       await rewritePathArgs(args, overlayFs);
 
       expect(args['file_path']).not.toBe(filePath);
-      expect(String(args['file_path'])).toContain('qwen-speculation');
+      expect(String(args['file_path'])).toContain('vibe-speculation');
     });
 
     it('rewrites filePath argument (camelCase)', async () => {
@@ -192,7 +192,7 @@ describe('speculationToolGate', () => {
       const args: Record<string, unknown> = { path: filePath };
       await rewritePathArgs(args, overlayFs);
 
-      expect(String(args['path'])).toContain('qwen-speculation');
+      expect(String(args['path'])).toContain('vibe-speculation');
     });
   });
 
@@ -216,7 +216,7 @@ describe('speculationToolGate', () => {
 
       expect(result.action).toBe('allow');
       // The file_path arg should now point to the overlay
-      expect(String(args['file_path'])).toContain('qwen-speculation');
+      expect(String(args['file_path'])).toContain('vibe-speculation');
       expect(String(args['file_path'])).not.toBe(filePath);
     });
 

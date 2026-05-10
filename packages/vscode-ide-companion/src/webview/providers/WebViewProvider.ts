@@ -1,12 +1,12 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import * as vscode from 'vscode';
 import { execFile } from 'child_process';
-import { QwenAgentManager } from '../../services/qwenAgentManager.js';
+import { VibeAgentManager } from '../../services/vibeAgentManager.js';
 import { ConversationStore } from '../../services/conversationStore.js';
 import type {
   RequestPermissionRequest,
@@ -30,7 +30,7 @@ import { getErrorMessage } from '../../utils/errorMessage.js';
 import {
   writeCodingPlanConfig,
   writeModelProvidersConfig,
-  readQwenSettingsForVSCode,
+  readVibeSettingsForVSCode,
   clearPersistedAuth,
 } from '../../services/settingsWriter.js';
 import { parseInsightMessage } from '@vibe-bti/vibe-code-core';
@@ -54,10 +54,10 @@ const DOT_ICON: Record<DotColor | 'default', string> = {
   default: 'icon.png',
 };
 
-const AUTH_RELATED_QWEN_SETTINGS = [
-  'qwen-code.provider',
-  'qwen-code.apiKey',
-  'qwen-code.codingPlanRegion',
+const AUTH_RELATED_VIBE_SETTINGS = [
+  'vibe-code.provider',
+  'vibe-code.apiKey',
+  'vibe-code.codingPlanRegion',
 ] as const;
 
 function isInsightCommand(command: string): boolean {
@@ -68,7 +68,7 @@ function isInsightCommand(command: string): boolean {
 export class WebViewProvider {
   private panelManager: PanelManager;
   private messageHandler: MessageHandler;
-  private agentManager: QwenAgentManager;
+  private agentManager: VibeAgentManager;
   private conversationStore: ConversationStore;
   private disposables: vscode.Disposable[] = [];
   private agentInitialized = false; // Track if agent has been initialized
@@ -124,7 +124,7 @@ export class WebViewProvider {
     private context: vscode.ExtensionContext,
     private extensionUri: vscode.Uri,
   ) {
-    this.agentManager = new QwenAgentManager();
+    this.agentManager = new VibeAgentManager();
     this.conversationStore = new ConversationStore(context);
     this.panelManager = new PanelManager(extensionUri, () => {
       // Panel dispose callback — unblock any pending ACP Promises
@@ -167,15 +167,15 @@ export class WebViewProvider {
     // The isSyncingToVSCode guard prevents a loop when we programmatically populate VSCode settings.
     const configChangeDisposable = vscode.workspace.onDidChangeConfiguration(
       async (e) => {
-        const authSettingsChanged = AUTH_RELATED_QWEN_SETTINGS.some((setting) =>
+        const authSettingsChanged = AUTH_RELATED_VIBE_SETTINGS.some((setting) =>
           e.affectsConfiguration(setting),
         );
 
         if (authSettingsChanged && !this.isSyncingToVSCode) {
           console.log(
-            '[WebViewProvider] Auth-related qwen-code settings changed by user, syncing...',
+            '[WebViewProvider] Auth-related vibe-code settings changed by user, syncing...',
           );
-          const synced = await this.syncVSCodeSettingsToQwenConfig();
+          const synced = await this.syncVSCodeSettingsToVibeConfig();
           if (synced && this.agentInitialized) {
             // Settings changed and we have an active connection — reconnect
             try {
@@ -194,14 +194,14 @@ export class WebViewProvider {
           } else if (
             !synced &&
             this.agentInitialized &&
-            e.affectsConfiguration('qwen-code.apiKey')
+            e.affectsConfiguration('vibe-code.apiKey')
           ) {
-            // Only de-auth when qwen-code.apiKey itself was cleared.
+            // Only de-auth when vibe-code.apiKey itself was cleared.
             // Other auth-related settings (provider, codingPlanRegion) returning
             // synced=false is normal for api-key providers — those are managed by
             // the interactive auth flow, not VS Code Settings sync.
             const apiKey = vscode.workspace
-              .getConfiguration('qwen-code')
+              .getConfiguration('vibe-code')
               .get<string>('apiKey', '');
             if (!apiKey) {
               console.log(
@@ -409,7 +409,7 @@ export class WebViewProvider {
       this.handleAgentIdle();
     });
 
-    // Note: Tool call updates are handled in handleSessionUpdate within QwenAgentManager
+    // Note: Tool call updates are handled in handleSessionUpdate within VibeAgentManager
     // and sent via onStreamChunk callback
     this.agentManager.onToolCall((update) => {
       // Always surface tool calls; they are part of the live assistant flow.
@@ -506,8 +506,8 @@ export class WebViewProvider {
               (request.toolCall as { kind?: string } | undefined)?.kind ===
               'switch_mode';
 
-            // Always close open qwen-diff editors after any permission decision
-            void vscode.commands.executeCommand('qwen.diff.closeAll');
+            // Always close open vibe-diff editors after any permission decision
+            void vscode.commands.executeCommand('vibe.diff.closeAll');
 
             if (isCancel) {
               // Fire and forget — for normal tool calls, cancel generation and
@@ -583,7 +583,7 @@ export class WebViewProvider {
               })();
             } else {
               // Allowed/proceeded — suppress diff re-open briefly
-              void vscode.commands.executeCommand('qwen.diff.suppressBriefly');
+              void vscode.commands.executeCommand('vibe.diff.suppressBriefly');
             }
           };
           // Store handler in message handler
@@ -891,7 +891,7 @@ export class WebViewProvider {
           ).trim();
           const panelRef = this.panelManager.getPanel();
           if (panelRef) {
-            panelRef.title = title ? truncatePanelTitle(title) : 'Qwen Code';
+            panelRef.title = title ? truncatePanelTitle(title) : 'Vibe Code';
           }
           return;
         }
@@ -1042,14 +1042,14 @@ export class WebViewProvider {
   }
 
   /**
-   * Sync VSCode extension settings (qwen-code.*) to ~/.qwen/settings.json
+   * Sync VSCode extension settings (vibe-code.*) to ~/.vibe/settings.json
    * if an API key is configured. This enables auto-connect on startup
    * without requiring the user to click "Connect" each time.
    *
    * @returns true if settings were synced (apiKey is configured), false otherwise
    */
-  private async syncVSCodeSettingsToQwenConfig(): Promise<boolean> {
-    const config = vscode.workspace.getConfiguration('qwen-code');
+  private async syncVSCodeSettingsToVibeConfig(): Promise<boolean> {
+    const config = vscode.workspace.getConfiguration('vibe-code');
     const apiKey = config.get<string>('apiKey', '');
 
     if (!apiKey) {
@@ -1073,7 +1073,7 @@ export class WebViewProvider {
       writeCodingPlanConfig(region, apiKey);
 
       console.log(
-        `[WebViewProvider] Synced VSCode settings → ~/.qwen/settings.json (provider=${provider})`,
+        `[WebViewProvider] Synced VSCode settings → ~/.vibe/settings.json (provider=${provider})`,
       );
       return true;
     } catch (error) {
@@ -1083,39 +1083,39 @@ export class WebViewProvider {
   }
 
   /**
-   * Sync ~/.qwen/settings.json values back to VSCode Settings UI.
+   * Sync ~/.vibe/settings.json values back to VSCode Settings UI.
    * This makes existing CLI-configured non-secret metadata visible in the
    * VSCode Settings page without mirroring credentials into settings.json.
    */
-  private async syncQwenConfigToVSCodeSettings(): Promise<void> {
+  private async syncVibeConfigToVSCodeSettings(): Promise<void> {
     try {
-      const qwenSettings = readQwenSettingsForVSCode();
-      if (!qwenSettings) {
+      const vibeSettings = readVibeSettingsForVSCode();
+      if (!vibeSettings) {
         return;
       }
 
       console.log(
-        '[WebViewProvider] Syncing ~/.qwen/settings.json → VSCode settings',
+        '[WebViewProvider] Syncing ~/.vibe/settings.json → VSCode settings',
       );
 
       // Set guard to prevent onDidChangeConfiguration from triggering a write-back
-      const config = vscode.workspace.getConfiguration('qwen-code');
+      const config = vscode.workspace.getConfiguration('vibe-code');
       const target = vscode.ConfigurationTarget.Global;
       const updates: Array<Thenable<void>> = [];
 
       if (
-        config.get<string>('provider', 'coding-plan') !== qwenSettings.provider
+        config.get<string>('provider', 'coding-plan') !== vibeSettings.provider
       ) {
-        updates.push(config.update('provider', qwenSettings.provider, target));
+        updates.push(config.update('provider', vibeSettings.provider, target));
       }
       if (
         config.get<'china' | 'global'>('codingPlanRegion', 'china') !==
-        qwenSettings.codingPlanRegion
+        vibeSettings.codingPlanRegion
       ) {
         updates.push(
           config.update(
             'codingPlanRegion',
-            qwenSettings.codingPlanRegion,
+            vibeSettings.codingPlanRegion,
             target,
           ),
         );
@@ -1123,7 +1123,7 @@ export class WebViewProvider {
 
       if (updates.length === 0) {
         console.log(
-          '[WebViewProvider] VSCode settings already match ~/.qwen/settings.json',
+          '[WebViewProvider] VSCode settings already match ~/.vibe/settings.json',
         );
         return;
       }
@@ -1137,7 +1137,7 @@ export class WebViewProvider {
       }
     } catch (error) {
       console.error(
-        '[WebViewProvider] Failed to sync qwen config to VSCode settings:',
+        '[WebViewProvider] Failed to sync vibe config to VSCode settings:',
         error,
       );
     }
@@ -1145,9 +1145,9 @@ export class WebViewProvider {
 
   /**
    * Attempt to restore authentication state and initialize connection.
-   * On startup, sync ~/.qwen/settings.json → VSCode settings so the Settings UI
+   * On startup, sync ~/.vibe/settings.json → VSCode settings so the Settings UI
    * reflects existing non-secret CLI config, then attempt a connection.
-   * Writing back to ~/.qwen/settings.json happens through the auth flow and
+   * Writing back to ~/.vibe/settings.json happens through the auth flow and
    * auth-related VSCode setting changes.
    */
   private async attemptAuthStateRestoration(): Promise<void> {
@@ -1158,7 +1158,7 @@ export class WebViewProvider {
 
     this.initializationPromise = (async () => {
       try {
-        await this.syncQwenConfigToVSCodeSettings();
+        await this.syncVibeConfigToVSCodeSettings();
 
         console.log('[WebViewProvider] Attempting connection...');
         // Attempt a connection to detect prior auth without forcing login
@@ -1209,7 +1209,7 @@ export class WebViewProvider {
       const bundledCliEntry = vscode.Uri.joinPath(
         this.extensionUri,
         'dist',
-        'qwen-cli',
+        'vibe-cli',
         'cli.js',
       ).fsPath;
 
@@ -1263,7 +1263,7 @@ export class WebViewProvider {
           });
         }
 
-        // Load messages from the current Qwen session
+        // Load messages from the current Vibe session
         const sessionReady = await this.loadCurrentSessionMessages(options);
 
         if (sessionReady) {
@@ -1281,7 +1281,7 @@ export class WebViewProvider {
         const errorMsg = getErrorMessage(_error);
         console.error('[WebViewProvider] Agent connection error:', _error);
         vscode.window.showWarningMessage(
-          `Failed to connect to Qwen CLI: ${errorMsg}\nYou can still use the chat UI, but messages won't be sent to AI.`,
+          `Failed to connect to Vibe CLI: ${errorMsg}\nYou can still use the chat UI, but messages won't be sent to AI.`,
         );
         // Fallback to empty conversation
         await this.initializeEmptyConversation();
@@ -1301,8 +1301,8 @@ export class WebViewProvider {
 
   /**
    * Handle auth interactive — interactive auth flow result.
-   * Writes provider config to ~/.qwen/settings.json and reconnects.
-   * Mirrors the CLI's `qwen auth coding-plan` / `qwen auth` flow.
+   * Writes provider config to ~/.vibe/settings.json and reconnects.
+   * Mirrors the CLI's `vibe auth coding-plan` / `vibe auth` flow.
    */
   private async handleAuthInteractive(
     provider: string,
@@ -1331,7 +1331,7 @@ export class WebViewProvider {
         // Alibaba Standard — multiple models sharing the same base URL
         const modelBaseUrl =
           baseUrl || 'https://dashscope.aliyuncs.com/compatible-mode/v1';
-        const ids = (modelIds || model || 'qwen3.5-plus')
+        const ids = (modelIds || model || 'vibe3.5-plus')
           .split(',')
           .map((s) => s.trim())
           .filter(Boolean);
@@ -1342,7 +1342,7 @@ export class WebViewProvider {
         writeModelProvidersConfig({
           apiKey,
           modelProviders: providers,
-          activeModel: ids[0] || 'qwen3.5-plus',
+          activeModel: ids[0] || 'vibe3.5-plus',
         });
       } else {
         // Custom API Key — single model entry
@@ -1438,7 +1438,7 @@ export class WebViewProvider {
       type: 'agentConnectionError',
       data: {
         message:
-          'Lost connection to Qwen agent and auto-reconnect failed. Please use the refresh button to try again.',
+          'Lost connection to Vibe agent and auto-reconnect failed. Please use the refresh button to try again.',
       },
     });
   }
@@ -1493,7 +1493,7 @@ export class WebViewProvider {
   }
 
   /**
-   * Load messages from current Qwen session
+   * Load messages from current Vibe session
    * Skips session restoration and creates a new session directly
    */
   private async loadCurrentSessionMessages(options?: {
@@ -1715,7 +1715,7 @@ export class WebViewProvider {
    * Context-aware handler for the "New Chat" action (openNewChatTab message).
    *
    * - View host (sidebar / secondary bar): resets the conversation in-place by
-   *   routing to the newQwenSession handler (includes auth checks and UI clearing).
+   *   routing to the newVibeSession handler (includes auth checks and UI clearing).
    * - Editor tab: returns false so the message falls through to
    *   SessionMessageHandler which opens a brand-new editor tab.
    *
@@ -1728,7 +1728,7 @@ export class WebViewProvider {
     if (message.type !== 'openNewChatTab' || !this.isViewHost) {
       return false;
     }
-    void this.messageHandler.route({ type: 'newQwenSession', data: {} });
+    void this.messageHandler.route({ type: 'newVibeSession', data: {} });
     return true;
   }
 
@@ -1795,7 +1795,7 @@ export class WebViewProvider {
 
   /** Update the tab-dot icon. Blue takes priority over orange. */
   private setTabDot(color: DotColor): void {
-    const config = vscode.workspace.getConfiguration('qwen-code');
+    const config = vscode.workspace.getConfiguration('vibe-code');
     if (!config.get<boolean>('dotIndicator', true)) {
       return;
     }
@@ -1880,11 +1880,11 @@ export class WebViewProvider {
 
   /**
    * Show a VS Code notification with sound and a "Show" button that focuses
-   * the Qwen Code panel (or sidebar view) when clicked.
+   * the Vibe Code panel (or sidebar view) when clicked.
    */
   private notifyUser(message: string): void {
     void vscode.window
-      .showInformationMessage(`Qwen Code: ${message}`, 'Show')
+      .showInformationMessage(`Vibe Code: ${message}`, 'Show')
       .then((action) => {
         if (action === 'Show') {
           const panel = this.panelManager.getPanel();
@@ -1892,7 +1892,7 @@ export class WebViewProvider {
             panel.reveal();
           } else if (this.isViewHost) {
             // Sidebar / secondary bar — focus the view via its command.
-            void vscode.commands.executeCommand('qwen-code.focusChat');
+            void vscode.commands.executeCommand('vibe-code.focusChat');
           }
         }
       });
@@ -1900,7 +1900,7 @@ export class WebViewProvider {
   }
 
   /**
-   * Whether the user can currently see the Qwen Code panel.
+   * Whether the user can currently see the Vibe Code panel.
    * Only true when VS Code is the foreground app AND the panel tab is visible.
    * If either condition is false the user needs a notification.
    */
@@ -1911,10 +1911,10 @@ export class WebViewProvider {
     return windowFocused && panelVisible;
   }
 
-  /** Whether the qwen-code.notifications setting is enabled. */
+  /** Whether the vibe-code.notifications setting is enabled. */
   private isNotificationsEnabled(): boolean {
     return vscode.workspace
-      .getConfiguration('qwen-code')
+      .getConfiguration('vibe-code')
       .get<boolean>('notifications', true);
   }
 
@@ -2141,7 +2141,7 @@ export class WebViewProvider {
     // Ensure restored tab starts from default label and icon
     this.dotState = null;
     try {
-      panel.title = 'Qwen Code';
+      panel.title = 'Vibe Code';
       panel.iconPath = vscode.Uri.joinPath(
         this.extensionUri,
         'assets',
@@ -2171,7 +2171,7 @@ export class WebViewProvider {
           ).trim();
           const panelRef = this.panelManager.getPanel();
           if (panelRef) {
-            panelRef.title = title ? truncatePanelTitle(title) : 'Qwen Code';
+            panelRef.title = title ? truncatePanelTitle(title) : 'Vibe Code';
           }
           return;
         }
@@ -2381,7 +2381,7 @@ export class WebViewProvider {
       const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
       const workingDir = workspaceFolder?.uri.fsPath || process.cwd();
 
-      // Create new Qwen session via agent manager
+      // Create new Vibe session via agent manager
       await this.agentManager.createNewSession(workingDir, { forceNew: true });
       this.messageHandler.setCurrentConversationId(null);
 

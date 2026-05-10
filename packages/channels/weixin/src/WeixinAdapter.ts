@@ -1,5 +1,5 @@
 /**
- * WeChat channel adapter for Qwen Code.
+ * WeChat channel adapter for Vibe Code.
  * Extends ChannelBase with WeChat iLink Bot API integration.
  */
 
@@ -80,7 +80,7 @@ export class WeixinChannel extends ChannelBase {
     const account = loadAccount();
     if (!account) {
       throw new Error(
-        'WeChat account not configured. Run "qwen channel configure-weixin" first.',
+        'WeChat account not configured. Run "vibe channel configure-weixin" first.',
       );
     }
     this.token = account.token;

@@ -28,6 +28,7 @@ describe('terminalSetupCommand', () => {
       message: 'Terminal configured successfully',
     });
 
+    if (!terminalSetupCommand.action) throw new Error('Action not defined');
     const result = await terminalSetupCommand.action({} as CommandContext, '');
 
     expect(result).toEqual({
@@ -44,6 +45,7 @@ describe('terminalSetupCommand', () => {
       requiresRestart: true,
     });
 
+    if (!terminalSetupCommand.action) throw new Error('Action not defined');
     const result = await terminalSetupCommand.action({} as CommandContext, '');
 
     expect(result).toEqual({
@@ -60,6 +62,7 @@ describe('terminalSetupCommand', () => {
       message: 'Failed to detect terminal',
     });
 
+    if (!terminalSetupCommand.action) throw new Error('Action not defined');
     const result = await terminalSetupCommand.action({} as CommandContext, '');
 
     expect(result).toEqual({
@@ -74,6 +77,7 @@ describe('terminalSetupCommand', () => {
       new Error('Unexpected error'),
     );
 
+    if (!terminalSetupCommand.action) throw new Error('Action not defined');
     const result = await terminalSetupCommand.action({} as CommandContext, '');
 
     expect(result).toEqual({

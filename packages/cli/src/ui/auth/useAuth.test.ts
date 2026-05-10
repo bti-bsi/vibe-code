@@ -20,10 +20,10 @@ import {
   runOpenRouterOAuthLogin,
 } from '../../commands/auth/openrouterOAuth.js';
 
-vi.mock('../hooks/useQwenAuth.js', () => ({
-  useQwenAuth: vi.fn(() => ({
-    qwenAuthState: {},
-    cancelQwenAuth: vi.fn(),
+vi.mock('../hooks/useVibeAuth.js', () => ({
+  useVibeAuth: vi.fn(() => ({
+    vibeAuthState: {},
+    cancelVibeAuth: vi.fn(),
   })),
 }));
 
@@ -233,7 +233,7 @@ describe('generateCustomApiKeyEnvKey', () => {
       'openai',
       'https://api.openai.com/v1',
     );
-    expect(key).toBe('QWEN_CUSTOM_API_KEY_OPENAI_HTTPS_API_OPENAI_COM_V1');
+    expect(key).toBe('VIBE_CUSTOM_API_KEY_OPENAI_HTTPS_API_OPENAI_COM_V1');
   });
 
   it('generates env key from anthropic protocol and base URL', () => {
@@ -242,7 +242,7 @@ describe('generateCustomApiKeyEnvKey', () => {
       'https://api.anthropic.com/v1',
     );
     expect(key).toBe(
-      'QWEN_CUSTOM_API_KEY_ANTHROPIC_HTTPS_API_ANTHROPIC_COM_V1',
+      'VIBE_CUSTOM_API_KEY_ANTHROPIC_HTTPS_API_ANTHROPIC_COM_V1',
     );
   });
 
@@ -252,7 +252,7 @@ describe('generateCustomApiKeyEnvKey', () => {
       'https://generativelanguage.googleapis.com',
     );
     expect(key).toBe(
-      'QWEN_CUSTOM_API_KEY_GEMINI_HTTPS_GENERATIVELANGUAGE_GOOGLEAPIS_COM',
+      'VIBE_CUSTOM_API_KEY_GEMINI_HTTPS_GENERATIVELANGUAGE_GOOGLEAPIS_COM',
     );
   });
 
@@ -261,7 +261,7 @@ describe('generateCustomApiKeyEnvKey', () => {
       'openai',
       'http://localhost:11434/v1',
     );
-    expect(key).toBe('QWEN_CUSTOM_API_KEY_OPENAI_HTTP_LOCALHOST_11434_V1');
+    expect(key).toBe('VIBE_CUSTOM_API_KEY_OPENAI_HTTP_LOCALHOST_11434_V1');
   });
 
   it('normalizes trailing slashes and special chars', () => {
@@ -269,7 +269,7 @@ describe('generateCustomApiKeyEnvKey', () => {
       'openai',
       'https://openrouter.ai/api/v1/',
     );
-    expect(key).toBe('QWEN_CUSTOM_API_KEY_OPENAI_HTTPS_OPENROUTER_AI_API_V1');
+    expect(key).toBe('VIBE_CUSTOM_API_KEY_OPENAI_HTTPS_OPENROUTER_AI_API_V1');
   });
 
   it('different protocols with same base URL produce different keys', () => {
@@ -284,27 +284,27 @@ describe('generateCustomApiKeyEnvKey', () => {
 
 describe('normalizeCustomModelIds', () => {
   it('splits comma-separated model IDs', () => {
-    const result = normalizeCustomModelIds('qwen/qwen3-coder,openai/gpt-4.1');
-    expect(result).toEqual(['qwen/qwen3-coder', 'openai/gpt-4.1']);
+    const result = normalizeCustomModelIds('vibe/vibe3-coder,openai/gpt-4.1');
+    expect(result).toEqual(['vibe/vibe3-coder', 'openai/gpt-4.1']);
   });
 
   it('trims whitespace from each model ID', () => {
     const result = normalizeCustomModelIds(
-      ' qwen/qwen3-coder , openai/gpt-4.1 ',
+      ' vibe/vibe3-coder , openai/gpt-4.1 ',
     );
-    expect(result).toEqual(['qwen/qwen3-coder', 'openai/gpt-4.1']);
+    expect(result).toEqual(['vibe/vibe3-coder', 'openai/gpt-4.1']);
   });
 
   it('deduplicates while preserving order', () => {
     const result = normalizeCustomModelIds(
-      'qwen/qwen3-coder,openai/gpt-4.1,qwen/qwen3-coder',
+      'vibe/vibe3-coder,openai/gpt-4.1,vibe/vibe3-coder',
     );
-    expect(result).toEqual(['qwen/qwen3-coder', 'openai/gpt-4.1']);
+    expect(result).toEqual(['vibe/vibe3-coder', 'openai/gpt-4.1']);
   });
 
   it('removes empty entries', () => {
-    const result = normalizeCustomModelIds('qwen/qwen3-coder,,openai/gpt-4.1');
-    expect(result).toEqual(['qwen/qwen3-coder', 'openai/gpt-4.1']);
+    const result = normalizeCustomModelIds('vibe/vibe3-coder,,openai/gpt-4.1');
+    expect(result).toEqual(['vibe/vibe3-coder', 'openai/gpt-4.1']);
   });
 
   it('returns empty array for empty input', () => {
@@ -318,8 +318,8 @@ describe('normalizeCustomModelIds', () => {
   });
 
   it('handles single model ID', () => {
-    const result = normalizeCustomModelIds('qwen/qwen3-coder');
-    expect(result).toEqual(['qwen/qwen3-coder']);
+    const result = normalizeCustomModelIds('vibe/vibe3-coder');
+    expect(result).toEqual(['vibe/vibe3-coder']);
   });
 });
 

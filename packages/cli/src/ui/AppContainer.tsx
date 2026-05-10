@@ -83,6 +83,8 @@ import { useArenaCommand } from './hooks/useArenaCommand.js';
 import { useApprovalModeCommand } from './hooks/useApprovalModeCommand.js';
 import { useResumeCommand } from './hooks/useResumeCommand.js';
 import { useDeleteCommand } from './hooks/useDeleteCommand.js';
+import { useTelegramConfigCommand } from './hooks/useTelegramConfigCommand.js';
+import { useWhatsAppConfigCommand } from './hooks/useWhatsAppConfigCommand.js';
 import { useSlashCommandProcessor } from './hooks/slashCommandProcessor.js';
 import { useDoublePress } from './hooks/useDoublePress.js';
 import {
@@ -149,6 +151,7 @@ import { useExtensionsManagerDialog } from './hooks/useExtensionsManagerDialog.j
 import { useMcpDialog } from './hooks/useMcpDialog.js';
 import { useHooksDialog } from './hooks/useHooksDialog.js';
 import { useMemoryDialog } from './hooks/useMemoryDialog.js';
+import { useConfigCommand } from './hooks/useConfigCommand.js';
 import { useAttentionNotifications } from './hooks/useAttentionNotifications.js';
 import { buildTerminalNotification } from './hooks/useTerminalNotification.js';
 import { useContextualTips } from './hooks/useContextualTips.js';
@@ -575,7 +578,7 @@ export const AppContainer = (props: AppContainerProps) => {
     isAuthenticating,
     pendingAuthType,
     externalAuthState,
-    qwenAuthState,
+    vibeAuthState,
     handleAuthSelect,
     handleCodingPlanSubmit,
     handleAlibabaStandardSubmit,
@@ -715,6 +718,18 @@ export const AppContainer = (props: AppContainerProps) => {
   const { isMcpDialogOpen, openMcpDialog, closeMcpDialog } = useMcpDialog();
   const { isHooksDialogOpen, openHooksDialog, closeHooksDialog } =
     useHooksDialog();
+  const { isConfigDialogOpen, openConfigDialog, closeConfigDialog } =
+    useConfigCommand();
+  const {
+    isTelegramConfigDialogOpen,
+    openTelegramConfigDialog,
+    closeTelegramConfigDialog,
+  } = useTelegramConfigCommand();
+  const {
+    isWhatsAppConfigDialogOpen,
+    openWhatsAppConfigDialog,
+    closeWhatsAppConfigDialog,
+  } = useWhatsAppConfigCommand();
 
   // Ref bridge: the guarded openRewindSelector callback is defined later
   // (after useDoublePress), but slashCommandActions needs it now. The ref
@@ -754,6 +769,8 @@ export const AppContainer = (props: AppContainerProps) => {
       openHooksDialog,
       openResumeDialog,
       openRewindSelector: () => openRewindSelectorRef.current(),
+      openConfigDialog,
+      openTelegramConfigDialog,
       handleResume,
       openDeleteDialog,
     }),
@@ -782,6 +799,8 @@ export const AppContainer = (props: AppContainerProps) => {
       openResumeDialog,
       handleResume,
       openDeleteDialog,
+      openConfigDialog,
+      openTelegramConfigDialog,
     ],
   );
 
@@ -845,7 +864,7 @@ export const AppContainer = (props: AppContainerProps) => {
     historyManager.addItem(
       {
         type: MessageType.INFO,
-        text: 'Refreshing hierarchical memory (QWEN.md or other context files)...',
+        text: 'Refreshing hierarchical memory (VIBE.md or other context files)...',
       },
       Date.now(),
     );
@@ -1637,6 +1656,8 @@ export const AppContainer = (props: AppContainerProps) => {
     history: historyManager.history,
     sessionStats,
   });
+
+
   const dialogsVisible =
     showWelcomeBackDialog ||
     shouldShowIdePrompt ||
@@ -1672,6 +1693,9 @@ export const AppContainer = (props: AppContainerProps) => {
     isDeleteDialogOpen ||
     isExtensionsManagerDialogOpen ||
     isRewindSelectorOpen ||
+    isConfigDialogOpen ||
+    isTelegramConfigDialogOpen ||
+    isWhatsAppConfigDialogOpen ||
     bgTasksDialogOpen;
   dialogsVisibleRef.current = dialogsVisible;
   const shouldShowStickyTodos =
@@ -1998,6 +2022,10 @@ export const AppContainer = (props: AppContainerProps) => {
     handleWelcomeBackClose,
     isBackgroundTasksDialogOpen: bgTasksDialogOpen,
     closeBackgroundTasksDialog: closeBgTasksDialog,
+    isConfigDialogOpen,
+    closeConfigDialog,
+    isTelegramConfigDialogOpen,
+    closeTelegramConfigDialog,
   });
 
   const handleExit = useCallback(
@@ -2264,7 +2292,7 @@ export const AppContainer = (props: AppContainerProps) => {
 
   useKeypress(handleGlobalKeypress, { isActive: true });
 
-  // Update terminal title with Qwen Code status and thoughts
+  // Update terminal title with Vibe Code status and thoughts
   useEffect(() => {
     // Respect both showStatusInTitle and hideWindowTitle settings
     if (
@@ -2291,7 +2319,7 @@ export const AppContainer = (props: AppContainerProps) => {
       lastTitleRef.current = paddedTitle;
       stdout.write(`\x1b]2;${paddedTitle}\x07`);
     }
-    // Note: We don't need to reset the window title on exit because Qwen Code is already doing that elsewhere
+    // Note: We don't need to reset the window title on exit because Vibe Code is already doing that elsewhere
   }, [
     streamingState,
     thought,
@@ -2347,8 +2375,8 @@ export const AppContainer = (props: AppContainerProps) => {
       isAuthDialogOpen,
       pendingAuthType,
       externalAuthState,
-      // Qwen OAuth state
-      qwenAuthState,
+      // Vibe OAuth state
+      vibeAuthState,
       editorError,
       isEditorDialogOpen,
       debugMessage,
@@ -2460,6 +2488,9 @@ export const AppContainer = (props: AppContainerProps) => {
       // Rewind selector
       isRewindSelectorOpen,
       rewindEscPending,
+      isConfigDialogOpen,
+      isTelegramConfigDialogOpen,
+      isWhatsAppConfigDialogOpen,
     }),
     [
       isThemeDialogOpen,
@@ -2470,8 +2501,8 @@ export const AppContainer = (props: AppContainerProps) => {
       isAuthDialogOpen,
       pendingAuthType,
       externalAuthState,
-      // Qwen OAuth state
-      qwenAuthState,
+      // Vibe OAuth state
+      vibeAuthState,
       editorError,
       isEditorDialogOpen,
       debugMessage,
@@ -2584,6 +2615,9 @@ export const AppContainer = (props: AppContainerProps) => {
       // Rewind selector
       isRewindSelectorOpen,
       rewindEscPending,
+      isConfigDialogOpen,
+      isTelegramConfigDialogOpen,
+      isWhatsAppConfigDialogOpen,
     ],
   );
 
@@ -2665,6 +2699,13 @@ export const AppContainer = (props: AppContainerProps) => {
       openRewindSelector,
       closeRewindSelector,
       handleRewindConfirm,
+      openConfigDialog,
+      closeConfigDialog,
+      openTelegramConfigDialog,
+      closeTelegramConfigDialog,
+      openWhatsAppConfigDialog,
+      closeWhatsAppConfigDialog,
+      addSettingInputRequest,
     }),
     [
       openThemeDialog,
@@ -2741,6 +2782,13 @@ export const AppContainer = (props: AppContainerProps) => {
       openRewindSelector,
       closeRewindSelector,
       handleRewindConfirm,
+      openConfigDialog,
+      closeConfigDialog,
+      openTelegramConfigDialog,
+      closeTelegramConfigDialog,
+      openWhatsAppConfigDialog,
+      closeWhatsAppConfigDialog,
+      addSettingInputRequest,
     ],
   );
 

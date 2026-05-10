@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -49,7 +49,7 @@ function renderHookHarness(overrides?: {
   const handlers = {
     sessionManagement: {
       currentSessionId: 'conversation-1',
-      setQwenSessions: vi.fn(),
+      setVibeSessions: vi.fn(),
       setCurrentSessionId: vi.fn(),
       setCurrentSessionTitle: vi.fn(),
       setShowSessionSelector: vi.fn(),
@@ -173,7 +173,7 @@ describe('useWebViewMessages', () => {
     ).toHaveBeenCalledWith('Past Conversations');
     expect(mockPostMessage).toHaveBeenCalledWith({
       type: 'updatePanelTitle',
-      data: { title: 'Qwen Code' },
+      data: { title: 'Vibe Code' },
     });
   });
 

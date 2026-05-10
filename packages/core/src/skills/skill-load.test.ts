@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -511,7 +511,7 @@ body
 
   describe('parseModelField', () => {
     it('should return the model string for a valid model', () => {
-      expect(parseModelField({ model: 'qwen-max' })).toBe('qwen-max');
+      expect(parseModelField({ model: 'vibe-max' })).toBe('vibe-max');
     });
 
     it('should return undefined when model is omitted', () => {
@@ -531,7 +531,7 @@ body
     });
 
     it('should trim whitespace from model string', () => {
-      expect(parseModelField({ model: '  qwen-max  ' })).toBe('qwen-max');
+      expect(parseModelField({ model: '  vibe-max  ' })).toBe('vibe-max');
     });
 
     it('should throw for non-string types', () => {
@@ -729,8 +729,8 @@ body
 
     it('sets skillRoot to the SKILL.md directory (parity with managed parser)', () => {
       // Regression: extension parser previously omitted `skillRoot`, so
-      // `registerSkillHooks.ts` skipped setting `QWEN_SKILL_ROOT` for
-      // command-type hooks on extension skills — `$QWEN_SKILL_ROOT/...`
+      // `registerSkillHooks.ts` skipped setting `VIBE_SKILL_ROOT` for
+      // command-type hooks on extension skills — `$VIBE_SKILL_ROOT/...`
       // references in those hooks broke silently.
       mockParseYaml.mockReturnValueOnce({
         name: 'tsx-helper',
@@ -751,15 +751,15 @@ body
       mockParseYaml.mockReturnValue({
         name: 'model-test',
         description: 'Test skill with model',
-        model: 'qwen-max',
+        model: 'vibe-max',
       });
 
       const config = parseSkillContent(
-        `---\nname: model-test\ndescription: Test skill with model\nmodel: qwen-max\n---\n\nBody text.`,
+        `---\nname: model-test\ndescription: Test skill with model\nmodel: vibe-max\n---\n\nBody text.`,
         testFilePath,
       );
 
-      expect(config.model).toBe('qwen-max');
+      expect(config.model).toBe('vibe-max');
     });
 
     it('should set model to undefined when omitted', () => {

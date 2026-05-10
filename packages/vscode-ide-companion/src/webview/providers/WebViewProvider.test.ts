@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -19,7 +19,7 @@ const {
   mockOnDidChangeActiveTextEditor,
   mockOnDidChangeTextEditorSelection,
   mockOpenExternal,
-  mockReadQwenSettingsForVSCode,
+  mockReadVibeSettingsForVSCode,
   mockWriteCodingPlanConfig,
   mockWriteModelProvidersConfig,
   mockClearPersistedAuth,
@@ -30,7 +30,7 @@ const {
   askUserQuestionCallbackRef,
   mockShowInformationMessage,
   mockWindowState,
-  mockQwenAgentManagerInstances,
+  mockVibeAgentManagerInstances,
 } = vi.hoisted(() => ({
   mockConfigChangeHandlers: [] as Array<
     (event: { affectsConfiguration: (section: string) => boolean }) => unknown
@@ -66,7 +66,7 @@ const {
   mockOnDidChangeActiveTextEditor: vi.fn(() => ({ dispose: vi.fn() })),
   mockOnDidChangeTextEditorSelection: vi.fn(() => ({ dispose: vi.fn() })),
   mockOpenExternal: vi.fn(),
-  mockReadQwenSettingsForVSCode: vi.fn<
+  mockReadVibeSettingsForVSCode: vi.fn<
     () => {
       provider: 'coding-plan' | 'api-key';
       apiKey: string;
@@ -104,7 +104,7 @@ const {
     (message: string, ...items: string[]) => Thenable<string | undefined>
   >(() => Promise.resolve(undefined)),
   mockWindowState: { focused: true },
-  mockQwenAgentManagerInstances: [] as Array<{
+  mockVibeAgentManagerInstances: [] as Array<{
     permissionRequestCallback?: (request: unknown) => Promise<string>;
     cancelCurrentPrompt: ReturnType<typeof vi.fn>;
     disconnect: ReturnType<typeof vi.fn>;
@@ -159,12 +159,12 @@ vi.mock('vscode', () => ({
 vi.mock('../../services/settingsWriter.js', () => ({
   writeCodingPlanConfig: mockWriteCodingPlanConfig,
   writeModelProvidersConfig: mockWriteModelProvidersConfig,
-  readQwenSettingsForVSCode: mockReadQwenSettingsForVSCode,
+  readVibeSettingsForVSCode: mockReadVibeSettingsForVSCode,
   clearPersistedAuth: mockClearPersistedAuth,
 }));
 
-vi.mock('../../services/qwenAgentManager.js', () => ({
-  QwenAgentManager: class {
+vi.mock('../../services/vibeAgentManager.js', () => ({
+  VibeAgentManager: class {
     isConnected = false;
     currentSessionId = null;
     connect = vi.fn();
@@ -224,7 +224,7 @@ vi.mock('../../services/qwenAgentManager.js', () => ({
     cancelCurrentPrompt = vi.fn();
     disconnect = vi.fn();
     constructor() {
-      mockQwenAgentManagerInstances.push(this);
+      mockVibeAgentManagerInstances.push(this);
     }
   },
 }));
@@ -380,7 +380,7 @@ async function setupAttachedProvider(options?: {
       onDidChangeVisibility: vi.fn(() => ({ dispose: vi.fn() })),
       onDidDispose: vi.fn(() => ({ dispose: vi.fn() })),
     } as never,
-    'qwen-code.chatView.sidebar',
+    'vibe-code.chatView.sidebar',
   );
 
   return { webview, postMessage, provider, messageHandler };
@@ -401,7 +401,7 @@ describe('WebViewProvider.attachToView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockMessageHandlerInstances.length = 0;
-    mockQwenAgentManagerInstances.length = 0;
+    mockVibeAgentManagerInstances.length = 0;
     mockGetPanel.mockReturnValue(null);
     mockConfigGet.mockImplementation(
       (_key: string, defaultValue: unknown) => defaultValue,
@@ -457,7 +457,7 @@ describe('WebViewProvider.attachToView', () => {
         onDidChangeVisibility: vi.fn(() => ({ dispose: vi.fn() })),
         onDidDispose: vi.fn(() => ({ dispose: vi.fn() })),
       } as never,
-      'qwen-code.chatView.sidebar',
+      'vibe-code.chatView.sidebar',
     );
 
     const roots = (
@@ -686,7 +686,7 @@ describe('WebViewProvider.attachToView', () => {
         onDidChangeVisibility: vi.fn(() => ({ dispose: vi.fn() })),
         onDidDispose: vi.fn(() => ({ dispose: vi.fn() })),
       } as never,
-      'qwen-code.chatView.sidebar',
+      'vibe-code.chatView.sidebar',
     );
 
     await messageHandler?.({
@@ -733,10 +733,10 @@ describe('WebViewProvider.attachToView', () => {
         onDidChangeVisibility: vi.fn(() => ({ dispose: vi.fn() })),
         onDidDispose: vi.fn(() => ({ dispose: vi.fn() })),
       } as never,
-      'qwen-code.chatView.sidebar',
+      'vibe-code.chatView.sidebar',
     );
 
-    const agentManager = mockQwenAgentManagerInstances.at(-1);
+    const agentManager = mockVibeAgentManagerInstances.at(-1);
     const messageHandler = mockMessageHandlerInstances.at(-1);
 
     expect(agentManager?.permissionRequestCallback).toBeTypeOf('function');
@@ -822,7 +822,7 @@ describe('WebViewProvider.attachToView', () => {
         onDidChangeVisibility: vi.fn(() => ({ dispose: vi.fn() })),
         onDidDispose: vi.fn(() => ({ dispose: vi.fn() })),
       } as never,
-      'qwen-code.chatView.sidebar',
+      'vibe-code.chatView.sidebar',
     );
 
     const agentManager = (
@@ -888,7 +888,7 @@ describe('WebViewProvider.attachToView', () => {
         onDidChangeVisibility: vi.fn(() => ({ dispose: vi.fn() })),
         onDidDispose: vi.fn(() => ({ dispose: vi.fn() })),
       } as never,
-      'qwen-code.chatView.sidebar',
+      'vibe-code.chatView.sidebar',
     );
 
     const agentManager = (
@@ -952,9 +952,9 @@ describe('WebViewProvider settings sync', () => {
 
     const synced = await (
       provider as unknown as {
-        syncVSCodeSettingsToQwenConfig: () => Promise<boolean>;
+        syncVSCodeSettingsToVibeConfig: () => Promise<boolean>;
       }
-    ).syncVSCodeSettingsToQwenConfig();
+    ).syncVSCodeSettingsToVibeConfig();
 
     expect(synced).toBe(false);
     expect(mockWriteCodingPlanConfig).not.toHaveBeenCalled();
@@ -962,7 +962,7 @@ describe('WebViewProvider settings sync', () => {
   });
 
   it('only syncs non-secret VS Code settings from ~/.vibe/settings.json', async () => {
-    mockReadQwenSettingsForVSCode.mockReturnValue({
+    mockReadVibeSettingsForVSCode.mockReturnValue({
       provider: 'coding-plan',
       apiKey: 'sk-updated',
       codingPlanRegion: 'global',
@@ -987,9 +987,9 @@ describe('WebViewProvider settings sync', () => {
 
     await (
       provider as unknown as {
-        syncQwenConfigToVSCodeSettings: () => Promise<void>;
+        syncVibeConfigToVSCodeSettings: () => Promise<void>;
       }
-    ).syncQwenConfigToVSCodeSettings();
+    ).syncVibeConfigToVSCodeSettings();
 
     expect(mockConfigUpdate).toHaveBeenCalledTimes(2);
     expect(mockConfigUpdate).toHaveBeenCalledWith(
@@ -1009,7 +1009,7 @@ describe('WebViewProvider settings sync', () => {
     );
   });
 
-  it('ignores non-auth qwen-code setting changes', async () => {
+  it('ignores non-auth vibe-code setting changes', async () => {
     const provider = new WebViewProvider(
       { subscriptions: [] } as never,
       { fsPath: '/extension-root' } as never,
@@ -1017,21 +1017,21 @@ describe('WebViewProvider settings sync', () => {
     const syncSpy = vi
       .spyOn(
         provider as unknown as {
-          syncVSCodeSettingsToQwenConfig: () => Promise<boolean>;
+          syncVSCodeSettingsToVibeConfig: () => Promise<boolean>;
         },
-        'syncVSCodeSettingsToQwenConfig',
+        'syncVSCodeSettingsToVibeConfig',
       )
       .mockResolvedValue(true);
 
     const configChangeHandler = mockConfigChangeHandlers.at(-1);
     expect(configChangeHandler).toBeDefined();
 
-    await configChangeHandler?.(createConfigChangeEvent('qwen-code'));
+    await configChangeHandler?.(createConfigChangeEvent('vibe-code'));
 
     expect(syncSpy).not.toHaveBeenCalled();
   });
 
-  it('reacts to auth-related qwen-code setting changes', async () => {
+  it('reacts to auth-related vibe-code setting changes', async () => {
     const provider = new WebViewProvider(
       { subscriptions: [] } as never,
       { fsPath: '/extension-root' } as never,
@@ -1039,9 +1039,9 @@ describe('WebViewProvider settings sync', () => {
     const syncSpy = vi
       .spyOn(
         provider as unknown as {
-          syncVSCodeSettingsToQwenConfig: () => Promise<boolean>;
+          syncVSCodeSettingsToVibeConfig: () => Promise<boolean>;
         },
-        'syncVSCodeSettingsToQwenConfig',
+        'syncVSCodeSettingsToVibeConfig',
       )
       .mockResolvedValue(false);
 
@@ -1049,7 +1049,7 @@ describe('WebViewProvider settings sync', () => {
     expect(configChangeHandler).toBeDefined();
 
     await configChangeHandler?.(
-      createConfigChangeEvent('qwen-code', 'qwen-code.apiKey'),
+      createConfigChangeEvent('vibe-code', 'vibe-code.apiKey'),
     );
 
     expect(syncSpy).toHaveBeenCalledTimes(1);
@@ -1065,12 +1065,12 @@ describe('WebViewProvider settings sync', () => {
     (provider as unknown as { agentInitialized: boolean }).agentInitialized =
       true;
 
-    // syncVSCodeSettingsToQwenConfig returns false because apiKey is empty
+    // syncVSCodeSettingsToVibeConfig returns false because apiKey is empty
     vi.spyOn(
       provider as unknown as {
-        syncVSCodeSettingsToQwenConfig: () => Promise<boolean>;
+        syncVSCodeSettingsToVibeConfig: () => Promise<boolean>;
       },
-      'syncVSCodeSettingsToQwenConfig',
+      'syncVSCodeSettingsToVibeConfig',
     ).mockResolvedValue(false);
 
     // apiKey is empty (user cleared it in Settings)
@@ -1085,14 +1085,14 @@ describe('WebViewProvider settings sync', () => {
     expect(configChangeHandler).toBeDefined();
 
     await configChangeHandler?.(
-      createConfigChangeEvent('qwen-code', 'qwen-code.apiKey'),
+      createConfigChangeEvent('vibe-code', 'vibe-code.apiKey'),
     );
 
     // Should clear persisted auth
     expect(mockClearPersistedAuth).toHaveBeenCalledTimes(1);
 
     // Should disconnect the agent
-    const agentManager = mockQwenAgentManagerInstances.at(-1);
+    const agentManager = mockVibeAgentManagerInstances.at(-1);
     expect(agentManager?.disconnect).toHaveBeenCalledTimes(1);
 
     // agentInitialized should be reset
@@ -1111,12 +1111,12 @@ describe('WebViewProvider settings sync', () => {
     (provider as unknown as { agentInitialized: boolean }).agentInitialized =
       true;
 
-    // syncVSCodeSettingsToQwenConfig returns false — normal for api-key providers
+    // syncVSCodeSettingsToVibeConfig returns false — normal for api-key providers
     vi.spyOn(
       provider as unknown as {
-        syncVSCodeSettingsToQwenConfig: () => Promise<boolean>;
+        syncVSCodeSettingsToVibeConfig: () => Promise<boolean>;
       },
-      'syncVSCodeSettingsToQwenConfig',
+      'syncVSCodeSettingsToVibeConfig',
     ).mockResolvedValue(false);
 
     // apiKey is empty because api-key providers don't use this VS Code setting
@@ -1135,12 +1135,12 @@ describe('WebViewProvider settings sync', () => {
 
     // Changing codingPlanRegion should NOT trigger de-auth
     await configChangeHandler?.(
-      createConfigChangeEvent('qwen-code', 'qwen-code.codingPlanRegion'),
+      createConfigChangeEvent('vibe-code', 'vibe-code.codingPlanRegion'),
     );
 
     expect(mockClearPersistedAuth).not.toHaveBeenCalled();
 
-    const agentManager = mockQwenAgentManagerInstances.at(-1);
+    const agentManager = mockVibeAgentManagerInstances.at(-1);
     expect(agentManager?.disconnect).not.toHaveBeenCalled();
 
     // agentInitialized should remain true
@@ -1314,7 +1314,7 @@ describe('Notification & dot indicator', () => {
 
     // Notification should be shown
     expect(mockShowInformationMessage).toHaveBeenCalledWith(
-      'Qwen Code: Waiting for your input.',
+      'Vibe Code: Waiting for your input.',
       'Show',
     );
   });
@@ -1395,7 +1395,7 @@ describe('Notification & dot indicator', () => {
 
     // Notification with tool name
     expect(mockShowInformationMessage).toHaveBeenCalledWith(
-      'Qwen Code: Needs your permission to use Bash.',
+      'Vibe Code: Needs your permission to use Bash.',
       'Show',
     );
   });
@@ -1582,7 +1582,7 @@ describe('Notification & dot indicator', () => {
 
     // User is in VS Code but not looking at the panel — should notify
     expect(mockShowInformationMessage).toHaveBeenCalledWith(
-      'Qwen Code: Waiting for your input.',
+      'Vibe Code: Waiting for your input.',
       'Show',
     );
   });
@@ -1605,7 +1605,7 @@ describe('Notification & dot indicator', () => {
 
     // User left VS Code — should notify even though panel is visible
     expect(mockShowInformationMessage).toHaveBeenCalledWith(
-      'Qwen Code: Waiting for your input.',
+      'Vibe Code: Waiting for your input.',
       'Show',
     );
   });
@@ -1636,7 +1636,7 @@ describe('Notification & dot indicator', () => {
 
     // Notification without tool name (generic message)
     expect(mockShowInformationMessage).toHaveBeenCalledWith(
-      'Qwen Code: Waiting for your input.',
+      'Vibe Code: Waiting for your input.',
       'Show',
     );
   });

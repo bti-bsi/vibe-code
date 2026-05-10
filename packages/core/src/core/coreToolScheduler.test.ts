@@ -807,7 +807,7 @@ describe('CoreToolScheduler', () => {
       if (completedCall.status === 'error') {
         const errorMessage = completedCall.response.error?.message;
         expect(errorMessage).toBe(
-          'Qwen Code requires permission to use write_file, but that permission was declined.',
+          'Vibe Code requires permission to use write_file, but that permission was declined.',
         );
         // Should NOT contain "not found in registry"
         expect(errorMessage).not.toContain('not found in registry');
@@ -1598,6 +1598,254 @@ describe('CoreToolScheduler cancellation during executing with live output', () 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cancelled: any = completedCalls[0];
     expect(cancelled.response.resultDisplay).toBe('hello');
+  });
+});
+
+describe('CoreToolScheduler execution diagnostics', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('emits a debug heartbeat message for non-streaming tools while executing', async () => {
+    vi.useFakeTimers();
+
+    let resolveExecution: ((result: ToolResult) => void) | undefined;
+
+    class SlowInvocation extends BaseToolInvocation<{ id: string }, ToolResult> {
+      getDescription(): string {
+        return `Slow tool ${this.params.id}`;
+      }
+
+      async execute(): Promise<ToolResult> {
+        return new Promise<ToolResult>((resolve) => {
+          resolveExecution = resolve;
+        });
+      }
+    }
+
+    class SlowTool extends BaseDeclarativeTool<{ id: string }, ToolResult> {
+      constructor() {
+        super(
+          'slow-tool',
+          'Slow Tool',
+          'A slow tool without live output support',
+          Kind.Other,
+          {
+            type: 'object',
+            properties: { id: { type: 'string' } },
+            required: ['id'],
+          },
+        );
+      }
+
+      protected createInvocation(params: { id: string }) {
+        return new SlowInvocation(params);
+      }
+    }
+
+    const tool = new SlowTool();
+    const mockToolRegistry = {
+      getTool: () => tool,
+      ensureTool: async () => tool,
+      getFunctionDeclarations: () => [],
+      tools: new Map(),
+      discovery: {},
+      registerTool: () => {},
+      getToolByName: () => tool,
+      getToolByDisplayName: () => tool,
+      getTools: () => [],
+      discoverTools: async () => {},
+      getAllTools: () => [],
+      getToolsByServer: () => [],
+    } as unknown as ToolRegistry;
+
+    const onAllToolCallsComplete = vi.fn();
+    const onToolCallsUpdate = vi.fn();
+
+    const mockConfig = {
+      getSessionId: () => 'test-session-id',
+      getUsageStatisticsEnabled: () => true,
+      getDebugMode: () => true,
+      getApprovalMode: () => ApprovalMode.DEFAULT,
+      getContentGeneratorConfig: () => ({
+        model: 'test-model',
+        authType: 'gemini',
+      }),
+      getToolRegistry: () => mockToolRegistry,
+      getShellExecutionConfig: () => ({
+        terminalWidth: 90,
+        terminalHeight: 30,
+      }),
+      getChatRecordingService: () => undefined,
+      getMessageBus: vi.fn().mockReturnValue(undefined),
+      getDisableAllHooks: vi.fn().mockReturnValue(true),
+    } as unknown as Config;
+
+    const scheduler = new CoreToolScheduler({
+      config: mockConfig,
+      onAllToolCallsComplete,
+      onToolCallsUpdate,
+      getPreferredEditor: () => undefined,
+      onEditorClose: () => {},
+    });
+
+    const schedulePromise = scheduler.schedule(
+      {
+        callId: 'slow-call',
+        name: 'slow-tool',
+        args: { id: '1' },
+        isClientInitiated: false,
+      },
+      new AbortController().signal,
+    );
+
+    await vi.waitFor(() => {
+      const updates = onToolCallsUpdate.mock.calls;
+      const last = updates[updates.length - 1]?.[0][0] as ToolCall | undefined;
+      expect(last?.status).toBe('executing');
+    });
+
+    await vi.advanceTimersByTimeAsync(5000);
+
+    await vi.waitFor(() => {
+      const updates = onToolCallsUpdate.mock.calls;
+      const last = updates[updates.length - 1]?.[0][0] as ToolCall | undefined;
+      expect(last?.status).toBe('executing');
+      expect(last && 'liveOutput' in last ? last.liveOutput : undefined).toEqual(
+        expect.objectContaining({
+          type: 'tool_execution_diagnostic',
+          outputUpdates: 0,
+        }),
+      );
+    });
+
+    resolveExecution?.({ llmContent: 'done', returnDisplay: 'done' });
+    await schedulePromise;
+  });
+
+  it('does not replace real streamed output with diagnostics after output starts', async () => {
+    vi.useFakeTimers();
+
+    let releaseExecution: (() => void) | undefined;
+
+    class StreamingInvocation extends BaseToolInvocation<
+      { id: string },
+      ToolResult
+    > {
+      getDescription(): string {
+        return `Streaming tool ${this.params.id}`;
+      }
+
+      async execute(
+        _signal: AbortSignal,
+        updateOutput?: (output: ToolResultDisplay) => void,
+      ): Promise<ToolResult> {
+        updateOutput?.('stream output');
+        await new Promise<void>((resolve) => {
+          releaseExecution = resolve;
+        });
+        return { llmContent: 'done', returnDisplay: 'done' };
+      }
+    }
+
+    class StreamingTool extends BaseDeclarativeTool<{ id: string }, ToolResult> {
+      constructor() {
+        super(
+          'streaming-debug-tool',
+          'Streaming Debug Tool',
+          'A streaming tool for diagnostic tests',
+          Kind.Other,
+          {
+            type: 'object',
+            properties: { id: { type: 'string' } },
+            required: ['id'],
+          },
+          true,
+          true,
+        );
+      }
+
+      protected createInvocation(params: { id: string }) {
+        return new StreamingInvocation(params);
+      }
+    }
+
+    const tool = new StreamingTool();
+    const mockToolRegistry = {
+      getTool: () => tool,
+      ensureTool: async () => tool,
+      getFunctionDeclarations: () => [],
+      tools: new Map(),
+      discovery: {},
+      registerTool: () => {},
+      getToolByName: () => tool,
+      getToolByDisplayName: () => tool,
+      getTools: () => [],
+      discoverTools: async () => {},
+      getAllTools: () => [],
+      getToolsByServer: () => [],
+    } as unknown as ToolRegistry;
+
+    const onAllToolCallsComplete = vi.fn();
+    const onToolCallsUpdate = vi.fn();
+
+    const mockConfig = {
+      getSessionId: () => 'test-session-id',
+      getUsageStatisticsEnabled: () => true,
+      getDebugMode: () => true,
+      getApprovalMode: () => ApprovalMode.DEFAULT,
+      getContentGeneratorConfig: () => ({
+        model: 'test-model',
+        authType: 'gemini',
+      }),
+      getToolRegistry: () => mockToolRegistry,
+      getShellExecutionConfig: () => ({
+        terminalWidth: 90,
+        terminalHeight: 30,
+      }),
+      getChatRecordingService: () => undefined,
+      getMessageBus: vi.fn().mockReturnValue(undefined),
+      getDisableAllHooks: vi.fn().mockReturnValue(true),
+    } as unknown as Config;
+
+    const scheduler = new CoreToolScheduler({
+      config: mockConfig,
+      onAllToolCallsComplete,
+      onToolCallsUpdate,
+      getPreferredEditor: () => undefined,
+      onEditorClose: () => {},
+    });
+
+    const schedulePromise = scheduler.schedule(
+      {
+        callId: 'stream-debug-call',
+        name: 'streaming-debug-tool',
+        args: { id: '1' },
+        isClientInitiated: false,
+      },
+      new AbortController().signal,
+    );
+
+    await vi.waitFor(() => {
+      const updates = onToolCallsUpdate.mock.calls;
+      const last = updates[updates.length - 1]?.[0][0] as ToolCall | undefined;
+      expect(last?.status).toBe('executing');
+      expect(last && 'liveOutput' in last ? last.liveOutput : undefined).toBe(
+        'stream output',
+      );
+    });
+
+    await vi.advanceTimersByTimeAsync(5000);
+
+    const updates = onToolCallsUpdate.mock.calls;
+    const last = updates[updates.length - 1]?.[0][0] as ToolCall | undefined;
+    expect(last?.status).toBe('executing');
+    expect(last && 'liveOutput' in last ? last.liveOutput : undefined).toBe(
+      'stream output',
+    );
+
+    releaseExecution?.();
+    await schedulePromise;
   });
 });
 
@@ -3241,15 +3489,15 @@ describe('Fire hook functions integration', () => {
 
   describe('Concurrent tool execution', () => {
     // Ensure tests are deterministic regardless of environment.
-    const origEnv = process.env['QWEN_CODE_MAX_TOOL_CONCURRENCY'];
+    const origEnv = process.env['VIBE_CODE_MAX_TOOL_CONCURRENCY'];
     beforeEach(() => {
-      delete process.env['QWEN_CODE_MAX_TOOL_CONCURRENCY'];
+      delete process.env['VIBE_CODE_MAX_TOOL_CONCURRENCY'];
     });
     afterEach(() => {
       if (origEnv !== undefined) {
-        process.env['QWEN_CODE_MAX_TOOL_CONCURRENCY'] = origEnv;
+        process.env['VIBE_CODE_MAX_TOOL_CONCURRENCY'] = origEnv;
       } else {
-        delete process.env['QWEN_CODE_MAX_TOOL_CONCURRENCY'];
+        delete process.env['VIBE_CODE_MAX_TOOL_CONCURRENCY'];
       }
     });
 

@@ -1,10 +1,10 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Portuguese translations for Qwen Code CLI (pt-BR)
+// Portuguese translations for Vibe Code CLI (pt-BR)
 
 export default {
   // ============================================================================
@@ -76,16 +76,16 @@ export default {
   'For a full list of shortcuts, see {{docPath}}':
     'Para uma lista completa de atalhos, consulte {{docPath}}',
   'docs/keyboard-shortcuts.md': 'docs/keyboard-shortcuts.md',
-  'for help on Qwen Code': 'para ajuda sobre o Qwen Code',
+  'for help on Vibe Code': 'para ajuda sobre o Vibe Code',
   'show version info': 'mostrar informações de versão',
   'submit a bug report': 'enviar um relatório de erro',
-  'About Qwen Code': 'Sobre o Qwen Code',
+  'About Vibe Code': 'Sobre o Vibe Code',
   Status: 'Status',
 
   // ============================================================================
   // System Information Fields
   // ============================================================================
-  'Qwen Code': 'Qwen Code',
+  'Vibe Code': 'Vibe Code',
   Runtime: 'Runtime',
   OS: 'SO',
   Auth: 'Autenticação',
@@ -109,12 +109,12 @@ export default {
   // ============================================================================
   // Commands - General
   // ============================================================================
-  'Analyzes the project and creates a tailored QWEN.md file.':
-    'Analisa o projeto e cria um arquivo QWEN.md personalizado.',
-  'List available Qwen Code tools. Usage: /tools [desc]':
-    'Listar ferramentas Qwen Code disponíveis. Uso: /tools [desc]',
+  'Analyzes the project and creates a tailored VIBE.md file.':
+    'Analisa o projeto e cria um arquivo VIBE.md personalizado.',
+  'List available Vibe Code tools. Usage: /tools [desc]':
+    'Listar ferramentas Vibe Code disponíveis. Uso: /tools [desc]',
   'List available skills.': 'Listar habilidades disponíveis.',
-  'Available Qwen Code CLI tools:': 'Ferramentas CLI do Qwen Code disponíveis:',
+  'Available Vibe Code CLI tools:': 'Ferramentas CLI do Vibe Code disponíveis:',
   'No tools available': 'Nenhuma ferramenta disponível',
   'View or change the approval mode for tool usage':
     'Ver ou alterar o modo de aprovação para uso de ferramentas',
@@ -140,8 +140,8 @@ export default {
     'Limpar histórico de conversa e liberar contexto',
   'Compresses the context by replacing it with a summary.':
     'Comprime o contexto substituindo-o por um resumo.',
-  'open full Qwen Code documentation in your browser':
-    'abrir documentação completa do Qwen Code no seu navegador',
+  'open full Vibe Code documentation in your browser':
+    'abrir documentação completa do Vibe Code no seu navegador',
   'Configuration not available.': 'Configuração não disponível.',
   'change the auth method': 'alterar o método de autenticação',
   'Configure authentication information for login':
@@ -209,8 +209,8 @@ export default {
   // ============================================================================
   // Agents - Creation Wizard
   // ============================================================================
-  'Project Level (.qwen/agents/)': 'Nível de Projeto (.qwen/agents/)',
-  'User Level (~/.qwen/agents/)': 'Nível de Usuário (~/.qwen/agents/)',
+  'Project Level (.vibe/agents/)': 'Nível de Projeto (.vibe/agents/)',
+  'User Level (~/.vibe/agents/)': 'Nível de Usuário (~/.vibe/agents/)',
   '✅ Subagent Created Successfully!': '✅ Subagente criado com sucesso!',
   'Subagent "{{name}}" has been saved to {{level}} level.':
     'O subagente "{{name}}" foi salvo no nível {{level}}.',
@@ -235,7 +235,7 @@ export default {
   'Step {{n}}: Choose Location': 'Etapa {{n}}: Escolher Localização',
   'Step {{n}}: Choose Generation Method':
     'Etapa {{n}}: Escolher Método de Geração',
-  'Generate with Qwen Code (Recommended)': 'Gerar com Qwen Code (Recomendado)',
+  'Generate with Vibe Code (Recommended)': 'Gerar com Vibe Code (Recomendado)',
   'Manual Creation': 'Criação Manual',
   'Describe what this subagent should do and when it should be used. (Be comprehensive for best results)':
     'Descreva o que este subagente deve fazer e quando deve ser usado. (Seja abrangente para melhores resultados)',
@@ -300,10 +300,10 @@ export default {
   // ============================================================================
   // Commands - General (continued)
   // ============================================================================
-  'View and edit Qwen Code settings': 'Ver e editar configurações do Qwen Code',
+  'View and edit Vibe Code settings': 'Ver e editar configurações do Vibe Code',
   Settings: 'Configurações',
-  'To see changes, Qwen Code must be restarted. Press r to exit and apply changes now.':
-    'Para ver as alterações, o Qwen Code deve ser reiniciado. Pressione r para sair e aplicar as alterações agora.',
+  'To see changes, Vibe Code must be restarted. Press r to exit and apply changes now.':
+    'Para ver as alterações, o Vibe Code deve ser reiniciado. Pressione r para sair e aplicar as alterações agora.',
   'The command "/{{command}}" is not supported in non-interactive mode.':
     'O comando "/{{command}}" não é suportado no modo não interativo.',
 
@@ -331,8 +331,8 @@ export default {
   'Custom Witty Phrases': 'Frases de Efeito Personalizadas',
   'Show Welcome Back Dialog': 'Mostrar Diálogo de Bem-vindo de Volta',
   'Enable User Feedback': 'Ativar Feedback do Usuário',
-  'How is Qwen doing this session? (optional)':
-    'Como o Qwen está se saindo nesta sessão? (opcional)',
+  'How is Vibe doing this session? (optional)':
+    'Como o Vibe está se saindo nesta sessão? (opcional)',
   Bad: 'Ruim',
   Fine: 'Bom',
   Good: 'Ótimo',
@@ -355,7 +355,7 @@ export default {
   'Load Memory From Include Directories':
     'Carregar Memória de Diretórios Incluídos',
   'Respect .gitignore': 'Respeitar .gitignore',
-  'Respect .qwenignore': 'Respeitar .qwenignore',
+  'Respect .vibeignore': 'Respeitar .vibeignore',
   'Enable Recursive File Search': 'Ativar Pesquisa Recursiva de Arquivos',
   'Disable Fuzzy Search': 'Desativar Pesquisa Difusa',
   'Interactive Shell (PTY)': 'Shell Interativo (PTY)',
@@ -454,8 +454,8 @@ export default {
   remote: 'remoto',
   'This extension will add the following commands: {{commands}}.':
     'Esta extensão adicionará os seguintes comandos: {{commands}}.',
-  'This extension will append info to your QWEN.md context using {{fileName}}':
-    'Esta extensão anexará informações ao seu contexto QWEN.md usando {{fileName}}',
+  'This extension will append info to your VIBE.md context using {{fileName}}':
+    'Esta extensão anexará informações ao seu contexto VIBE.md usando {{fileName}}',
   'This extension will exclude the following core tools: {{tools}}':
     'Esta extensão excluirá as seguintes ferramentas principais: {{tools}}',
   'This extension will install the following skills:':
@@ -464,8 +464,8 @@ export default {
     'Esta extensão instalará os seguintes subagentes:',
   'Installation cancelled for "{{name}}".':
     'Instalação cancelada para "{{name}}".',
-  'You are installing an extension from {{originSource}}. Some features may not work perfectly with Qwen Code.':
-    'Você está instalando uma extensão de {{originSource}}. Alguns recursos podem não funcionar perfeitamente com o Qwen Code.',
+  'You are installing an extension from {{originSource}}. Some features may not work perfectly with Vibe Code.':
+    'Você está instalando uma extensão de {{originSource}}. Alguns recursos podem não funcionar perfeitamente com o Vibe Code.',
   '--ref and --auto-update are not applicable for marketplace extensions.':
     '--ref e --auto-update não são aplicáveis para extensões de marketplace.',
   'Extension "{{name}}" installed successfully and enabled.':
@@ -564,8 +564,8 @@ export default {
     'instalar companion IDE necessário para {{ideName}}',
   'enable IDE integration': 'ativar integração com IDE',
   'disable IDE integration': 'desativar integração com IDE',
-  'IDE integration is not supported in your current environment. To use this feature, run Qwen Code in one of these supported IDEs: VS Code or VS Code forks.':
-    'A integração com IDE não é suportada no seu ambiente atual. Para usar este recurso, execute o Qwen Code em um destes IDEs suportados: VS Code ou forks do VS Code.',
+  'IDE integration is not supported in your current environment. To use this feature, run Vibe Code in one of these supported IDEs: VS Code or VS Code forks.':
+    'A integração com IDE não é suportada no seu ambiente atual. Para usar este recurso, execute o Vibe Code em um destes IDEs suportados: VS Code ou forks do VS Code.',
   'Set up GitHub Actions': 'Configurar GitHub Actions',
   'Configure terminal keybindings for multiline input (VS Code, Cursor, Windsurf, Trae)':
     'Configurar atalhos de terminal para entrada multilinhas (VS Code, Cursor, Windsurf, Trae)',
@@ -599,7 +599,7 @@ export default {
   // ============================================================================
   // Commands - Hooks
   // ============================================================================
-  'Manage Qwen Code hooks': 'Gerenciar hooks do Qwen Code',
+  'Manage Vibe Code hooks': 'Gerenciar hooks do Vibe Code',
   'List all configured hooks': 'Listar todos os hooks configurados',
   'Enable a disabled hook': 'Ativar um hook desativado',
   'Disable an active hook': 'Desativar um hook ativo',
@@ -617,8 +617,8 @@ export default {
   'No hook events found.': 'Nenhum evento de hook encontrado.',
   '{{count}} hook configured': '{{count}} hook configurado',
   '{{count}} hooks configured': '{{count}} hooks configurados',
-  'This menu is read-only. To add or modify hooks, edit settings.json directly or ask Qwen Code.':
-    'Este menu é somente leitura. Para adicionar ou modificar hooks, edite settings.json diretamente ou pergunte ao Qwen Code.',
+  'This menu is read-only. To add or modify hooks, edit settings.json directly or ask Vibe Code.':
+    'Este menu é somente leitura. Para adicionar ou modificar hooks, edite settings.json diretamente ou pergunte ao Vibe Code.',
   'Enter to select · Esc to cancel':
     'Enter para selecionar · Esc para cancelar',
   // Hooks - Detail Step
@@ -626,8 +626,8 @@ export default {
   'Configured hooks:': 'Hooks configurados:',
   'No hooks configured for this event.':
     'Nenhum hook configurado para este evento.',
-  'To add hooks, edit settings.json directly or ask Qwen.':
-    'Para adicionar hooks, edite settings.json diretamente ou pergunte ao Qwen.',
+  'To add hooks, edit settings.json directly or ask Vibe.':
+    'Para adicionar hooks, edite settings.json diretamente ou pergunte ao Vibe.',
   'Enter to select · Esc to go back': 'Enter para selecionar · Esc para voltar',
   // Hooks - Config Detail Step
   'Hook details': 'Detalhes do Hook',
@@ -635,8 +635,8 @@ export default {
   'Extension:': 'Extensão:',
   'Desc:': 'Descrição:',
   'No hook config selected': 'Nenhuma configuração de hook selecionada',
-  'To modify or remove this hook, edit settings.json directly or ask Qwen to help.':
-    'Para modificar ou remover este hook, edite settings.json diretamente ou pergunte ao Qwen.',
+  'To modify or remove this hook, edit settings.json directly or ask Vibe to help.':
+    'Para modificar ou remover este hook, edite settings.json diretamente ou pergunte ao Vibe.',
   // Hooks - Disabled Step
   'Hook Configuration - Disabled': 'Configuração de Hook - Desativado',
   'All hooks are currently disabled. You have {{count}} that are not running.':
@@ -648,8 +648,8 @@ export default {
   'StatusLine will not be displayed': 'StatusLine não será exibido',
   'Tool operations will proceed without hook validation':
     'As operações de ferramentas prosseguirão sem validação de hook',
-  'To re-enable hooks, remove "disableAllHooks" from settings.json or ask Qwen Code.':
-    'Para reativar os hooks, remova "disableAllHooks" do settings.json ou pergunte ao Qwen Code.',
+  'To re-enable hooks, remove "disableAllHooks" from settings.json or ask Vibe Code.':
+    'Para reativar os hooks, remova "disableAllHooks" do settings.json ou pergunte ao Vibe Code.',
   // Hooks - Source
   Project: 'Projeto',
   User: 'Usuário',
@@ -670,8 +670,8 @@ export default {
   'When notifications are sent': 'Quando notificações são enviadas',
   'When the user submits a prompt': 'Quando o usuário envia um prompt',
   'When a new session is started': 'Quando uma nova sessão é iniciada',
-  'Right before Qwen Code concludes its response':
-    'Logo antes do Qwen Code concluir sua resposta',
+  'Right before Vibe Code concludes its response':
+    'Logo antes do Vibe Code concluir sua resposta',
   'When a subagent (Agent tool call) is started':
     'Quando um subagente (chamada de ferramenta Agent) é iniciado',
   'Right before a subagent concludes its response':
@@ -715,7 +715,7 @@ export default {
     'mostrar stderr apenas ao usuário mas continuar com chamada de ferramenta',
   'block processing, erase original prompt, and show stderr to user only':
     'bloquear processamento, apagar prompt original e mostrar stderr apenas ao usuário',
-  'stdout shown to Qwen': 'stdout mostrado ao Qwen',
+  'stdout shown to Vibe': 'stdout mostrado ao Vibe',
   'show stderr to user only (blocking errors ignored)':
     'mostrar stderr apenas ao usuário (erros de bloqueio ignorados)',
   'command completes successfully': 'comando concluído com sucesso',
@@ -1020,8 +1020,8 @@ export default {
   // ============================================================================
   // Commands - Summary
   // ============================================================================
-  'Generate a project summary and save it to .qwen/PROJECT_SUMMARY.md':
-    'Gerar um resumo do projeto e salvá-lo em .qwen/PROJECT_SUMMARY.md',
+  'Generate a project summary and save it to .vibe/PROJECT_SUMMARY.md':
+    'Gerar um resumo do projeto e salvá-lo em .vibe/PROJECT_SUMMARY.md',
   'No chat client available to generate summary.':
     'Nenhum cliente de chat disponível para gerar o resumo.',
   'Already generating summary, wait for previous request to complete':
@@ -1090,8 +1090,8 @@ export default {
     'O comando /directory add não é suportado em perfis de sandbox restritivos. Use --include-directories ao iniciar a sessão.',
   "Error adding '{{path}}': {{error}}":
     "Erro ao adicionar '{{path}}': {{error}}",
-  'Successfully added QWEN.md files from the following directories if there are:\n- {{directories}}':
-    'Arquivos QWEN.md adicionados com sucesso dos seguintes diretórios, se houverem:\n- {{directories}}',
+  'Successfully added VIBE.md files from the following directories if there are:\n- {{directories}}':
+    'Arquivos VIBE.md adicionados com sucesso dos seguintes diretórios, se houverem:\n- {{directories}}',
   'Error refreshing memory: {{error}}': 'Erro ao atualizar memória: {{error}}',
   'Successfully added directories:\n- {{directories}}':
     'Diretórios adicionados com sucesso:\n- {{directories}}',
@@ -1173,8 +1173,8 @@ export default {
   servers: 'servidores',
   'Add MCP servers to your settings to get started.':
     'Adicione servidores MCP às suas configurações para começar.',
-  'Run qwen --debug to see error logs':
-    'Execute qwen --debug para ver os logs de erro',
+  'Run.vibe --debug to see error logs':
+    'Execute.vibe --debug para ver os logs de erro',
 
   // MCP OAuth Authentication
   'OAuth Authentication': 'Autenticação OAuth',
@@ -1296,17 +1296,17 @@ export default {
     'Você deve selecionar um método de autenticação para prosseguir. Pressione Ctrl+C novamente para sair.',
   'Terms of Services and Privacy Notice':
     'Termos de Serviço e Aviso de Privacidade',
-  'Qwen OAuth': 'Qwen OAuth',
+  'Vibe OAuth': 'Vibe OAuth',
   'Discontinued — switch to Coding Plan or API Key':
     'Descontinuado — mude para Coding Plan ou API Key',
-  'Qwen OAuth free tier was discontinued on 2026-04-15. Run /auth to switch provider.':
-    'O nível gratuito do Qwen OAuth foi descontinuado em 2026-04-15. Execute /auth para trocar de provedor.',
-  'Qwen OAuth free tier was discontinued on 2026-04-15. Please select Coding Plan or API Key instead.':
-    'O nível gratuito do Qwen OAuth foi descontinuado em 2026-04-15. Selecione Coding Plan ou API Key.',
-  'Qwen OAuth free tier was discontinued on 2026-04-15. Please select a model from another provider or run /auth to switch.':
-    'O nível gratuito do Qwen OAuth foi descontinuado em 2026-04-15. Por favor, selecione um modelo de outro provedor ou execute /auth para trocar.',
-  '\n⚠ Qwen OAuth free tier was discontinued on 2026-04-15. Please select another option.\n':
-    '\n⚠ O nível gratuito do Qwen OAuth foi descontinuado em 2026-04-15. Selecione outra opção.\n',
+  'Vibe OAuth free tier was discontinued on 2026-04-15. Run /auth to switch provider.':
+    'O nível gratuito do Vibe OAuth foi descontinuado em 2026-04-15. Execute /auth para trocar de provedor.',
+  'Vibe OAuth free tier was discontinued on 2026-04-15. Please select Coding Plan or API Key instead.':
+    'O nível gratuito do Vibe OAuth foi descontinuado em 2026-04-15. Selecione Coding Plan ou API Key.',
+  'Vibe OAuth free tier was discontinued on 2026-04-15. Please select a model from another provider or run /auth to switch.':
+    'O nível gratuito do Vibe OAuth foi descontinuado em 2026-04-15. Por favor, selecione um modelo de outro provedor ou execute /auth para trocar.',
+  '\n⚠ Vibe OAuth free tier was discontinued on 2026-04-15. Please select another option.\n':
+    '\n⚠ O nível gratuito do Vibe OAuth foi descontinuado em 2026-04-15. Selecione outra opção.\n',
   'Paid \u00B7 Up to 6,000 requests/5 hrs \u00B7 All Alibaba Cloud Coding Plan Models':
     'Pago \u00B7 Até 6.000 solicitações/5 hrs \u00B7 Todos os modelos Alibaba Cloud Coding Plan',
   'Alibaba Cloud Coding Plan': 'Alibaba Cloud Coding Plan',
@@ -1321,27 +1321,27 @@ export default {
     'Falha ao fazer login. Mensagem: {{message}}',
   'Authentication is enforced to be {{enforcedType}}, but you are currently using {{currentType}}.':
     'A autenticação é forçada para {{enforcedType}}, mas você está usando {{currentType}} no momento.',
-  'Qwen OAuth authentication timed out. Please try again.':
-    'A autenticação Qwen OAuth expirou. Tente novamente.',
-  'Qwen OAuth authentication cancelled.': 'Autenticação Qwen OAuth cancelada.',
-  'Qwen OAuth Authentication': 'Autenticação Qwen OAuth',
+  'Vibe OAuth authentication timed out. Please try again.':
+    'A autenticação Vibe OAuth expirou. Tente novamente.',
+  'Vibe OAuth authentication cancelled.': 'Autenticação Vibe OAuth cancelada.',
+  'Vibe OAuth Authentication': 'Autenticação Vibe OAuth',
   'Please visit this URL to authorize:': 'Visite esta URL para autorizar:',
   'Or scan the QR code below:': 'Ou escaneie o código QR abaixo:',
   'Waiting for authorization': 'Aguardando autorização',
   'Time remaining:': 'Tempo restante:',
   '(Press ESC or CTRL+C to cancel)': '(Pressione ESC ou CTRL+C para cancelar)',
-  'Qwen OAuth Authentication Timeout':
-    'Tempo Limite de Autenticação Qwen OAuth',
+  'Vibe OAuth Authentication Timeout':
+    'Tempo Limite de Autenticação Vibe OAuth',
   'OAuth token expired (over {{seconds}} seconds). Please select authentication method again.':
     'Token OAuth expirado (mais de {{seconds}} segundos). Selecione o método de autenticação novamente.',
   'Press any key to return to authentication type selection.':
     'Pressione qualquer tecla para retornar à seleção do tipo de autenticação.',
-  'Waiting for Qwen OAuth authentication...':
-    'Aguardando autenticação Qwen OAuth...',
-  'Note: Your existing API key in settings.json will not be cleared when using Qwen OAuth. You can switch back to OpenAI authentication later if needed.':
-    'Nota: Sua chave de API existente no settings.json não será limpa ao usar o Qwen OAuth. Você pode voltar para a autenticação do OpenAI mais tarde, se necessário.',
-  'Note: Your existing API key will not be cleared when using Qwen OAuth.':
-    'Nota: Sua chave de API existente não será limpa ao usar o Qwen OAuth.',
+  'Waiting for Vibe OAuth authentication...':
+    'Aguardando autenticação Vibe OAuth...',
+  'Note: Your existing API key in settings.json will not be cleared when using Vibe OAuth. You can switch back to OpenAI authentication later if needed.':
+    'Nota: Sua chave de API existente no settings.json não será limpa ao usar o Vibe OAuth. Você pode voltar para a autenticação do OpenAI mais tarde, se necessário.',
+  'Note: Your existing API key will not be cleared when using Vibe OAuth.':
+    'Nota: Sua chave de API existente não será limpa ao usar o Vibe OAuth.',
   'Authentication timed out. Please try again.':
     'A autenticação expirou. Tente novamente.',
   'Waiting for auth... (Press ESC or CTRL+C to cancel)':
@@ -1366,8 +1366,8 @@ export default {
     'Falha ao autenticar. Mensagem: {{message}}',
   'Authenticated successfully with {{authType}} credentials.':
     'Autenticado com sucesso com credenciais {{authType}}.',
-  'Invalid QWEN_DEFAULT_AUTH_TYPE value: "{{value}}". Valid values are: {{validValues}}':
-    'Valor QWEN_DEFAULT_AUTH_TYPE inválido: "{{value}}". Valores válidos são: {{validValues}}',
+  'Invalid VIBE_DEFAULT_AUTH_TYPE value: "{{value}}". Valid values are: {{validValues}}':
+    'Valor VIBE_DEFAULT_AUTH_TYPE inválido: "{{value}}". Valores válidos são: {{validValues}}',
   'OpenAI Configuration Required': 'Configuração do OpenAI Necessária',
   'Please enter your OpenAI configuration. You can get an API key from':
     'Insira sua configuração do OpenAI. Você pode obter uma chave de API de',
@@ -1403,10 +1403,10 @@ export default {
   unknown: 'desconhecido',
   "Failed to switch model to '{{modelId}}'.\n\n{{error}}":
     "Falha ao trocar o modelo para '{{modelId}}'.\n\n{{error}}",
-  'Qwen 3.6 Plus — efficient hybrid model with leading coding performance':
-    'Qwen 3.6 Plus — modelo híbrido eficiente com desempenho líder em programação',
-  'The latest Qwen Vision model from Alibaba Cloud ModelStudio (version: qwen3-vl-plus-2025-09-23)':
-    'O modelo Qwen Vision mais recente do Alibaba Cloud ModelStudio (versão: qwen3-vl-plus-2025-09-23)',
+  'Vibe 3.6 Plus — efficient hybrid model with leading coding performance':
+    'Vibe 3.6 Plus — modelo híbrido eficiente com desempenho líder em programação',
+  'The latest Vibe Vision model from Alibaba Cloud ModelStudio (version:.vibe3-vl-plus-2025-09-23)':
+    'O modelo Vibe Vision mais recente do Alibaba Cloud ModelStudio (versão:.vibe3-vl-plus-2025-09-23)',
 
   // ============================================================================
   // Dialogs - Permissions
@@ -1418,12 +1418,12 @@ export default {
   Ask: 'Perguntar',
   Deny: 'Negar',
   Workspace: 'Área de trabalho',
-  "Qwen Code won't ask before using allowed tools.":
-    'O Qwen Code não perguntará antes de usar ferramentas permitidas.',
-  'Qwen Code will ask before using these tools.':
-    'O Qwen Code perguntará antes de usar essas ferramentas.',
-  'Qwen Code is not allowed to use denied tools.':
-    'O Qwen Code não tem permissão para usar ferramentas negadas.',
+  "Vibe Code won't ask before using allowed tools.":
+    'O Vibe Code não perguntará antes de usar ferramentas permitidas.',
+  'Vibe Code will ask before using these tools.':
+    'O Vibe Code perguntará antes de usar essas ferramentas.',
+  'Vibe Code is not allowed to use denied tools.':
+    'O Vibe Code não tem permissão para usar ferramentas negadas.',
   'Manage trusted directories for this workspace.':
     'Gerenciar diretórios confiáveis para esta área de trabalho.',
   'Any use of the {{tool}} tool': 'Qualquer uso da ferramenta {{tool}}',
@@ -1433,11 +1433,11 @@ export default {
   'From project settings': 'Das configurações do projeto',
   'From session': 'Da sessão',
   'Project settings (local)': 'Configurações do projeto (local)',
-  'Saved in .qwen/settings.local.json': 'Salvo em .qwen/settings.local.json',
+  'Saved in .vibe/settings.local.json': 'Salvo em .vibe/settings.local.json',
   'Project settings': 'Configurações do projeto',
-  'Checked in at .qwen/settings.json': 'Registrado em .qwen/settings.json',
+  'Checked in at .vibe/settings.json': 'Registrado em .vibe/settings.json',
   'User settings': 'Configurações do usuário',
-  'Saved in at ~/.qwen/settings.json': 'Salvo em ~/.qwen/settings.json',
+  'Saved in at ~/.vibe/settings.json': 'Salvo em ~/.vibe/settings.json',
   'Add a new rule…': 'Adicionar nova regra…',
   'Add {{type}} permission rule': 'Adicionar regra de permissão {{type}}',
   'Permission rules are a tool name, optionally followed by a specifier in parentheses.':
@@ -1462,10 +1462,10 @@ export default {
   // Workspace directory management
   'Add directory…': 'Adicionar diretório…',
   'Add directory to workspace': 'Adicionar diretório à área de trabalho',
-  'Qwen Code can read files in the workspace, and make edits when auto-accept edits is on.':
-    'O Qwen Code pode ler arquivos na área de trabalho e fazer edições quando a aceitação automática está ativada.',
-  'Qwen Code will be able to read files in this directory and make edits when auto-accept edits is on.':
-    'O Qwen Code poderá ler arquivos neste diretório e fazer edições quando a aceitação automática está ativada.',
+  'Vibe Code can read files in the workspace, and make edits when auto-accept edits is on.':
+    'O Vibe Code pode ler arquivos na área de trabalho e fazer edições quando a aceitação automática está ativada.',
+  'Vibe Code will be able to read files in this directory and make edits when auto-accept edits is on.':
+    'O Vibe Code poderá ler arquivos neste diretório e fazer edições quando a aceitação automática está ativada.',
   'Enter the path to the directory:': 'Insira o caminho do diretório:',
   'Enter directory path…': 'Insira o caminho do diretório…',
   'Tab to complete · Enter to add · Esc to cancel':
@@ -1558,20 +1558,20 @@ export default {
     'Use /bug para enviar problemas aos mantenedores quando algo der errado.',
   'Switch auth type quickly with /auth.':
     'Troque o tipo de autenticação rapidamente com /auth.',
-  'You can run any shell commands from Qwen Code using ! (e.g. !ls).':
-    'Você pode executar quaisquer comandos shell do Qwen Code usando ! (ex: !ls).',
+  'You can run any shell commands from Vibe Code using ! (e.g. !ls).':
+    'Você pode executar quaisquer comandos shell do Vibe Code usando ! (ex: !ls).',
   'Type / to open the command popup; Tab autocompletes slash commands and saved prompts.':
     'Digite / para abrir o popup de comandos; Tab autocompleta comandos de barra e prompts salvos.',
-  'You can resume a previous conversation by running qwen --continue or qwen --resume.':
-    'Você pode retomar uma conversa anterior executando qwen --continue ou qwen --resume.',
+  'You can resume a previous conversation by running.vibe --continue or.vibe --resume.':
+    'Você pode retomar uma conversa anterior executando.vibe --continue ou.vibe --resume.',
   'You can switch permission mode quickly with Shift+Tab or /approval-mode.':
     'Você pode alternar o modo de permissão rapidamente com Shift+Tab ou /approval-mode.',
   'Try /insight to generate personalized insights from your chat history.':
     'Experimente /insight para gerar insights personalizados do seu histórico de conversas.',
   'Press Ctrl+O to toggle compact mode — hide tool output and thinking for a cleaner view.':
     'Pressione Ctrl+O para alternar o modo compacto — ocultar saída de ferramentas e raciocínio.',
-  'Add a QWEN.md file to give Qwen Code persistent project context.':
-    'Adicione um arquivo QWEN.md para dar ao Qwen Code um contexto persistente do projeto.',
+  'Add a VIBE.md file to give Vibe Code persistent project context.':
+    'Adicione um arquivo VIBE.md para dar ao Vibe Code um contexto persistente do projeto.',
   'Use /btw to ask a quick side question without disrupting the conversation.':
     'Use /btw para fazer uma pergunta lateral rápida sem interromper a conversa.',
   'Context is almost full! Run /compress now or start /new to continue.':
@@ -1965,9 +1965,9 @@ export default {
   // ============================================================================
   // Commands - Auth
   // ============================================================================
-  'Configure Qwen authentication information with Qwen-OAuth or Alibaba Cloud Coding Plan':
-    'Configurar autenticação Qwen com Qwen-OAuth ou Alibaba Cloud Coding Plan',
-  'Authenticate using Qwen OAuth': 'Autenticar usando Qwen OAuth',
+  'Configure Vibe authentication information with Vibe-OAuth or Alibaba Cloud Coding Plan':
+    'Configurar autenticação Vibe com Vibe-OAuth ou Alibaba Cloud Coding Plan',
+  'Authenticate using Vibe OAuth': 'Autenticar usando Vibe OAuth',
   'Authenticate using Alibaba Cloud Coding Plan':
     'Autenticar usando Alibaba Cloud Coding Plan',
   'Region for Coding Plan (china/global)':
@@ -1976,12 +1976,12 @@ export default {
   'Show current authentication status': 'Mostrar status atual de autenticação',
   'Authentication completed successfully.':
     'Autenticação concluída com sucesso.',
-  'Starting Qwen OAuth authentication...':
-    'Iniciando autenticação Qwen OAuth...',
-  'Successfully authenticated with Qwen OAuth.':
-    'Autenticado com sucesso via Qwen OAuth.',
-  'Failed to authenticate with Qwen OAuth: {{error}}':
-    'Falha ao autenticar com Qwen OAuth: {{error}}',
+  'Starting Vibe OAuth authentication...':
+    'Iniciando autenticação Vibe OAuth...',
+  'Successfully authenticated with Vibe OAuth.':
+    'Autenticado com sucesso via Vibe OAuth.',
+  'Failed to authenticate with Vibe OAuth: {{error}}':
+    'Falha ao autenticar com Vibe OAuth: {{error}}',
   'Processing Alibaba Cloud Coding Plan authentication...':
     'Processando autenticação Alibaba Cloud Coding Plan...',
   'Successfully authenticated with Alibaba Cloud Coding Plan.':
@@ -2001,20 +2001,20 @@ export default {
     '⚠️  Nenhum método de autenticação configurado.\n',
   'Run one of the following commands to get started:\n':
     'Execute um dos seguintes comandos para começar:\n',
-  '  qwen auth qwen-oauth     - Authenticate with Qwen OAuth (discontinued)':
-    '  qwen auth qwen-oauth     - Autenticar com Qwen OAuth (descontinuado)',
-  '  qwen auth coding-plan      - Authenticate with Alibaba Cloud Coding Plan\n':
-    '  qwen auth coding-plan      - Autenticar com Alibaba Cloud Coding Plan\n',
+  '  vibe auth.vibe-oauth     - Authenticate with Vibe OAuth (discontinued)':
+    '  vibe auth.vibe-oauth     - Autenticar com Vibe OAuth (descontinuado)',
+  '  vibe auth coding-plan      - Authenticate with Alibaba Cloud Coding Plan\n':
+    '  vibe auth coding-plan      - Autenticar com Alibaba Cloud Coding Plan\n',
   'Or simply run:': 'Ou simplesmente execute:',
-  '  qwen auth                - Interactive authentication setup\n':
-    '  qwen auth                - Configuração interativa de autenticação\n',
-  '✓ Authentication Method: Qwen OAuth': '✓ Método de autenticação: Qwen OAuth',
+  '  vibe auth                - Interactive authentication setup\n':
+    '  vibe auth                - Configuração interativa de autenticação\n',
+  '✓ Authentication Method: Vibe OAuth': '✓ Método de autenticação: Vibe OAuth',
   '  Type: Free tier (discontinued 2026-04-15)':
     '  Tipo: Nível gratuito (descontinuado 2026-04-15)',
   '  Limit: No longer available': '  Limite: Não mais disponível',
-  'Qwen OAuth free tier was discontinued on 2026-04-15. Run /auth to switch to Coding Plan, OpenRouter, Fireworks AI, or another provider.':
-    'O nível gratuito do Qwen OAuth foi descontinuado em 2026-04-15. Execute /auth para mudar para Coding Plan, OpenRouter, Fireworks AI ou outro provedor.',
-  '  Models: Qwen latest models\n': '  Modelos: Modelos Qwen mais recentes\n',
+  'Vibe OAuth free tier was discontinued on 2026-04-15. Run /auth to switch to Coding Plan, OpenRouter, Fireworks AI, or another provider.':
+    'O nível gratuito do Vibe OAuth foi descontinuado em 2026-04-15. Execute /auth para mudar para Coding Plan, OpenRouter, Fireworks AI ou outro provedor.',
+  '  Models: Vibe latest models\n': '  Modelos: Modelos Vibe mais recentes\n',
   '✓ Authentication Method: Alibaba Cloud Coding Plan':
     '✓ Método de autenticação: Alibaba Cloud Coding Plan',
   '中国 (China) - 阿里云百炼': '中国 (China) - 阿里云百炼',
@@ -2027,8 +2027,8 @@ export default {
     '⚠️  Método de autenticação: Alibaba Cloud Coding Plan (Incompleto)',
   '  Issue: API key not found in environment or settings\n':
     '  Problema: Chave de API não encontrada no ambiente ou configurações\n',
-  '  Run `qwen auth coding-plan` to re-configure.\n':
-    '  Execute `qwen auth coding-plan` para reconfigurar.\n',
+  '  Run `vibe auth coding-plan` to re-configure.\n':
+    '  Execute `vibe auth coding-plan` para reconfigurar.\n',
   '✓ Authentication Method: {{type}}': '✓ Método de autenticação: {{type}}',
   '  Status: Configured\n': '  Status: Configurado\n',
   'Failed to check authentication status: {{error}}':
@@ -2056,5 +2056,5 @@ export default {
   'Not in plan mode. Use "/plan" to enter plan mode first.':
     'Not in plan mode. Use "/plan" to enter plan mode first.',
 
-  "Set up Qwen Code's status line UI": "Set up Qwen Code's status line UI",
+  "Set up Vibe Code's status line UI": "Set up Vibe Code's status line UI",
 };

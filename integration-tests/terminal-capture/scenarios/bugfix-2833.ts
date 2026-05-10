@@ -8,7 +8,7 @@ import type { ScenarioConfig } from '../scenario-runner.js';
 export default {
   name: 'streaming-bugfix-2833',
   spawn: ['node', 'dist/cli.js', '--yolo'],
-  terminal: { title: 'qwen-code', cwd: '../../..' },
+  terminal: { title: 'vibe-code', cwd: '../../..' },
   flow: [
     {
       type: '/qc:bugfix https://github.com/vibe-bti/vibe-code/issues/2833',

@@ -263,7 +263,7 @@ export function startOAuthCallbackListener(
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.end(
-      '<html><body><h1>OpenRouter authentication complete.</h1><p>You can return to Qwen Code.</p></body></html>',
+      '<html><body><h1>OpenRouter authentication complete.</h1><p>You can return to Vibe Code.</p></body></html>',
     );
     void finish('resolve', code);
   });
@@ -300,11 +300,11 @@ function buildOpenRouterHeaders() {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'HTTP-Referer': 'https://github.com/vibe-bti/vibe-code.git',
-    'X-OpenRouter-Title': 'Qwen Code',
+    'X-OpenRouter-Title': 'Vibe Code',
   };
 }
 
-const OPENROUTER_MODEL_PRIORITY_PREFIXES = ['qwen/', 'glm/', 'minimax/'];
+const OPENROUTER_MODEL_PRIORITY_PREFIXES = ['vibe/', 'glm/', 'minimax/'];
 const OPENROUTER_RECOMMENDED_MODEL_LIMIT = 16;
 const OPENROUTER_FREE_MODEL_ID_HINT = ':free';
 

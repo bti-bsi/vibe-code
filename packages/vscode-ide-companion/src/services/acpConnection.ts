@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -116,7 +116,7 @@ export class AcpConnection {
 
     if (!fs.existsSync(cliEntryPath)) {
       throw new Error(
-        `Bundled Qwen CLI entry not found at ${cliEntryPath}. The extension may not have been packaged correctly.`,
+        `Bundled Vibe CLI entry not found at ${cliEntryPath}. The extension may not have been packaged correctly.`,
       );
     }
 
@@ -149,9 +149,9 @@ export class AcpConnection {
         message.toLowerCase().includes('error') &&
         !message.includes('Loaded cached')
       ) {
-        console.error(`[ACP qwen]:`, message);
+        console.error(`[ACP vibe]:`, message);
       } else {
-        console.log(`[ACP qwen]:`, message);
+        console.log(`[ACP vibe]:`, message);
       }
     });
 
@@ -161,7 +161,7 @@ export class AcpConnection {
 
     this.child!.on('exit', (code: number | null, signal: string | null) => {
       console.error(
-        `[ACP qwen] Process exited with code: ${code}, signal: ${signal}`,
+        `[ACP vibe] Process exited with code: ${code}, signal: ${signal}`,
       );
       this.lastExitCode = code;
       this.lastExitSignal = signal;
@@ -172,7 +172,7 @@ export class AcpConnection {
         : '';
       rejectOnExit?.(
         new Error(
-          `Qwen ACP process exited unexpectedly (exit code: ${code}, signal: ${signal})${stderrSuffix}`,
+          `Vibe ACP process exited unexpectedly (exit code: ${code}, signal: ${signal})${stderrSuffix}`,
         ),
       );
 
@@ -198,7 +198,7 @@ export class AcpConnection {
         ? `\nCLI stderr: ${stderrOutput.slice(-500)}`
         : '';
       throw new Error(
-        `Qwen ACP process failed to start (exit code: ${code}, signal: ${signal})${stderrSuffix}`,
+        `Vibe ACP process failed to start (exit code: ${code}, signal: ${signal})${stderrSuffix}`,
       );
     }
 
@@ -347,7 +347,7 @@ export class AcpConnection {
             this.onAuthenticateUpdate(
               params as unknown as AuthenticateUpdateNotification,
             );
-          } else if (method === '_qwencode/slash_command') {
+          } else if (method === '_vibecode/slash_command') {
             this.onSlashCommandNotification(
               params as unknown as SlashCommandNotification,
             );
@@ -526,7 +526,7 @@ export class AcpConnection {
         // ACP ListSessionsRequest schema has no `size` field; the SDK's zod
         // validator strips unknown top-level keys, so the agent would never
         // see it. Carry it via `_meta` instead, matching the pattern used for
-        // other Qwen Code ACP extensions.
+        // other Vibe Code ACP extensions.
         const existingMeta = (params['_meta'] ?? {}) as Record<string, unknown>;
         params['_meta'] = { ...existingMeta, size: options.size };
       }

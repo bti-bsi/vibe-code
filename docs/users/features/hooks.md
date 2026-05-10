@@ -1,8 +1,8 @@
-# Qwen Code Hooks
+# Vibe Code Hooks
 
 ## Overview
 
-Qwen Code hooks provide a powerful mechanism for extending and customizing the behavior of the Qwen Code application. Hooks allow users to execute custom scripts or programs at specific points in the application lifecycle, such as before tool execution, after tool execution, at session start/end, and during other key events.
+Vibe Code hooks provide a powerful mechanism for extending and customizing the behavior of the Vibe Code application. Hooks allow users to execute custom scripts or programs at specific points in the application lifecycle, such as before tool execution, after tool execution, at session start/end, and during other key events.
 
 Hooks are enabled by default. You can temporarily disable all hooks by setting `disableAllHooks` to `true` in your settings file (at the top level, alongside `hooks`):
 
@@ -19,7 +19,7 @@ This disables all hooks without deleting their configurations.
 
 ## What are Hooks?
 
-Hooks are user-defined scripts or programs that are automatically executed by Qwen Code at predefined points in the application flow. They allow users to:
+Hooks are user-defined scripts or programs that are automatically executed by Vibe Code at predefined points in the application flow. They allow users to:
 
 - Monitor and audit tool usage
 - Enforce security policies
@@ -30,7 +30,7 @@ Hooks are user-defined scripts or programs that are automatically executed by Qw
 
 ## Hook Types
 
-Qwen Code supports three hook executor types:
+Vibe Code supports three hook executor types:
 
 | Type       | Description                                                                                    |
 | :--------- | :--------------------------------------------------------------------------------------------- |
@@ -67,7 +67,7 @@ Command hooks execute commands via child processes. Input JSON is passed through
         "hooks": [
           {
             "type": "command",
-            "command": "$QWEN_PROJECT_DIR/.vibe/hooks/security-check.sh",
+            "command": "$VIBE_PROJECT_DIR/.vibe/hooks/security-check.sh",
             "name": "security-check",
             "timeout": 10000
           }
@@ -136,7 +136,7 @@ Function hooks directly call registered JavaScript/TypeScript functions. They ar
 
 ## Hook Events
 
-Hooks fire at specific points during a Qwen Code session. Different events support different matchers to filter trigger conditions.
+Hooks fire at specific points during a Vibe Code session. Different events support different matchers to filter trigger conditions.
 
 | Event                | Triggered When                            | Matcher Target                                            |
 | :------------------- | :---------------------------------------- | :-------------------------------------------------------- |
@@ -456,7 +456,7 @@ Hook output supports three categories of fields:
 
 #### Stop
 
-**Purpose**: Executed before Qwen concludes its response to provide final feedback or summaries.
+**Purpose**: Executed before Vibe concludes its response to provide final feedback or summaries.
 
 **Event-specific fields**:
 
@@ -482,7 +482,7 @@ Hook output supports three categories of fields:
 ```json
 {
   "decision": "block",
-  "reason": "Must be provided when Qwen Code is blocked from stopping"
+  "reason": "Must be provided when Vibe Code is blocked from stopping"
 }
 ```
 
@@ -596,7 +596,7 @@ Hook output supports three categories of fields:
 ```json
 {
   "decision": "block",
-  "reason": "Must be provided when Qwen Code is blocked from stopping"
+  "reason": "Must be provided when Vibe Code is blocked from stopping"
 }
 ```
 
@@ -756,7 +756,7 @@ Hook output supports three categories of fields:
 
 ## Hook Configuration
 
-Hooks are configured in Qwen Code settings, typically in `.vibe/settings.json` or user configuration files:
+Hooks are configured in Vibe Code settings, typically in `.vibe/settings.json` or user configuration files:
 
 ```json
 {
@@ -820,7 +820,7 @@ Only `command` type supports asynchronous execution. Setting `"async": true` run
         "hooks": [
           {
             "type": "command",
-            "command": "$QWEN_PROJECT_DIR/.vibe/hooks/run-tests-async.sh",
+            "command": "$VIBE_PROJECT_DIR/.vibe/hooks/run-tests-async.sh",
             "async": true,
             "timeout": 300000
           }
@@ -881,7 +881,7 @@ if echo "$TOOL_INPUT" | grep -qiE "(rm.*-rf|mv.*\/|chmod.*777)"; then
 fi
 
 # Log the operation
-echo "INFO: Tool $TOOL_NAME executed safely at $(date)" >> /var/log/qwen-security.log
+echo "INFO: Tool $TOOL_NAME executed safely at $(date)" >> /var/log/vibe-security.log
 
 # Allow with additional context
 echo '{

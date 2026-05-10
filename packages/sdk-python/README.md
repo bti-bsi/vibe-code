@@ -1,6 +1,6 @@
 # vibe-code-sdk
 
-Experimental Python SDK for programmatic access to Qwen Code through the
+Experimental Python SDK for programmatic access to Vibe Code through the
 `stream-json` protocol.
 
 ## Installation
@@ -12,17 +12,17 @@ pip install vibe-code-sdk
 ## Requirements
 
 - Python `>=3.10`
-- External `qwen` CLI installed and available in `PATH`
+- External `vibe` CLI installed and available in `PATH`
 
 You can also point the SDK at an explicit CLI binary or script with
-`path_to_qwen_executable`.
+`path_to_vibe_executable`.
 
 ## Quick Start
 
 ```python
 import asyncio
 
-from qwen_code_sdk import is_sdk_result_message, query
+from vibe_code_sdk import is_sdk_result_message, query
 
 
 async def main() -> None:
@@ -30,7 +30,7 @@ async def main() -> None:
         "List the top-level packages in this repository.",
         {
             "cwd": "/path/to/project",
-            "path_to_qwen_executable": "qwen",
+            "path_to_vibe_executable": "vibe",
         },
     )
 
@@ -45,13 +45,13 @@ asyncio.run(main())
 ## Sync API
 
 ```python
-from qwen_code_sdk import query_sync
+from vibe_code_sdk import query_sync
 
 
 with query_sync(
     "Say hello",
     {
-        "path_to_qwen_executable": "qwen",
+        "path_to_vibe_executable": "vibe",
     },
 ) as result:
     for message in result:
@@ -71,7 +71,7 @@ for multi-turn sessions.
 ## Permission Callback
 
 ```python
-from qwen_code_sdk import query
+from vibe_code_sdk import query
 
 
 async def can_use_tool(tool_name, tool_input, context):
@@ -83,7 +83,7 @@ async def can_use_tool(tool_name, tool_input, context):
 result = query(
     "Create hello.txt",
     {
-        "path_to_qwen_executable": "qwen",
+        "path_to_vibe_executable": "vibe",
         "can_use_tool": can_use_tool,
     },
 )
@@ -101,14 +101,14 @@ The `context` argument includes `cancel_event`, `suggestions`, and
 
 - `ValidationError`: invalid query options or malformed session identifiers
 - `ControlRequestTimeoutError`: CLI control operation exceeded timeout
-- `ProcessExitError`: `qwen` exited with a non-zero code
+- `ProcessExitError`: `vibe` exited with a non-zero code
 - `AbortError`: query or control request was cancelled
 
 ## Current Scope
 
 `0.1.x` is intentionally narrow:
 
-- Uses external `qwen` CLI via process transport
+- Uses external `vibe` CLI via process transport
 - Targets `stream-json` parity with the TypeScript SDK core flow
 - Does not yet implement ACP transport
 - Does not yet embed MCP servers inside the SDK process

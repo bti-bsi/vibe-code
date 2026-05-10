@@ -75,7 +75,7 @@ function generateCustomModelEnvKey(
   authType: CustomModelAuthType,
   baseUrl: string,
 ): string {
-  return `QWEN_CUSTOM_MODEL_API_KEY_${normalizeConfigToken(authType)}_${normalizeConfigToken(baseUrl)}`;
+  return `VIBE_CUSTOM_MODEL_API_KEY_${normalizeConfigToken(authType)}_${normalizeConfigToken(baseUrl)}`;
 }
 
 function maskApiKey(apiKey: string | undefined): string {
@@ -217,7 +217,7 @@ export function ModelDialog({
     }
 
     const authTypeOrder: AuthType[] = [
-      AuthType.QWEN_OAUTH,
+      AuthType.VIBE_OAUTH,
       AuthType.USE_OPENAI,
       AuthType.USE_ANTHROPIC,
       AuthType.USE_GEMINI,
@@ -274,14 +274,14 @@ export function ModelDialog({
             isRuntime && snapshotId
               ? snapshotId
               : `${entryAuthType}::${model.id}`;
-          const isQwenOAuth = entryAuthType === AuthType.QWEN_OAUTH;
+          const isVibeOAuth = entryAuthType === AuthType.VIBE_OAUTH;
 
           const title = (
             <Text>
               <Text
                 bold
                 color={
-                  isQwenOAuth
+                  isVibeOAuth
                     ? theme.status.warning
                     : isRuntime
                       ? theme.status.warning
@@ -294,7 +294,7 @@ export function ModelDialog({
               {isRuntime && (
                 <Text color={theme.status.warning}> (Runtime)</Text>
               )}
-              {isQwenOAuth && !isRuntime && (
+              {isVibeOAuth && !isRuntime && (
                 <Text color={theme.status.warning}>
                   {' '}
                   ({t('Discontinued')})
@@ -307,7 +307,7 @@ export function ModelDialog({
           if (isRuntime) {
             description = description ? `${description} (Runtime)` : 'Runtime model';
           }
-          if (isQwenOAuth && !isRuntime) {
+          if (isVibeOAuth && !isRuntime) {
             description = t('Discontinued — switch to Coding Plan or API Key');
           }
 
@@ -550,17 +550,17 @@ export function ModelDialog({
         return;
       }
 
-      const isQwenOAuthSelection =
-        selected.startsWith(`${AuthType.QWEN_OAUTH}::`) ||
+      const isVibeOAuthSelection =
+        selected.startsWith(`${AuthType.VIBE_OAUTH}::`) ||
         (selected.startsWith('$runtime|') &&
-          selected.split('|')[1] === AuthType.QWEN_OAUTH);
+          selected.split('|')[1] === AuthType.VIBE_OAUTH);
       const isRuntimeOAuthSelection = selected.startsWith(
-        `$runtime|${AuthType.QWEN_OAUTH}|`,
+        `$runtime|${AuthType.VIBE_OAUTH}|`,
       );
-      if (isQwenOAuthSelection && !isRuntimeOAuthSelection) {
+      if (isVibeOAuthSelection && !isRuntimeOAuthSelection) {
         setErrorMessage(
           t(
-            'Qwen OAuth free tier was discontinued on 2026-04-15. Please select a model from another provider or run /auth to switch.',
+            'Vibe OAuth free tier was discontinued on 2026-04-15. Please select a model from another provider or run /auth to switch.',
           ),
         );
         return;
@@ -608,7 +608,7 @@ export function ModelDialog({
           selectedAuthType,
           modelId,
           selectedAuthType !== authType &&
-            selectedAuthType === AuthType.QWEN_OAUTH
+            selectedAuthType === AuthType.VIBE_OAUTH
             ? { requireCachedCredentials: true }
             : undefined,
         );
@@ -866,7 +866,7 @@ export function ModelDialog({
             borderRight={false}
             borderColor={theme.border.default}
           />
-          {highlightedEntry.authType === AuthType.QWEN_OAUTH &&
+          {highlightedEntry.authType === AuthType.VIBE_OAUTH &&
             !highlightedEntry.isRuntime && (
               <Box marginTop={1}>
                 <Text color={theme.status.warning}>
@@ -882,7 +882,7 @@ export function ModelDialog({
             label={t('Context Window')}
             value={formatContextWindow(highlightedEntry.model.contextWindowSize)}
           />
-          {highlightedEntry.authType !== AuthType.QWEN_OAUTH && (
+          {highlightedEntry.authType !== AuthType.VIBE_OAUTH && (
             <>
               <DetailRow
                 label="Base URL"

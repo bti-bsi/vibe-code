@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2026 Qwen Team
+ * Copyright 2026 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -34,7 +34,7 @@ vi.mock('../utils/forkedAgent.js', () => ({
 describe('runAutoMemoryExtractionByAgent', () => {
   const mockConfig = {
     getSessionId: vi.fn().mockReturnValue('session-1'),
-    getModel: vi.fn().mockReturnValue('qwen3-coder-plus'),
+    getModel: vi.fn().mockReturnValue('vibe3-coder-plus'),
     getApprovalMode: vi.fn(),
   } as unknown as Config;
 
@@ -46,7 +46,7 @@ describe('runAutoMemoryExtractionByAgent', () => {
         { role: 'user', parts: [{ text: 'I prefer terse responses.' }] },
         { role: 'model', parts: [{ text: 'Understood.' }] },
       ],
-      model: 'qwen3-coder-plus',
+      model: 'vibe3-coder-plus',
       version: 1,
     });
     vi.mocked(scanAutoMemoryTopicDocuments).mockResolvedValue([

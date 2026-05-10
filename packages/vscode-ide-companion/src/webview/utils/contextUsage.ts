@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -26,8 +26,13 @@ export function computeContextUsage(
   const limit = usageStats?.tokenLimit ?? metaLimit;
   // Prefer the ACP SDK's canonical inputTokens field and only fall back to the
   // legacy promptTokens name for older payloads.
-  const used =
+  const inputTokens =
     usageStats?.usage?.inputTokens ?? usageStats?.usage?.promptTokens ?? 0;
+  const outputTokens =
+    usageStats?.usage?.outputTokens ?? usageStats?.usage?.completionTokens ?? 0;
+  const totalTokens =
+    usageStats?.usage?.totalTokens ?? inputTokens + outputTokens;
+  const used = totalTokens;
 
   if (typeof limit !== 'number' || limit <= 0 || used < 0) {
     return null;
@@ -42,5 +47,9 @@ export function computeContextUsage(
     percentLeft,
     usedTokens: used,
     tokenLimit: limit,
+    modelName: modelInfo?.name ?? modelInfo?.modelId,
+    inputTokens,
+    outputTokens,
+    totalTokens,
   };
 }

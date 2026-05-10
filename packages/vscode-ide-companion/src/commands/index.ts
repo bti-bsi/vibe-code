@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,17 +15,17 @@ import {
 
 type Logger = (message: string) => void;
 
-export const runQwenCodeCommand = 'qwen-code.runQwenCode';
-export const showDiffCommand = 'qwenCode.showDiff';
-export const openChatCommand = 'qwen-code.openChat';
-export const openNewChatTabCommand = 'qwenCode.openNewChatTab';
-export const authCommand = 'qwen-code.auth';
-export const focusChatCommand = 'qwen-code.focusChat';
-export const newConversationCommand = 'qwen-code.newConversation';
-export const showLogsCommand = 'qwen-code.showLogs';
+export const runVibeCodeCommand = 'vibe-code.runVibeCode';
+export const showDiffCommand = 'vibeCode.showDiff';
+export const openChatCommand = 'vibe-code.openChat';
+export const openNewChatTabCommand = 'vibeCode.openNewChatTab';
+export const authCommand = 'vibe-code.auth';
+export const focusChatCommand = 'vibe-code.focusChat';
+export const newConversationCommand = 'vibe-code.newConversation';
+export const showLogsCommand = 'vibe-code.showLogs';
 
 /**
- * Register all Qwen Code chat-related commands.
+ * Register all Vibe Code chat-related commands.
  *
  * `openChat` and `newConversation` always open an editor tab, while
  * `focusChat` focuses the secondary sidebar (preferred) or primary sidebar.
@@ -140,7 +140,7 @@ export function registerNewCommands(
         outputChannel.show(true);
       } else {
         vscode.window.showWarningMessage(
-          'Qwen Code Companion log channel is not available.',
+          'Vibe Code Companion log channel is not available.',
         );
       }
     }),

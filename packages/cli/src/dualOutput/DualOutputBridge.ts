@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -69,8 +69,8 @@ export interface DualOutputBridgeOptions {
  * programmatic consumption by IDE extensions, web frontends, CI pipelines, etc.
  *
  * Usage:
- *   qwen --json-fd 3        # JSON events written to fd 3
- *   qwen --json-file /path  # JSON events written to file/FIFO
+ *   vibe --json-fd 3        # JSON events written to fd 3
+ *   vibe --json-file /path  # JSON events written to file/FIFO
  */
 export class DualOutputBridge {
   private readonly adapter: StreamJsonOutputAdapter;

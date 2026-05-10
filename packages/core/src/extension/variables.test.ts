@@ -266,7 +266,7 @@ describe('performVariableReplacement', () => {
     expect(result).not.toContain('```!');
   });
 
-  it('should replace .claude with .qwen in markdown files', () => {
+  it('should replace .claude with .vibe in markdown files', () => {
     const extDir = path.join(testDir, 'ext');
     fs.mkdirSync(extDir, { recursive: true });
 
@@ -287,8 +287,8 @@ describe('performVariableReplacement', () => {
     performVariableReplacement(extDir);
 
     const result = fs.readFileSync(path.join(extDir, 'cancel.md'), 'utf-8');
-    expect(result).toContain('.qwen/loop.local.md');
-    expect(result).toContain('rm .qwen/loop.local.md');
+    expect(result).toContain('.vibe/loop.local.md');
+    expect(result).toContain('rm .vibe/loop.local.md');
     expect(result).toContain('$HOME/.vibe/cache');
     expect(result).toContain('./.vibe/local');
     expect(result).not.toContain('.claude/');
@@ -332,7 +332,7 @@ describe('performVariableReplacement', () => {
     expect(result).not.toContain('.message.content');
   });
 
-  it('should replace .claude with .qwen in shell scripts', () => {
+  it('should replace .claude with .vibe in shell scripts', () => {
     const extDir = path.join(testDir, 'ext');
     fs.mkdirSync(extDir, { recursive: true });
 
@@ -352,7 +352,7 @@ describe('performVariableReplacement', () => {
     expect(result).toContain('$HOME/.claude');
     expect(result).toContain('~/.vibe/cache');
     expect(result).toContain('./.vibe/local');
-    expect(result).toContain('.qwen/config');
+    expect(result).toContain('.vibe/config');
     // Note: URLs are also being replaced in current implementation
     expect(result).toContain('https://example.com/.vibe/page');
   });

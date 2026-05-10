@@ -1,6 +1,6 @@
 # Telegram
 
-This guide covers setting up a Qwen Code channel on Telegram.
+This guide covers setting up a Vibe Code channel on Telegram.
 
 ## Prerequisites
 
@@ -58,10 +58,10 @@ Or add it to a `.env` file that gets sourced before running.
 
 ```bash
 # Start only the Telegram channel
-qwen channel start my-telegram
+vibe channel start my-telegram
 
 # Or start all configured channels together
-qwen channel start
+vibe channel start
 ```
 
 Then open your bot in Telegram and send a message. You should see "Working..." appear immediately, followed by the agent's response.
@@ -81,7 +81,7 @@ By default, the bot requires an @mention or a reply to respond in groups. Set `"
 
 You can send photos and documents to the bot, not just text.
 
-**Photos:** Send a photo and the agent will analyze it using its vision capabilities. This requires a multimodal model — add `"model": "qwen3.5-plus"` (or another vision-capable model) to your channel config. Photo captions are passed as the message text.
+**Photos:** Send a photo and the agent will analyze it using its vision capabilities. This requires a multimodal model — add `"model": "vibe3.5-plus"` (or another vision-capable model) to your channel config. Photo captions are passed as the message text.
 
 **Documents:** Send a PDF, code file, or any document. The bot downloads it and saves it locally so the agent can read it with its file tools. This works with any model. Telegram's file size limit is 20MB.
 

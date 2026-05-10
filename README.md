@@ -9,31 +9,31 @@
 
 **An open-source AI agent that lives in your terminal.**
 
-<a href="https://qwenlm.github.io/qwen-code-docs/zh/users/overview">中文</a> |
-<a href="https://qwenlm.github.io/qwen-code-docs/de/users/overview">Deutsch</a> |
-<a href="https://qwenlm.github.io/qwen-code-docs/fr/users/overview">français</a> |
-<a href="https://qwenlm.github.io/qwen-code-docs/ja/users/overview">日本語</a> |
-<a href="https://qwenlm.github.io/qwen-code-docs/ru/users/overview">Русский</a> |
-<a href="https://qwenlm.github.io/qwen-code-docs/pt-BR/users/overview">Português (Brasil)</a>
+<a href="https://vibelm.github.io/vibe-code-docs/zh/users/overview">中文</a> |
+<a href="https://vibelm.github.io/vibe-code-docs/de/users/overview">Deutsch</a> |
+<a href="https://vibelm.github.io/vibe-code-docs/fr/users/overview">français</a> |
+<a href="https://vibelm.github.io/vibe-code-docs/ja/users/overview">日本語</a> |
+<a href="https://vibelm.github.io/vibe-code-docs/ru/users/overview">Русский</a> |
+<a href="https://vibelm.github.io/vibe-code-docs/pt-BR/users/overview">Português (Brasil)</a>
 
 </div>
 
 ## 🎉 News
 
-- **2026-04-15**: Qwen OAuth free tier has been discontinued. To continue using Qwen Code, switch to [Alibaba Cloud Coding Plan](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index), [OpenRouter](https://openrouter.ai), [Fireworks AI](https://app.fireworks.ai), or bring your own API key. Run `qwen auth` to configure.
+- **2026-04-15**: Vibe OAuth free tier has been discontinued. To continue using Vibe Code, switch to [Alibaba Cloud Coding Plan](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index), [OpenRouter](https://openrouter.ai), [Fireworks AI](https://app.fireworks.ai), or bring your own API key. Run `vibe auth` to configure.
 
-- **2026-04-13**: Qwen OAuth free tier policy update: daily quota adjusted to 100 requests/day (from 1,000).
+- **2026-04-13**: Vibe OAuth free tier policy update: daily quota adjusted to 100 requests/day (from 1,000).
 
-- **2026-04-02**: Qwen3.6-Plus is now live! Get an API key from [Alibaba Cloud ModelStudio](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model&url=2840914_2&modelId=qwen3.6-plus) to access it through the OpenAI-compatible API.
+- **2026-04-02**: Vibe3.6-Plus is now live! Get an API key from [Alibaba Cloud ModelStudio](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model&url=2840914_2&modelId=vibe3.6-plus) to access it through the OpenAI-compatible API.
 
-- **2026-02-16**: Qwen3.5-Plus is now live!
+- **2026-02-16**: Vibe3.5-Plus is now live!
 
-## Why Qwen Code?
+## Why Vibe Code?
 
-Qwen Code is an open-source AI agent for the terminal, optimized for Qwen series models. It helps you understand large codebases, automate tedious work, and ship faster.
+Vibe Code is an open-source AI agent for the terminal, optimized for Vibe series models. It helps you understand large codebases, automate tedious work, and ship faster.
 
 - **Multi-protocol, flexible providers**: use OpenAI / Anthropic / Gemini-compatible APIs, [Alibaba Cloud Coding Plan](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index), [OpenRouter](https://openrouter.ai), [Fireworks AI](https://app.fireworks.ai), or bring your own API key.
-- **Open-source, co-evolving**: both the framework and the Qwen3-Coder model are open-source—and they ship and evolve together.
+- **Open-source, co-evolving**: both the framework and the Vibe3-Coder model are open-source—and they ship and evolve together.
 - **Agentic workflow, feature-rich**: rich built-in tools (Skills, SubAgents) for a full agentic workflow and a Claude Code-like experience.
 - **Terminal-first, IDE-friendly**: built for developers who live in the command line, with optional integration for VS Code, Zed, and JetBrains IDEs.
 
@@ -46,7 +46,7 @@ Qwen Code is an open-source AI agent for the terminal, optimized for Qwen series
 #### Linux / macOS
 
 ```bash
-bash -c "$(curl -fsSL https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen.sh)"
+bash -c "$(curl -fsSL https://vibe-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-vibe.sh)"
 ```
 
 #### Windows (Run as Administrator)
@@ -54,7 +54,7 @@ bash -c "$(curl -fsSL https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/inst
 Works in both Command Prompt and PowerShell:
 
 ```cmd
-powershell -Command "Invoke-WebRequest 'https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen.bat' -OutFile (Join-Path $env:TEMP 'install-qwen.bat'); & (Join-Path $env:TEMP 'install-qwen.bat')"
+powershell -Command "Invoke-WebRequest 'https://vibe-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-vibe.bat' -OutFile (Join-Path $env:TEMP 'install-vibe.bat'); & (Join-Path $env:TEMP 'install-vibe.bat')"
 ```
 
 > **Note**: It's recommended to restart your terminal after installation to ensure environment variables take effect.
@@ -74,14 +74,14 @@ npm install -g @vibe-bti/vibe-code@latest
 #### Homebrew (macOS, Linux)
 
 ```bash
-brew install qwen-code
+brew install vibe-code
 ```
 
 ## Quick Start
 
 ```bash
-# Start Qwen Code (interactive)
-qwen
+# Start Vibe Code (interactive)
+vibe
 
 # Then, in the session:
 /help
@@ -108,24 +108,24 @@ Your browser does not support the video tag.
 
 </details>
 
-## 🦞 Use Qwen Code for Coding Tasks in Claw
+## 🦞 Use Vibe Code for Coding Tasks in Claw
 
 Copy the prompt below and paste it into your agent:
 
 ```
-Use Qwen Code as a coding agent. First, fetch and read this skill reference:
-https://raw.githubusercontent.com/vibe-bti/vibe-code/refs/heads/main/.qwen/skills/qwen-code-claw/SKILL.md
-Then follow the instructions inside to install, authenticate, and use Qwen Code via acpx for all coding tasks.
+Use Vibe Code as a coding agent. First, fetch and read this skill reference:
+https://raw.githubusercontent.com/vibe-bti/vibe-code/refs/heads/main/.vibe/skills/vibe-code-claw/SKILL.md
+Then follow the instructions inside to install, authenticate, and use Vibe Code via acpx for all coding tasks.
 ```
 
 ## Authentication
 
-Qwen Code supports the following authentication methods:
+Vibe Code supports the following authentication methods:
 
 - **API Key (recommended)**: use an API key from Alibaba Cloud Model Studio ([Beijing](https://bailian.console.aliyun.com/) / [intl](https://modelstudio.console.alibabacloud.com/)) or any supported provider (OpenAI, Anthropic, Google GenAI, and other compatible endpoints).
 - **Coding Plan**: subscribe to the Alibaba Cloud Coding Plan ([Beijing](https://bailian.console.aliyun.com/cn-beijing?tab=coding-plan#/efm/coding-plan-index) / [intl](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) for a fixed monthly fee with higher quotas.
 
-> ⚠️ **Qwen OAuth was discontinued on April 15, 2026.** If you were previously using Qwen OAuth, please switch to one of the methods above. Run `qwen` and then `/auth` to reconfigure.
+> ⚠️ **Vibe OAuth was discontinued on April 15, 2026.** If you were previously using Vibe OAuth, please switch to one of the methods above. Run `vibe` and then `/auth` to reconfigure.
 
 #### API Key (recommended)
 
@@ -135,11 +135,11 @@ Use an API key to connect to Alibaba Cloud Model Studio or any supported provide
 - **Anthropic**: Claude models
 - **Google GenAI**: Gemini models
 
-The **recommended** way to configure models and providers is by editing `~/.qwen/settings.json` (create it if it doesn't exist). This file lets you define all available models, API keys, and default settings in one place.
+The **recommended** way to configure models and providers is by editing `~/.vibe/settings.json` (create it if it doesn't exist). This file lets you define all available models, API keys, and default settings in one place.
 
 ##### Quick Setup in 3 Steps
 
-**Step 1:** Create or edit `~/.qwen/settings.json`
+**Step 1:** Create or edit `~/.vibe/settings.json`
 
 Here is a complete example:
 
@@ -148,10 +148,10 @@ Here is a complete example:
   "modelProviders": {
     "openai": [
       {
-        "id": "qwen3.6-plus",
-        "name": "qwen3.6-plus",
+        "id": "vibe3.6-plus",
+        "name": "vibe3.6-plus",
         "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "description": "Qwen3-Coder via Dashscope",
+        "description": "Vibe3-Coder via Dashscope",
         "envKey": "DASHSCOPE_API_KEY"
       }
     ]
@@ -165,7 +165,7 @@ Here is a complete example:
     }
   },
   "model": {
-    "name": "qwen3.6-plus"
+    "name": "vibe3.6-plus"
   }
 }
 ```
@@ -175,17 +175,17 @@ Here is a complete example:
 | Field                        | What it does                                                                                                                          |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `modelProviders`             | Declares which models are available and how to connect to them. Keys like `openai`, `anthropic`, `gemini` represent the API protocol. |
-| `modelProviders[].id`        | The model ID sent to the API (e.g. `qwen3.6-plus`, `gpt-4o`).                                                                         |
+| `modelProviders[].id`        | The model ID sent to the API (e.g. `vibe3.6-plus`, `gpt-4o`).                                                                         |
 | `modelProviders[].envKey`    | The name of the environment variable that holds your API key.                                                                         |
 | `modelProviders[].baseUrl`   | The API endpoint URL (required for non-default endpoints).                                                                            |
 | `env`                        | A fallback place to store API keys (lowest priority; prefer `.env` files or `export` for sensitive keys).                             |
 | `security.auth.selectedType` | The protocol to use on startup (`openai`, `anthropic`, `gemini`, `vertex-ai`).                                                        |
-| `model.name`                 | The default model to use when Qwen Code starts.                                                                                       |
+| `model.name`                 | The default model to use when Vibe Code starts.                                                                                       |
 
-**Step 3:** Start Qwen Code — your configuration takes effect automatically:
+**Step 3:** Start Vibe Code — your configuration takes effect automatically:
 
 ```bash
-qwen
+vibe
 ```
 
 Use the `/model` command at any time to switch between all configured models.
@@ -200,17 +200,17 @@ Use the `/model` command at any time to switch between all configured models.
   "modelProviders": {
     "openai": [
       {
-        "id": "qwen3.6-plus",
-        "name": "qwen3.6-plus (Coding Plan)",
+        "id": "vibe3.6-plus",
+        "name": "vibe3.6-plus (Coding Plan)",
         "baseUrl": "https://coding.dashscope.aliyuncs.com/v1",
-        "description": "qwen3.6-plus from ModelStudio Coding Plan",
+        "description": "vibe3.6-plus from ModelStudio Coding Plan",
         "envKey": "BAILIAN_CODING_PLAN_API_KEY"
       },
       {
-        "id": "qwen3.5-plus",
-        "name": "qwen3.5-plus (Coding Plan)",
+        "id": "vibe3.5-plus",
+        "name": "vibe3.5-plus (Coding Plan)",
         "baseUrl": "https://coding.dashscope.aliyuncs.com/v1",
-        "description": "qwen3.5-plus with thinking enabled from ModelStudio Coding Plan",
+        "description": "vibe3.5-plus with thinking enabled from ModelStudio Coding Plan",
         "envKey": "BAILIAN_CODING_PLAN_API_KEY",
         "generationConfig": {
           "extra_body": {
@@ -253,7 +253,7 @@ Use the `/model` command at any time to switch between all configured models.
     }
   },
   "model": {
-    "name": "qwen3.6-plus"
+    "name": "vibe3.6-plus"
   }
 }
 ```
@@ -310,15 +310,15 @@ Use the `/model` command at any time to switch between all configured models.
 </details>
 
 <details>
-<summary>Enable thinking mode (for supported models like qwen3.5-plus)</summary>
+<summary>Enable thinking mode (for supported models like vibe3.5-plus)</summary>
 
 ```json
 {
   "modelProviders": {
     "openai": [
       {
-        "id": "qwen3.5-plus",
-        "name": "qwen3.5-plus (thinking)",
+        "id": "vibe3.5-plus",
+        "name": "vibe3.5-plus (thinking)",
         "envKey": "DASHSCOPE_API_KEY",
         "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "generationConfig": {
@@ -338,37 +338,37 @@ Use the `/model` command at any time to switch between all configured models.
     }
   },
   "model": {
-    "name": "qwen3.5-plus"
+    "name": "vibe3.5-plus"
   }
 }
 ```
 
 </details>
 
-> **Tip:** You can also set API keys via `export` in your shell or `.env` files, which take higher priority than `settings.json` → `env`. See the [authentication guide](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/) for full details.
+> **Tip:** You can also set API keys via `export` in your shell or `.env` files, which take higher priority than `settings.json` → `env`. See the [authentication guide](https://vibelm.github.io/vibe-code-docs/en/users/configuration/auth/) for full details.
 
-> **Security note:** Never commit API keys to version control. The `~/.qwen/settings.json` file is in your home directory and should stay private.
+> **Security note:** Never commit API keys to version control. The `~/.vibe/settings.json` file is in your home directory and should stay private.
 
 #### Local Model Setup (Ollama / vLLM)
 
-You can also run models locally — no API key or cloud account needed. This is not an authentication method; instead, configure your local model endpoint in `~/.qwen/settings.json` using the `modelProviders` field.
+You can also run models locally — no API key or cloud account needed. This is not an authentication method; instead, configure your local model endpoint in `~/.vibe/settings.json` using the `modelProviders` field.
 
 <details>
 <summary>Ollama setup</summary>
 
 1. Install Ollama from [ollama.com](https://ollama.com/)
-2. Pull a model: `ollama pull qwen3:32b`
-3. Configure `~/.qwen/settings.json`:
+2. Pull a model: `ollama pull vibe3:32b`
+3. Configure `~/.vibe/settings.json`:
 
 ```json
 {
   "modelProviders": {
     "openai": [
       {
-        "id": "qwen3:32b",
-        "name": "Qwen3 32B (Ollama)",
+        "id": "vibe3:32b",
+        "name": "Vibe3 32B (Ollama)",
         "baseUrl": "http://localhost:11434/v1",
-        "description": "Qwen3 32B running locally via Ollama"
+        "description": "Vibe3 32B running locally via Ollama"
       }
     ]
   },
@@ -378,7 +378,7 @@ You can also run models locally — no API key or cloud account needed. This is 
     }
   },
   "model": {
-    "name": "qwen3:32b"
+    "name": "vibe3:32b"
   }
 }
 ```
@@ -389,18 +389,18 @@ You can also run models locally — no API key or cloud account needed. This is 
 <summary>vLLM setup</summary>
 
 1. Install vLLM: `pip install vllm`
-2. Start the server: `vllm serve Qwen/Qwen3-32B`
-3. Configure `~/.qwen/settings.json`:
+2. Start the server: `vllm serve Vibe/Vibe3-32B`
+3. Configure `~/.vibe/settings.json`:
 
 ```json
 {
   "modelProviders": {
     "openai": [
       {
-        "id": "Qwen/Qwen3-32B",
-        "name": "Qwen3 32B (vLLM)",
+        "id": "Vibe/Vibe3-32B",
+        "name": "Vibe3 32B (vLLM)",
         "baseUrl": "http://localhost:8000/v1",
-        "description": "Qwen3 32B running locally via vLLM"
+        "description": "Vibe3 32B running locally via vLLM"
       }
     ]
   },
@@ -410,7 +410,7 @@ You can also run models locally — no API key or cloud account needed. This is 
     }
   },
   "model": {
-    "name": "Qwen/Qwen3-32B"
+    "name": "Vibe/Vibe3-32B"
   }
 }
 ```
@@ -419,7 +419,7 @@ You can also run models locally — no API key or cloud account needed. This is 
 
 ## Usage
 
-As an open-source terminal agent, you can use Qwen Code in four primary ways:
+As an open-source terminal agent, you can use Vibe Code in four primary ways:
 
 1. Interactive mode (terminal UI)
 2. Headless mode (scripts, CI)
@@ -430,42 +430,42 @@ As an open-source terminal agent, you can use Qwen Code in four primary ways:
 
 ```bash
 cd your-project/
-qwen
+vibe
 ```
 
-Run `qwen` in your project folder to launch the interactive terminal UI. Use `@` to reference local files (for example `@src/main.ts`).
+Run `vibe` in your project folder to launch the interactive terminal UI. Use `@` to reference local files (for example `@src/main.ts`).
 
 #### Headless mode
 
 ```bash
 cd your-project/
-qwen -p "your question"
+vibe -p "your question"
 ```
 
-Use `-p` to run Qwen Code without the interactive UI—ideal for scripts, automation, and CI/CD. Learn more: [Headless mode](https://qwenlm.github.io/qwen-code-docs/en/users/features/headless).
+Use `-p` to run Vibe Code without the interactive UI—ideal for scripts, automation, and CI/CD. Learn more: [Headless mode](https://vibelm.github.io/vibe-code-docs/en/users/features/headless).
 
 #### IDE integration
 
-Use Qwen Code inside your editor (VS Code, Zed, and JetBrains IDEs):
+Use Vibe Code inside your editor (VS Code, Zed, and JetBrains IDEs):
 
-- [Use in VS Code](https://qwenlm.github.io/qwen-code-docs/en/users/integration-vscode/)
-- [Use in Zed](https://qwenlm.github.io/qwen-code-docs/en/users/integration-zed/)
-- [Use in JetBrains IDEs](https://qwenlm.github.io/qwen-code-docs/en/users/integration-jetbrains/)
+- [Use in VS Code](https://vibelm.github.io/vibe-code-docs/en/users/integration-vscode/)
+- [Use in Zed](https://vibelm.github.io/vibe-code-docs/en/users/integration-zed/)
+- [Use in JetBrains IDEs](https://vibelm.github.io/vibe-code-docs/en/users/integration-jetbrains/)
 
 #### SDKs
 
-Build on top of Qwen Code with the available SDKs:
+Build on top of Vibe Code with the available SDKs:
 
-- TypeScript: [Use the Qwen Code SDK](./packages/sdk-typescript/README.md)
+- TypeScript: [Use the Vibe Code SDK](./packages/sdk-typescript/README.md)
 - Python: [Use the Python SDK](./packages/sdk-python/README.md)
-- Java: [Use the Java SDK](./packages/sdk-java/qwencode/README.md)
+- Java: [Use the Java SDK](./packages/sdk-java/vibecode/README.md)
 
 Python SDK example:
 
 ```python
 import asyncio
 
-from qwen_code_sdk import is_sdk_result_message, query
+from vibe_code_sdk import is_sdk_result_message, query
 
 
 async def main() -> None:
@@ -473,7 +473,7 @@ async def main() -> None:
         "Summarize the repository layout.",
         {
             "cwd": "/path/to/project",
-            "path_to_qwen_executable": "qwen",
+            "path_to_vibe_executable": "vibe",
         },
     )
 
@@ -494,7 +494,7 @@ asyncio.run(main())
 - `/compress` - Compress history to save tokens
 - `/stats` - Show current session information
 - `/bug` - Submit a bug report
-- `/exit` or `/quit` - Exit Qwen Code
+- `/exit` or `/quit` - Exit Vibe Code
 
 ### Keyboard Shortcuts
 
@@ -502,18 +502,18 @@ asyncio.run(main())
 - `Ctrl+D` - Exit (on empty line)
 - `Up/Down` - Navigate command history
 
-> Learn more about [Commands](https://qwenlm.github.io/qwen-code-docs/en/users/features/commands/)
+> Learn more about [Commands](https://vibelm.github.io/vibe-code-docs/en/users/features/commands/)
 >
-> **Tip**: In YOLO mode (`--yolo`), vision switching happens automatically without prompts when images are detected. Learn more about [Approval Mode](https://qwenlm.github.io/qwen-code-docs/en/users/features/approval-mode/)
+> **Tip**: In YOLO mode (`--yolo`), vision switching happens automatically without prompts when images are detected. Learn more about [Approval Mode](https://vibelm.github.io/vibe-code-docs/en/users/features/approval-mode/)
 
 ## Configuration
 
-Qwen Code can be configured via `settings.json`, environment variables, and CLI flags.
+Vibe Code can be configured via `settings.json`, environment variables, and CLI flags.
 
 | File                    | Scope         | Description                                                                             |
 | ----------------------- | ------------- | --------------------------------------------------------------------------------------- |
-| `~/.qwen/settings.json` | User (global) | Applies to all your Qwen Code sessions. **Recommended for `modelProviders` and `env`.** |
-| `.qwen/settings.json`   | Project       | Applies only when running Qwen Code in this project. Overrides user settings.           |
+| `~/.vibe/settings.json` | User (global) | Applies to all your Vibe Code sessions. **Recommended for `modelProviders` and `env`.** |
+| `.vibe/settings.json`   | Project       | Applies only when running Vibe Code in this project. Overrides user settings.           |
 
 The most commonly used top-level fields in `settings.json`:
 
@@ -522,9 +522,9 @@ The most commonly used top-level fields in `settings.json`:
 | `modelProviders`             | Define available models per protocol (`openai`, `anthropic`, `gemini`, `vertex-ai`).                 |
 | `env`                        | Fallback environment variables (e.g. API keys). Lower priority than shell `export` and `.env` files. |
 | `security.auth.selectedType` | The protocol to use on startup (e.g. `openai`).                                                      |
-| `model.name`                 | The default model to use when Qwen Code starts.                                                      |
+| `model.name`                 | The default model to use when Vibe Code starts.                                                      |
 
-> See the [Authentication](#api-key-flexible) section above for complete `settings.json` examples, and the [settings reference](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/settings/) for all available options.
+> See the [Authentication](#api-key-flexible) section above for complete `settings.json` examples, and the [settings reference](https://vibelm.github.io/vibe-code-docs/en/users/configuration/settings/) for all available options.
 
 ## Benchmark Results
 
@@ -532,23 +532,23 @@ The most commonly used top-level fields in `settings.json`:
 
 | Agent     | Model              | Accuracy |
 | --------- | ------------------ | -------- |
-| Qwen Code | Qwen3-Coder-480A35 | 37.5%    |
-| Qwen Code | Qwen3-Coder-30BA3B | 31.3%    |
+| Vibe Code | Vibe3-Coder-480A35 | 37.5%    |
+| Vibe Code | Vibe3-Coder-30BA3B | 31.3%    |
 
 ## Ecosystem
 
 Looking for a graphical interface?
 
-- [**AionUi**](https://github.com/iOfficeAI/AionUi) A modern GUI for command-line AI tools including Qwen Code
-- [**Gemini CLI Desktop**](https://github.com/Piebald-AI/gemini-cli-desktop) A cross-platform desktop/web/mobile UI for Qwen Code
+- [**AionUi**](https://github.com/iOfficeAI/AionUi) A modern GUI for command-line AI tools including Vibe Code
+- [**Gemini CLI Desktop**](https://github.com/Piebald-AI/gemini-cli-desktop) A cross-platform desktop/web/mobile UI for Vibe Code
 
 ## Troubleshooting
 
-If you encounter issues, check the [troubleshooting guide](https://qwenlm.github.io/qwen-code-docs/en/users/support/troubleshooting/).
+If you encounter issues, check the [troubleshooting guide](https://vibelm.github.io/vibe-code-docs/en/users/support/troubleshooting/).
 
 **Common issues:**
 
-- **`Qwen OAuth free tier was discontinued on 2026-04-15`**: Qwen OAuth is no longer available. Run `qwen` → `/auth` and switch to API Key or Coding Plan. See the [Authentication](#authentication) section above for setup instructions.
+- **`Vibe OAuth free tier was discontinued on 2026-04-15`**: Vibe OAuth is no longer available. Run `vibe` → `/auth` and switch to API Key or Coding Plan. See the [Authentication](#authentication) section above for setup instructions.
 
 To report a bug from within the CLI, run `/bug` and include a short title and repro steps.
 
@@ -559,4 +559,4 @@ To report a bug from within the CLI, run `/bug` and include a short title and re
 
 ## Acknowledgments
 
-This project is based on [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). We acknowledge and appreciate the excellent work of the Gemini CLI team. Our main contribution focuses on parser-level adaptations to better support Qwen-Coder models.
+This project is based on [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). We acknowledge and appreciate the excellent work of the Gemini CLI team. Our main contribution focuses on parser-level adaptations to better support Vibe-Coder models.

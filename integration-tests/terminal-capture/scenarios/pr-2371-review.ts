@@ -3,7 +3,7 @@ import type { ScenarioConfig } from '../scenario-runner.js';
 export default {
   name: 'pr-2371-review',
   spawn: ['node', 'dist/cli.js', '--yolo'],
-  terminal: { title: 'qwen-code', cwd: '../../..' },
+  terminal: { title: 'vibe-code', cwd: '../../..' },
   flow: [
     {
       type: '/review https://github.com/vibe-bti/vibe-code/pull/2371',

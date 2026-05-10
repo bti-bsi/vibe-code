@@ -61,17 +61,17 @@ describe('showAuthStatus', () => {
       expect.stringContaining('No authentication method configured'),
     );
     expect(writeStdoutLine).toHaveBeenCalledWith(
-      expect.stringContaining('qwen auth api-key'),
+      expect.stringContaining('vibe auth api-key'),
     );
     expect(process.exit).toHaveBeenCalledWith(0);
   });
 
-  it('should show Qwen OAuth status when configured', async () => {
+  it('should show Vibe OAuth status when configured', async () => {
     vi.mocked(loadSettings).mockReturnValue(
       createMockSettings({
         security: {
           auth: {
-            selectedType: AuthType.QWEN_OAUTH,
+            selectedType: AuthType.VIBE_OAUTH,
           },
         },
       }),
@@ -80,7 +80,7 @@ describe('showAuthStatus', () => {
     await showAuthStatus();
 
     expect(writeStdoutLine).toHaveBeenCalledWith(
-      expect.stringContaining('Qwen OAuth'),
+      expect.stringContaining('Vibe OAuth'),
     );
     expect(writeStdoutLine).toHaveBeenCalledWith(
       expect.stringContaining('Free tier (discontinued 2026-04-15)'),
@@ -106,7 +106,7 @@ describe('showAuthStatus', () => {
           version: 'abc123def456',
         },
         model: {
-          name: 'qwen3.5-plus',
+          name: 'vibe3.5-plus',
         },
       }),
     );
@@ -189,7 +189,7 @@ describe('showAuthStatus', () => {
       expect.stringContaining('OpenRouter (Incomplete)'),
     );
     expect(writeStdoutLine).toHaveBeenCalledWith(
-      expect.stringContaining('qwen auth openrouter'),
+      expect.stringContaining('vibe auth openrouter'),
     );
   });
 
@@ -228,12 +228,12 @@ describe('showAuthStatus', () => {
           },
         },
         model: {
-          name: 'qwen3.5-plus',
+          name: 'vibe3.5-plus',
         },
         modelProviders: {
           openai: [
             {
-              id: 'qwen3.5-plus',
+              id: 'vibe3.5-plus',
               envKey: 'BAILIAN_CODING_PLAN_API_KEY',
               baseUrl: 'https://coding.dashscope.aliyuncs.com/v1',
             },
@@ -303,7 +303,7 @@ describe('showAuthStatus', () => {
           region: 'china',
         },
         model: {
-          name: 'qwen3.5-plus',
+          name: 'vibe3.5-plus',
         },
       }),
     );
@@ -329,7 +329,7 @@ describe('showAuthStatus', () => {
           region: 'global',
         },
         model: {
-          name: 'qwen3-coder-plus',
+          name: 'vibe3-coder-plus',
         },
       }),
     );
@@ -355,7 +355,7 @@ describe('showAuthStatus', () => {
           region: 'china',
         },
         model: {
-          name: 'qwen3.5-plus',
+          name: 'vibe3.5-plus',
         },
       }),
     );
@@ -363,7 +363,7 @@ describe('showAuthStatus', () => {
     await showAuthStatus();
 
     expect(writeStdoutLine).toHaveBeenCalledWith(
-      expect.stringContaining('qwen3.5-plus'),
+      expect.stringContaining('vibe3.5-plus'),
     );
   });
 
@@ -382,7 +382,7 @@ describe('showAuthStatus', () => {
           version: 'abc123def456789',
         },
         model: {
-          name: 'qwen3.5-plus',
+          name: 'vibe3.5-plus',
         },
       }),
     );

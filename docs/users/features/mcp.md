@@ -1,10 +1,10 @@
-# Connect Qwen Code to tools via MCP
+# Connect Vibe Code to tools via MCP
 
-Qwen Code can connect to external tools and data sources through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction). MCP servers give Qwen Code access to your tools, databases, and APIs.
+Vibe Code can connect to external tools and data sources through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction). MCP servers give Vibe Code access to your tools, databases, and APIs.
 
 ## What you can do with MCP
 
-With MCP servers connected, you can ask Qwen Code to:
+With MCP servers connected, you can ask Vibe Code to:
 
 - Work with files and repos (read/search/write, depending on the tools you enable)
 - Query databases (schema inspection, queries, reporting)
@@ -17,26 +17,26 @@ With MCP servers connected, you can ask Qwen Code to:
 
 ## Quick start
 
-Qwen Code loads MCP servers from `mcpServers` in your `settings.json`. You can configure servers either:
+Vibe Code loads MCP servers from `mcpServers` in your `settings.json`. You can configure servers either:
 
 - By editing `settings.json` directly
-- By using `qwen mcp` commands (see [CLI reference](#qwen-mcp-cli))
+- By using `vibe mcp` commands (see [CLI reference](#vibe-mcp-cli))
 
 ### Add your first server
 
 1. Add a server (example: remote HTTP MCP server):
 
 ```bash
-qwen mcp add --transport http my-server http://localhost:3000/mcp
+vibe mcp add --transport http my-server http://localhost:3000/mcp
 ```
 
 2. Open MCP management dialog to view and manage servers:
 
 ```bash
-qwen mcp
+vibe mcp
 ```
 
-3. Restart Qwen Code in the same project (or start it if it wasn’t running yet), then ask the model to use tools from that server.
+3. Restart Vibe Code in the same project (or start it if it wasn’t running yet), then ask the model to use tools from that server.
 
 ## Where configuration is stored (scopes)
 
@@ -48,7 +48,7 @@ Most users only need these two scopes:
 Write to user scope:
 
 ```bash
-qwen mcp add --scope user --transport http my-server http://localhost:3000/mcp
+vibe mcp add --scope user --transport http my-server http://localhost:3000/mcp
 ```
 
 > [!tip]
@@ -69,7 +69,7 @@ qwen mcp add --scope user --transport http my-server http://localhost:3000/mcp
 >
 > If a server supports both, prefer **HTTP** over **SSE**.
 
-### Configure via `settings.json` vs `qwen mcp add`
+### Configure via `settings.json` vs `vibe mcp add`
 
 Both approaches produce the same `mcpServers` entries in your `settings.json`—use whichever you prefer.
 
@@ -97,7 +97,7 @@ JSON (`.vibe/settings.json`):
 CLI (writes to project scope by default):
 
 ```bash
-qwen mcp add pythonTools -e DATABASE_URL=$DB_CONNECTION_STRING -e API_KEY=$EXTERNAL_API_KEY \
+vibe mcp add pythonTools -e DATABASE_URL=$DB_CONNECTION_STRING -e API_KEY=$EXTERNAL_API_KEY \
   --timeout 15000 python -m my_mcp_server --port 8080
 ```
 
@@ -122,7 +122,7 @@ JSON:
 CLI:
 
 ```bash
-qwen mcp add --transport http httpServerWithAuth http://localhost:3000/mcp \
+vibe mcp add --transport http httpServerWithAuth http://localhost:3000/mcp \
   --header "Authorization: Bearer your-api-token" --timeout 5000
 ```
 
@@ -144,7 +144,7 @@ JSON:
 CLI:
 
 ```bash
-qwen mcp add --transport sse sseServer http://localhost:8080/sse --timeout 30000
+vibe mcp add --transport sse sseServer http://localhost:8080/sse --timeout 30000
 ```
 
 ## Safety and control
@@ -155,14 +155,14 @@ qwen mcp add --transport sse sseServer http://localhost:8080/sse --timeout 30000
 
 ### OAuth authentication
 
-Qwen Code supports OAuth 2.0 authentication for MCP servers. This is useful when accessing remote servers that require authentication.
+Vibe Code supports OAuth 2.0 authentication for MCP servers. This is useful when accessing remote servers that require authentication.
 
 #### Basic usage
 
-When you add an MCP server with OAuth credentials, Qwen Code will automatically handle the authentication flow:
+When you add an MCP server with OAuth credentials, Vibe Code will automatically handle the authentication flow:
 
 ```bash
-qwen mcp add --transport sse oauth-server https://api.example.com/sse/ \
+vibe mcp add --transport sse oauth-server https://api.example.com/sse/ \
   --oauth-client-id your-client-id \
   --oauth-redirect-uri https://your-server.com/oauth/callback \
   --oauth-authorization-url https://provider.example.com/authorize \
@@ -173,14 +173,14 @@ qwen mcp add --transport sse oauth-server https://api.example.com/sse/ \
 
 The OAuth flow requires a redirect URI where the authorization provider sends the authentication code.
 
-- **Local development**: By default, Qwen Code uses `http://localhost:7777/oauth/callback`. This works when running Qwen Code on your local machine with a local browser.
+- **Local development**: By default, Vibe Code uses `http://localhost:7777/oauth/callback`. This works when running Vibe Code on your local machine with a local browser.
 
-- **Remote/cloud deployments**: When running Qwen Code on remote servers, cloud IDEs, or web terminals, the default `localhost` redirect will NOT work. You MUST configure `--oauth-redirect-uri` to point to a publicly accessible URL that can receive the OAuth callback.
+- **Remote/cloud deployments**: When running Vibe Code on remote servers, cloud IDEs, or web terminals, the default `localhost` redirect will NOT work. You MUST configure `--oauth-redirect-uri` to point to a publicly accessible URL that can receive the OAuth callback.
 
 Example for remote servers:
 
 ```bash
-qwen mcp add --transport sse remote-server https://api.example.com/sse/ \
+vibe mcp add --transport sse remote-server https://api.example.com/sse/ \
   --oauth-redirect-uri https://your-remote-server.example.com/oauth/callback
 ```
 
@@ -229,11 +229,11 @@ OAuth tokens are automatically:
 - **Refreshed** when expired (if refresh tokens are available)
 - **Validated** before each connection attempt
 
-Use the `/mcp auth` command within Qwen Code to manage OAuth authentication interactively.
+Use the `/mcp auth` command within Vibe Code to manage OAuth authentication interactively.
 
 ### Tool filtering (allow/deny tools per server)
 
-Use `includeTools` / `excludeTools` to restrict tools exposed by a server (from Qwen Code’s perspective).
+Use `includeTools` / `excludeTools` to restrict tools exposed by a server (from Vibe Code’s perspective).
 
 Example: include only a few tools:
 
@@ -270,9 +270,9 @@ Example:
 
 ## Troubleshooting
 
-- **Server shows “Disconnected” in `qwen mcp list`**: verify the URL/command is correct, then increase `timeout`.
+- **Server shows “Disconnected” in `vibe mcp list`**: verify the URL/command is correct, then increase `timeout`.
 - **Stdio server fails to start**: use an absolute `command` path, and double-check `cwd`/`env`.
-- **Environment variables in JSON don’t resolve**: ensure they exist in the environment where Qwen Code runs (shell vs GUI app environments can differ).
+- **Environment variables in JSON don’t resolve**: ensure they exist in the environment where Vibe Code runs (shell vs GUI app environments can differ).
 
 ## Reference
 
@@ -325,16 +325,16 @@ Optional:
 | `targetAudience`       | string                       | The OAuth Client ID allowlisted on the IAP-protected application you are trying to access. Used with `authProviderType: 'service_account_impersonation'`.                                                                                                         |
 | `targetServiceAccount` | string                       | The email address of the Google Cloud Service Account to impersonate. Used with `authProviderType: 'service_account_impersonation'`.                                                                                                                              |
 
-<a id="qwen-mcp-cli"></a>
+<a id="vibe-mcp-cli"></a>
 
-### Manage MCP servers with `qwen mcp`
+### Manage MCP servers with `vibe mcp`
 
 You can always configure MCP servers by manually editing `settings.json`, but the CLI is usually faster.
 
-#### Adding a server (`qwen mcp add`)
+#### Adding a server (`vibe mcp add`)
 
 ```bash
-qwen mcp add [options] <name> <commandOrUrl> [args...]
+vibe mcp add [options] <name> <commandOrUrl> [args...]
 ```
 
 | Argument/Option             | Description                                                         | Default                                | Example                                                            |
@@ -360,8 +360,8 @@ qwen mcp add [options] <name> <commandOrUrl> [args...]
 
 > `--oauth-*` flags apply only to `--transport sse` and `--transport http`. Combining them with `--transport stdio` is rejected.
 
-#### Removing a server (`qwen mcp remove`)
+#### Removing a server (`vibe mcp remove`)
 
 ```bash
-qwen mcp remove <name>
+vibe mcp remove <name>
 ```

@@ -1,10 +1,10 @@
 /**
  * @license
- * Copyright 2026 Qwen Team
+ * Copyright 2026 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Parent command for 'qwen review'. Hosts the deterministic helpers used by
+// Parent command for 'vibe review'. Hosts the deterministic helpers used by
 // the /review skill (presubmit checks, post-review cleanup) so the prompt
 // can stay short and the logic stays testable.
 

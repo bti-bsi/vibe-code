@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  *
  * ContextIndicator component - Shows context usage as a circular progress indicator
@@ -20,6 +20,14 @@ export interface ContextUsage {
   usedTokens: number;
   /** Maximum token limit */
   tokenLimit: number;
+  /** Current model display name */
+  modelName?: string;
+  /** Input token count from the latest usage update */
+  inputTokens?: number;
+  /** Output token count from the latest usage update */
+  outputTokens?: number;
+  /** Total token count from the latest usage update */
+  totalTokens?: number;
 }
 
 /**

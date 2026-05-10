@@ -10,14 +10,14 @@
  * when only the filename configuration is needed.
  */
 
-export const QWEN_CONFIG_DIR = '.vibe';
+export const VIBE_CONFIG_DIR = '.vibe';
 export const DEFAULT_CONTEXT_FILENAME = 'VIBE.md';
 export const AGENT_CONTEXT_FILENAME = 'AGENTS.md';
-export const MEMORY_SECTION_HEADER = '## Qwen Added Memories';
+export const MEMORY_SECTION_HEADER = '## Vibe Added Memories';
 
 // This variable will hold the currently configured filename for context files.
-// It defaults to include both QWEN.md and AGENTS.md but can be overridden by setGeminiMdFilename.
-// QWEN.md is first to maintain backward compatibility (used by /init command and save_memory tool).
+// It defaults to include both VIBE.md and AGENTS.md but can be overridden by setGeminiMdFilename.
+// VIBE.md is first to maintain backward compatibility (used by /init command and save_memory tool).
 let currentGeminiMdFilename: string | string[] = [
   DEFAULT_CONTEXT_FILENAME,
   AGENT_CONTEXT_FILENAME,

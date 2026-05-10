@@ -61,6 +61,14 @@ export interface DialogCloseOptions {
   // Background tasks dialog
   isBackgroundTasksDialogOpen: boolean;
   closeBackgroundTasksDialog: () => void;
+
+  // Config dialog
+  isConfigDialogOpen: boolean;
+  closeConfigDialog: () => void;
+
+  // Telegram config dialog
+  isTelegramConfigDialogOpen: boolean;
+  closeTelegramConfigDialog: () => void;
 }
 
 /**
@@ -123,6 +131,16 @@ export function useDialogClose(options: DialogCloseOptions) {
       // Ctrl+C and the global escape path dismiss it without escalating
       // to exit prompts.
       options.closeBackgroundTasksDialog();
+      return true;
+    }
+
+    if (options.isConfigDialogOpen) {
+      options.closeConfigDialog();
+      return true;
+    }
+
+    if (options.isTelegramConfigDialogOpen) {
+      options.closeTelegramConfigDialog();
       return true;
     }
 

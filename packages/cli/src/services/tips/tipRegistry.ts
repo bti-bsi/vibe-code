@@ -79,7 +79,7 @@ export const tipRegistry: ContextualTip[] = [
     priority: 70,
   },
   {
-    id: 'new-user-qwenmd',
+    id: 'new-user-vibemd',
     content: 'Add a VIBE.md file to give Vibe Code persistent project context.',
     trigger: 'startup',
     isRelevant: (ctx) => ctx.sessionCount < 10,

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -58,7 +58,7 @@ export const Footer: React.FC = () => {
   const sandboxInfo = sandboxEnv
     ? sandboxEnv === 'sandbox-exec'
       ? 'seatbelt'
-      : sandboxEnv.startsWith('qwen-code')
+      : sandboxEnv.startsWith('vibe-code')
         ? 'docker'
         : sandboxEnv
     : null;

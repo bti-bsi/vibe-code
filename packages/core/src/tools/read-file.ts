@@ -122,7 +122,7 @@ class ReadFileToolInvocation extends BaseToolInvocation<
       isSubpaths(allowedRoots, filePath) ||
       // isAutoMemPath uses the narrower managed auto-memory root for this
       // project — not the broad getMemoryBaseDir() — to avoid exposing
-      // sensitive ~/.qwen files such as settings.json or OAuth credentials.
+      // sensitive ~/.vibe files such as settings.json or OAuth credentials.
       isAutoMemPath(filePath, this.config.getTargetDir())
     ) {
       return 'allow';
@@ -425,8 +425,8 @@ export class ReadFileTool extends BaseDeclarativeTool<
     }
 
     const fileService = this.config.getFileService();
-    if (fileService.shouldQwenIgnoreFile(params.file_path)) {
-      return `File path '${filePath}' is ignored by .qwenignore pattern(s).`;
+    if (fileService.shouldVibeIgnoreFile(params.file_path)) {
+      return `File path '${filePath}' is ignored by .vibeignore pattern(s).`;
     }
 
     return null;

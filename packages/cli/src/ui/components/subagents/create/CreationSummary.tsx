@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -263,8 +263,8 @@ export function CreationSummary({
           <Text color={theme.text.primary}>{t('Location: ')}</Text>
           <Text>
             {state.location === 'project'
-              ? t('Project Level (.qwen/agents/)')
-              : t('User Level (~/.qwen/agents/)')}
+              ? t('Project Level (.vibe/agents/)')
+              : t('User Level (~/.vibe/agents/)')}
           </Text>
         </Box>
 

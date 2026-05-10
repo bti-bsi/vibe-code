@@ -17,9 +17,9 @@ export * from './permissions/index.js';
 
 // Model configuration
 export {
-  DEFAULT_QWEN_MODEL,
-  DEFAULT_QWEN_FLASH_MODEL,
-  DEFAULT_QWEN_EMBEDDING_MODEL,
+  DEFAULT_VIBE_MODEL,
+  DEFAULT_VIBE_FLASH_MODEL,
+  DEFAULT_VIBE_EMBEDDING_MODEL,
   MAINLINE_CODER_MODEL,
 } from './config/models.js';
 export {
@@ -38,7 +38,7 @@ export {
   type ModelProvidersConfig,
   type ModelSwitchMetadata,
   type OnModelChangeCallback,
-  QWEN_OAUTH_MODELS,
+  VIBE_OAUTH_MODELS,
   resolveModelConfig,
   type ResolvedModelConfig,
   validateModelConfig,
@@ -132,10 +132,19 @@ export type {
   ScopusSearchTool,
   ScopusSearchParams,
 } from './tools/scopus-search.js';
+export type {
+  GoogleSearchTool,
+} from './tools/google-search.js';
 export type { WriteFileTool, WriteFileToolParams } from './tools/write-file.js';
 export type { CronCreateTool, CronCreateParams } from './tools/cron-create.js';
 export type { CronListTool, CronListParams } from './tools/cron-list.js';
 export type { CronDeleteTool, CronDeleteParams } from './tools/cron-delete.js';
+export type { DocxWriteTool, DocxWriteParams } from './tools/docx-write.js';
+export type {
+  DocxReadStyleTool,
+  DocxReadStyleParams,
+} from './tools/docx-read-style.js';
+export type { WritePptxTool, WritePptxParams } from './tools/pptx-write.js';
 
 // ============================================================================
 // Services
@@ -228,7 +237,7 @@ export type {
 // Telemetry
 // ============================================================================
 
-export { QwenLogger } from './telemetry/qwen-logger/qwen-logger.js';
+export { VibeLogger } from './telemetry/vibe-logger/vibe-logger.js';
 export * from './telemetry/index.js';
 export {
   logAuth,
@@ -330,7 +339,7 @@ export * from './utils/sideQuery.js';
 // OAuth & Authentication
 // ============================================================================
 
-export * from './qwen/qwenOAuth2.js';
+export * from './vibe/vibeOAuth2.js';
 
 // ============================================================================
 // Message Bus Types

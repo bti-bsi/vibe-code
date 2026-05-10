@@ -1,10 +1,10 @@
 # Channels
 
-Channels let you interact with a Qwen Code agent from messaging platforms like Telegram, WeChat, or DingTalk, instead of the terminal. You send messages from your phone or desktop chat app, and the agent responds just like it would in the CLI.
+Channels let you interact with a Vibe Code agent from messaging platforms like Telegram, WeChat, or DingTalk, instead of the terminal. You send messages from your phone or desktop chat app, and the agent responds just like it would in the CLI.
 
 ## How It Works
 
-When you run `qwen channel start`, Qwen Code:
+When you run `vibe channel start`, Vibe Code:
 
 1. Reads channel configurations from your `settings.json`
 2. Spawns a single agent process using the [Agent Client Protocol (ACP)](../../developers/architecture)
@@ -17,7 +17,7 @@ All channels share one agent process with isolated sessions per user. Each chann
 
 1. Set up a bot on your messaging platform (see channel-specific guides: [Telegram](./telegram), [WeChat](./weixin), [DingTalk](./dingtalk))
 2. Add the channel configuration to `~/.vibe/settings.json`
-3. Run `qwen channel start` to start all channels, or `qwen channel start <name>` for a single channel
+3. Run `vibe channel start` to start all channels, or `vibe channel start <name>` for a single channel
 
 Want to connect a platform that isn't built in? See [Plugins](./plugins) to add a custom adapter as an extension.
 
@@ -53,7 +53,7 @@ Channels are configured under the `channels` key in `settings.json`. Each channe
 | `token`                  | Telegram | Bot token. Supports `$ENV_VAR` syntax to read from environment variables. Not needed for WeChat or DingTalk                                    |
 | `clientId`               | DingTalk | DingTalk AppKey. Supports `$ENV_VAR` syntax                                                                                                    |
 | `clientSecret`           | DingTalk | DingTalk AppSecret. Supports `$ENV_VAR` syntax                                                                                                 |
-| `model`                  | No       | Model to use for this channel (e.g., `qwen3.5-plus`). Overrides the default model. Useful for multimodal models that support image input       |
+| `model`                  | No       | Model to use for this channel (e.g., `vibe3.5-plus`). Overrides the default model. Useful for multimodal models that support image input       |
 | `senderPolicy`           | No       | Who can talk to the bot: `allowlist` (default), `open`, or `pairing`                                                                           |
 | `allowedUsers`           | No       | List of user IDs allowed to use the bot (used by `allowlist` and `pairing` policies)                                                           |
 | `sessionScope`           | No       | How sessions are scoped: `user` (default), `thread`, or `single`                                                                               |
@@ -104,7 +104,7 @@ When `senderPolicy` is set to `"pairing"`, unknown senders go through an approva
 4. You approve them via CLI:
 
 ```bash
-qwen channel pairing approve my-channel VEQDDWXJ
+vibe channel pairing approve my-channel VEQDDWXJ
 ```
 
 Once approved, the user's ID is saved to `~/.vibe/channels/<name>-allowlist.json` and all future messages go through normally.
@@ -113,10 +113,10 @@ Once approved, the user's ID is saved to `~/.vibe/channels/<name>-allowlist.json
 
 ```bash
 # List pending pairing requests
-qwen channel pairing list my-channel
+vibe channel pairing list my-channel
 
 # Approve a request by code
-qwen channel pairing approve my-channel <CODE>
+vibe channel pairing approve my-channel <CODE>
 ```
 
 ### Pairing Rules
@@ -202,7 +202,7 @@ To use image support, configure a multimodal model for the channel:
   "channels": {
     "my-channel": {
       "type": "telegram",
-      "model": "qwen3.5-plus",
+      "model": "vibe3.5-plus",
       ...
     }
   }
@@ -298,23 +298,23 @@ These commands work on all channel types (Telegram, WeChat, DingTalk).
 
 ```bash
 # Start all configured channels (shared agent process)
-qwen channel start
+vibe channel start
 
 # Start a single channel
-qwen channel start my-channel
+vibe channel start my-channel
 
 # Check if the service is running
-qwen channel status
+vibe channel status
 
 # Stop the running service
-qwen channel stop
+vibe channel stop
 ```
 
-The bot runs in the foreground. Press `Ctrl+C` to stop, or use `qwen channel stop` from another terminal.
+The bot runs in the foreground. Press `Ctrl+C` to stop, or use `vibe channel stop` from another terminal.
 
 ### Multi-Channel Mode
 
-When you run `qwen channel start` without a name, all channels defined in `settings.json` start together sharing a single agent process. Each channel maintains its own sessions — a Telegram user and a WeChat user get separate conversations, even though they share the same agent.
+When you run `vibe channel start` without a name, all channels defined in `settings.json` start together sharing a single agent process. Each channel maintains its own sessions — a Telegram user and a WeChat user get separate conversations, even though they share the same agent.
 
 Each channel uses its own `cwd` from its config, so different channels can work on different projects simultaneously.
 
@@ -322,9 +322,9 @@ Each channel uses its own `cwd` from its config, so different channels can work 
 
 The channel service uses a PID file (`~/.vibe/channels/service.pid`) to track the running instance:
 
-- **Duplicate prevention**: Running `qwen channel start` while a service is already running will show an error instead of starting a second instance
-- **`qwen channel stop`**: Gracefully stops the running service from another terminal
-- **`qwen channel status`**: Shows whether the service is running, its uptime, and session counts per channel
+- **Duplicate prevention**: Running `vibe channel start` while a service is already running will show an error instead of starting a second instance
+- **`vibe channel stop`**: Gracefully stops the running service from another terminal
+- **`vibe channel status`**: Shows whether the service is running, its uptime, and session counts per channel
 
 ### Crash Recovery
 
@@ -333,4 +333,4 @@ If the agent process crashes unexpectedly, the channel service automatically res
 - Sessions are persisted to `~/.vibe/channels/sessions.json` while the service is running
 - On crash: the agent restarts within 3 seconds and reloads saved sessions
 - After 3 consecutive crashes, the service exits with an error
-- On clean shutdown (Ctrl+C or `qwen channel stop`): session data is cleared — the next start is always fresh
+- On clean shutdown (Ctrl+C or `vibe channel stop`): session data is cleared — the next start is always fresh

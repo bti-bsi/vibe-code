@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  *
  * InputForm component - Main chat input with toolbar
@@ -57,6 +57,76 @@ export const getEditModeIcon = (iconType: EditModeIconType): ReactNode => {
     default:
       return null;
   }
+};
+
+const formatTokenCount = (value: number | undefined): string => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return '-';
+  }
+
+  return Math.max(0, Math.round(value)).toLocaleString();
+};
+
+const getContextUsedPercent = (contextUsage: ContextUsage): number => {
+  if (contextUsage.tokenLimit <= 0) {
+    return 0;
+  }
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round((contextUsage.usedTokens / contextUsage.tokenLimit) * 100),
+    ),
+  );
+};
+
+const TokenUsageSummary: FC<{ contextUsage: ContextUsage | null }> = ({
+  contextUsage,
+}) => {
+  if (!contextUsage) {
+    return null;
+  }
+
+  const contextPercent = getContextUsedPercent(contextUsage);
+  const modelName = contextUsage.modelName || '-';
+  const totalTokens = contextUsage.totalTokens ?? contextUsage.usedTokens;
+
+  return (
+    <div className="composer-token-summary" aria-label="Token usage summary">
+      <div className="composer-token-summary__items">
+        <span className="composer-token-summary__item composer-token-summary__model">
+          <span className="composer-token-summary__label">Model</span>
+          <span className="composer-token-summary__value">{modelName}</span>
+        </span>
+        <span className="composer-token-summary__item">
+          <span className="composer-token-summary__label">Input</span>
+          <span className="composer-token-summary__value">
+            {formatTokenCount(contextUsage.inputTokens)}
+          </span>
+        </span>
+        <span className="composer-token-summary__item">
+          <span className="composer-token-summary__label">Output</span>
+          <span className="composer-token-summary__value">
+            {formatTokenCount(contextUsage.outputTokens)}
+          </span>
+        </span>
+        <span className="composer-token-summary__item">
+          <span className="composer-token-summary__label">Total</span>
+          <span className="composer-token-summary__value">
+            {formatTokenCount(totalTokens)}
+          </span>
+        </span>
+        <span className="composer-token-summary__item">
+          <span className="composer-token-summary__label">Context</span>
+          <span className="composer-token-summary__value">
+            {formatTokenCount(contextUsage.tokenLimit)}
+          </span>
+        </span>
+      </div>
+      <div className="composer-token-summary__percent">{contextPercent}%</div>
+    </div>
+  );
 };
 
 /**
@@ -196,7 +266,7 @@ export const InputForm: FC<InputFormProps> = ({
   onCompletionClose,
   onPaste,
   extraContent,
-  placeholder = 'Ask Qwen Code …',
+  placeholder = 'Ask Vibe Code …',
   canSubmit,
   followupState,
   onAcceptFollowup,
@@ -363,6 +433,8 @@ export const InputForm: FC<InputFormProps> = ({
           {extraContent ? (
             <div className="relative z-[1]">{extraContent}</div>
           ) : null}
+
+          <TokenUsageSummary contextUsage={contextUsage} />
 
           <div className="composer-actions">
             {/* Edit mode button */}

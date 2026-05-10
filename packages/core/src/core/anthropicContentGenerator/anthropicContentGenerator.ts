@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -214,7 +214,7 @@ export class AnthropicContentGenerator implements ContentGenerator {
     // would cause two physical headers on the wire (one mixed-case, one
     // lowercase) when the per-request override fires.
     const version = this.cliConfig.getCliVersion() || 'unknown';
-    const userAgent = `QwenCode/${version} (${process.platform}; ${process.arch})`;
+    const userAgent = `VibeCode/${version} (${process.platform}; ${process.arch})`;
     const { customHeaders } = this.contentGeneratorConfig;
 
     const headers: Record<string, string> = { 'User-Agent': userAgent };
@@ -373,7 +373,7 @@ export class AnthropicContentGenerator implements ContentGenerator {
         : userMaxTokens;
     } else {
       // No explicit user config — check env var, then use capped default.
-      const envVal = process.env['QWEN_CODE_MAX_OUTPUT_TOKENS'];
+      const envVal = process.env['VIBE_CODE_MAX_OUTPUT_TOKENS'];
       const envMaxTokens = envVal ? parseInt(envVal, 10) : NaN;
       if (!isNaN(envMaxTokens) && envMaxTokens > 0) {
         maxTokens = isKnownModel

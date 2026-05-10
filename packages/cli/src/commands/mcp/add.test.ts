@@ -247,7 +247,7 @@ describe('mcp add command', () => {
           .spyOn(process, 'exit')
           .mockImplementation((() => {
             throw new Error('process.exit called');
-          }) as (code?: number) => never);
+          }) as (code?: string | number | null) => never);
 
         await expect(
           parser.parseAsync(`add --scope project ${serverName} ${command}`),

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const DEFAULT_QWEN_MODEL = 'coder-model';
-export const DEFAULT_QWEN_FLASH_MODEL = 'coder-model';
-export const DEFAULT_QWEN_EMBEDDING_MODEL = 'text-embedding-v4';
-export const MAINLINE_CODER_MODEL = 'qwen3.5-plus';
+export const DEFAULT_VIBE_MODEL = 'coder-model';
+export const DEFAULT_VIBE_FLASH_MODEL = 'coder-model';
+export const DEFAULT_VIBE_EMBEDDING_MODEL = 'text-embedding-v4';
+export const MAINLINE_CODER_MODEL = 'vibe3.5-plus';

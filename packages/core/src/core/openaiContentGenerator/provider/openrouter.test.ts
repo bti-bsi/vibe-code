@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -95,7 +95,7 @@ describe('OpenRouterOpenAICompatibleProvider', () => {
 
       // Should include User-Agent from parent
       expect(headers['User-Agent']).toBe(
-        `QwenCode/1.0.0 (${process.platform}; ${process.arch})`,
+        `VibeCode/1.0.0 (${process.platform}; ${process.arch})`,
       );
     });
 
@@ -103,9 +103,9 @@ describe('OpenRouterOpenAICompatibleProvider', () => {
       const headers = provider.buildHeaders();
 
       expect(headers).toEqual({
-        'User-Agent': `QwenCode/1.0.0 (${process.platform}; ${process.arch})`,
+        'User-Agent': `VibeCode/1.0.0 (${process.platform}; ${process.arch})`,
         'HTTP-Referer': 'https://github.com/vibe-bti/vibe-code.git',
-        'X-OpenRouter-Title': 'Qwen Code',
+        'X-OpenRouter-Title': 'Vibe Code',
       });
     });
 
@@ -125,7 +125,7 @@ describe('OpenRouterOpenAICompatibleProvider', () => {
       expect(headers).toEqual({
         'User-Agent': 'ParentAgent/1.0.0',
         'HTTP-Referer': 'https://github.com/vibe-bti/vibe-code.git', // OpenRouter-specific value should override
-        'X-OpenRouter-Title': 'Qwen Code',
+        'X-OpenRouter-Title': 'Vibe Code',
       });
 
       parentBuildHeaders.mockRestore();
@@ -137,12 +137,12 @@ describe('OpenRouterOpenAICompatibleProvider', () => {
       const headers = provider.buildHeaders();
 
       expect(headers['User-Agent']).toBe(
-        `QwenCode/unknown (${process.platform}; ${process.arch})`,
+        `VibeCode/unknown (${process.platform}; ${process.arch})`,
       );
       expect(headers['HTTP-Referer']).toBe(
         'https://github.com/vibe-bti/vibe-code.git',
       );
-      expect(headers['X-OpenRouter-Title']).toBe('Qwen Code');
+      expect(headers['X-OpenRouter-Title']).toBe('Vibe Code');
     });
   });
 
@@ -215,7 +215,7 @@ describe('OpenRouterOpenAICompatibleProvider', () => {
       expect(headers['HTTP-Referer']).toBe(
         'https://github.com/vibe-bti/vibe-code.git',
       ); // OpenRouter-specific
-      expect(headers['X-OpenRouter-Title']).toBe('Qwen Code'); // OpenRouter-specific
+      expect(headers['X-OpenRouter-Title']).toBe('Vibe Code'); // OpenRouter-specific
     });
   });
 });

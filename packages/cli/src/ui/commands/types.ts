@@ -186,7 +186,8 @@ export interface OpenDialogActionReturn {
     | 'extensions_manage'
     | 'hooks'
     | 'mcp'
-    | 'rewind';
+    | 'rewind'
+    | 'config';
 }
 
 /**

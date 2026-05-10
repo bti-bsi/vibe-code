@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -444,20 +444,20 @@ describe('ModelsConfig', () => {
     // it should be re-resolved by other layers in refreshAuth
   });
 
-  it('should always force Qwen OAuth apiKey placeholder when applying model defaults', async () => {
+  it('should always force Vibe OAuth apiKey placeholder when applying model defaults', async () => {
     // Simulate a stale/explicit apiKey existing before switching models.
     const modelsConfig = new ModelsConfig({
-      initialAuthType: AuthType.QWEN_OAUTH,
+      initialAuthType: AuthType.VIBE_OAUTH,
       generationConfig: {
         apiKey: 'manual-key-should-not-leak',
       },
     });
 
-    // Switching within qwen-oauth triggers applyResolvedModelDefaults().
-    await modelsConfig.switchModel(AuthType.QWEN_OAUTH, 'coder-model');
+    // Switching within vibe-oauth triggers applyResolvedModelDefaults().
+    await modelsConfig.switchModel(AuthType.VIBE_OAUTH, 'coder-model');
 
     const gc = currentGenerationConfig(modelsConfig);
-    expect(gc.apiKey).toBe('QWEN_OAUTH_DYNAMIC_TOKEN');
+    expect(gc.apiKey).toBe('VIBE_OAUTH_DYNAMIC_TOKEN');
     expect(gc.apiKeyEnvKey).toBeUndefined();
   });
 
@@ -496,19 +496,19 @@ describe('ModelsConfig', () => {
     expect(sources['customHeaders']?.kind).toBe('modelProviders');
   });
 
-  it('should apply Qwen OAuth apiKey placeholder during syncAfterAuthRefresh for fresh users', () => {
+  it('should apply Vibe OAuth apiKey placeholder during syncAfterAuthRefresh for fresh users', () => {
     // Fresh user: authType not selected yet (currentAuthType undefined).
     const modelsConfig = new ModelsConfig();
 
-    // Config.refreshAuth passes modelId from modelsConfig.getModel(), which falls back to DEFAULT_QWEN_MODEL.
+    // Config.refreshAuth passes modelId from modelsConfig.getModel(), which falls back to DEFAULT_VIBE_MODEL.
     modelsConfig.syncAfterAuthRefresh(
-      AuthType.QWEN_OAUTH,
+      AuthType.VIBE_OAUTH,
       modelsConfig.getModel(),
     );
 
     const gc = currentGenerationConfig(modelsConfig);
     expect(gc.model).toBe('coder-model');
-    expect(gc.apiKey).toBe('QWEN_OAUTH_DYNAMIC_TOKEN');
+    expect(gc.apiKey).toBe('VIBE_OAUTH_DYNAMIC_TOKEN');
     expect(gc.apiKeyEnvKey).toBeUndefined();
   });
 
@@ -522,19 +522,19 @@ describe('ModelsConfig', () => {
       },
     });
 
-    // User switches to qwen-oauth via AuthDialog
+    // User switches to vibe-oauth via AuthDialog
     // refreshAuth calls syncAfterAuthRefresh with the current model (gpt-4o)
-    // which doesn't exist in qwen-oauth registry, so it should use default
-    modelsConfig.syncAfterAuthRefresh(AuthType.QWEN_OAUTH, 'gpt-4o');
+    // which doesn't exist in vibe-oauth registry, so it should use default
+    modelsConfig.syncAfterAuthRefresh(AuthType.VIBE_OAUTH, 'gpt-4o');
 
     const gc = currentGenerationConfig(modelsConfig);
-    // Should use default qwen-oauth model (coder-model), not the OPENAI model
+    // Should use default vibe-oauth model (coder-model), not the OPENAI model
     expect(gc.model).toBe('coder-model');
-    expect(gc.apiKey).toBe('QWEN_OAUTH_DYNAMIC_TOKEN');
+    expect(gc.apiKey).toBe('VIBE_OAUTH_DYNAMIC_TOKEN');
     expect(gc.apiKeyEnvKey).toBeUndefined();
   });
 
-  it('should clear manual credentials when switching from USE_OPENAI to QWEN_OAUTH', () => {
+  it('should clear manual credentials when switching from USE_OPENAI to VIBE_OAUTH', () => {
     // User manually set credentials for OpenAI
     const modelsConfig = new ModelsConfig({
       initialAuthType: AuthType.USE_OPENAI,
@@ -552,17 +552,17 @@ describe('ModelsConfig', () => {
       model: 'gpt-4o',
     });
 
-    // User switches to qwen-oauth
+    // User switches to vibe-oauth
     // Since authType is not USE_OPENAI, manual credentials should be cleared
-    // and default qwen-oauth model should be applied
-    modelsConfig.syncAfterAuthRefresh(AuthType.QWEN_OAUTH, 'gpt-4o');
+    // and default vibe-oauth model should be applied
+    modelsConfig.syncAfterAuthRefresh(AuthType.VIBE_OAUTH, 'gpt-4o');
 
     const gc = currentGenerationConfig(modelsConfig);
-    // Should use default qwen-oauth model, not preserve manual OpenAI credentials
+    // Should use default vibe-oauth model, not preserve manual OpenAI credentials
     expect(gc.model).toBe('coder-model');
-    expect(gc.apiKey).toBe('QWEN_OAUTH_DYNAMIC_TOKEN');
-    // baseUrl should be set to qwen-oauth default, not preserved from manual OpenAI config
-    expect(gc.baseUrl).toBe('DYNAMIC_QWEN_OAUTH_BASE_URL');
+    expect(gc.apiKey).toBe('VIBE_OAUTH_DYNAMIC_TOKEN');
+    // baseUrl should be set to vibe-oauth default, not preserved from manual OpenAI config
+    expect(gc.baseUrl).toBe('DYNAMIC_VIBE_OAUTH_BASE_URL');
     expect(gc.apiKeyEnvKey).toBeUndefined();
   });
 
@@ -612,7 +612,7 @@ describe('ModelsConfig', () => {
     const modelProvidersConfig: ModelProvidersConfig = {
       openai: [
         {
-          id: 'qwen3.5-plus',
+          id: 'vibe3.5-plus',
           name: 'Test Model',
           baseUrl: 'https://api.example.com/v1',
           envKey,
@@ -628,7 +628,7 @@ describe('ModelsConfig', () => {
       initialAuthType: AuthType.USE_OPENAI,
       modelProvidersConfig,
       generationConfig: {
-        model: 'qwen3.5-plus',
+        model: 'vibe3.5-plus',
         apiKey: 'settings-api-key',
         baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
       },
@@ -645,7 +645,7 @@ describe('ModelsConfig', () => {
     );
 
     // Simulate what refreshAuth does on startup
-    modelsConfig.syncAfterAuthRefresh(AuthType.USE_OPENAI, 'qwen3.5-plus');
+    modelsConfig.syncAfterAuthRefresh(AuthType.USE_OPENAI, 'vibe3.5-plus');
 
     const gc = currentGenerationConfig(modelsConfig);
     // The settings-sourced apiKey should be preserved as fallback
@@ -653,7 +653,7 @@ describe('ModelsConfig', () => {
     // envKey metadata should still be set for diagnostics
     expect(gc.apiKeyEnvKey).toBe(envKey);
     // Model and other provider config should be applied
-    expect(gc.model).toBe('qwen3.5-plus');
+    expect(gc.model).toBe('vibe3.5-plus');
     expect(gc.samplingParams?.temperature).toBe(0.3);
 
     // Source should still reflect settings origin
@@ -1271,7 +1271,7 @@ describe('ModelsConfig', () => {
       modelProvidersConfig,
       generationConfig: {},
     });
-    expect(config3.getModel()).toBe('coder-model'); // Falls back to DEFAULT_QWEN_MODEL
+    expect(config3.getModel()).toBe('coder-model'); // Falls back to DEFAULT_VIBE_MODEL
     expect(config3.getGenerationConfig().model).toBeUndefined();
   });
 
@@ -1348,7 +1348,7 @@ describe('ModelsConfig', () => {
   });
 
   describe('getAllConfiguredModels', () => {
-    it('should return all models across all authTypes and put qwen-oauth first', () => {
+    it('should return all models across all authTypes and put vibe-oauth first', () => {
       const modelProvidersConfig: ModelProvidersConfig = {
         openai: [
           {
@@ -1388,27 +1388,27 @@ describe('ModelsConfig', () => {
 
       const allModels = modelsConfig.getAllConfiguredModels();
 
-      // qwen-oauth models should be ordered first
-      const firstNonQwenIndex = allModels.findIndex(
-        (m) => m.authType !== AuthType.QWEN_OAUTH,
+      // vibe-oauth models should be ordered first
+      const firstNonVibeIndex = allModels.findIndex(
+        (m) => m.authType !== AuthType.VIBE_OAUTH,
       );
-      expect(firstNonQwenIndex).toBeGreaterThan(0);
+      expect(firstNonVibeIndex).toBeGreaterThan(0);
       expect(
         allModels
-          .slice(0, firstNonQwenIndex)
-          .every((m) => m.authType === AuthType.QWEN_OAUTH),
+          .slice(0, firstNonVibeIndex)
+          .every((m) => m.authType === AuthType.VIBE_OAUTH),
       ).toBe(true);
       expect(
         allModels
-          .slice(firstNonQwenIndex)
-          .every((m) => m.authType !== AuthType.QWEN_OAUTH),
+          .slice(firstNonVibeIndex)
+          .every((m) => m.authType !== AuthType.VIBE_OAUTH),
       ).toBe(true);
 
-      // Should include qwen-oauth models (hard-coded)
-      const qwenModels = allModels.filter(
-        (m) => m.authType === AuthType.QWEN_OAUTH,
+      // Should include vibe-oauth models (hard-coded)
+      const vibeModels = allModels.filter(
+        (m) => m.authType === AuthType.VIBE_OAUTH,
       );
-      expect(qwenModels.length).toBeGreaterThan(0);
+      expect(vibeModels.length).toBeGreaterThan(0);
 
       // Should include openai models
       const openaiModels = allModels.filter(
@@ -1438,12 +1438,12 @@ describe('ModelsConfig', () => {
 
       const allModels = modelsConfig.getAllConfiguredModels();
 
-      // Should still include qwen-oauth models (hard-coded)
+      // Should still include vibe-oauth models (hard-coded)
       expect(allModels.length).toBeGreaterThan(0);
-      const qwenModels = allModels.filter(
-        (m) => m.authType === AuthType.QWEN_OAUTH,
+      const vibeModels = allModels.filter(
+        (m) => m.authType === AuthType.VIBE_OAUTH,
       );
-      expect(qwenModels.length).toBeGreaterThan(0);
+      expect(vibeModels.length).toBeGreaterThan(0);
     });
 
     it('should return models with correct structure', () => {
@@ -1478,7 +1478,7 @@ describe('ModelsConfig', () => {
       expect(testModel?.capabilities?.vision).toBe(true);
     });
 
-    it('should support filtering by authTypes and still put qwen-oauth first when included', () => {
+    it('should support filtering by authTypes and still put vibe-oauth first when included', () => {
       const modelProvidersConfig: ModelProvidersConfig = {
         openai: [
           {
@@ -1502,7 +1502,7 @@ describe('ModelsConfig', () => {
         modelProvidersConfig,
       });
 
-      // Filter: OpenAI only (should not include qwen-oauth)
+      // Filter: OpenAI only (should not include vibe-oauth)
       const openaiOnly = modelsConfig.getAllConfiguredModels([
         AuthType.USE_OPENAI,
       ]);
@@ -1511,21 +1511,21 @@ describe('ModelsConfig', () => {
       );
       expect(openaiOnly.map((m) => m.id)).toContain('openai-model-1');
 
-      // Filter: include qwen-oauth but request it later -> still ordered first
-      const withQwen = modelsConfig.getAllConfiguredModels([
+      // Filter: include vibe-oauth but request it later -> still ordered first
+      const withVibe = modelsConfig.getAllConfiguredModels([
         AuthType.USE_OPENAI,
-        AuthType.QWEN_OAUTH,
+        AuthType.VIBE_OAUTH,
         AuthType.USE_ANTHROPIC,
       ]);
-      expect(withQwen.length).toBeGreaterThan(0);
-      const firstNonQwenIndex = withQwen.findIndex(
-        (m) => m.authType !== AuthType.QWEN_OAUTH,
+      expect(withVibe.length).toBeGreaterThan(0);
+      const firstNonVibeIndex = withVibe.findIndex(
+        (m) => m.authType !== AuthType.VIBE_OAUTH,
       );
-      expect(firstNonQwenIndex).toBeGreaterThan(0);
+      expect(firstNonVibeIndex).toBeGreaterThan(0);
       expect(
-        withQwen
-          .slice(0, firstNonQwenIndex)
-          .every((m) => m.authType === AuthType.QWEN_OAUTH),
+        withVibe
+          .slice(0, firstNonVibeIndex)
+          .every((m) => m.authType === AuthType.VIBE_OAUTH),
       ).toBe(true);
     });
   });
@@ -2022,37 +2022,37 @@ describe('ModelsConfig', () => {
       expect(
         modelsConfig
           .getAllConfiguredModels()
-          .filter((m) => m.authType !== 'qwen-oauth').length,
+          .filter((m) => m.authType !== 'vibe-oauth').length,
       ).toBeGreaterThan(0);
 
       // Reload with empty config
       modelsConfig.reloadModelProvidersConfig({});
 
-      // Only qwen-oauth models should remain
+      // Only vibe-oauth models should remain
       const models = modelsConfig.getAllConfiguredModels();
-      expect(models.every((m) => m.authType === 'qwen-oauth')).toBe(true);
+      expect(models.every((m) => m.authType === 'vibe-oauth')).toBe(true);
     });
 
-    it('should preserve qwen-oauth models after reload', () => {
+    it('should preserve vibe-oauth models after reload', () => {
       const modelsConfig = new ModelsConfig({
         modelProvidersConfig: {
           openai: [{ id: 'gpt-4', name: 'GPT-4' }],
         },
       });
 
-      const initialQwenModels = modelsConfig
+      const initialVibeModels = modelsConfig
         .getAllConfiguredModels()
-        .filter((m) => m.authType === 'qwen-oauth');
+        .filter((m) => m.authType === 'vibe-oauth');
 
       modelsConfig.reloadModelProvidersConfig({
         gemini: [{ id: 'gemini-pro', name: 'Gemini Pro' }],
       });
 
-      // qwen-oauth models should still exist
-      const qwenModelsAfterReload = modelsConfig
+      // vibe-oauth models should still exist
+      const vibeModelsAfterReload = modelsConfig
         .getAllConfiguredModels()
-        .filter((m) => m.authType === 'qwen-oauth');
-      expect(qwenModelsAfterReload.length).toBe(initialQwenModels.length);
+        .filter((m) => m.authType === 'vibe-oauth');
+      expect(vibeModelsAfterReload.length).toBe(initialVibeModels.length);
     });
 
     it('should handle reload with undefined config', () => {

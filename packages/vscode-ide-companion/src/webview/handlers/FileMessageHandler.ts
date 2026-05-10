@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -78,7 +78,7 @@ export class FileMessageHandler extends BaseMessageHandler {
         projectRoot: rootPath,
         ignoreDirs: ['.git', 'node_modules'],
         useGitignore: true,
-        useQwenignore: false,
+        useVibeignore: false,
         cache: true,
         cacheTtl: 30000,
         enableRecursiveFileSearch: true,
@@ -374,7 +374,7 @@ export class FileMessageHandler extends BaseMessageHandler {
           if (
             discovery.shouldIgnoreFile(uri.fsPath, {
               respectGitIgnore: true,
-              respectQwenIgnore: false,
+              respectVibeIgnore: false,
             })
           ) {
             return;

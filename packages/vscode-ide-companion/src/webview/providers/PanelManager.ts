@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -32,7 +32,7 @@ export class PanelManager {
   private panel: vscode.WebviewPanel | null = null;
   private panelTab: vscode.Tab | null = null;
   // Best-effort tracking of the group (by view column) that currently hosts
-  // the Qwen webview. We update this when creating/revealing the panel and
+  // the Vibe webview. We update this when creating/revealing the panel and
   // whenever we can capture the Tab from the tab model.
   private panelGroupViewColumn: vscode.ViewColumn | null = null;
 
@@ -65,17 +65,17 @@ export class PanelManager {
       return false; // Panel already exists
     }
 
-    // First, check if there's an existing Qwen Code group
-    const existingGroup = this.findExistingQwenCodeGroup();
+    // First, check if there's an existing Vibe Code group
+    const existingGroup = this.findExistingVibeCodeGroup();
 
     if (existingGroup) {
-      // If Qwen Code webview already exists in a locked group, create the new panel in that same group
+      // If Vibe Code webview already exists in a locked group, create the new panel in that same group
       console.log(
-        '[PanelManager] Found existing Qwen Code group, creating panel in same group',
+        '[PanelManager] Found existing Vibe Code group, creating panel in same group',
       );
       this.panel = vscode.window.createWebviewPanel(
-        'qwenCode.chat',
-        'Qwen Code',
+        'vibeCode.chat',
+        'Vibe Code',
         { viewColumn: existingGroup.viewColumn, preserveFocus: false },
         {
           enableScripts: true,
@@ -89,7 +89,7 @@ export class PanelManager {
       // Track the group column hosting this panel
       this.panelGroupViewColumn = existingGroup.viewColumn;
     } else {
-      // If no existing Qwen Code group, create a new group to the right of the active editor group
+      // If no existing Vibe Code group, create a new group to the right of the active editor group
       try {
         // Create a new group to the right of the current active group
         await vscode.commands.executeCommand('workbench.action.newGroupRight');
@@ -102,8 +102,8 @@ export class PanelManager {
         const activeColumn =
           vscode.window.activeTextEditor?.viewColumn || vscode.ViewColumn.One;
         this.panel = vscode.window.createWebviewPanel(
-          'qwenCode.chat',
-          'Qwen Code',
+          'vibeCode.chat',
+          'Vibe Code',
           { viewColumn: activeColumn, preserveFocus: false },
           {
             enableScripts: true,
@@ -123,8 +123,8 @@ export class PanelManager {
       const newGroupColumn = vscode.window.tabGroups.activeTabGroup.viewColumn;
 
       this.panel = vscode.window.createWebviewPanel(
-        'qwenCode.chat',
-        'Qwen Code',
+        'vibeCode.chat',
+        'Vibe Code',
         { viewColumn: newGroupColumn, preserveFocus: false },
         {
           enableScripts: true,
@@ -143,7 +143,7 @@ export class PanelManager {
       this.panelGroupViewColumn = newGroupColumn;
     }
 
-    // Set panel icon to Qwen logo
+    // Set panel icon to Vibe logo
     this.panel.iconPath = vscode.Uri.joinPath(
       this.extensionUri,
       'assets',
@@ -158,10 +158,10 @@ export class PanelManager {
   }
 
   /**
-   * Find the group and view column where the existing Qwen Code webview is located
+   * Find the group and view column where the existing Vibe Code webview is located
    * @returns The found group and view column, or undefined if not found
    */
-  private findExistingQwenCodeGroup():
+  private findExistingVibeCodeGroup():
     | { group: vscode.TabGroup; viewColumn: vscode.ViewColumn }
     | undefined {
     for (const group of vscode.window.tabGroups.all) {
@@ -172,10 +172,10 @@ export class PanelManager {
 
         if (
           isWebviewInput(input) &&
-          input.viewType === 'mainThreadWebview-qwenCode.chat'
+          input.viewType === 'mainThreadWebview-vibeCode.chat'
         ) {
-          // Found an existing Qwen Code tab
-          console.log('[PanelManager] Found existing Qwen Code group:', {
+          // Found an existing Vibe Code tab
+          console.log('[PanelManager] Found existing Vibe Code group:', {
             viewColumn: group.viewColumn,
             tabCount: group.tabs.length,
             isActive: group.isActive,
@@ -261,7 +261,7 @@ export class PanelManager {
         const isWebviewInput = (inp: unknown): inp is { viewType: string } =>
           !!inp && typeof inp === 'object' && 'viewType' in inp;
         const isWebview = isWebviewInput(input);
-        const sameViewType = isWebview && input.viewType === 'qwenCode.chat';
+        const sameViewType = isWebview && input.viewType === 'vibeCode.chat';
         const sameLabel = t.label === panelTitle;
         return !!(sameViewType || sameLabel);
       });
@@ -310,15 +310,15 @@ export class PanelManager {
         this.onPanelDispose();
 
         // After VS Code updates its tab model, check if that group is now
-        // empty (and typically locked for Qwen). If so, close the group to
-        // avoid leaving an empty locked column when the user closes Qwen.
+        // empty (and typically locked for Vibe). If so, close the group to
+        // avoid leaving an empty locked column when the user closes Vibe.
         if (targetColumn !== null) {
           const column: vscode.ViewColumn = targetColumn;
           setTimeout(async () => {
             try {
               const groups = vscode.window.tabGroups.all;
               const group = groups.find((g) => g.viewColumn === column);
-              // If the group that hosted Qwen is now empty, close it to avoid
+              // If the group that hosted Vibe is now empty, close it to avoid
               // leaving an empty locked column around. VS Code's stable API
               // does not expose the lock state on TabGroup, so we only check
               // for emptiness here.
@@ -337,7 +337,7 @@ export class PanelManager {
                     );
                   } catch (err) {
                     console.warn(
-                      '[PanelManager] Failed to close empty group after Qwen panel disposed:',
+                      '[PanelManager] Failed to close empty group after Vibe panel disposed:',
                       err,
                     );
                   }
@@ -345,7 +345,7 @@ export class PanelManager {
               }
             } catch (err) {
               console.warn(
-                '[PanelManager] Error while trying to close empty Qwen group:',
+                '[PanelManager] Error while trying to close empty Vibe group:',
                 err,
               );
             }

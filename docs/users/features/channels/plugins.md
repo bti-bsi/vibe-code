@@ -1,12 +1,12 @@
 # Custom Channel Plugins
 
-You can extend the channel system with custom platform adapters packaged as [extensions](../../extension/introduction). This lets you connect Qwen Code to any messaging platform, webhook, or custom transport.
+You can extend the channel system with custom platform adapters packaged as [extensions](../../extension/introduction). This lets you connect Vibe Code to any messaging platform, webhook, or custom transport.
 
 ## How It Works
 
-Channel plugins are loaded at startup from active extensions. When `qwen channel start` runs, it:
+Channel plugins are loaded at startup from active extensions. When `vibe channel start` runs, it:
 
-1. Scans all enabled extensions for `channels` entries in their `qwen-extension.json`
+1. Scans all enabled extensions for `channels` entries in their `vibe-extension.json`
 2. Dynamically imports each channel's entry point
 3. Registers the channel type so it can be referenced in `settings.json`
 4. Creates channel instances using the plugin's factory function
@@ -19,10 +19,10 @@ Install an extension that provides a channel plugin:
 
 ```bash
 # From a local path (for development or private plugins)
-qwen extensions install /path/to/my-channel-extension
+vibe extensions install /path/to/my-channel-extension
 
 # Or link it for development (changes are reflected immediately)
-qwen extensions link /path/to/my-channel-extension
+vibe extensions link /path/to/my-channel-extension
 ```
 
 ## Configuring a Custom Channel
@@ -63,10 +63,10 @@ See [Overview](./overview) for details on each option.
 
 ```bash
 # Start all channels including custom ones
-qwen channel start
+vibe channel start
 
 # Start just your custom channel
-qwen channel start my-bot
+vibe channel start my-bot
 ```
 
 ## What You Get for Free

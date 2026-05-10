@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -65,7 +65,7 @@ const AssistantMessageBase: FC<AssistantMessageProps> = ({
 
   return (
     <div
-      className={`qwen-message message-item assistant-message-container ${getStatusClass()}`}
+      className={`vibe-message message-item assistant-message-container ${getStatusClass()}`}
       data-first={isFirst}
       data-last={isLast}
       style={{

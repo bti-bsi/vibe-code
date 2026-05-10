@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -25,7 +25,7 @@ describe('splitMessageContentForImages', () => {
 });
 
 describe('useImage browser bundle', () => {
-  it('bundles without resolving node-only qwen-code-core modules', async () => {
+  it('bundles without resolving node-only vibe-code-core modules', async () => {
     const entryPoint = fileURLToPath(new URL('./useImage.ts', import.meta.url));
 
     await expect(

@@ -49,7 +49,7 @@ function generateCustomApiKeyEnvKey(protocol: string, baseUrl: string): string {
       .replace(/_+/g, '_')
       .replace(/^_+|_+$/g, '');
 
-  return `QWEN_CUSTOM_API_KEY_${normalize(protocol)}_${normalize(baseUrl)}`;
+  return `VIBE_CUSTOM_API_KEY_${normalize(protocol)}_${normalize(baseUrl)}`;
 }
 
 function normalizeCustomModelIds(modelIdsInput: string): string[] {
@@ -59,7 +59,7 @@ function normalizeCustomModelIds(modelIdsInput: string): string[] {
     .filter((id, index, array) => id.length > 0 && array.indexOf(id) === index);
 }
 
-interface QwenAuthOptions {
+interface VibeAuthOptions {
   region?: string;
   key?: string;
 }
@@ -159,16 +159,16 @@ async function loadAuthConfig(settings: LoadedSettings) {
 /**
  * Handles the authentication process based on the specified command and options
  */
-export async function handleQwenAuth(
-  command: 'qwen-oauth' | 'coding-plan' | 'openrouter',
-  options: QwenAuthOptions,
+export async function handleVibeAuth(
+  command: 'vibe-oauth' | 'coding-plan' | 'openrouter',
+  options: VibeAuthOptions,
 ) {
   try {
     const settings = loadSettings();
     const config = await loadAuthConfig(settings);
 
-    if (command === 'qwen-oauth') {
-      await handleQwenOAuth(config, settings);
+    if (command === 'vibe-oauth') {
+      await handleVibeOAuth(config, settings);
     } else if (command === 'coding-plan') {
       await handleCodePlanAuth(config, settings, options);
     } else if (command === 'openrouter') {
@@ -185,30 +185,30 @@ export async function handleQwenAuth(
 }
 
 /**
- * Handles Qwen OAuth authentication
+ * Handles Vibe OAuth authentication
  */
-async function handleQwenOAuth(
+async function handleVibeOAuth(
   config: Config,
   settings: LoadedSettings,
 ): Promise<void> {
-  writeStdoutLine(t('Starting Qwen OAuth authentication...'));
+  writeStdoutLine(t('Starting Vibe OAuth authentication...'));
 
   try {
-    await config.refreshAuth(AuthType.QWEN_OAUTH);
+    await config.refreshAuth(AuthType.VIBE_OAUTH);
 
     // Persist the auth type
     const authTypeScope = getPersistScopeForModelSelection(settings);
     settings.setValue(
       authTypeScope,
       'security.auth.selectedType',
-      AuthType.QWEN_OAUTH,
+      AuthType.VIBE_OAUTH,
     );
 
-    writeStdoutLine(t('Successfully authenticated with Qwen OAuth.'));
+    writeStdoutLine(t('Successfully authenticated with Vibe OAuth.'));
     process.exit(0);
   } catch (error) {
     writeStderrLine(
-      t('Failed to authenticate with Qwen OAuth: {{error}}', {
+      t('Failed to authenticate with Vibe OAuth: {{error}}', {
         error: getErrorMessage(error),
       }),
     );
@@ -222,7 +222,7 @@ async function handleQwenOAuth(
 async function handleCodePlanAuth(
   config: Config,
   settings: LoadedSettings,
-  options: QwenAuthOptions,
+  options: VibeAuthOptions,
 ): Promise<void> {
   const { region, key } = options;
 
@@ -332,7 +332,7 @@ async function handleCodePlanAuth(
 async function handleOpenRouterAuth(
   config: Config,
   settings: LoadedSettings,
-  options: QwenAuthOptions,
+  options: VibeAuthOptions,
 ): Promise<void> {
   writeStdoutLine(t('Processing OpenRouter authentication...'));
 
@@ -705,20 +705,20 @@ export async function showAuthStatus(): Promise<void> {
     if (!selectedType) {
       writeStdoutLine(t('⚠️  No authentication method configured.\n'));
       writeStdoutLine(t('Run one of the following commands to get started:\n'));
-      writeStdoutLine(t('  qwen auth api-key        - Authenticate with an API key'));
+      writeStdoutLine(t('  vibe auth api-key        - Authenticate with an API key'));
       writeStdoutLine(t('Or simply run:'));
       writeStdoutLine(
-        t('  qwen auth                - Interactive authentication setup\n'),
+        t('  vibe auth                - Interactive authentication setup\n'),
       );
       process.exit(0);
     }
 
     // Display status based on auth type
-    if (selectedType === AuthType.QWEN_OAUTH) {
-      writeStdoutLine(t('✓ Authentication Method: Qwen OAuth'));
+    if (selectedType === AuthType.VIBE_OAUTH) {
+      writeStdoutLine(t('✓ Authentication Method: Vibe OAuth'));
       writeStdoutLine(t('  Type: Free tier (discontinued 2026-04-15)'));
       writeStdoutLine(t('  Limit: No longer available'));
-      writeStdoutLine(t('  Models: Qwen latest models'));
+      writeStdoutLine(t('  Models: Vibe latest models'));
       writeStdoutLine(
         t('\n  ⚠ Run /auth to switch to Coding Plan or another provider.\n'),
       );
@@ -772,7 +772,7 @@ export async function showAuthStatus(): Promise<void> {
           writeStdoutLine(
             t('  Issue: API key not found in environment or settings\n'),
           );
-          writeStdoutLine(t('  Run `qwen auth openrouter` to re-configure.\n'));
+          writeStdoutLine(t('  Run `vibe auth openrouter` to re-configure.\n'));
         }
       } else if (detectedCodingPlanRegion) {
         const hasCodingPlanKey =
@@ -820,7 +820,7 @@ export async function showAuthStatus(): Promise<void> {
             t('  Issue: API key not found in environment or settings\n'),
           );
           writeStdoutLine(
-            t('  Run `qwen auth coding-plan` to re-configure.\n'),
+            t('  Run `vibe auth coding-plan` to re-configure.\n'),
           );
         }
       } else if (isActiveStandard) {
@@ -851,7 +851,7 @@ export async function showAuthStatus(): Promise<void> {
           writeStdoutLine(
             t('  Issue: API key not found in environment or settings\n'),
           );
-          writeStdoutLine(t('  Run `qwen auth api-key` to re-configure.\n'));
+          writeStdoutLine(t('  Run `vibe auth api-key` to re-configure.\n'));
         }
       } else if (activeConfig) {
         let hasApiKey: boolean;
@@ -893,7 +893,7 @@ export async function showAuthStatus(): Promise<void> {
           writeStdoutLine(
             t('  Issue: API key not found in environment or settings\n'),
           );
-          writeStdoutLine(t('  Run `qwen auth` to re-configure.\n'));
+          writeStdoutLine(t('  Run `vibe auth` to re-configure.\n'));
         }
       } else {
         const hasCodingPlanKey =
@@ -963,7 +963,7 @@ export async function showAuthStatus(): Promise<void> {
             t('  Issue: API key not found in environment or settings\n'),
           );
           writeStdoutLine(
-            t('  Run `qwen auth coding-plan` to re-configure.\n'),
+            t('  Run `vibe auth coding-plan` to re-configure.\n'),
           );
         } else {
           writeStdoutLine(
@@ -974,7 +974,7 @@ export async function showAuthStatus(): Promise<void> {
           writeStdoutLine(
             t('  Issue: API key not found in environment or settings\n'),
           );
-          writeStdoutLine(t('  Run `qwen auth` to re-configure.\n'));
+          writeStdoutLine(t('  Run `vibe auth` to re-configure.\n'));
         }
       }
     } else {

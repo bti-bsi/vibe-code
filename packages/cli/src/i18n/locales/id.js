@@ -139,6 +139,22 @@ export default {
     'Konfigurasi informasi autentikasi untuk login',
   'Copy the last result or code snippet to clipboard':
     'Salin hasil atau cuplikan kode terakhir ke clipboard',
+  'View and edit Vibe Code configuration': 'Lihat dan ubah konfigurasi Vibe Code',
+  'Configuration Menu': 'Menu Konfigurasi',
+  'Scopus API': 'Scopus API',
+  'Telegram Channel': 'Saluran Telegram',
+  'Whatsapp Channel': 'Saluran Whatsapp',
+  'Google search API': 'API Pencarian Google',
+  '(Use arrow keys or numbers to select, Enter to confirm, Esc to exit)':
+    '(Gunakan panah atau angka untuk memilih, Enter untuk konfirmasi, Esc untuk keluar)',
+  'Scopus API Key': 'Kunci API Scopus',
+  'Enter your Scopus API Key to save in your configuration.':
+    'Masukkan Kunci API Scopus Anda untuk disimpan dalam konfigurasi.',
+  'Selected config: {{value}}': 'Konfigurasi terpilih: {{value}}',
+  'Buka {{url}} di browser untuk konfigurasi Saluran WhatsApp.':
+    'Buka {{url}} di browser untuk konfigurasi Saluran WhatsApp.',
+  'Gagal memulai server WhatsApp: {{error}}':
+    'Gagal memulai server WhatsApp: {{error}}',
   'Manage subagents for specialized task delegation.':
     'Kelola subagen untuk delegasi tugas khusus.',
   'Manage existing subagents (view, edit, delete).':

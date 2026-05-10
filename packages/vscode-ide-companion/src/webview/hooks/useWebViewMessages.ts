@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -34,7 +34,7 @@ interface UseWebViewMessagesProps {
   // Session management
   sessionManagement: {
     currentSessionId: string | null;
-    setQwenSessions: (
+    setVibeSessions: (
       sessions:
         | Array<Record<string, unknown>>
         | ((
@@ -197,7 +197,7 @@ export function resetConversationState({
   // Reset the VS Code tab title to default label
   vscode.postMessage({
     type: 'updatePanelTitle',
-    data: { title: 'Qwen Code' },
+    data: { title: 'Vibe Code' },
   });
 }
 
@@ -493,11 +493,11 @@ export const useWebViewMessages = ({
           handlers.messageHandling.clearWaitingForResponse();
           const errorMsg =
             (message?.data?.message as string) ||
-            'Failed to connect to Qwen agent.';
+            'Failed to connect to Vibe agent.';
 
           handlers.messageHandling.addMessage({
             role: 'assistant',
-            content: `Failed to connect to Qwen agent: ${errorMsg}\nYou can still use the chat UI, but messages won't be sent to AI.`,
+            content: `Failed to connect to Vibe agent: ${errorMsg}\nYou can still use the chat UI, but messages won't be sent to AI.`,
             timestamp: Date.now(),
           });
           // Set authentication state to false
@@ -959,14 +959,14 @@ export const useWebViewMessages = ({
           break;
         }
 
-        case 'qwenSessionList': {
+        case 'vibeSessionList': {
           const sessions =
             (message.data.sessions as Array<Record<string, unknown>>) || [];
           const append = Boolean(message.data.append);
           const nextCursor = message.data.nextCursor as number | undefined;
           const hasMore = Boolean(message.data.hasMore);
 
-          handlers.sessionManagement.setQwenSessions(
+          handlers.sessionManagement.setVibeSessions(
             (prev: Array<Record<string, unknown>>) =>
               append ? [...prev, ...sessions] : sessions,
           );
@@ -995,7 +995,7 @@ export const useWebViewMessages = ({
           break;
         }
 
-        case 'qwenSessionSwitched':
+        case 'vibeSessionSwitched':
           handlers.sessionManagement.setShowSessionSelector(false);
           clearInsightState();
           if (message.data.sessionId) {
@@ -1087,7 +1087,7 @@ export const useWebViewMessages = ({
         case 'sessionDeleted': {
           const deletedId = message.data?.sessionId as string;
           if (deletedId) {
-            handlers.sessionManagement.setQwenSessions(
+            handlers.sessionManagement.setVibeSessions(
               (prev: Array<Record<string, unknown>>) =>
                 prev.filter(
                   (s) => s.sessionId !== deletedId && s.id !== deletedId,
@@ -1101,7 +1101,7 @@ export const useWebViewMessages = ({
           const renamedId = message.data?.sessionId as string;
           const newTitle = message.data?.title as string;
           if (renamedId && newTitle) {
-            handlers.sessionManagement.setQwenSessions(
+            handlers.sessionManagement.setVibeSessions(
               (prev: Array<Record<string, unknown>>) =>
                 prev.map((s) =>
                   s.sessionId === renamedId || s.id === renamedId

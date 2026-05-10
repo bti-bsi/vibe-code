@@ -5,7 +5,7 @@
  */
 
 /**
- * Converter for Claude Code plugins to Qwen Code format.
+ * Converter for Claude Code plugins to Vibe Code format.
  */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -155,45 +155,45 @@ function parseStringOrArray(value: unknown): string[] | undefined {
 }
 
 /**
- * Converts a Claude agent config to Qwen Code subagent format.
+ * Converts a Claude agent config to Vibe Code subagent format.
  * @param claudeAgent Claude agent configuration
- * @returns Converted agent config compatible with Qwen Code SubagentConfig
+ * @returns Converted agent config compatible with Vibe Code SubagentConfig
  */
 export function convertClaudeAgentConfig(
   claudeAgent: ClaudeAgentConfig,
 ): Record<string, unknown> {
   // Base config with required fields
-  const qwenAgent: Record<string, unknown> = {
+  const vibeAgent: Record<string, unknown> = {
     name: claudeAgent.name,
     description: claudeAgent.description,
   };
 
   if (claudeAgent.color) {
-    qwenAgent['color'] = claudeAgent.color;
+    vibeAgent['color'] = claudeAgent.color;
   }
 
   // Convert system prompt if present
   if (claudeAgent.systemPrompt) {
-    qwenAgent['systemPrompt'] = claudeAgent.systemPrompt;
+    vibeAgent['systemPrompt'] = claudeAgent.systemPrompt;
   }
 
   // Convert tools using claudeBuildInToolsTransform
   if (claudeAgent.tools && claudeAgent.tools.length > 0) {
-    qwenAgent['tools'] = claudeBuildInToolsTransform(claudeAgent.tools);
+    vibeAgent['tools'] = claudeBuildInToolsTransform(claudeAgent.tools);
   }
 
   // Preserve Claude's top-level model selector.
   if (claudeAgent.model) {
-    qwenAgent['model'] = claudeAgent.model;
+    vibeAgent['model'] = claudeAgent.model;
   }
 
-  // Map Claude permission mode aliases to Qwen ApprovalMode values.
+  // Map Claude permission mode aliases to Vibe ApprovalMode values.
   // Note: Claude's `dontAsk` denies any tool call that would prompt the user,
   // making it restrictive. We map it to `default` (which also requires approval)
   // rather than `auto-edit` (which auto-approves), preserving the restrictive
   // intent. `bypassPermissions` is the Claude mode that auto-approves everything.
   if (claudeAgent.permissionMode) {
-    const claudeToQwenMode: Record<string, string> = {
+    const claudeToVibeMode: Record<string, string> = {
       default: 'default',
       plan: 'plan',
       acceptEdits: 'auto-edit',
@@ -202,25 +202,25 @@ export function convertClaudeAgentConfig(
       auto: 'auto-edit',
     };
     const mapped =
-      claudeToQwenMode[claudeAgent.permissionMode] ??
+      claudeToVibeMode[claudeAgent.permissionMode] ??
       claudeAgent.permissionMode;
-    qwenAgent['approvalMode'] = mapped;
+    vibeAgent['approvalMode'] = mapped;
   }
   if (claudeAgent.hooks) {
-    qwenAgent['hooks'] = claudeAgent.hooks;
+    vibeAgent['hooks'] = claudeAgent.hooks;
   }
   if (claudeAgent.skills && claudeAgent.skills.length > 0) {
-    qwenAgent['skills'] = claudeAgent.skills;
+    vibeAgent['skills'] = claudeAgent.skills;
   }
   if (claudeAgent.disallowedTools && claudeAgent.disallowedTools.length > 0) {
-    qwenAgent['disallowedTools'] = claudeAgent.disallowedTools;
+    vibeAgent['disallowedTools'] = claudeAgent.disallowedTools;
   }
 
-  return qwenAgent;
+  return vibeAgent;
 }
 
 /**
- * Converts all agent files in a directory from Claude format to Qwen format.
+ * Converts all agent files in a directory from Claude format to Vibe format.
  * Parses the YAML frontmatter, converts the configuration, and writes back.
  * @param agentsDir Directory containing agent markdown files
  */
@@ -267,12 +267,12 @@ async function convertAgentFiles(agentsDir: string): Promise<void> {
         systemPrompt: body.trim(),
       };
 
-      // Convert to Qwen format
-      const qwenAgent = convertClaudeAgentConfig(claudeAgent);
+      // Convert to Vibe format
+      const vibeAgent = convertClaudeAgentConfig(claudeAgent);
 
       // Build new frontmatter (excluding systemPrompt as it goes in body)
       const newFrontmatter: Record<string, unknown> = {};
-      for (const [key, value] of Object.entries(qwenAgent)) {
+      for (const [key, value] of Object.entries(vibeAgent)) {
         if (key !== 'systemPrompt' && value !== undefined) {
           newFrontmatter[key] = value;
         }
@@ -280,7 +280,7 @@ async function convertAgentFiles(agentsDir: string): Promise<void> {
 
       // Write converted content back
       const newYaml = stringifyYaml(newFrontmatter);
-      const systemPrompt = (qwenAgent['systemPrompt'] as string) || body.trim();
+      const systemPrompt = (vibeAgent['systemPrompt'] as string) || body.trim();
       const newContent = `---
 ${newYaml}
 ---
@@ -298,11 +298,11 @@ ${systemPrompt}
 }
 
 /**
- * Converts a Claude plugin config to Qwen Code format.
+ * Converts a Claude plugin config to Vibe Code format.
  * @param claudeConfig Claude plugin configuration
- * @returns Qwen ExtensionConfig
+ * @returns Vibe ExtensionConfig
  */
-export function convertClaudeToQwenConfig(
+export function convertClaudeToVibeConfig(
   claudeConfig: ClaudePluginConfig,
 ): ExtensionConfig {
   // Validate required fields
@@ -354,9 +354,9 @@ export function convertClaudeToQwenConfig(
 }
 
 /**
- * Converts a complete Claude plugin package to Qwen Code format.
+ * Converts a complete Claude plugin package to Vibe Code format.
  * Creates a new temporary directory with:
- * 1. Converted qwen-extension.json
+ * 1. Converted vibe-extension.json
  * 2. Commands, skills, and agents collected to respective folders
  * 3. MCP servers resolved from JSON files if needed
  * 4. All other files preserved
@@ -517,23 +517,23 @@ export async function convertClaudePluginPackage(
       }
     }
 
-    // Step 9: Convert collected agent files from Claude format to Qwen format
+    // Step 9: Convert collected agent files from Claude format to Vibe format
     const agentsDestDir = path.join(tmpDir, 'agents');
     await convertAgentFiles(agentsDestDir);
 
-    // Step 10: Convert to Qwen format config
-    const qwenConfig = convertClaudeToQwenConfig(mergedConfig);
+    // Step 10: Convert to Vibe format config
+    const vibeConfig = convertClaudeToVibeConfig(mergedConfig);
 
-    // Step 11: Write qwen-extension.json
-    const qwenConfigPath = path.join(tmpDir, 'qwen-extension.json');
+    // Step 11: Write vibe-extension.json
+    const vibeConfigPath = path.join(tmpDir, 'vibe-extension.json');
     fs.writeFileSync(
-      qwenConfigPath,
-      JSON.stringify(qwenConfig, null, 2),
+      vibeConfigPath,
+      JSON.stringify(vibeConfig, null, 2),
       'utf-8',
     );
 
     return {
-      config: qwenConfig,
+      config: vibeConfig,
       convertedDir: tmpDir,
     };
   } catch (error) {

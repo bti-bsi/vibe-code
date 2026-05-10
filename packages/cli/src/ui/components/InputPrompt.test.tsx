@@ -194,6 +194,7 @@ describe('InputPrompt', () => {
       setActiveSuggestionIndex: vi.fn(),
       setShowSuggestions: vi.fn(),
       handleAutocomplete: vi.fn(),
+      midInputGhostText: null,
     };
     mockedUseCommandCompletion.mockReturnValue(mockCommandCompletion);
 
@@ -2010,7 +2011,6 @@ describe('InputPrompt', () => {
 
   describe('vim mode', () => {
     it('should not call buffer.handleInput when vim mode is enabled and vim handles the input', async () => {
-      props.vimModeEnabled = true;
       props.vimHandleInput = vi.fn().mockReturnValue(true); // Mock that vim handled it.
       const { stdin, unmount } = renderWithProviders(
         <InputPrompt {...props} />,
@@ -2026,7 +2026,6 @@ describe('InputPrompt', () => {
     });
 
     it('should call buffer.handleInput when vim mode is enabled but vim does not handle the input', async () => {
-      props.vimModeEnabled = true;
       props.vimHandleInput = vi.fn().mockReturnValue(false); // Mock that vim did NOT handle it.
       const { stdin, unmount } = renderWithProviders(
         <InputPrompt {...props} />,
@@ -2042,8 +2041,8 @@ describe('InputPrompt', () => {
     });
 
     it('should call handleInput when vim mode is disabled', async () => {
-      // Mock vimHandleInput to return false (vim didn't handle the input)
-      props.vimHandleInput = vi.fn().mockReturnValue(false);
+      // Unset vimHandleInput to simulate disabled vim mode
+      props.vimHandleInput = undefined;
       const { stdin, unmount } = renderWithProviders(
         <InputPrompt {...props} />,
       );
@@ -2052,7 +2051,6 @@ describe('InputPrompt', () => {
       stdin.write('i');
       await wait();
 
-      expect(props.vimHandleInput).toHaveBeenCalled();
       expect(mockBuffer.handleInput).toHaveBeenCalled();
       unmount();
     });
@@ -3472,7 +3470,7 @@ describe('InputPrompt', () => {
       vi.mocked(useUIState).mockReturnValue({
         isFeedbackDialogOpen: false,
         messageQueue: [],
-      } as ReturnType<typeof useUIState>);
+      } as unknown as ReturnType<typeof useUIState>);
       vi.mocked(useUIActions).mockReturnValue({
         handleRetryLastPrompt: vi.fn(),
         temporaryCloseFeedbackDialog: vi.fn(),
@@ -3485,7 +3483,7 @@ describe('InputPrompt', () => {
       vi.mocked(useUIState).mockReturnValue({
         isFeedbackDialogOpen: false,
         messageQueue: ['queued msg 1', 'queued msg 2'],
-      } as ReturnType<typeof useUIState>);
+      } as unknown as ReturnType<typeof useUIState>);
       vi.mocked(useUIActions).mockReturnValue({
         handleRetryLastPrompt: vi.fn(),
         temporaryCloseFeedbackDialog: vi.fn(),
@@ -3512,7 +3510,7 @@ describe('InputPrompt', () => {
       vi.mocked(useUIState).mockReturnValue({
         isFeedbackDialogOpen: false,
         messageQueue: ['queued msg'],
-      } as ReturnType<typeof useUIState>);
+      } as unknown as ReturnType<typeof useUIState>);
       vi.mocked(useUIActions).mockReturnValue({
         handleRetryLastPrompt: vi.fn(),
         temporaryCloseFeedbackDialog: vi.fn(),
@@ -3545,7 +3543,7 @@ describe('InputPrompt', () => {
       vi.mocked(useUIState).mockReturnValue({
         isFeedbackDialogOpen: false,
         messageQueue: ['queued msg'],
-      } as ReturnType<typeof useUIState>);
+      } as unknown as ReturnType<typeof useUIState>);
       vi.mocked(useUIActions).mockReturnValue({
         handleRetryLastPrompt: vi.fn(),
         temporaryCloseFeedbackDialog: vi.fn(),
@@ -3572,7 +3570,7 @@ describe('InputPrompt', () => {
       vi.mocked(useUIState).mockReturnValue({
         isFeedbackDialogOpen: false,
         messageQueue: ['stale msg'],
-      } as ReturnType<typeof useUIState>);
+      } as unknown as ReturnType<typeof useUIState>);
       vi.mocked(useUIActions).mockReturnValue({
         handleRetryLastPrompt: vi.fn(),
         temporaryCloseFeedbackDialog: vi.fn(),
@@ -3610,7 +3608,7 @@ describe('InputPrompt', () => {
       vi.mocked(useUIState).mockReturnValue({
         isFeedbackDialogOpen: false,
         messageQueue: ['queued msg'],
-      } as ReturnType<typeof useUIState>);
+      } as unknown as ReturnType<typeof useUIState>);
 
       const { stdin, unmount } = renderWithProviders(
         <InputPrompt {...props} />,

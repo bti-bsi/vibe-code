@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,8 +10,8 @@ import {
   AuthType,
   clearCachedCredentialFile,
   createDebugLogger,
-  QwenOAuth2Event,
-  qwenOAuth2Events,
+  VibeOAuth2Event,
+  vibeOAuth2Events,
   MCPServerConfig,
   SessionService,
   SESSION_TITLE_MAX_LENGTH,
@@ -95,7 +95,7 @@ export async function runAcpAgent(
 
   const stream = ndJsonStream(stdout, stdin);
   const connection = new AgentSideConnection(
-    (conn) => new QwenAgent(config, settings, argv, conn),
+    (conn) => new VibeAgent(config, settings, argv, conn),
     stream,
   );
 
@@ -189,7 +189,7 @@ export function toHttpServer(
   return undefined;
 }
 
-class QwenAgent implements Agent {
+class VibeAgent implements Agent {
   private sessions: Map<string, Session> = new Map();
   private clientCapabilities: ClientCapabilities | undefined;
 
@@ -208,8 +208,8 @@ class QwenAgent implements Agent {
     return {
       protocolVersion: PROTOCOL_VERSION,
       agentInfo: {
-        name: 'qwen-code',
-        title: 'Qwen Code',
+        name: 'vibe-code',
+        title: 'Vibe Code',
         version,
       },
       authMethods,
@@ -243,8 +243,8 @@ class QwenAgent implements Agent {
       });
     };
 
-    if (method === AuthType.QWEN_OAUTH) {
-      qwenOAuth2Events.once(QwenOAuth2Event.AuthUri, authUriHandler);
+    if (method === AuthType.VIBE_OAUTH) {
+      vibeOAuth2Events.once(VibeOAuth2Event.AuthUri, authUriHandler);
     }
 
     await clearCachedCredentialFile();
@@ -256,8 +256,8 @@ class QwenAgent implements Agent {
         method,
       );
     } finally {
-      if (method === AuthType.QWEN_OAUTH) {
-        qwenOAuth2Events.off(QwenOAuth2Event.AuthUri, authUriHandler);
+      if (method === AuthType.VIBE_OAUTH) {
+        vibeOAuth2Events.off(VibeOAuth2Event.AuthUri, authUriHandler);
       }
     }
   }
@@ -601,7 +601,7 @@ class QwenAgent implements Agent {
     if (!selectedType) {
       throw RequestError.authRequired(
         { authMethods: this.pickAuthMethodsForAuthRequired() },
-        'Use Qwen Code CLI to authenticate first.',
+        'Use Vibe Code CLI to authenticate first.',
       );
     }
 
@@ -625,13 +625,13 @@ class QwenAgent implements Agent {
     const authMethods = buildAuthMethods();
     const errorMessage = this.extractErrorMessage(error);
     if (
-      errorMessage?.includes('qwen-oauth') ||
-      errorMessage?.includes('Qwen OAuth')
+      errorMessage?.includes('vibe-oauth') ||
+      errorMessage?.includes('Vibe OAuth')
     ) {
-      const qwenOAuthMethods = authMethods.filter(
-        (m) => m.id === AuthType.QWEN_OAUTH,
+      const vibeOAuthMethods = authMethods.filter(
+        (m) => m.id === AuthType.VIBE_OAUTH,
       );
-      return qwenOAuthMethods.length ? qwenOAuthMethods : authMethods;
+      return vibeOAuthMethods.length ? vibeOAuthMethods : authMethods;
     }
 
     if (selectedType) {

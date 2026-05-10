@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,7 +14,7 @@ describe('ArenaSessionCard', () => {
   it('renders the comparison summary sections from agent results', () => {
     const agents: ArenaAgentCardData[] = [
       {
-        label: 'qwen-coder-plus',
+        label: 'vibe-coder-plus',
         status: AgentStatus.IDLE,
         durationMs: 12_000,
         totalTokens: 45_000,
@@ -73,11 +73,11 @@ describe('ArenaSessionCard', () => {
     expect(output).toContain('Arena Comparison Summary');
     expect(output).not.toContain('Status    Time    Tokens   Changes');
     expect(output).toContain('Status Summary:');
-    expect(output).toContain('qwen-coder-plus: Idle');
+    expect(output).toContain('vibe-coder-plus: Idle');
     expect(output).toContain('gpt-4o: Idle');
     expect(output).toContain('Files Modified:');
     expect(output).toContain('common: src/auth.ts');
-    expect(output).toContain('qwen-coder-plus-only: tests/auth.test.ts');
+    expect(output).toContain('vibe-coder-plus-only: tests/auth.test.ts');
     expect(output).toContain('gpt-4o-only: src/middleware.ts');
     expect(output).toContain('Approach Summary:');
     expect(output).toContain('Refactored with JWT strategy pattern.');
@@ -112,7 +112,7 @@ describe('ArenaSessionCard', () => {
         approachSummary: 'Created a reader.',
       },
       {
-        label: 'qwen2.5:14b',
+        label: 'vibe2.5:14b',
         status: AgentStatus.IDLE,
         durationMs: 8_000,
         totalTokens: 8_000,
@@ -145,6 +145,6 @@ describe('ArenaSessionCard', () => {
     const output = lastFrame();
     expect(output).toContain('common: reader.py');
     expect(output).not.toContain('only gemma4:31b: none');
-    expect(output).not.toContain('only qwen2.5:14b: none');
+    expect(output).not.toContain('only vibe2.5:14b: none');
   });
 });

@@ -11,7 +11,7 @@ import { Storage } from './storage.js';
 
 describe('Storage – getGlobalSettingsPath', () => {
   it('returns path to ~/.vibe/settings.json', () => {
-    const expected = path.join(os.homedir(), '.qwen', 'settings.json');
+    const expected = path.join(os.homedir(), '.vibe', 'settings.json');
     expect(Storage.getGlobalSettingsPath()).toBe(expected);
   });
 });
@@ -21,47 +21,47 @@ describe('Storage – additional helpers', () => {
   const storage = new Storage(projectRoot);
 
   it('getWorkspaceSettingsPath returns project/.vibe/settings.json', () => {
-    const expected = path.join(projectRoot, '.qwen', 'settings.json');
+    const expected = path.join(projectRoot, '.vibe', 'settings.json');
     expect(storage.getWorkspaceSettingsPath()).toBe(expected);
   });
 
   it('getUserCommandsDir returns ~/.vibe/commands', () => {
-    const expected = path.join(os.homedir(), '.qwen', 'commands');
+    const expected = path.join(os.homedir(), '.vibe', 'commands');
     expect(Storage.getUserCommandsDir()).toBe(expected);
   });
 
   it('getProjectCommandsDir returns project/.vibe/commands', () => {
-    const expected = path.join(projectRoot, '.qwen', 'commands');
+    const expected = path.join(projectRoot, '.vibe', 'commands');
     expect(storage.getProjectCommandsDir()).toBe(expected);
   });
 
   it('getMcpOAuthTokensPath returns ~/.vibe/mcp-oauth-tokens.json', () => {
-    const expected = path.join(os.homedir(), '.qwen', 'mcp-oauth-tokens.json');
+    const expected = path.join(os.homedir(), '.vibe', 'mcp-oauth-tokens.json');
     expect(Storage.getMcpOAuthTokensPath()).toBe(expected);
   });
 });
 
 describe('Storage – getRuntimeBaseDir / setRuntimeBaseDir', () => {
-  const originalEnv = process.env['QWEN_RUNTIME_DIR'];
+  const originalEnv = process.env['VIBE_RUNTIME_DIR'];
 
   beforeEach(() => {
     // Reset state before each test
     Storage.setRuntimeBaseDir(null);
-    delete process.env['QWEN_RUNTIME_DIR'];
+    delete process.env['VIBE_RUNTIME_DIR'];
   });
 
   afterEach(() => {
     // Restore original env
     Storage.setRuntimeBaseDir(null);
     if (originalEnv !== undefined) {
-      process.env['QWEN_RUNTIME_DIR'] = originalEnv;
+      process.env['VIBE_RUNTIME_DIR'] = originalEnv;
     } else {
-      delete process.env['QWEN_RUNTIME_DIR'];
+      delete process.env['VIBE_RUNTIME_DIR'];
     }
   });
 
-  it('defaults to getGlobalQwenDir() when nothing is configured', () => {
-    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalQwenDir());
+  it('defaults to getGlobalVibeDir() when nothing is configured', () => {
+    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalVibeDir());
   });
 
   it('uses setRuntimeBaseDir value when set with absolute path', () => {
@@ -70,11 +70,11 @@ describe('Storage – getRuntimeBaseDir / setRuntimeBaseDir', () => {
     expect(Storage.getRuntimeBaseDir()).toBe(runtimeDir);
   });
 
-  it('env var QWEN_RUNTIME_DIR takes priority over setRuntimeBaseDir', () => {
+  it('env var VIBE_RUNTIME_DIR takes priority over setRuntimeBaseDir', () => {
     const settingsDir = path.resolve('from-settings');
     const envDir = path.resolve('from-env');
     Storage.setRuntimeBaseDir(settingsDir);
-    process.env['QWEN_RUNTIME_DIR'] = envDir;
+    process.env['VIBE_RUNTIME_DIR'] = envDir;
     expect(Storage.getRuntimeBaseDir()).toBe(envDir);
   });
 
@@ -90,8 +90,8 @@ describe('Storage – getRuntimeBaseDir / setRuntimeBaseDir', () => {
     expect(Storage.getRuntimeBaseDir()).toBe(expected);
   });
 
-  it('expands tilde (~) in QWEN_RUNTIME_DIR env var', () => {
-    process.env['QWEN_RUNTIME_DIR'] = '~/env-runtime';
+  it('expands tilde (~) in VIBE_RUNTIME_DIR env var', () => {
+    process.env['VIBE_RUNTIME_DIR'] = '~/env-runtime';
     const expected = path.join(os.homedir(), 'env-runtime');
     expect(Storage.getRuntimeBaseDir()).toBe(expected);
   });
@@ -104,8 +104,8 @@ describe('Storage – getRuntimeBaseDir / setRuntimeBaseDir', () => {
 
   it('resolves relative paths in setRuntimeBaseDir using explicit cwd', () => {
     const cwd = path.resolve('workspace', 'projectA');
-    Storage.setRuntimeBaseDir('.qwen', cwd);
-    expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.qwen'));
+    Storage.setRuntimeBaseDir('.vibe', cwd);
+    expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.vibe'));
   });
 
   it('ignores cwd when path is absolute', () => {
@@ -124,8 +124,8 @@ describe('Storage – getRuntimeBaseDir / setRuntimeBaseDir', () => {
     expect(Storage.getRuntimeBaseDir()).toBe(expected);
   });
 
-  it('resolves relative paths in QWEN_RUNTIME_DIR env var', () => {
-    process.env['QWEN_RUNTIME_DIR'] = 'relative/env-path';
+  it('resolves relative paths in VIBE_RUNTIME_DIR env var', () => {
+    process.env['VIBE_RUNTIME_DIR'] = 'relative/env-path';
     const expected = path.resolve('relative/env-path');
     expect(Storage.getRuntimeBaseDir()).toBe(expected);
   });
@@ -136,19 +136,19 @@ describe('Storage – getRuntimeBaseDir / setRuntimeBaseDir', () => {
     expect(Storage.getRuntimeBaseDir()).toBe(customDir);
 
     Storage.setRuntimeBaseDir(null);
-    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalQwenDir());
+    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalVibeDir());
   });
 
   it('resets to default when setRuntimeBaseDir is called with undefined', () => {
     Storage.setRuntimeBaseDir(path.resolve('custom'));
     Storage.setRuntimeBaseDir(undefined);
-    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalQwenDir());
+    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalVibeDir());
   });
 
   it('resets to default when setRuntimeBaseDir is called with empty string', () => {
     Storage.setRuntimeBaseDir(path.resolve('custom'));
     Storage.setRuntimeBaseDir('');
-    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalQwenDir());
+    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalVibeDir());
   });
 
   it('handles bare tilde (~) as home directory', () => {
@@ -158,19 +158,19 @@ describe('Storage – getRuntimeBaseDir / setRuntimeBaseDir', () => {
 });
 
 describe('Storage – runtime path methods use getRuntimeBaseDir', () => {
-  const originalEnv = process.env['QWEN_RUNTIME_DIR'];
+  const originalEnv = process.env['VIBE_RUNTIME_DIR'];
 
   beforeEach(() => {
     Storage.setRuntimeBaseDir(null);
-    delete process.env['QWEN_RUNTIME_DIR'];
+    delete process.env['VIBE_RUNTIME_DIR'];
   });
 
   afterEach(() => {
     Storage.setRuntimeBaseDir(null);
     if (originalEnv !== undefined) {
-      process.env['QWEN_RUNTIME_DIR'] = originalEnv;
+      process.env['VIBE_RUNTIME_DIR'] = originalEnv;
     } else {
-      delete process.env['QWEN_RUNTIME_DIR'];
+      delete process.env['VIBE_RUNTIME_DIR'];
     }
   });
 
@@ -241,92 +241,92 @@ describe('Storage – runtime path methods use getRuntimeBaseDir', () => {
 });
 
 describe('Storage – config paths remain at ~/.vibe regardless of runtime dir', () => {
-  const originalEnv = process.env['QWEN_RUNTIME_DIR'];
-  const globalQwenDir = Storage.getGlobalQwenDir();
+  const originalEnv = process.env['VIBE_RUNTIME_DIR'];
+  const globalVibeDir = Storage.getGlobalVibeDir();
 
   beforeEach(() => {
     Storage.setRuntimeBaseDir(path.resolve('custom-runtime'));
-    process.env['QWEN_RUNTIME_DIR'] = path.resolve('env-runtime');
+    process.env['VIBE_RUNTIME_DIR'] = path.resolve('env-runtime');
   });
 
   afterEach(() => {
     Storage.setRuntimeBaseDir(null);
     if (originalEnv !== undefined) {
-      process.env['QWEN_RUNTIME_DIR'] = originalEnv;
+      process.env['VIBE_RUNTIME_DIR'] = originalEnv;
     } else {
-      delete process.env['QWEN_RUNTIME_DIR'];
+      delete process.env['VIBE_RUNTIME_DIR'];
     }
   });
 
   it('getGlobalSettingsPath still uses ~/.vibe', () => {
     expect(Storage.getGlobalSettingsPath()).toBe(
-      path.join(globalQwenDir, 'settings.json'),
+      path.join(globalVibeDir, 'settings.json'),
     );
   });
 
   it('getInstallationIdPath still uses ~/.vibe', () => {
     expect(Storage.getInstallationIdPath()).toBe(
-      path.join(globalQwenDir, 'installation_id'),
+      path.join(globalVibeDir, 'installation_id'),
     );
   });
 
   it('getGoogleAccountsPath still uses ~/.vibe', () => {
     expect(Storage.getGoogleAccountsPath()).toBe(
-      path.join(globalQwenDir, 'google_accounts.json'),
+      path.join(globalVibeDir, 'google_accounts.json'),
     );
   });
 
   it('getMcpOAuthTokensPath still uses ~/.vibe', () => {
     expect(Storage.getMcpOAuthTokensPath()).toBe(
-      path.join(globalQwenDir, 'mcp-oauth-tokens.json'),
+      path.join(globalVibeDir, 'mcp-oauth-tokens.json'),
     );
   });
 
   it('getOAuthCredsPath still uses ~/.vibe', () => {
     expect(Storage.getOAuthCredsPath()).toBe(
-      path.join(globalQwenDir, 'oauth_creds.json'),
+      path.join(globalVibeDir, 'oauth_creds.json'),
     );
   });
 
   it('getUserCommandsDir still uses ~/.vibe', () => {
     expect(Storage.getUserCommandsDir()).toBe(
-      path.join(globalQwenDir, 'commands'),
+      path.join(globalVibeDir, 'commands'),
     );
   });
 
   it('getGlobalMemoryFilePath still uses ~/.vibe', () => {
     expect(Storage.getGlobalMemoryFilePath()).toBe(
-      path.join(globalQwenDir, 'memory.md'),
+      path.join(globalVibeDir, 'memory.md'),
     );
   });
 
   it('getGlobalBinDir still uses ~/.vibe', () => {
-    expect(Storage.getGlobalBinDir()).toBe(path.join(globalQwenDir, 'bin'));
+    expect(Storage.getGlobalBinDir()).toBe(path.join(globalVibeDir, 'bin'));
   });
 
   it('getUserSkillsDirs still includes ~/.vibe/skills', () => {
     const storage = new Storage('/tmp/project');
     const skillsDirs = storage.getUserSkillsDirs();
     expect(
-      skillsDirs.some((dir) => dir === path.join(globalQwenDir, 'skills')),
+      skillsDirs.some((dir) => dir === path.join(globalVibeDir, 'skills')),
     ).toBe(true);
   });
 });
 
 describe('Storage – runtime base dir async context isolation', () => {
-  const originalEnv = process.env['QWEN_RUNTIME_DIR'];
+  const originalEnv = process.env['VIBE_RUNTIME_DIR'];
 
   beforeEach(() => {
     Storage.setRuntimeBaseDir(null);
-    delete process.env['QWEN_RUNTIME_DIR'];
+    delete process.env['VIBE_RUNTIME_DIR'];
   });
 
   afterEach(() => {
     Storage.setRuntimeBaseDir(null);
     if (originalEnv !== undefined) {
-      process.env['QWEN_RUNTIME_DIR'] = originalEnv;
+      process.env['VIBE_RUNTIME_DIR'] = originalEnv;
     } else {
-      delete process.env['QWEN_RUNTIME_DIR'];
+      delete process.env['VIBE_RUNTIME_DIR'];
     }
   });
 
@@ -334,8 +334,8 @@ describe('Storage – runtime base dir async context isolation', () => {
     Storage.setRuntimeBaseDir(path.resolve('global-runtime'));
     const cwd = path.resolve('workspace', 'project-a');
 
-    await Storage.runWithRuntimeBaseDir('.qwen', cwd, async () => {
-      expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.qwen'));
+    await Storage.runWithRuntimeBaseDir('.vibe', cwd, async () => {
+      expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.vibe'));
     });
   });
 
@@ -343,18 +343,18 @@ describe('Storage – runtime base dir async context isolation', () => {
     const cwdA = path.resolve('workspace', 'a');
     const cwdB = path.resolve('workspace', 'b');
 
-    const runA = Storage.runWithRuntimeBaseDir('.qwen-a', cwdA, async () => {
+    const runA = Storage.runWithRuntimeBaseDir('.vibe-a', cwdA, async () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
       return Storage.getRuntimeBaseDir();
     });
 
-    const runB = Storage.runWithRuntimeBaseDir('.qwen-b', cwdB, async () => {
+    const runB = Storage.runWithRuntimeBaseDir('.vibe-b', cwdB, async () => {
       await new Promise((resolve) => setTimeout(resolve, 1));
       return Storage.getRuntimeBaseDir();
     });
 
     const [a, b] = await Promise.all([runA, runB]);
-    expect(a).toBe(path.join(cwdA, '.qwen-a'));
-    expect(b).toBe(path.join(cwdB, '.qwen-b'));
+    expect(a).toBe(path.join(cwdA, '.vibe-a'));
+    expect(b).toBe(path.join(cwdB, '.vibe-b'));
   });
 });

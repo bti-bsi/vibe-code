@@ -26,7 +26,7 @@ describe('bugCommand', () => {
       nodeVersion: 'v20.0.0',
       npmVersion: '10.0.0',
       sandboxEnv: 'test',
-      modelVersion: 'qwen3-coder-plus',
+      modelVersion: 'vibe3-coder-plus',
       selectedAuthType: '',
       ideClient: 'VSCode',
       sessionId: 'test-session-id',
@@ -36,7 +36,7 @@ describe('bugCommand', () => {
           ? GIT_COMMIT_INFO
           : undefined,
     });
-    vi.stubEnv('SANDBOX', 'qwen-test');
+    vi.stubEnv('SANDBOX', 'vibe-test');
   });
 
   afterEach(() => {
@@ -56,16 +56,16 @@ describe('bugCommand', () => {
     if (!bugCommand.action) throw new Error('Action is not defined');
     await bugCommand.action(mockContext, 'A test bug');
 
-    const qwenCodeLine =
+    const vibeCodeLine =
       GIT_COMMIT_INFO && !['N/A'].includes(GIT_COMMIT_INFO)
-        ? `Qwen Code: 0.1.0 (${GIT_COMMIT_INFO})`
-        : 'Qwen Code: 0.1.0';
-    const expectedInfo = `${qwenCodeLine}
+        ? `Vibe Code: 0.1.0 (${GIT_COMMIT_INFO})`
+        : 'Vibe Code: 0.1.0';
+    const expectedInfo = `${vibeCodeLine}
 Runtime: Node.js v20.0.0 / npm 10.0.0
 IDE Client: VSCode
 OS: test-platform x64 (22.0.0)
-Model: qwen3-coder-plus
-Fast Model: qwen3-coder-plus
+Model: vibe3-coder-plus
+Fast Model: vibe3-coder-plus
 Session ID: test-session-id
 Sandbox: test
 Proxy: no proxy
@@ -101,16 +101,16 @@ Memory Usage: 100 MB`;
     if (!bugCommand.action) throw new Error('Action is not defined');
     await bugCommand.action(mockContext, 'A custom bug');
 
-    const qwenCodeLine =
+    const vibeCodeLine =
       GIT_COMMIT_INFO && !['N/A'].includes(GIT_COMMIT_INFO)
-        ? `Qwen Code: 0.1.0 (${GIT_COMMIT_INFO})`
-        : 'Qwen Code: 0.1.0';
-    const expectedInfo = `${qwenCodeLine}
+        ? `Vibe Code: 0.1.0 (${GIT_COMMIT_INFO})`
+        : 'Vibe Code: 0.1.0';
+    const expectedInfo = `${vibeCodeLine}
 Runtime: Node.js v20.0.0 / npm 10.0.0
 IDE Client: VSCode
 OS: test-platform x64 (22.0.0)
-Model: qwen3-coder-plus
-Fast Model: qwen3-coder-plus
+Model: vibe3-coder-plus
+Fast Model: vibe3-coder-plus
 Session ID: test-session-id
 Sandbox: test
 Proxy: no proxy
@@ -140,7 +140,7 @@ Memory Usage: 100 MB`;
       nodeVersion: 'v20.0.0',
       npmVersion: '10.0.0',
       sandboxEnv: 'test',
-      modelVersion: 'qwen3-coder-plus',
+      modelVersion: 'vibe3-coder-plus',
       selectedAuthType: AuthType.USE_OPENAI,
       ideClient: 'VSCode',
       sessionId: 'test-session-id',
@@ -163,18 +163,18 @@ Memory Usage: 100 MB`;
     if (!bugCommand.action) throw new Error('Action is not defined');
     await bugCommand.action(mockContext, 'OpenAI bug');
 
-    const qwenCodeLine =
+    const vibeCodeLine =
       GIT_COMMIT_INFO && !['N/A'].includes(GIT_COMMIT_INFO)
-        ? `Qwen Code: 0.1.0 (${GIT_COMMIT_INFO})`
-        : 'Qwen Code: 0.1.0';
-    const expectedInfo = `${qwenCodeLine}
+        ? `Vibe Code: 0.1.0 (${GIT_COMMIT_INFO})`
+        : 'Vibe Code: 0.1.0';
+    const expectedInfo = `${vibeCodeLine}
 Runtime: Node.js v20.0.0 / npm 10.0.0
 IDE Client: VSCode
 OS: test-platform x64 (22.0.0)
 Auth: API Key - ${AuthType.USE_OPENAI}
 Base URL: https://api.openai.com/v1
-Model: qwen3-coder-plus
-Fast Model: qwen3-coder-plus
+Model: vibe3-coder-plus
+Fast Model: vibe3-coder-plus
 Session ID: test-session-id
 Sandbox: test
 Proxy: no proxy

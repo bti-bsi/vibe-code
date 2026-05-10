@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,8 +14,8 @@ import { TestRig } from '../test-helper.js';
 const REQUEST_TIMEOUT_MS = 60_000;
 const INITIAL_PROMPT = 'Create a quick note (smoke test).';
 const IS_SANDBOX =
-  process.env['QWEN_SANDBOX'] &&
-  process.env['QWEN_SANDBOX']!.toLowerCase() !== 'false';
+  process.env['VIBE_SANDBOX'] &&
+  process.env['VIBE_SANDBOX']!.toLowerCase() !== 'false';
 
 type PendingRequest = {
   resolve: (value: unknown) => void;
@@ -403,16 +403,16 @@ function setupAcpTest(
         };
       };
 
-      // Choose a qwen-oauth model to trigger auth-required path deterministically.
-      const qwenOauthModel = newSession.models.availableModels.find((model) =>
-        model.modelId.includes('qwen-oauth'),
+      // Choose a vibe-oauth model to trigger auth-required path deterministically.
+      const vibeOauthModel = newSession.models.availableModels.find((model) =>
+        model.modelId.includes('vibe-oauth'),
       );
-      expect(qwenOauthModel).toBeDefined();
+      expect(vibeOauthModel).toBeDefined();
       await expect(
         sendRequest('session/set_config_option', {
           sessionId: newSession.sessionId,
           configId: 'model',
-          value: qwenOauthModel!.modelId,
+          value: vibeOauthModel!.modelId,
         }),
       ).rejects.toMatchObject({
         response: {
@@ -627,7 +627,7 @@ function setupAcpTest(
       expect(initCommand?.description).toBeTruthy();
 
       // Note: We don't test /init execution here because it triggers a complex
-      // multi-step process (listing files, reading up to 10 files, generating QWEN.md)
+      // multi-step process (listing files, reading up to 10 files, generating VIBE.md)
       // that can take 30-60+ seconds, exceeding the request timeout.
       // The slash command execution path is tested via simpler prompts in other tests.
     } catch (e) {

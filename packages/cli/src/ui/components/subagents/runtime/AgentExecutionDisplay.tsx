@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -37,6 +37,20 @@ export interface AgentExecutionDisplayProps {
   /** Whether another subagent's approval currently holds the focus lock, blocking this one. */
   isWaitingForOtherApproval?: boolean;
 }
+
+type VerboseAgentDisplay = AgentResultDisplay & {
+  currentRound?: number;
+  completedRounds?: number;
+  rounds?: Array<{
+    round: number;
+    status: 'running' | 'completed';
+    text?: string;
+    thoughtText?: string;
+    toolCalls?: number;
+    outputTokens?: number;
+    durationMs?: number;
+  }>;
+};
 
 const getStatusColor = (
   status:
@@ -89,6 +103,7 @@ const MAX_TOOL_CALLS = 5;
 const MAX_VERBOSE_TOOL_CALLS = 12;
 const MAX_TASK_PROMPT_LINES = 5;
 const DEFAULT_DETAIL_HEIGHT = 18;
+const MAX_VERBOSE_ROUNDS = 8;
 
 // Approximate fixed-row cost of the default/verbose layout, derived from the
 // JSX structure below: 1 header + (1 "Task Detail:" label + 1 internal gap +
@@ -152,6 +167,7 @@ export const AgentExecutionDisplay: React.FC<AgentExecutionDisplayProps> = ({
   isFocused = true,
   isWaitingForOtherApproval = false,
 }) => {
+  const verboseData = data as VerboseAgentDisplay;
   const [displayMode, setDisplayMode] = React.useState<DisplayMode>('compact');
   const detailHeight = Math.max(
     4,
@@ -277,22 +293,34 @@ export const AgentExecutionDisplay: React.FC<AgentExecutionDisplayProps> = ({
           </Box>
         )}
 
+        {data.status === 'running' && verboseData.currentRound !== undefined && (
+          <Box flexDirection="row" paddingLeft={2}>
+            <Text color={theme.text.secondary}>
+              Iteration {verboseData.currentRound}
+              {verboseData.completedRounds
+                ? ` · ${verboseData.completedRounds} completed`
+                : ''}
+            </Text>
+          </Box>
+        )}
+
         {/* Running state: Show current tool call and progress */}
         {data.status === 'running' && (
           <>
-            {/* Current tool call */}
+            {/* Current tool call — always show latest with detail extracted from args */}
             {data.toolCalls && data.toolCalls.length > 0 && (
               <Box flexDirection="column">
                 <ToolCallItem
                   toolCall={data.toolCalls[data.toolCalls.length - 1]}
                   compact={true}
+                  childWidth={childWidth - 2}
                 />
                 {/* Show count of additional tool calls if there are more than 1 */}
                 {data.toolCalls.length > 1 && !data.pendingConfirmation && (
                   <Box flexDirection="row" paddingLeft={4}>
                     <Text color={theme.text.secondary}>
-                      +{data.toolCalls.length - 1} more tool calls (ctrl+e to
-                      expand)
+                      +{data.toolCalls.length - 1} sebelumnya (ctrl+e untuk
+                      detail)
                     </Text>
                   </Box>
                 )}
@@ -358,6 +386,17 @@ export const AgentExecutionDisplay: React.FC<AgentExecutionDisplayProps> = ({
         {data.status === 'background' && <BackgroundManageHint />}
       </Box>
 
+      {data.status === 'running' && verboseData.currentRound !== undefined && (
+        <Box flexDirection="row">
+          <Text color={theme.text.secondary}>
+            Iteration {verboseData.currentRound}
+            {verboseData.completedRounds
+              ? ` · ${verboseData.completedRounds} completed`
+              : ''}
+          </Text>
+        </Box>
+      )}
+
       {/* Task description */}
       <TaskPromptSection
         slicedPrompt={slicedPrompt}
@@ -377,6 +416,16 @@ export const AgentExecutionDisplay: React.FC<AgentExecutionDisplayProps> = ({
               childWidth={childWidth - 2}
             />
           </Box>
+        )}
+
+      {data.status === 'running' &&
+        displayMode === 'verbose' &&
+        verboseData.rounds &&
+        verboseData.rounds.length > 0 && (
+          <RoundHistorySection
+            rounds={verboseData.rounds}
+            childWidth={childWidth - 2}
+          />
         )}
 
       {/* Inline approval prompt when awaiting confirmation */}
@@ -523,6 +572,59 @@ const ToolCallsList: React.FC<{
 };
 
 /**
+ * Extract a short human-readable detail string from tool call args.
+ * Handles search tools (grep_search, glob, list_directory, read_file, write_file, edit).
+ */
+function extractToolDetail(
+  name: string,
+  args?: Record<string, unknown>,
+): string {
+  if (!args) return '';
+  const str = (v: unknown) =>
+    typeof v === 'string' ? v : JSON.stringify(v) ?? '';
+
+  switch (name) {
+    case 'grep_search': {
+      const query = str(args['query'] ?? args['pattern'] ?? '');
+      const path = str(args['path'] ?? args['include'] ?? '');
+      return path ? `"${query}" in ${path}` : `"${query}"`;
+    }
+    case 'glob':
+      return str(args['pattern'] ?? args['glob'] ?? '');
+    case 'list_directory':
+      return str(args['path'] ?? args['directory'] ?? '');
+    case 'read_file':
+    case 'write_file':
+    case 'edit': {
+      const p = str(
+        args['path'] ?? args['file_path'] ?? args['filename'] ?? '',
+      );
+      // Show only the last two path segments to keep it short
+      const parts = p.replace(/\\/g, '/').split('/');
+      return parts.slice(-2).join('/');
+    }
+    case 'run_shell_command': {
+      const cmd = str(args['command'] ?? args['cmd'] ?? '');
+      // Truncate very long commands
+      return cmd.length > 60 ? cmd.slice(0, 57) + '...' : cmd;
+    }
+    case 'web_fetch':
+      return str(args['url'] ?? '');
+    case 'google_search':
+    case 'scopus_search':
+      return str(args['query'] ?? '');
+    default:
+      // Generic: first string arg value
+      for (const v of Object.values(args)) {
+        if (typeof v === 'string' && v.length > 0) {
+          return v.length > 60 ? v.slice(0, 57) + '...' : v;
+        }
+      }
+      return '';
+  }
+}
+
+/**
  * Individual tool call item - consistent with ToolInfo format
  */
 const ToolCallItem: React.FC<{
@@ -546,50 +648,53 @@ const ToolCallItem: React.FC<{
     const color = getStatusColor(toolCall.status);
     switch (toolCall.status) {
       case 'executing':
-        return <Text color={color}>⊷</Text>; // Using same as ToolMessage
+        return <Text color={color}>⟳</Text>;
       case 'awaiting_approval':
         return <Text color={theme.status.warning}>?</Text>;
       case 'success':
         return <Text color={color}>✓</Text>;
       case 'failed':
-        return (
-          <Text color={color} bold>
-            x
-          </Text>
-        );
+        return <Text color={color}>✗</Text>;
       default:
-        return <Text color={color}>o</Text>;
+        return <Text color={color}>·</Text>;
     }
   }, [toolCall.status]);
 
-  const description = React.useMemo(() => {
-    if (!toolCall.description) return '';
-    const firstLine = toolCall.description.split('\n')[0];
+  // Prefer explicit description; fall back to arg-extracted detail
+  const detail = React.useMemo(() => {
+    const raw =
+      toolCall.description ||
+      extractToolDetail(toolCall.name, toolCall.args);
+    const firstLine = raw.split('\n')[0];
     return truncateToVisualWidth(firstLine, textWidth);
-  }, [toolCall.description, textWidth]);
+  }, [toolCall.description, toolCall.name, toolCall.args, textWidth]);
 
-  // Get first line of resultDisplay for truncated output
+  // First line of result output for non-compact mode
   const truncatedOutput = React.useMemo(() => {
     if (!toolCall.resultDisplay) return '';
     const firstLine = toolCall.resultDisplay.split('\n')[0];
     return truncateToVisualWidth(firstLine, textWidth);
   }, [toolCall.resultDisplay, textWidth]);
 
+  const statusColor = getStatusColor(toolCall.status);
+
   return (
     <Box flexDirection="column" paddingLeft={1} marginBottom={0}>
-      {/* First line: status icon + tool name + description (consistent with ToolInfo) */}
+      {/* First line: status icon + tool name + detail */}
       <Box flexDirection="row">
         <Box minWidth={STATUS_INDICATOR_WIDTH}>{statusIcon}</Box>
         <Text wrap="truncate-end">
-          <Text>{toolCall.name}</Text>{' '}
-          <Text color={theme.text.secondary}>{description}</Text>
-          {toolCall.error && (
-            <Text color={theme.status.error}> - {toolCall.error}</Text>
-          )}
+          <Text color={statusColor}>{toolCall.name}</Text>
+          {detail ? (
+            <Text color={theme.text.secondary}> {detail}</Text>
+          ) : null}
+          {toolCall.status === 'failed' && toolCall.error ? (
+            <Text color={theme.status.error}> — {toolCall.error}</Text>
+          ) : null}
         </Text>
       </Box>
 
-      {/* Second line: truncated returnDisplay output - hidden in compact mode */}
+      {/* Second line: truncated output — hidden in compact mode */}
       {!compact && truncatedOutput && (
         <Box flexDirection="row" paddingLeft={STATUS_INDICATOR_WIDTH}>
           <Text color={theme.text.secondary}>{truncatedOutput}</Text>
@@ -723,3 +828,45 @@ const ResultsSection: React.FC<{
     )}
   </Box>
 );
+
+const RoundHistorySection: React.FC<{
+  rounds: NonNullable<AgentResultDisplay['rounds']>;
+  childWidth: number;
+}> = ({ rounds, childWidth }) => {
+  const displayRounds = rounds.slice(-MAX_VERBOSE_ROUNDS);
+
+  return (
+    <Box flexDirection="column" gap={1}>
+      <Box flexDirection="row">
+        <Text color={theme.text.primary}>Iterations:</Text>
+      </Box>
+      <Box flexDirection="column" paddingLeft={1}>
+        {displayRounds.map((round: NonNullable<AgentResultDisplay['rounds']>[number]) => {
+          const summarySource =
+            round.text || round.thoughtText || '(no text yet)';
+          const summary = truncateToVisualWidth(
+            summarySource,
+            Math.max(16, childWidth - 6),
+          );
+          const stats = [
+            round.status,
+            round.toolCalls ? `${round.toolCalls} tool` : undefined,
+            round.outputTokens ? `${round.outputTokens} out tok` : undefined,
+          ]
+            .filter(Boolean)
+            .join(' · ');
+
+          return (
+            <Text key={round.round}>
+              <Text color={theme.text.secondary}>#{round.round}</Text>{' '}
+              <Text>{summary}</Text>
+              {stats ? (
+                <Text color={theme.text.secondary}> ({stats})</Text>
+              ) : null}
+            </Text>
+          );
+        })}
+      </Box>
+    </Box>
+  );
+};

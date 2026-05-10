@@ -29,7 +29,7 @@ import { createMockWorkspaceContext } from '../test-utils/mockWorkspaceContext.j
 import { FileReadCache } from '../services/fileReadCache.js';
 import { StandardFileSystemService } from '../services/fileSystemService.js';
 
-const rootDir = path.resolve(os.tmpdir(), 'qwen-code-test-root');
+const rootDir = path.resolve(os.tmpdir(), 'vibe-code-test-root');
 
 // --- MOCKS ---
 vi.mock('../core/client.js');

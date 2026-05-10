@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  *
  * Shell tool call component for Execute/Bash/Command
@@ -39,7 +39,7 @@ const ExecuteToolCallContainer: FC<ToolCallContainerProps> = ({
   isLast = false,
 }) => (
   <div
-    className={`ExecuteToolCall qwen-message message-item ${_className || ''} relative pl-[30px] py-2 select-text toolcall-container toolcall-status-${status}`}
+    className={`ExecuteToolCall vibe-message message-item ${_className || ''} relative pl-[30px] py-2 select-text toolcall-container toolcall-status-${status}`}
     data-first={isFirst}
     data-last={isLast}
   >

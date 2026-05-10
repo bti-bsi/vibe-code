@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -104,7 +104,7 @@ describe('AnthropicContentGenerator', () => {
     vi.restoreAllMocks();
   });
 
-  it('passes a QwenCode User-Agent header to the Anthropic SDK', async () => {
+  it('passes a VibeCode User-Agent header to the Anthropic SDK', async () => {
     const { AnthropicContentGenerator } = await importGenerator();
     void new AnthropicContentGenerator(
       {
@@ -121,7 +121,7 @@ describe('AnthropicContentGenerator', () => {
 
     const headers = (anthropicState.constructorOptions?.['defaultHeaders'] ||
       {}) as Record<string, string>;
-    expect(headers['User-Agent']).toContain('QwenCode/1.2.3');
+    expect(headers['User-Agent']).toContain('VibeCode/1.2.3');
     expect(headers['User-Agent']).toContain(
       `(${process.platform}; ${process.arch})`,
     );
@@ -150,7 +150,7 @@ describe('AnthropicContentGenerator', () => {
       {}) as Record<string, string>;
     // Beta headers moved out of defaultHeaders — see PR #3788 review feedback.
     // Only User-Agent and customHeaders remain at construction time.
-    expect(headers['User-Agent']).toContain('QwenCode/1.2.3');
+    expect(headers['User-Agent']).toContain('VibeCode/1.2.3');
     expect(headers['X-Custom']).toBe('1');
     expect(headers['anthropic-beta']).toBeUndefined();
   });
@@ -355,7 +355,7 @@ describe('AnthropicContentGenerator', () => {
       const defaultHeaders = (anthropicState.constructorOptions?.[
         'defaultHeaders'
       ] || {}) as Record<string, string>;
-      expect(defaultHeaders['User-Agent']).toContain('QwenCode/1.2.3');
+      expect(defaultHeaders['User-Agent']).toContain('VibeCode/1.2.3');
       expect(defaultHeaders['X-Custom']).toBe('v1');
       expect(defaultHeaders['anthropic-beta']).toBeUndefined();
 

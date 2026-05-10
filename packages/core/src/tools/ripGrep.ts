@@ -60,21 +60,21 @@ function getRipgrepJsonPath(match: RipgrepJsonMatch): string | undefined {
 }
 
 /**
- * Per-process cache for `.qwenignore` discovery. The same directories show
+ * Per-process cache for `.vibeignore` discovery. The same directories show
  * up across many Grep invocations in a typical session — without caching,
  * each invocation pays 2-3 sync syscalls per searchPath. Bounded so a
  * pathologically long session can't grow without limit.
  *
  * `dirIsDir`: searchPath → boolean (is the path itself a directory?)
- * `qwenIgnore`: dir → string | null (cached `.qwenignore` path or null)
+ * `vibeIgnore`: dir → string | null (cached `.vibeignore` path or null)
  *
- * **Known staleness window:** a `.qwenignore` created mid-session, or a
+ * **Known staleness window:** a `.vibeignore` created mid-session, or a
  * searchPath whose type flips (dir→file or vice versa), will not be
  * picked up until the entry rotates out of the FIFO (256 entries). Users
  * rarely add ignore files mid-session; a process restart resets the cache.
  */
 const dirIsDirCache = new Map<string, boolean>();
-const qwenIgnoreCache = new Map<string, string | null>();
+const vibeIgnoreCache = new Map<string, string | null>();
 const RIPGREP_CACHE_MAX = 256;
 function trimCache<K, V>(m: Map<K, V>): void {
   if (m.size <= RIPGREP_CACHE_MAX) return;
@@ -100,7 +100,7 @@ function toAbsoluteResultPath(filePath: string, searchPaths: string[]): string {
  */
 export function _resetRipGrepCachesForTest(): void {
   dirIsDirCache.clear();
-  qwenIgnoreCache.clear();
+  vibeIgnoreCache.clear();
 }
 
 /**
@@ -400,14 +400,14 @@ class GrepToolInvocation extends BaseToolInvocation<
       pattern,
     ];
 
-    // Add file exclusions from .gitignore and .qwenignore
+    // Add file exclusions from .gitignore and .vibeignore
     const filteringOptions = this.getFileFilteringOptions();
     if (!filteringOptions.respectGitIgnore) {
       rgArgs.push('--no-ignore-vcs');
     }
 
-    if (filteringOptions.respectQwenIgnore) {
-      // Load .qwenignore from each workspace directory, not just the primary one
+    if (filteringOptions.respectVibeIgnore) {
+      // Load .vibeignore from each workspace directory, not just the primary one
       const seenIgnoreFiles = new Set<string>();
       for (const searchPath of paths) {
         let isDir = dirIsDirCache.get(searchPath);
@@ -421,16 +421,16 @@ class GrepToolInvocation extends BaseToolInvocation<
           trimCache(dirIsDirCache);
         }
         const dir = isDir ? searchPath : path.dirname(searchPath);
-        let qwenIgnorePath = qwenIgnoreCache.get(dir);
-        if (qwenIgnorePath === undefined) {
-          const candidate = path.join(dir, '.qwenignore');
-          qwenIgnorePath = fs.existsSync(candidate) ? candidate : null;
-          qwenIgnoreCache.set(dir, qwenIgnorePath);
-          trimCache(qwenIgnoreCache);
+        let vibeIgnorePath = vibeIgnoreCache.get(dir);
+        if (vibeIgnorePath === undefined) {
+          const candidate = path.join(dir, '.vibeignore');
+          vibeIgnorePath = fs.existsSync(candidate) ? candidate : null;
+          vibeIgnoreCache.set(dir, vibeIgnorePath);
+          trimCache(vibeIgnoreCache);
         }
-        if (qwenIgnorePath && !seenIgnoreFiles.has(qwenIgnorePath)) {
-          rgArgs.push('--ignore-file', qwenIgnorePath);
-          seenIgnoreFiles.add(qwenIgnorePath);
+        if (vibeIgnorePath && !seenIgnoreFiles.has(vibeIgnorePath)) {
+          rgArgs.push('--ignore-file', vibeIgnorePath);
+          seenIgnoreFiles.add(vibeIgnorePath);
         }
       }
     }
@@ -458,9 +458,9 @@ class GrepToolInvocation extends BaseToolInvocation<
       respectGitIgnore:
         options?.respectGitIgnore ??
         DEFAULT_FILE_FILTERING_OPTIONS.respectGitIgnore,
-      respectQwenIgnore:
-        options?.respectQwenIgnore ??
-        DEFAULT_FILE_FILTERING_OPTIONS.respectQwenIgnore,
+      respectVibeIgnore:
+        options?.respectVibeIgnore ??
+        DEFAULT_FILE_FILTERING_OPTIONS.respectVibeIgnore,
     };
   }
 

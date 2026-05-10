@@ -37,7 +37,7 @@ describe('WebFetchTool', () => {
       getProxy: vi.fn(),
       getGeminiClient: mockGetGeminiClient,
       getSessionId: vi.fn(() => 'test-session-id'),
-      getModel: vi.fn(() => 'qwen-coder'),
+      getModel: vi.fn(() => 'vibe-coder'),
     } as unknown as Config;
   });
 

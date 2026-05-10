@@ -1,11 +1,11 @@
-# Qwen Code Companion
+# Vibe Code Companion
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/qwenlm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion)
-[![VS Code Installs](https://img.shields.io/visual-studio-marketplace/i/qwenlm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion)
-[![Open VSX Downloads](https://img.shields.io/open-vsx/dt/qwenlm/vibe-code-vscode-ide-companion)](https://open-vsx.org/extension/qwenlm/vibe-code-vscode-ide-companion)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/qwenlm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/vibelm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=vibelm.vibe-code-vscode-ide-companion)
+[![VS Code Installs](https://img.shields.io/visual-studio-marketplace/i/vibelm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=vibelm.vibe-code-vscode-ide-companion)
+[![Open VSX Downloads](https://img.shields.io/open-vsx/dt/vibelm/vibe-code-vscode-ide-companion)](https://open-vsx.org/extension/vibelm/vibe-code-vscode-ide-companion)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/vibelm.vibe-code-vscode-ide-companion)](https://marketplace.visualstudio.com/items?itemName=vibelm.vibe-code-vscode-ide-companion)
 
-Seamlessly integrate [Qwen Code](https://github.com/vibe-bti/vibe-code) into Visual Studio Code with native IDE features and an intuitive chat interface. This extension bundles everything you need — no additional installation required.
+Seamlessly integrate [Vibe Code](https://github.com/vibe-bti/vibe-code) into Visual Studio Code with native IDE features and an intuitive chat interface. This extension bundles everything you need — no additional installation required.
 
 ## Demo
 
@@ -16,9 +16,9 @@ Seamlessly integrate [Qwen Code](https://github.com/vibe-bti/vibe-code) into Vis
 
 ## Features
 
-- **Native IDE experience**: Dedicated Qwen Code Chat panel accessed via the Qwen icon in the editor title bar
+- **Native IDE experience**: Dedicated Vibe Code Chat panel accessed via the Vibe icon in the editor title bar
 - **Native diffing**: Review, edit, and accept changes in VS Code's diff view
-- **Auto-accept edits mode**: Automatically apply Qwen's changes as they're made
+- **Auto-accept edits mode**: Automatically apply Vibe's changes as they're made
 - **File management**: @-mention files or attach files and images using the system file picker
 - **Conversation history & multiple sessions**: Access past conversations and run multiple sessions simultaneously
 - **Open file & selection context**: Share active files, cursor position, and selections for more precise help
@@ -29,28 +29,28 @@ Seamlessly integrate [Qwen Code](https://github.com/vibe-bti/vibe-code) into Vis
 
 ## Quick Start
 
-1. **Install** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.vibe-code-vscode-ide-companion) or [Open VSX Registry](https://open-vsx.org/extension/qwenlm/vibe-code-vscode-ide-companion)
+1. **Install** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=vibelm.vibe-code-vscode-ide-companion) or [Open VSX Registry](https://open-vsx.org/extension/vibelm/vibe-code-vscode-ide-companion)
 
 2. **Open the Chat panel** using one of these methods:
-   - Click the **Qwen icon** in the top-right corner of the editor
-   - Run `Qwen Code: Open` from the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+   - Click the **Vibe icon** in the top-right corner of the editor
+   - Run `Vibe Code: Open` from the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
 
-3. **Start chatting** — Ask Qwen to help with coding tasks, explain code, fix bugs, or write new features
+3. **Start chatting** — Ask Vibe to help with coding tasks, explain code, fix bugs, or write new features
 
 ## Commands
 
 | Command                          | Description                                            |
 | -------------------------------- | ------------------------------------------------------ |
-| `Qwen Code: Open`                | Open the Qwen Code Chat panel                          |
-| `Qwen Code: Run`                 | Launch a classic terminal session with the bundled CLI |
-| `Qwen Code: Accept Current Diff` | Accept the currently displayed diff                    |
-| `Qwen Code: Close Diff Editor`   | Close/reject the current diff                          |
+| `Vibe Code: Open`                | Open the Vibe Code Chat panel                          |
+| `Vibe Code: Run`                 | Launch a classic terminal session with the bundled CLI |
+| `Vibe Code: Accept Current Diff` | Accept the currently displayed diff                    |
+| `Vibe Code: Close Diff Editor`   | Close/reject the current diff                          |
 
 ## Feedback & Issues
 
 - 🐛 [Report bugs](https://github.com/vibe-bti/vibe-code/issues/new?template=bug_report.yml&labels=bug,vscode-ide-companion)
 - 💡 [Request features](https://github.com/vibe-bti/vibe-code/issues/new?template=feature_request.yml&labels=enhancement,vscode-ide-companion)
-- 📖 [Documentation](https://qwenlm.github.io/qwen-code-docs/)
+- 📖 [Documentation](https://vibelm.github.io/vibe-code-docs/)
 - 📋 [Changelog](https://github.com/vibe-bti/vibe-code/releases)
 
 ## Contributing
@@ -63,7 +63,7 @@ We welcome contributions! See our [Contributing Guide](https://github.com/vibe-b
 
 ## Terms of Service and Privacy Notice
 
-By installing this extension, you agree to the [Terms of Service](https://qwenlm.github.io/qwen-code-docs/en/users/support/tos-privacy/).
+By installing this extension, you agree to the [Terms of Service](https://vibelm.github.io/vibe-code-docs/en/users/support/tos-privacy/).
 
 ## License
 

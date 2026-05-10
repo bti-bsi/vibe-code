@@ -16,6 +16,7 @@ import type {
   CLIControlRequest,
   CLIControlResponse,
   ControlCancelRequest,
+  CLIControlGetContextUsageRequest,
 } from '../../src/types/protocol.js';
 import { ControlRequestType } from '../../src/types/protocol.js';
 import { AbortError } from '../../src/types/errors.js';
@@ -1207,7 +1208,7 @@ describe('Query', () => {
         ControlRequestType.GET_CONTEXT_USAGE,
       )!;
 
-      expect((usageMsg.request as Record<string, unknown>).show_details).toBe(
+      expect((usageMsg.request as CLIControlGetContextUsageRequest).show_details).toBe(
         true,
       );
 

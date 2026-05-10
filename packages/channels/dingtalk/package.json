@@ -1,7 +1,7 @@
 {
   "name": "@vibe-bti/vibe-code-channel-dingtalk",
   "version": "0.15.11",
-  "description": "DingTalk channel adapter for Qwen Code",
+  "description": "DingTalk channel adapter for Vibe Code",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

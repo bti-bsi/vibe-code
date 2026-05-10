@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
 export class ReadonlyFileSystemProvider
   implements vscode.FileSystemProvider, vscode.Disposable
 {
-  private static readonly scheme = 'qwen-readonly';
+  private static readonly scheme = 'vibe-readonly';
   private static instance: ReadonlyFileSystemProvider | null = null;
 
   private readonly files = new Map<string, Uint8Array>();

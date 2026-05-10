@@ -465,7 +465,7 @@ describe('AbortController and Process Lifecycle (E2E)', () => {
         const q = query({
           prompt: 'Hello world',
           options: {
-            pathToQwenExecutable: '/nonexistent/path/to/cli',
+            pathToVibeExecutable: '/nonexistent/path/to/cli',
             debug: false,
           },
         });
@@ -481,7 +481,7 @@ describe('AbortController and Process Lifecycle (E2E)', () => {
         expect(error instanceof Error).toBe(true);
         expect((error as Error).message).toBeDefined();
         expect((error as Error).message).toContain(
-          'Invalid pathToQwenExecutable',
+          'Invalid pathToVibeExecutable',
         );
       }
     });

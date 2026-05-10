@@ -172,7 +172,7 @@ describe('AuthDialog', () => {
   beforeEach(() => {
     originalEnv = { ...process.env };
     process.env['GEMINI_API_KEY'] = '';
-    process.env['QWEN_DEFAULT_AUTH_TYPE'] = '';
+    process.env['VIBE_DEFAULT_AUTH_TYPE'] = '';
     vi.clearAllMocks();
   });
 
@@ -314,9 +314,9 @@ describe('AuthDialog', () => {
       expect(lastFrame()).toContain('OpenAI-compatible');
     });
 
-    it('should not show the GEMINI_API_KEY message if QWEN_DEFAULT_AUTH_TYPE is set to something else', () => {
+    it('should not show the GEMINI_API_KEY message if VIBE_DEFAULT_AUTH_TYPE is set to something else', () => {
       process.env['GEMINI_API_KEY'] = 'foobar';
-      process.env['QWEN_DEFAULT_AUTH_TYPE'] = AuthType.USE_OPENAI;
+      process.env['VIBE_DEFAULT_AUTH_TYPE'] = AuthType.USE_OPENAI;
 
       const settings: LoadedSettings = new LoadedSettings(
         {
@@ -358,9 +358,9 @@ describe('AuthDialog', () => {
       );
     });
 
-    it('should show the GEMINI_API_KEY message if QWEN_DEFAULT_AUTH_TYPE is set to use api key', () => {
+    it('should show the GEMINI_API_KEY message if VIBE_DEFAULT_AUTH_TYPE is set to use api key', () => {
       process.env['GEMINI_API_KEY'] = 'foobar';
-      process.env['QWEN_DEFAULT_AUTH_TYPE'] = AuthType.USE_OPENAI;
+      process.env['VIBE_DEFAULT_AUTH_TYPE'] = AuthType.USE_OPENAI;
 
       const settings: LoadedSettings = new LoadedSettings(
         {
@@ -401,9 +401,9 @@ describe('AuthDialog', () => {
     });
   });
 
-  describe('QWEN_DEFAULT_AUTH_TYPE environment variable', () => {
-    it('should select the auth type specified by QWEN_DEFAULT_AUTH_TYPE', () => {
-      process.env['QWEN_DEFAULT_AUTH_TYPE'] = AuthType.USE_ANTHROPIC;
+  describe('VIBE_DEFAULT_AUTH_TYPE environment variable', () => {
+    it('should select the auth type specified by VIBE_DEFAULT_AUTH_TYPE', () => {
+      process.env['VIBE_DEFAULT_AUTH_TYPE'] = AuthType.USE_ANTHROPIC;
 
       const settings: LoadedSettings = new LoadedSettings(
         {
@@ -443,7 +443,7 @@ describe('AuthDialog', () => {
       expect(lastFrame()).toContain('Anthropic-compatible');
     });
 
-    it('should fall back to default if QWEN_DEFAULT_AUTH_TYPE is not set', () => {
+    it('should fall back to default if VIBE_DEFAULT_AUTH_TYPE is not set', () => {
       const settings: LoadedSettings = new LoadedSettings(
         {
           settings: {
@@ -482,8 +482,8 @@ describe('AuthDialog', () => {
       expect(lastFrame()).toContain('OpenAI-compatible');
     });
 
-    it('should show an error and fall back to default if QWEN_DEFAULT_AUTH_TYPE is invalid', () => {
-      process.env['QWEN_DEFAULT_AUTH_TYPE'] = 'invalid-auth-type';
+    it('should show an error and fall back to default if VIBE_DEFAULT_AUTH_TYPE is invalid', () => {
+      process.env['VIBE_DEFAULT_AUTH_TYPE'] = 'invalid-auth-type';
 
       const settings: LoadedSettings = new LoadedSettings(
         {
@@ -838,7 +838,7 @@ describe('AuthDialog Custom API Key Wizard', () => {
         stdin,
         lastFrame,
         'sk-test-key-12345',
-        'qwen/qwen3-coder,gpt-4.1',
+        'vibe/vibe3-coder,gpt-4.1',
       );
       await pressEnterAndWaitFor(stdin, lastFrame, 'Step 6/6 · Review');
 
@@ -846,8 +846,8 @@ describe('AuthDialog Custom API Key Wizard', () => {
         const frame = lastFrame();
         expect(frame).toContain('Step 6/6 · Review');
         expect(frame).toContain('The following JSON will be saved');
-        expect(frame).toContain('QWEN_CUSTOM_API_KEY_OPENAI');
-        expect(frame).toContain('qwen/qwen3-coder');
+        expect(frame).toContain('VIBE_CUSTOM_API_KEY_OPENAI');
+        expect(frame).toContain('vibe/vibe3-coder');
         expect(frame).toContain('gpt-4.1');
         expect(frame).toContain('Enter to save');
       });

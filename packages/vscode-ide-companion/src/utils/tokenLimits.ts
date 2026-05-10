@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -73,7 +73,7 @@ function normalize(model: string): string {
   s = s.replace(/-preview/g, '');
 
   if (
-    !s.match(/^qwen-(?:plus|flash|vl-max)-latest$/) &&
+    !s.match(/^vibe-(?:plus|flash|vl-max)-latest$/) &&
     !s.match(/^kimi-k2-\d{4}$/)
   ) {
     s = s.replace(
@@ -103,16 +103,16 @@ const INPUT_PATTERNS: Array<[RegExp, TokenCount]> = [
   // Anthropic Claude
   [/^claude-/, LIMITS['200k']],
 
-  // Alibaba / Qwen
-  [/^qwen3-coder-plus/, LIMITS['1m']],
-  [/^qwen3-coder-flash/, LIMITS['1m']],
-  [/^qwen3\.\d/, LIMITS['1m']],
-  [/^qwen-plus-latest$/, LIMITS['1m']],
-  [/^qwen-flash-latest$/, LIMITS['1m']],
+  // Alibaba / Vibe
+  [/^vibe3-coder-plus/, LIMITS['1m']],
+  [/^vibe3-coder-flash/, LIMITS['1m']],
+  [/^vibe3\.\d/, LIMITS['1m']],
+  [/^vibe-plus-latest$/, LIMITS['1m']],
+  [/^vibe-flash-latest$/, LIMITS['1m']],
   [/^coder-model$/, LIMITS['1m']],
-  [/^qwen3-max/, LIMITS['256k']],
-  [/^qwen3-coder-/, LIMITS['256k']],
-  [/^qwen/, LIMITS['256k']],
+  [/^vibe3-max/, LIMITS['256k']],
+  [/^vibe3-coder-/, LIMITS['256k']],
+  [/^vibe/, LIMITS['256k']],
 
   // DeepSeek
   [/^deepseek/, LIMITS['128k']],
@@ -148,9 +148,9 @@ const OUTPUT_PATTERNS: Array<[RegExp, TokenCount]> = [
   [/^claude-sonnet-4-6/, LIMITS['64k']],
   [/^claude-/, LIMITS['64k']],
 
-  [/^qwen3\.\d/, LIMITS['64k']],
+  [/^vibe3\.\d/, LIMITS['64k']],
   [/^coder-model$/, LIMITS['64k']],
-  [/^qwen/, LIMITS['32k']],
+  [/^vibe/, LIMITS['32k']],
 
   [/^deepseek-reasoner/, LIMITS['64k']],
   [/^deepseek-r1/, LIMITS['64k']],

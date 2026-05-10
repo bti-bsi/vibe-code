@@ -15,8 +15,8 @@ import { DefaultLight } from './default-light.js';
 import { DefaultDark } from './default.js';
 import { ShadesOfPurple } from './shades-of-purple.js';
 import { XCode } from './xcode.js';
-import { QwenLight } from './qwen-light.js';
-import { QwenDark } from './qwen-dark.js';
+import { VibeLight } from './vibe-light.js';
+import { VibeDark } from './vibe-dark.js';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
@@ -41,7 +41,7 @@ export interface ThemeDisplay {
   isCustom?: boolean;
 }
 
-export const DEFAULT_THEME: Theme = QwenDark;
+export const DEFAULT_THEME: Theme = VibeDark;
 export const AUTO_THEME_NAME = 'auto';
 
 class ThemeManager {
@@ -60,8 +60,8 @@ class ThemeManager {
       GitHubDark,
       GitHubLight,
       GoogleCode,
-      QwenLight,
-      QwenDark,
+      VibeLight,
+      VibeDark,
       ShadesOfPurple,
       XCode,
       ANSI,
@@ -120,7 +120,7 @@ class ThemeManager {
    * Sets the active theme.
    * @param themeName The name of the theme to set as active.
    *   If themeName is 'auto', detects the terminal theme and selects
-   *   Qwen Dark or Qwen Light accordingly.
+   *   Vibe Dark or Vibe Light accordingly.
    * @returns True if the theme was successfully set, false otherwise.
    */
   setActiveTheme(themeName: string | undefined): boolean {
@@ -147,14 +147,14 @@ class ThemeManager {
 
   /**
    * Detects the terminal's dark/light preference (synchronous) and returns
-   * the corresponding Qwen theme.
+   * the corresponding Vibe theme.
    * Used by the theme dialog for instant preview. Prefers the cached
    * async-detected value when available so we stay consistent with the
    * OSC 11 probe performed at startup.
    */
   private resolveAutoTheme(): Theme {
     const detected = this.cachedAutoDetection ?? detectTerminalTheme();
-    return detected === 'light' ? QwenLight : QwenDark;
+    return detected === 'light' ? VibeLight : VibeDark;
   }
 
   /**
@@ -166,7 +166,7 @@ class ThemeManager {
   async resolveAutoThemeAsync(): Promise<void> {
     const detected = await detectTerminalThemeAsync();
     this.cachedAutoDetection = detected;
-    this.activeTheme = detected === 'light' ? QwenLight : QwenDark;
+    this.activeTheme = detected === 'light' ? VibeLight : VibeDark;
     debugLogger.info(`Auto-detected theme (async): ${this.activeTheme.name}`);
   }
 
@@ -240,12 +240,12 @@ class ThemeManager {
       }),
     );
 
-    // Separate Qwen themes
-    const qwenThemes = builtInThemes.filter(
-      (theme) => theme.name === QwenLight.name || theme.name === QwenDark.name,
+    // Separate Vibe themes
+    const vibeThemes = builtInThemes.filter(
+      (theme) => theme.name === VibeLight.name || theme.name === VibeDark.name,
     );
     const otherBuiltInThemes = builtInThemes.filter(
-      (theme) => theme.name !== QwenLight.name && theme.name !== QwenDark.name,
+      (theme) => theme.name !== VibeLight.name && theme.name !== VibeDark.name,
     );
 
     // Sort other themes by type and then name
@@ -274,8 +274,8 @@ class ThemeManager {
       },
     );
 
-    // Combine Qwen themes first, then sorted others
-    return [...qwenThemes, ...sortedOtherThemes];
+    // Combine Vibe themes first, then sorted others
+    return [...vibeThemes, ...sortedOtherThemes];
   }
 
   /**

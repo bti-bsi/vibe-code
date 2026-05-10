@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -34,13 +34,13 @@ import {
 
 export interface SDKTestHelperOptions {
   /**
-   * Optional settings for .qwen/settings.json
+   * Optional settings for .vibe/settings.json
    */
   settings?: Record<string, unknown>;
   /**
-   * Whether to create .qwen/settings.json
+   * Whether to create .vibe/settings.json
    */
-  createQwenConfig?: boolean;
+  createVibeConfig?: boolean;
   /**
    * Whether to enable chat recording for this test.
    * - Set to `true` to enable recording (needed for session-id duplicate detection tests)
@@ -79,10 +79,10 @@ export class SDKTestHelper {
 
     await mkdir(this.testDir, { recursive: true });
 
-    // Optionally create .qwen/settings.json for CLI configuration
-    if (options.createQwenConfig !== false) {
-      const qwenDir = join(this.testDir, '.qwen');
-      await mkdir(qwenDir, { recursive: true });
+    // Optionally create .vibe/settings.json for CLI configuration
+    if (options.createVibeConfig !== false) {
+      const vibeDir = join(this.testDir, '.vibe');
+      await mkdir(vibeDir, { recursive: true });
 
       const optionsSettings = options.settings ?? {};
       const generalSettings =
@@ -104,7 +104,7 @@ export class SDKTestHelper {
       };
 
       await writeFile(
-        join(qwenDir, 'settings.json'),
+        join(vibeDir, 'settings.json'),
         JSON.stringify(settings, null, 2),
         'utf-8',
       );
@@ -219,7 +219,7 @@ export interface MCPServerResult {
 const MCP_MATH_SERVER_SCRIPT = `#!/usr/bin/env node
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -1009,7 +1009,7 @@ export function createSharedTestOptions(
   }
 
   return {
-    pathToQwenExecutable: TEST_CLI_PATH,
+    pathToVibeExecutable: TEST_CLI_PATH,
     ...overrides,
   };
 }

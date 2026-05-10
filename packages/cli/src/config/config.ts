@@ -8,7 +8,7 @@ import {
   ApprovalMode,
   AuthType,
   Config,
-  DEFAULT_QWEN_EMBEDDING_MODEL,
+  DEFAULT_VIBE_EMBEDDING_MODEL,
   FileDiscoveryService,
   getAllGeminiMdFilenames,
   loadServerHierarchicalMemory,
@@ -188,7 +188,7 @@ export async function parseArguments(): Promise<CliArgs> {
   // hack: if the first argument is the CLI entry point, remove it
   if (
     rawArgv.length > 0 &&
-    (rawArgv[0].endsWith('/dist/qwen-cli/cli.js') ||
+    (rawArgv[0].endsWith('/dist/vibe-cli/cli.js') ||
       rawArgv[0].endsWith('/dist/cli.js') ||
       rawArgv[0].endsWith('/dist/cli/cli.js'))
   ) {
@@ -197,9 +197,9 @@ export async function parseArguments(): Promise<CliArgs> {
 
   const yargsInstance = yargs(rawArgv)
     .locale('en')
-    .scriptName('qwen')
+    .scriptName('vibe')
     .usage(
-      'Usage: qwen [options] [command]\n.vibe Code - Launch an interactive CLI, use -p/--prompt for non-interactive mode',
+      'Usage: vibe [options] [command]\n.vibe Code - Launch an interactive CLI, use -p/--prompt for non-interactive mode',
     )
     .option('telemetry', {
       type: 'boolean',
@@ -270,7 +270,7 @@ export async function parseArguments(): Promise<CliArgs> {
     })
     .option('proxy', {
       type: 'string',
-      description: 'Proxy for Qwen Code, like schema://user:password@host:port',
+      description: 'Proxy for Vibe Code, like schema://user:password@host:port',
     })
     .deprecateOption(
       'proxy',
@@ -281,7 +281,7 @@ export async function parseArguments(): Promise<CliArgs> {
       description:
         'Enable chat recording to disk. If false, chat history is not saved and --continue/--resume will not work.',
     })
-    .command('$0 [query..]', 'Launch Qwen Code CLI', (yargsInstance: Argv) =>
+    .command('$0 [query..]', 'Launch Vibe Code CLI', (yargsInstance: Argv) =>
       yargsInstance
         .positional('query', {
           description:
@@ -517,7 +517,7 @@ export async function parseArguments(): Promise<CliArgs> {
           description:
             'Slash command names to hide/disable (comma-separated or ' +
             'repeated). Merged with the `slashCommands.disabled` setting ' +
-            'and QWEN_DISABLED_SLASH_COMMANDS. Matched case-insensitively ' +
+            'and VIBE_DISABLED_SLASH_COMMANDS. Matched case-insensitively ' +
             'against the final command name.',
           coerce: (names: string[]) =>
             names.flatMap((n) => n.split(',').map((t) => t.trim())),
@@ -534,7 +534,7 @@ export async function parseArguments(): Promise<CliArgs> {
           choices: [
             AuthType.USE_OPENAI,
             AuthType.USE_ANTHROPIC,
-            AuthType.QWEN_OAUTH,
+            AuthType.VIBE_OAUTH,
             AuthType.USE_GEMINI,
             AuthType.USE_VERTEX_AI,
           ],
@@ -828,9 +828,9 @@ export async function loadCliConfig(
   const debugMode = isDebugMode(argv);
   const bareMode = isBareMode(argv.bare);
 
-  // Set runtime output directory from settings (env var QWEN_RUNTIME_DIR
+  // Set runtime output directory from settings (env var VIBE_RUNTIME_DIR
   // is auto-detected inside getRuntimeBaseDir() at each call site).
-  // Pass cwd so that relative paths like ".qwen" resolve per-project.
+  // Pass cwd so that relative paths like ".vibe" resolve per-project.
   Storage.setRuntimeBaseDir(settings.advanced?.runtimeOutputDir, cwd);
 
   const ideMode = settings.ide?.enabled ?? false;
@@ -852,11 +852,11 @@ export async function loadCliConfig(
   // Automatically load output-language.md if it exists
   const projectStorage = new Storage(cwd);
   const projectOutputLanguagePath = path.join(
-    projectStorage.getQwenDir(),
+    projectStorage.getVibeDir(),
     'output-language.md',
   );
   const globalOutputLanguagePath = path.join(
-    Storage.getGlobalQwenDir(),
+    Storage.getGlobalVibeDir(),
     'output-language.md',
   );
 
@@ -1024,7 +1024,7 @@ export async function loadCliConfig(
   };
   for (const name of settings.slashCommands?.disabled ?? []) addDisabled(name);
   for (const name of argv.disabledSlashCommands ?? []) addDisabled(name);
-  for (const name of (process.env['QWEN_DISABLED_SLASH_COMMANDS'] ?? '').split(
+  for (const name of (process.env['VIBE_DISABLED_SLASH_COMMANDS'] ?? '').split(
     ',',
   )) {
     addDisabled(name);
@@ -1174,7 +1174,7 @@ export async function loadCliConfig(
   const config = new Config({
     sessionId,
     sessionData,
-    embeddingModel: DEFAULT_QWEN_EMBEDDING_MODEL,
+    embeddingModel: DEFAULT_VIBE_EMBEDDING_MODEL,
     sandbox: sandboxConfig,
     targetDir: cwd,
     includeDirectories,
@@ -1266,7 +1266,6 @@ export async function loadCliConfig(
     listExtensions: argv.listExtensions || false,
     overrideExtensions: overrideExtensions || argv.extensions,
     noBrowser: !!process.env['NO_BROWSER'],
-    authType: selectedAuthType,
     inputFormat,
     outputFormat,
     includePartialMessages,
@@ -1280,6 +1279,10 @@ export async function loadCliConfig(
       : (settings.security?.allowedHttpHookUrls ?? []),
     cliVersion: await getCliVersion(),
     ideMode,
+    authType: selectedAuthType,
+    scopusApiKey: settings.scopus_apikey,
+    googleSearchApiKey: settings.google_search_api_key,
+    googleSearchCx: settings.google_search_cx,
     chatCompression: settings.model?.chatCompression,
     folderTrust,
     interactive,

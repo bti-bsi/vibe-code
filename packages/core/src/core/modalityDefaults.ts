@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -38,20 +38,20 @@ const MODALITY_PATTERNS: Array<[RegExp, InputModalities]> = [
   [/^claude-/, { image: true, pdf: true }],
 
   // -------------------
-  // Alibaba / Qwen
+  // Alibaba / Vibe
   // -------------------
-  // Qwen3.5-Plus, Qwen3.6-Plus: image + video support
-  [/^qwen3\.5-plus/, { image: true, video: true }],
-  [/^qwen3\.6-plus/, { image: true, video: true }],
+  // Vibe3.5-Plus, Vibe3.6-Plus: image + video support
+  [/^vibe3\.5-plus/, { image: true, video: true }],
+  [/^vibe3\.6-plus/, { image: true, video: true }],
   [/^coder-model$/, { image: true, video: true }],
 
-  // Qwen VL (vision-language) models: image + video
-  [/^qwen-vl-/, { image: true, video: true }],
-  [/^qwen3-vl-/, { image: true, video: true }],
+  // Vibe VL (vision-language) models: image + video
+  [/^vibe-vl-/, { image: true, video: true }],
+  [/^vibe3-vl-/, { image: true, video: true }],
 
-  // Qwen coder / text models: text-only
-  [/^qwen3-coder-/, {}],
-  [/^qwen/, {}],
+  // Vibe coder / text models: text-only
+  [/^vibe3-coder-/, {}],
+  [/^vibe/, {}],
 
   // -------------------
   // DeepSeek — text-only

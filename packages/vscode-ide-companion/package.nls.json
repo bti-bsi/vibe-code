@@ -1,5 +1,5 @@
 {
-  "qwen-code.copyMessage.title": "Copy Message",
-  "qwen-code.copyAllMessages.title": "Copy All Messages",
-  "qwen-code.copyLastReply.title": "Copy Last Reply"
+  "vibe-code.copyMessage.title": "Copy Message",
+  "vibe-code.copyAllMessages.title": "Copy All Messages",
+  "vibe-code.copyLastReply.title": "Copy Last Reply"
 }

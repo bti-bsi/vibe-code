@@ -24,7 +24,7 @@ import {
 } from './useAuth.js';
 
 const MODEL_PROVIDERS_DOCUMENTATION_URL =
-  'https://qwenlm.github.io/qwen-code-docs/en/users/configuration/model-providers/';
+  'https://vibelm.github.io/vibe-code-docs/en/users/configuration/model-providers/';
 
 type CustomProtocol =
   | AuthType.USE_OPENAI
@@ -129,7 +129,7 @@ export function AuthDialogWithMode({
   const resolvedInitialProtocol: CustomProtocol =
     toCustomProtocol(pendingAuthType) ??
     toCustomProtocol(config.getAuthType()) ??
-    parseDefaultAuthType(process.env['QWEN_DEFAULT_AUTH_TYPE']) ??
+    parseDefaultAuthType(process.env['VIBE_DEFAULT_AUTH_TYPE']) ??
     AuthType.USE_OPENAI;
 
   const protocolItems = [
@@ -505,7 +505,7 @@ export function AuthDialogWithMode({
             if (customModelIdsError) setCustomModelIdsError(null);
           }}
           onSubmit={handleCustomModelIdSubmit}
-          placeholder="qwen/qwen3-coder,openai/gpt-4.1"
+          placeholder="vibe/vibe3-coder,openai/gpt-4.1"
         />
       </Box>
       {customModelIdsError && (
@@ -690,11 +690,11 @@ export function AuthDialogWithMode({
           </Box>
           <Box>
             <Link
-              url="https://qwenlm.github.io/qwen-code-docs/en/users/support/tos-privacy/"
+              url="https://vibelm.github.io/vibe-code-docs/en/users/support/tos-privacy/"
               fallback={false}
             >
               <Text color={theme.text.secondary} underline>
-                https://qwenlm.github.io/qwen-code-docs/en/users/support/tos-privacy/
+                https://vibelm.github.io/vibe-code-docs/en/users/support/tos-privacy/
               </Text>
             </Link>
           </Box>

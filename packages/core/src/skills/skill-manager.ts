@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -46,7 +46,7 @@ import {
 
 const debugLogger = createDebugLogger('SKILL_MANAGER');
 
-const QWEN_CONFIG_DIR = '.vibe';
+const VIBE_CONFIG_DIR = '.vibe';
 const SKILLS_CONFIG_DIR = 'skills';
 const SKILL_MANIFEST_FILE = 'SKILL.md';
 
@@ -903,7 +903,7 @@ export class SkillManager {
 
     // Iterate provider directories in PROVIDER_CONFIG_DIRS order.
     // The first directory that contains a skill with a given name wins,
-    // so the order defines implicit precedence (.qwen > .agent > .cursor > ...).
+    // so the order defines implicit precedence (.vibe > .agent > .cursor > ...).
     // Load in parallel but fold sequentially to preserve precedence.
     const baseDirs = this.getSkillsBaseDirs(level);
     const perDirSkills = await Promise.all(
@@ -1135,7 +1135,7 @@ export class SkillManager {
   }
 
   private async ensureUserSkillsDir(): Promise<void> {
-    const baseDir = path.join(os.homedir(), QWEN_CONFIG_DIR, SKILLS_CONFIG_DIR);
+    const baseDir = path.join(os.homedir(), VIBE_CONFIG_DIR, SKILLS_CONFIG_DIR);
     try {
       await fs.mkdir(baseDir, { recursive: true });
     } catch (error) {

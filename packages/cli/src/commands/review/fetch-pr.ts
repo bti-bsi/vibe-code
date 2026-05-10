@@ -1,15 +1,15 @@
 /**
  * @license
- * Copyright 2026 Qwen Team
+ * Copyright 2026 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// `qwen review fetch-pr`: prepare a PR review's working state in a single
+// `vibe review fetch-pr`: prepare a PR review's working state in a single
 // deterministic pass.
 //
 //   1. Clean any stale worktree / branch from a previously interrupted run
 //      so the new run starts fresh.
-//   2. `git fetch <remote> pull/<n>/head:qwen-review/pr-<n>` — pull the PR
+//   2. `git fetch <remote> pull/<n>/head:vibe-review/pr-<n>` — pull the PR
 //      HEAD into a unique local ref (does not modify the user's working
 //      tree, unlike `gh pr checkout`).
 //   3. `gh pr view ...` to fetch metadata (head/base ref names, head SHA,

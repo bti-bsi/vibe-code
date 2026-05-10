@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen team
+ * Copyright 2025 Vibe team
  * SPDX-License-Identifier: Apache-2.0
  */
 

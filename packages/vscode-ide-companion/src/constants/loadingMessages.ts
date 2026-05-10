@@ -1,11 +1,11 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
- * Loading messages from Qwen Code CLI
+ * Loading messages from Vibe Code CLI
  * Source: packages/cli/src/ui/hooks/usePhraseCycler.ts
  */
 export const WITTY_LOADING_PHRASES = [

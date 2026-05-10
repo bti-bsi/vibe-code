@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -45,7 +45,7 @@ const UserMessageBase: FC<UserMessageProps> = ({
 
   return (
     <div
-      className="qwen-message user-message-container flex gap-0 my-1 items-start text-left flex-col relative"
+      className="vibe-message user-message-container flex gap-0 my-1 items-start text-left flex-col relative"
       style={{ position: 'relative' }}
     >
       <div

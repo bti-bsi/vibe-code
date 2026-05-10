@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -77,7 +77,7 @@ export const ImageMessageRenderer: FC<ImageMessageRendererProps> = ({
   const showImage = Boolean(msg.imageSrc) && !msg.imageMissing;
 
   return (
-    <div className="qwen-message user-message-container flex gap-0 my-1 items-start text-left flex-col relative">
+    <div className="vibe-message user-message-container flex gap-0 my-1 items-start text-left flex-col relative">
       <div
         className="inline-block relative whitespace-pre-wrap rounded-md max-w-full overflow-x-auto overflow-y-hidden select-text leading-[1.5]"
         style={{

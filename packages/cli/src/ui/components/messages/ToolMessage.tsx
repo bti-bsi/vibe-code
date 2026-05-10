@@ -193,6 +193,18 @@ const useResultDisplayRenderer = (
       typeof resultDisplay === 'object' &&
       resultDisplay !== null &&
       'type' in resultDisplay &&
+      resultDisplay.type === 'tool_execution_diagnostic'
+    ) {
+      return {
+        type: 'string',
+        data: (resultDisplay as unknown as { message: string }).message,
+      };
+    }
+
+    if (
+      typeof resultDisplay === 'object' &&
+      resultDisplay !== null &&
+      'type' in resultDisplay &&
       resultDisplay.type === 'mcp_tool_progress'
     ) {
       const progress = resultDisplay as McpToolProgressData;

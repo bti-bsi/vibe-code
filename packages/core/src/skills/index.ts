@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -17,7 +17,7 @@
  * - Project-level: `.vibe/skills/`
  * - User-level: `~/.vibe/skills/`
  * - Extension-level: provided by installed extensions
- * - Bundled: built-in skills shipped with qwen-code
+ * - Bundled: built-in skills shipped with vibe-code
  */
 
 // Core types and interfaces

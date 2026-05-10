@@ -1,6 +1,6 @@
-# Qwen Code Docs Site
+# Vibe Code Docs Site
 
-A documentation website for Qwen Code built with [Next.js](https://nextjs.org/) and [Nextra](https://nextra.site/).
+A documentation website for Vibe Code built with [Next.js](https://nextjs.org/) and [Nextra](https://nextra.site/).
 
 ## Getting Started
 
@@ -51,4 +51,4 @@ docs-site/
 
 ## License
 
-MIT © Qwen Team
+MIT © Vibe Team

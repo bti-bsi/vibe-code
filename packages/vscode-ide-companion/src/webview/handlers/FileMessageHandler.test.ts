@@ -1,11 +1,11 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { QwenAgentManager } from '../../services/qwenAgentManager.js';
+import type { VibeAgentManager } from '../../services/vibeAgentManager.js';
 import type { ConversationStore } from '../../services/conversationStore.js';
 import { FileMessageHandler } from './FileMessageHandler.js';
 import * as vscode from 'vscode';
@@ -94,7 +94,7 @@ describe('FileMessageHandler', () => {
 
     const sendToWebView = vi.fn();
     const handler = new FileMessageHandler(
-      {} as QwenAgentManager,
+      {} as VibeAgentManager,
       {} as ConversationStore,
       null,
       sendToWebView,
@@ -148,7 +148,7 @@ describe('FileMessageHandler', () => {
 
     const sendToWebView = vi.fn();
     const handler = new FileMessageHandler(
-      {} as QwenAgentManager,
+      {} as VibeAgentManager,
       {} as ConversationStore,
       null,
       sendToWebView,
@@ -166,7 +166,7 @@ describe('FileMessageHandler', () => {
     );
     expect(shouldIgnoreFileMock).toHaveBeenCalledWith(ignoredPath, {
       respectGitIgnore: true,
-      respectQwenIgnore: false,
+      respectVibeIgnore: false,
     });
 
     const payload = sendToWebView.mock.calls[

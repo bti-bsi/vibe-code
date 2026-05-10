@@ -39,7 +39,7 @@ import {
 import type { UiTelemetryService } from '../telemetry/uiTelemetry.js';
 import { type ChatCompressionInfo, CompressionStatus } from './turn.js';
 
-const debugLogger = createDebugLogger('QWEN_CODE_CHAT');
+const debugLogger = createDebugLogger('VIBE_CODE_CHAT');
 
 export enum StreamEventType {
   /** A regular content chunk from the API. */
@@ -532,7 +532,7 @@ export class GeminiChat {
         const hasUserMaxTokensOverride =
           (cgConfig?.samplingParams?.max_tokens !== undefined &&
             cgConfig?.samplingParams?.max_tokens !== null) ||
-          !!process.env['QWEN_CODE_MAX_OUTPUT_TOKENS'];
+          !!process.env['VIBE_CODE_MAX_OUTPUT_TOKENS'];
 
         let lastFinishReason: string | undefined;
 
@@ -873,7 +873,7 @@ export class GeminiChat {
       signal: params.config?.abortSignal,
       heartbeatFn: (info: { attempt: number; remainingMs: number }) => {
         process.stderr.write(
-          `[qwen-code] Waiting for API capacity... attempt ${info.attempt}, retry in ${Math.ceil(info.remainingMs / 1000)}s\n`,
+          `[vibe-code] Waiting for API capacity... attempt ${info.attempt}, retry in ${Math.ceil(info.remainingMs / 1000)}s\n`,
         );
       },
     };

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -46,7 +46,7 @@ describe('Onboarding', () => {
       root?.render(<Onboarding />);
     });
 
-    const logo = container?.querySelector('img[alt="Qwen Code"]');
+    const logo = container?.querySelector('img[alt="Vibe Code"]');
 
     expect(logo).toBeTruthy();
     expect(logo?.getAttribute('src')).toBeTruthy();

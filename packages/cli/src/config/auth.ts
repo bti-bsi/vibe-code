@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -188,7 +188,7 @@ export function validateAuthMethod(
     return null;
   }
 
-  if (authMethod === AuthType.QWEN_OAUTH) {
+  if (authMethod === AuthType.VIBE_OAUTH) {
     return null;
   }
 

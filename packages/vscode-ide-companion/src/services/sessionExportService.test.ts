@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -95,7 +95,7 @@ describe('sessionExportService', () => {
     mockToJson.mockReturnValue('{"ok":true}');
     mockToJsonl.mockReturnValue('{"ok":true}');
     mockGenerateExportFilename.mockImplementation(
-      (format: string) => `qwen-export.${format}`,
+      (format: string) => `vibe-export.${format}`,
     );
   });
 
@@ -141,7 +141,7 @@ describe('sessionExportService', () => {
 
   describe('exportSessionToFile', () => {
     it('writes the exported session to the user-chosen path', async () => {
-      const chosenPath = path.join('/workspace', 'qwen-export.html');
+      const chosenPath = path.join('/workspace', 'vibe-export.html');
       mockShowSaveDialog.mockResolvedValue({ fsPath: chosenPath });
 
       const result = await exportSessionToFile({
@@ -167,7 +167,7 @@ describe('sessionExportService', () => {
         'utf-8',
       );
       expect(result).toEqual({
-        filename: 'qwen-export.html',
+        filename: 'vibe-export.html',
         uri: { fsPath: chosenPath },
       });
     });

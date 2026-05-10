@@ -363,7 +363,7 @@ export async function uploadToCdn(
       const resp = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream' },
-        body: encryptedData,
+        body: encryptedData as any,
         signal: controller.signal,
       });
       if (!resp.ok) {

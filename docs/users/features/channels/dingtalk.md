@@ -1,6 +1,6 @@
 # DingTalk (Dingtalk)
 
-This guide covers setting up a Qwen Code channel on DingTalk (钉钉).
+This guide covers setting up a Vibe Code channel on DingTalk (钉钉).
 
 ## Prerequisites
 
@@ -65,10 +65,10 @@ Or define them in the `env` section of `settings.json`:
 
 ```bash
 # Start only the DingTalk channel
-qwen channel start my-dingtalk
+vibe channel start my-dingtalk
 
 # Or start all configured channels together
-qwen channel start
+vibe channel start
 ```
 
 Open DingTalk and send a message to the bot. You should see a 👀 emoji reaction appear while the agent processes, followed by the response.
@@ -91,7 +91,7 @@ DingTalk uses `conversationId` to identify groups. You can find it in the channe
 
 You can send photos and documents to the bot, not just text.
 
-**Photos:** Send an image (screenshot, diagram, etc.) and the agent will analyze it using its vision capabilities. This requires a multimodal model — add `"model": "qwen3.5-plus"` (or another vision-capable model) to your channel config. DingTalk supports sending images directly or as part of rich text messages (mixed text + images).
+**Photos:** Send an image (screenshot, diagram, etc.) and the agent will analyze it using its vision capabilities. This requires a multimodal model — add `"model": "vibe3.5-plus"` (or another vision-capable model) to your channel config. DingTalk supports sending images directly or as part of rich text messages (mixed text + images).
 
 **Files:** Send a PDF, code file, or any document. The bot downloads it from DingTalk's servers and saves it locally so the agent can read it with its file tools. Audio and video files are also supported. This works with any model.
 
@@ -115,7 +115,7 @@ You can send photos and documents to the bot, not just text.
 ### Bot doesn't connect
 
 - Verify your AppKey and AppSecret are correct
-- Check that the environment variables are set before running `qwen channel start`
+- Check that the environment variables are set before running `vibe channel start`
 - Make sure **Stream Mode** is enabled in the bot's settings on the DingTalk Developer Portal
 - Check the terminal output for connection errors
 

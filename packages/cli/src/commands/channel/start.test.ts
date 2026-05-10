@@ -95,12 +95,12 @@ const invokeStartHandler = async (
   if (!handler) {
     throw new Error('startCommand handler is missing');
   }
-  await handler({ _: [], $0: 'qwen', ...args } as StartCommandArgs);
+  await handler({ _: [], $0: 'vibe', ...args } as StartCommandArgs);
 };
 
 const mockParsedChannelConfig = {
-  cwd: '/tmp/qwen-channel-test',
-  model: 'qwen-test-model',
+  cwd: '/tmp/vibe-channel-test',
+  model: 'vibe-test-model',
   sessionScope: 'user',
   type: 'telegram',
 };
@@ -117,7 +117,7 @@ beforeEach(() => {
   mockBridgeStart.mockResolvedValue(undefined);
   mockChannelConnect.mockRejectedValue(new Error('stop after channel setup'));
   mockCreateChannel.mockReturnValue(mockChannel);
-  mockFindCliEntryPath.mockReturnValue('/tmp/qwen-cli-entry.js');
+  mockFindCliEntryPath.mockReturnValue('/tmp/vibe-cli-entry.js');
   mockGetExtensionManager.mockResolvedValue({ getLoadedExtensions: () => [] });
   mockGetPlugin.mockResolvedValue({ createChannel: mockCreateChannel });
   mockLoadSettings.mockReturnValue({ merged: { channels: {} } });

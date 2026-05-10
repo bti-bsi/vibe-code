@@ -1,10 +1,10 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DEFAULT_QWEN_MODEL, MAINLINE_CODER_MODEL } from '../config/models.js';
+import { DEFAULT_VIBE_MODEL, MAINLINE_CODER_MODEL } from '../config/models.js';
 
 import type { ModelConfig } from './types.js';
 
@@ -67,7 +67,7 @@ export const AUTH_ENV_MAPPINGS = {
   openai: {
     apiKey: ['OPENAI_API_KEY'],
     baseUrl: ['OPENAI_BASE_URL'],
-    model: ['OPENAI_MODEL', 'QWEN_MODEL'],
+    model: ['OPENAI_MODEL', 'VIBE_MODEL'],
   },
   anthropic: {
     apiKey: ['ANTHROPIC_API_KEY'],
@@ -84,7 +84,7 @@ export const AUTH_ENV_MAPPINGS = {
     baseUrl: [],
     model: ['GOOGLE_MODEL'],
   },
-  'qwen-oauth': {
+  'vibe-oauth': {
     apiKey: [],
     baseUrl: [],
     model: [],
@@ -93,27 +93,27 @@ export const AUTH_ENV_MAPPINGS = {
 
 export const DEFAULT_MODELS = {
   openai: MAINLINE_CODER_MODEL,
-  'qwen-oauth': DEFAULT_QWEN_MODEL,
+  'vibe-oauth': DEFAULT_VIBE_MODEL,
 } as Partial<Record<AuthType, string>>;
 
 /**
- * Hard-coded Qwen OAuth models that are always available.
+ * Hard-coded Vibe OAuth models that are always available.
  * These cannot be overridden by user configuration.
  */
-export const QWEN_OAUTH_MODELS: ModelConfig[] = [
+export const VIBE_OAUTH_MODELS: ModelConfig[] = [
   {
     id: 'coder-model',
     name: 'coder-model',
     description:
-      'Qwen 3.6 Plus — efficient hybrid model with leading coding performance',
+      'Vibe 3.6 Plus — efficient hybrid model with leading coding performance',
     capabilities: { vision: true },
   },
 ];
 
 /**
- * Derive allowed models from QWEN_OAUTH_MODELS for authorization.
+ * Derive allowed models from VIBE_OAUTH_MODELS for authorization.
  * This ensures single source of truth (SSOT).
  */
-export const QWEN_OAUTH_ALLOWED_MODELS = QWEN_OAUTH_MODELS.map(
+export const VIBE_OAUTH_ALLOWED_MODELS = VIBE_OAUTH_MODELS.map(
   (model) => model.id,
 ) as readonly string[];

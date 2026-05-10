@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Code
+ * Copyright 2025 Vibe Code
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -64,7 +64,7 @@ describe('StaticInsightGenerator', () => {
     const projectsDir = path.resolve(
       'workspace',
       'project-a',
-      '.qwen',
+      '.vibe',
       'projects',
     );
     const outputDir = path.join(Storage.getRuntimeBaseDir(), 'insights');

@@ -34,8 +34,8 @@ function getAuthDisplayType(
   }
 
   switch (authType) {
-    case AuthType.QWEN_OAUTH:
-      return AuthDisplayType.QWEN_OAUTH;
+    case AuthType.VIBE_OAUTH:
+      return AuthDisplayType.VIBE_OAUTH;
     default:
       return AuthDisplayType.API_KEY;
   }

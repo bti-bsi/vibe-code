@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -66,8 +66,8 @@ vi.mock('./hooks/session/useSessionManagement.js', () => ({
     hasMore: false,
     isLoading: false,
     handleLoadMoreSessions: vi.fn(),
-    handleLoadQwenSessions: vi.fn(),
-    handleNewQwenSession: vi.fn(),
+    handleLoadVibeSessions: vi.fn(),
+    handleNewVibeSession: vi.fn(),
     currentSessionTitle: 'Session 1',
   }),
 }));

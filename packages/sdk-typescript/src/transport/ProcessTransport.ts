@@ -54,7 +54,7 @@ export class ProcessTransport implements Transport {
 
       const spawnInfo =
         this.options.spawnInfo ??
-        prepareSpawnInfo(this.options.pathToQwenExecutable);
+        prepareSpawnInfo(this.options.pathToVibeExecutable);
 
       const stderrMode =
         this.options.debug || this.options.stderr ? 'pipe' : 'ignore';

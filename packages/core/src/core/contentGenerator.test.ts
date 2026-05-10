@@ -88,21 +88,21 @@ describe('createContentGeneratorConfig', () => {
     getProxy: () => undefined,
   } as unknown as Config;
 
-  it('should preserve provided fields and set authType for QWEN_OAUTH', () => {
-    const cfg = createContentGeneratorConfig(mockConfig, AuthType.QWEN_OAUTH, {
+  it('should preserve provided fields and set authType for VIBE_OAUTH', () => {
+    const cfg = createContentGeneratorConfig(mockConfig, AuthType.VIBE_OAUTH, {
       model: 'coder-model',
-      apiKey: 'QWEN_OAUTH_DYNAMIC_TOKEN',
+      apiKey: 'VIBE_OAUTH_DYNAMIC_TOKEN',
     });
-    expect(cfg.authType).toBe(AuthType.QWEN_OAUTH);
+    expect(cfg.authType).toBe(AuthType.VIBE_OAUTH);
     expect(cfg.model).toBe('coder-model');
-    expect(cfg.apiKey).toBe('QWEN_OAUTH_DYNAMIC_TOKEN');
+    expect(cfg.apiKey).toBe('VIBE_OAUTH_DYNAMIC_TOKEN');
   });
 
-  it('should not warn or fallback for QWEN_OAUTH (resolution handled by ModelConfigResolver)', () => {
+  it('should not warn or fallback for VIBE_OAUTH (resolution handled by ModelConfigResolver)', () => {
     const warnSpy = vi
       .spyOn(console, 'warn')
       .mockImplementation(() => undefined);
-    const cfg = createContentGeneratorConfig(mockConfig, AuthType.QWEN_OAUTH, {
+    const cfg = createContentGeneratorConfig(mockConfig, AuthType.VIBE_OAUTH, {
       model: 'some-random-model',
     });
     expect(cfg.model).toBe('some-random-model');

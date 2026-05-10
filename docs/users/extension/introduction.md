@@ -1,12 +1,12 @@
-# Qwen Code Extensions
+# Vibe Code Extensions
 
-Qwen Code extensions package prompts, MCP servers, subagents, skills and custom commands into a familiar and user-friendly format. With extensions, you can expand the capabilities of Qwen Code and share those capabilities with others. They are designed to be easily installable and shareable.
+Vibe Code extensions package prompts, MCP servers, subagents, skills and custom commands into a familiar and user-friendly format. With extensions, you can expand the capabilities of Vibe Code and share those capabilities with others. They are designed to be easily installable and shareable.
 
-Extensions and plugins from [Gemini CLI Extensions Gallery](https://geminicli.com/extensions/) and [Claude Code Marketplace](https://claudemarketplaces.com/) can be directly installed into Qwen Code. This cross-platform compatibility gives you access to a rich ecosystem of extensions and plugins, dramatically expanding Qwen Code's capabilities without requiring extension authors to maintain separate versions.
+Extensions and plugins from [Gemini CLI Extensions Gallery](https://geminicli.com/extensions/) and [Claude Code Marketplace](https://claudemarketplaces.com/) can be directly installed into Vibe Code. This cross-platform compatibility gives you access to a rich ecosystem of extensions and plugins, dramatically expanding Vibe Code's capabilities without requiring extension authors to maintain separate versions.
 
 ## Extension management
 
-We offer a suite of extension management tools using both `qwen extensions` CLI commands and `/extensions` slash commands within the interactive CLI.
+We offer a suite of extension management tools using both `vibe extensions` CLI commands and `/extensions` slash commands within the interactive CLI.
 
 ### Runtime Extension Management (Slash Commands)
 
@@ -20,43 +20,43 @@ You can manage extensions at runtime within the interactive CLI using `/extensio
 
 ### CLI Extension Management
 
-You can also manage extensions using `qwen extensions` CLI commands. Note that changes made via CLI commands will be reflected in active CLI sessions on restart.
+You can also manage extensions using `vibe extensions` CLI commands. Note that changes made via CLI commands will be reflected in active CLI sessions on restart.
 
 ### Installing an extension
 
-You can install an extension using `qwen extensions install` from multiple sources:
+You can install an extension using `vibe extensions install` from multiple sources:
 
 #### From Claude Code Marketplace
 
-Qwen Code also supports plugins from the [Claude Code Marketplace](https://claudemarketplaces.com/). Install from a marketplace and choose a plugin:
+Vibe Code also supports plugins from the [Claude Code Marketplace](https://claudemarketplaces.com/). Install from a marketplace and choose a plugin:
 
 ```bash
-qwen extensions install <marketplace-name>
+vibe extensions install <marketplace-name>
 # or
-qwen extensions install <marketplace-github-url>
+vibe extensions install <marketplace-github-url>
 ```
 
 If you want to install a specific plugin, you can use the format with plugin name:
 
 ```bash
-qwen extensions install <marketplace-name>:<plugin-name>
+vibe extensions install <marketplace-name>:<plugin-name>
 # or
-qwen extensions install <marketplace-github-url>:<plugin-name>
+vibe extensions install <marketplace-github-url>:<plugin-name>
 ```
 
 For example, to install the `prompts.chat` plugin from the [f/awesome-chatgpt-prompts](https://claudemarketplaces.com/plugins/f-awesome-chatgpt-prompts) marketplace:
 
 ```bash
-qwen extensions install f/awesome-chatgpt-prompts:prompts.chat
+vibe extensions install f/awesome-chatgpt-prompts:prompts.chat
 # or
-qwen extensions install https://github.com/f/awesome-chatgpt-prompts:prompts.chat
+vibe extensions install https://github.com/f/awesome-chatgpt-prompts:prompts.chat
 ```
 
-Claude plugins are automatically converted to Qwen Code format during installation:
+Claude plugins are automatically converted to Vibe Code format during installation:
 
-- `claude-plugin.json` is converted to `qwen-extension.json`
-- Agent configurations are converted to Qwen subagent format
-- Skill configurations are converted to Qwen skill format
+- `claude-plugin.json` is converted to `vibe-extension.json`
+- Agent configurations are converted to Vibe subagent format
+- Skill configurations are converted to Vibe skill format
 - Tool mappings are automatically handled
 
 You can quickly browse available extensions from different marketplaces using the `/extensions explore` command:
@@ -69,39 +69,39 @@ You can quickly browse available extensions from different marketplaces using th
 /extensions explore ClaudeCode
 ```
 
-This command opens the respective marketplace in your default browser, allowing you to discover new extensions to enhance your Qwen Code experience.
+This command opens the respective marketplace in your default browser, allowing you to discover new extensions to enhance your Vibe Code experience.
 
-> **Cross-Platform Compatibility**: This allows you to leverage the rich extension ecosystems from both Gemini CLI and Claude Code, dramatically expanding the available functionality for Qwen Code users.
+> **Cross-Platform Compatibility**: This allows you to leverage the rich extension ecosystems from both Gemini CLI and Claude Code, dramatically expanding the available functionality for Vibe Code users.
 
 #### From Gemini CLI Extensions
 
-Qwen Code fully supports extensions from the [Gemini CLI Extensions Gallery](https://geminicli.com/extensions/). Simply install them using the git URL:
+Vibe Code fully supports extensions from the [Gemini CLI Extensions Gallery](https://geminicli.com/extensions/). Simply install them using the git URL:
 
 ```bash
-qwen extensions install <gemini-cli-extension-github-url>
+vibe extensions install <gemini-cli-extension-github-url>
 # or
-qwen extensions install <owner>/<repo>
+vibe extensions install <owner>/<repo>
 ```
 
-Gemini extensions are automatically converted to Qwen Code format during installation:
+Gemini extensions are automatically converted to Vibe Code format during installation:
 
-- `gemini-extension.json` is converted to `qwen-extension.json`
+- `gemini-extension.json` is converted to `vibe-extension.json`
 - TOML command files are automatically migrated to Markdown format
 - MCP servers, context files, and settings are preserved
 
 #### From npm Registry
 
-Qwen Code supports installing extensions from npm registries using scoped package names. This is ideal for teams with private registries that already have auth, versioning, and publishing infrastructure in place.
+Vibe Code supports installing extensions from npm registries using scoped package names. This is ideal for teams with private registries that already have auth, versioning, and publishing infrastructure in place.
 
 ```bash
 # Install the latest version
-qwen extensions install @scope/my-extension
+vibe extensions install @scope/my-extension
 
 # Install a specific version
-qwen extensions install @scope/my-extension@1.2.0
+vibe extensions install @scope/my-extension@1.2.0
 
 # Install from a custom registry
-qwen extensions install @scope/my-extension --registry https://your-registry.com
+vibe extensions install @scope/my-extension --registry https://your-registry.com
 ```
 
 Only scoped packages (`@scope/package-name`) are supported to avoid ambiguity with the `owner/repo` GitHub shorthand format.
@@ -115,12 +115,12 @@ Only scoped packages (`@scope/package-name`) are supported to avoid ambiguity wi
 
 **Authentication** is handled automatically via the `NPM_TOKEN` environment variable or registry-specific `_authToken` entries in your `.npmrc` file.
 
-> **Note:** npm extensions must include a `qwen-extension.json` file at the package root, following the same format as any other Qwen Code extension. See [Extension Releasing](./extension-releasing.md#releasing-through-npm-registry) for packaging details.
+> **Note:** npm extensions must include a `vibe-extension.json` file at the package root, following the same format as any other Vibe Code extension. See [Extension Releasing](./extension-releasing.md#releasing-through-npm-registry) for packaging details.
 
 #### From Git Repository
 
 ```bash
-qwen extensions install https://github.com/github/github-mcp-server
+vibe extensions install https://github.com/github/github-mcp-server
 ```
 
 This will install the github mcp server extension.
@@ -128,52 +128,52 @@ This will install the github mcp server extension.
 #### From Local Path
 
 ```bash
-qwen extensions install /path/to/your/extension
+vibe extensions install /path/to/your/extension
 ```
 
-Note that we create a copy of the installed extension, so you will need to run `qwen extensions update` to pull in changes from both locally-defined extensions and those on GitHub.
+Note that we create a copy of the installed extension, so you will need to run `vibe extensions update` to pull in changes from both locally-defined extensions and those on GitHub.
 
 ### Uninstalling an extension
 
-To uninstall, run `qwen extensions uninstall extension-name`, so, in the case of the install example:
+To uninstall, run `vibe extensions uninstall extension-name`, so, in the case of the install example:
 
 ```
-qwen extensions uninstall qwen-cli-security
+vibe extensions uninstall vibe-cli-security
 ```
 
 ### Disabling an extension
 
 Extensions are, by default, enabled across all workspaces. You can disable an extension entirely or for specific workspace.
 
-For example, `qwen extensions disable extension-name` will disable the extension at the user level, so it will be disabled everywhere. `qwen extensions disable extension-name --scope=workspace` will only disable the extension in the current workspace.
+For example, `vibe extensions disable extension-name` will disable the extension at the user level, so it will be disabled everywhere. `vibe extensions disable extension-name --scope=workspace` will only disable the extension in the current workspace.
 
 ### Enabling an extension
 
-You can enable extensions using `qwen extensions enable extension-name`. You can also enable an extension for a specific workspace using `qwen extensions enable extension-name --scope=workspace` from within that workspace.
+You can enable extensions using `vibe extensions enable extension-name`. You can also enable an extension for a specific workspace using `vibe extensions enable extension-name --scope=workspace` from within that workspace.
 
 This is useful if you have an extension disabled at the top-level and only enabled in specific places.
 
 ### Updating an extension
 
-For extensions installed from a local path, a git repository, or an npm registry, you can explicitly update to the latest version with `qwen extensions update extension-name`. For npm extensions installed without a version pin (e.g. `@scope/pkg`), updates check the `latest` dist-tag. For those installed with a specific dist-tag (e.g. `@scope/pkg@beta`), updates track that tag. Extensions pinned to an exact version (e.g. `@scope/pkg@1.2.0`) are always considered up-to-date.
+For extensions installed from a local path, a git repository, or an npm registry, you can explicitly update to the latest version with `vibe extensions update extension-name`. For npm extensions installed without a version pin (e.g. `@scope/pkg`), updates check the `latest` dist-tag. For those installed with a specific dist-tag (e.g. `@scope/pkg@beta`), updates track that tag. Extensions pinned to an exact version (e.g. `@scope/pkg@1.2.0`) are always considered up-to-date.
 
 You can update all extensions with:
 
 ```
-qwen extensions update --all
+vibe extensions update --all
 ```
 
 ## How it works
 
-On startup, Qwen Code looks for extensions in `<home>/.vibe/extensions`
+On startup, Vibe Code looks for extensions in `<home>/.vibe/extensions`
 
-Extensions exist as a directory that contains a `qwen-extension.json` file. For example:
+Extensions exist as a directory that contains a `vibe-extension.json` file. For example:
 
-`<home>/.vibe/extensions/my-extension/qwen-extension.json`
+`<home>/.vibe/extensions/my-extension/vibe-extension.json`
 
-### `qwen-extension.json`
+### `vibe-extension.json`
 
-The `qwen-extension.json` file contains the configuration for the extension. The file has the following structure:
+The `vibe-extension.json` file contains the configuration for the extension. The file has the following structure:
 
 ```json
 {
@@ -190,7 +190,7 @@ The `qwen-extension.json` file contains the configuration for the extension. The
       "displayName": "My Platform Channel"
     }
   },
-  "contextFileName": "QWEN.md",
+  "contextFileName": "VIBE.md",
   "commands": "commands",
   "skills": "skills",
   "agents": "agents",
@@ -210,7 +210,7 @@ The `qwen-extension.json` file contains the configuration for the extension. The
 - `mcpServers`: A map of MCP servers to configure. The key is the name of the server, and the value is the server configuration. These servers will be loaded on startup just like MCP servers configured in a [`settings.json` file](./cli/configuration.md). If both an extension and a `settings.json` file configure an MCP server with the same name, the server defined in the `settings.json` file takes precedence.
   - Note that all MCP server configuration options are supported except for `trust`.
 - `channels`: A map of custom channel adapters. The key is the channel type name, and the value has an `entry` (path to compiled JS entry point) and optional `displayName`. The entry point must export a `plugin` object conforming to the `ChannelPlugin` interface. See [Channel Plugins](../features/channels/plugins) for a full guide.
-- `contextFileName`: The name of the file that contains the context for the extension. This will be used to load the context from the extension directory. If this property is not used but a `QWEN.md` file is present in your extension directory, then that file will be loaded.
+- `contextFileName`: The name of the file that contains the context for the extension. This will be used to load the context from the extension directory. If this property is not used but a `VIBE.md` file is present in your extension directory, then that file will be loaded.
 - `commands`: The directory containing custom commands (default: `commands`). Commands are `.md` files that define prompts.
 - `skills`: The directory containing custom skills (default: `skills`). Skills are discovered automatically and become available via the `/skills` command.
 - `agents`: The directory containing custom subagents (default: `agents`). Subagents are `.yaml` or `.md` files that define specialized AI assistants.
@@ -223,30 +223,30 @@ The `qwen-extension.json` file contains the configuration for the extension. The
 
 ### Managing Extension Settings
 
-Extensions can require configuration through settings (such as API keys or credentials). These settings can be managed using the `qwen extensions settings` CLI command:
+Extensions can require configuration through settings (such as API keys or credentials). These settings can be managed using the `vibe extensions settings` CLI command:
 
 **Set a setting value:**
 
 ```bash
-qwen extensions settings set <extension-name> <setting-name> [--scope user|workspace]
+vibe extensions settings set <extension-name> <setting-name> [--scope user|workspace]
 ```
 
 **List all settings for an extension:**
 
 ```bash
-qwen extensions settings list <extension-name>
+vibe extensions settings list <extension-name>
 ```
 
 **View current values (user and workspace):**
 
 ```bash
-qwen extensions settings show <extension-name> <setting-name>
+vibe extensions settings show <extension-name> <setting-name>
 ```
 
 **Remove a setting value:**
 
 ```bash
-qwen extensions settings unset <extension-name> <setting-name> [--scope user|workspace]
+vibe extensions settings unset <extension-name> <setting-name> [--scope user|workspace]
 ```
 
 Settings can be configured at two levels:
@@ -256,7 +256,7 @@ Settings can be configured at two levels:
 
 Workspace settings take precedence over user settings. Sensitive settings are stored securely and never displayed in plain text.
 
-When Qwen Code starts, it loads all the extensions and merges their configurations. If there are any conflicts, the workspace configuration takes precedence.
+When Vibe Code starts, it loads all the extensions and merges their configurations. If there are any conflicts, the workspace configuration takes precedence.
 
 ### Custom commands
 
@@ -269,8 +269,8 @@ Extensions can provide [custom commands](./cli/commands.md#custom-commands) by p
 An extension named `gcp` with the following structure:
 
 ```
-.qwen/extensions/gcp/
-├── qwen-extension.json
+.vibe/extensions/gcp/
+├── vibe-extension.json
 └── commands/
     ├── deploy.md
     └── gcs/
@@ -289,8 +289,8 @@ Extensions can provide custom skills by placing skill files in a `skills/` subdi
 **Example**
 
 ```
-.qwen/extensions/my-extension/
-├── qwen-extension.json
+.vibe/extensions/my-extension/
+├── vibe-extension.json
 └── skills/
     └── pdf-processor/
         └── SKILL.md
@@ -305,8 +305,8 @@ Extensions can provide custom subagents by placing agent configuration files in 
 **Example**
 
 ```
-.qwen/extensions/my-extension/
-├── qwen-extension.json
+.vibe/extensions/my-extension/
+├── vibe-extension.json
 └── agents/
     └── testing-expert.yaml
 ```
@@ -327,7 +327,7 @@ For example, if both a user and the `gcp` extension define a `deploy` command:
 
 ## Variables
 
-Qwen Code extensions allow variable substitution in `qwen-extension.json`. This can be useful if e.g., you need the current directory to run an MCP server using `"cwd": "${extensionPath}${/}run.ts"`.
+Vibe Code extensions allow variable substitution in `vibe-extension.json`. This can be useful if e.g., you need the current directory to run an MCP server using `"cwd": "${extensionPath}${/}run.ts"`.
 
 **Supported variables:**
 

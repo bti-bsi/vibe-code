@@ -122,7 +122,7 @@ export interface SDKSystemMessage {
   model?: string;
   permission_mode?: string;
   slash_commands?: string[];
-  qwen_code_version?: string;
+  vibe_code_version?: string;
   output_style?: string;
   agents?: string[];
   skills?: string[];
@@ -239,7 +239,7 @@ export type PermissionMode = 'default' | 'plan' | 'auto-edit' | 'yolo';
 export type AuthType =
   | 'openai'
   | 'anthropic'
-  | 'qwen-oauth'
+  | 'vibe-oauth'
   | 'gemini'
   | 'vertex-ai';
 
@@ -571,7 +571,7 @@ export interface SubagentConfig {
 
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 

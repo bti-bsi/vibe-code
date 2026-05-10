@@ -120,7 +120,7 @@ export const TimeoutConfigSchema = z.object({
 const QuerySystemPromptPresetSchema = z
   .object({
     type: z.literal('preset'),
-    preset: z.literal('qwen_code'),
+    preset: z.literal('vibe_code'),
     append: z
       .string()
       .min(1, 'systemPrompt.append must be a non-empty string')
@@ -132,7 +132,7 @@ export const QueryOptionsSchema = z
   .object({
     cwd: z.string().optional(),
     model: z.string().optional(),
-    pathToQwenExecutable: z.string().optional(),
+    pathToVibeExecutable: z.string().optional(),
     env: z.record(z.string(), z.string()).optional(),
     systemPrompt: z
       .union([
@@ -160,7 +160,7 @@ export const QueryOptionsSchema = z
     excludeTools: z.array(z.string()).optional(),
     allowedTools: z.array(z.string()).optional(),
     authType: z
-      .enum(['openai', 'anthropic', 'qwen-oauth', 'gemini', 'vertex-ai'])
+      .enum(['openai', 'anthropic', 'vibe-oauth', 'gemini', 'vertex-ai'])
       .optional(),
     agents: z
       .array(

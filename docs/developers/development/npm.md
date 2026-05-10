@@ -4,7 +4,7 @@ This monorepo contains two main packages: `@vibe-bti/vibe-code` and `@vibe-bti/v
 
 ## `@vibe-bti/vibe-code`
 
-This is the main package for Qwen Code. It is responsible for the user interface, command parsing, and all other user-facing functionality.
+This is the main package for Vibe Code. It is responsible for the user interface, command parsing, and all other user-facing functionality.
 
 When this package is published, it is bundled into a single executable file. This bundle includes all of the package's dependencies, including `@vibe-bti/vibe-code-core`. This means that whether a user installs the package with `npm install -g @vibe-bti/vibe-code` or runs it directly with `npx @vibe-bti/vibe-code`, they are using this single, self-contained executable.
 
@@ -163,7 +163,7 @@ This command will do the following:
 3.  Create the package tarballs that would be published to npm.
 4.  Print a summary of the packages that would be published.
 
-You can then inspect the generated tarballs to ensure that they contain the correct files and that the `package.json` files have been updated correctly. The tarballs will be created in the root of each package's directory (e.g., `packages/cli/qwen-code-0.1.6.tgz`).
+You can then inspect the generated tarballs to ensure that they contain the correct files and that the `package.json` files have been updated correctly. The tarballs will be created in the root of each package's directory (e.g., `packages/cli/vibe-code-0.1.6.tgz`).
 
 By performing a dry run, you can be confident that your changes to the packaging process are correct and that the packages will be published successfully.
 

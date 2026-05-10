@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -21,7 +21,7 @@ interface AccountInfoDialogProps {
 }
 
 const AUTH_LABELS: Record<string, string> = {
-  'qwen-oauth': 'Qwen OAuth',
+  'vibe-oauth': 'Vibe OAuth',
   openai: 'OpenAI-compatible',
   gemini: 'Gemini',
   anthropic: 'Anthropic',

@@ -1,18 +1,18 @@
 # Commands
 
-This document details all commands supported by Qwen Code, helping you efficiently manage sessions, customize the interface, and control its behavior.
+This document details all commands supported by Vibe Code, helping you efficiently manage sessions, customize the interface, and control its behavior.
 
-Qwen Code commands are triggered through specific prefixes and fall into three categories:
+Vibe Code commands are triggered through specific prefixes and fall into three categories:
 
 | Prefix Type                | Function Description                                | Typical Use Case                                                 |
 | -------------------------- | --------------------------------------------------- | ---------------------------------------------------------------- |
-| Slash Commands (`/`)       | Meta-level control of Qwen Code itself              | Managing sessions, modifying settings, getting help              |
+| Slash Commands (`/`)       | Meta-level control of Vibe Code itself              | Managing sessions, modifying settings, getting help              |
 | At Commands (`@`)          | Quickly inject local file content into conversation | Allowing AI to analyze specified files or code under directories |
 | Exclamation Commands (`!`) | Direct interaction with system Shell                | Executing system commands like `git status`, `ls`, etc.          |
 
 ## 1. Slash Commands (`/`)
 
-Slash commands are used to manage Qwen Code sessions, interface, and basic behavior.
+Slash commands are used to manage Vibe Code sessions, interface, and basic behavior.
 
 ### 1.1 Session and Project Management
 
@@ -36,7 +36,7 @@ Commands for adjusting interface appearance and work environment.
 | `/clear`     | Clear terminal screen content            | `/clear` (shortcut: `Ctrl+L`) |
 | `/context`   | Show context window usage breakdown      | `/context`                    |
 | → `detail`   | Show per-item context usage breakdown    | `/context detail`             |
-| `/theme`     | Change Qwen Code visual theme            | `/theme`                      |
+| `/theme`     | Change Vibe Code visual theme            | `/theme`                      |
 | `/vim`       | Turn input area Vim editing mode on/off  | `/vim`                        |
 | `/directory` | Manage multi-directory support workspace | `/dir add ./src,./tests`      |
 | `/editor`    | Open dialog to select supported editor   | `/editor`                     |
@@ -70,7 +70,7 @@ Commands for managing AI tools and models.
 | →`auto-edit`     | Automatically approve edits                   | Trusted environment                           |
 | →`yolo`          | Automatically approve all                     | Quick prototyping                             |
 | `/model`         | Switch model used in current session          | `/model`                                      |
-| `/model --fast`  | Set a lighter model for prompt suggestions    | `/model --fast qwen3-coder-flash`             |
+| `/model --fast`  | Set a lighter model for prompt suggestions    | `/model --fast vibe3-coder-flash`             |
 | `/extensions`    | List all active extensions in current session | `/extensions`                                 |
 | `/memory`        | Open the Memory Manager dialog                | `/memory`                                     |
 | `/remember`      | Save a durable memory                         | `/remember Prefer terse responses`            |
@@ -85,7 +85,7 @@ These commands invoke bundled skills that provide specialized workflows.
 | ------------ | ------------------------------------------------------------------- | ------------------------------------------------- |
 | `/review`    | Review code changes with 5 parallel agents + deterministic analysis | `/review`, `/review 123`, `/review 123 --comment` |
 | `/loop`      | Run a prompt on a recurring schedule                                | `/loop 5m check the build`                        |
-| `/qc-helper` | Answer questions about Qwen Code usage and configuration            | `/qc-helper how do I configure MCP?`              |
+| `/qc-helper` | Answer questions about Vibe Code usage and configuration            | `/qc-helper how do I configure MCP?`              |
 
 See [Code Review](./code-review.md) for full `/review` documentation.
 
@@ -204,7 +204,7 @@ this setting.
 > [!tip]
 >
 > Configure a fast model via `/model --fast <model>` (e.g.
-> `qwen3-coder-flash`) to make `/recap` fast and cheap. Set
+> `vibe3-coder-flash`) to make `/recap` fast and cheap. Set
 > `general.showSessionRecap` to `false` to opt out of the auto-trigger
 > while keeping the manual command available.
 
@@ -219,9 +219,9 @@ Commands for obtaining information and performing system settings.
 | `/stats`    | Display detailed statistics for current session | `/stats`                         |
 | `/settings` | Open settings editor                            | `/settings`                      |
 | `/auth`     | Change authentication method                    | `/auth`                          |
-| `/bug`      | Submit issue about Qwen Code                    | `/bug Button click unresponsive` |
+| `/bug`      | Submit issue about Vibe Code                    | `/bug Button click unresponsive` |
 | `/copy`     | Copy last output content to clipboard           | `/copy`                          |
-| `/quit`     | Exit Qwen Code immediately                      | `/quit` or `/exit`               |
+| `/quit`     | Exit Vibe Code immediately                      | `/quit` or `/exit`               |
 
 ### 1.9 Common Shortcuts
 
@@ -235,20 +235,20 @@ Commands for obtaining information and performing system settings.
 
 ### 1.10 CLI Auth Subcommands
 
-In addition to the in-session `/auth` slash command, Qwen Code provides standalone CLI subcommands for managing authentication directly from the terminal:
+In addition to the in-session `/auth` slash command, Vibe Code provides standalone CLI subcommands for managing authentication directly from the terminal:
 
 | Command                                              | Description                                                   |
 | ---------------------------------------------------- | ------------------------------------------------------------- |
-| `qwen auth`                                          | Interactive authentication setup                              |
-| `qwen auth coding-plan`                              | Authenticate with Alibaba Cloud Coding Plan                   |
-| `qwen auth coding-plan --region china --key sk-sp-…` | Non-interactive Coding Plan setup (for scripting)             |
-| `qwen auth api-key`                                  | Authenticate with an API key                                  |
-| `qwen auth qwen-oauth`                               | ~~Authenticate with Qwen OAuth~~ (discontinued on 2026-04-15) |
-| `qwen auth status`                                   | Show current authentication status                            |
+| `vibe auth`                                          | Interactive authentication setup                              |
+| `vibe auth coding-plan`                              | Authenticate with Alibaba Cloud Coding Plan                   |
+| `vibe auth coding-plan --region china --key sk-sp-…` | Non-interactive Coding Plan setup (for scripting)             |
+| `vibe auth api-key`                                  | Authenticate with an API key                                  |
+| `vibe auth vibe-oauth`                               | ~~Authenticate with Vibe OAuth~~ (discontinued on 2026-04-15) |
+| `vibe auth status`                                   | Show current authentication status                            |
 
 > [!tip]
 >
-> These commands run outside of a Qwen Code session. Use them to configure authentication before starting a session, or in scripts and CI environments. See the [Authentication](../configuration/auth) page for full details.
+> These commands run outside of a Vibe Code session. Use them to configure authentication before starting a session, or in scripts and CI environments. See the [Authentication](../configuration/auth) page for full details.
 
 ## 2. @ Commands (Introducing Files)
 
@@ -264,14 +264,14 @@ Note: Spaces in paths need to be escaped with backslash (e.g., `@My\ Documents/f
 
 ## 3. Exclamation Commands (`!`) - Shell Command Execution
 
-Exclamation commands allow you to execute system commands directly within Qwen Code.
+Exclamation commands allow you to execute system commands directly within Vibe Code.
 
 | Command Format     | Description                                                        | Examples                               |
 | ------------------ | ------------------------------------------------------------------ | -------------------------------------- |
 | `!<shell command>` | Execute command in sub-Shell                                       | `!ls -la`, `!git status`               |
 | Standalone `!`     | Switch Shell mode, any input is executed directly as Shell command | `!`(enter) → Input command → `!`(exit) |
 
-Environment Variables: Commands executed via `!` will set the `QWEN_CODE=1` environment variable.
+Environment Variables: Commands executed via `!` will set the `VIBE_CODE=1` environment variable.
 
 ## 4. Custom Commands
 

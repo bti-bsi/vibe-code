@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -1497,7 +1497,7 @@ describe('OpenAIContentConverter', () => {
       /**
        * Regression tests for https://github.com/vibe-bti/vibe-code/issues/3421
        *
-       * When a model (e.g. Ollama qwen3.5:9b) returns a response that contains
+       * When a model (e.g. Ollama vibe3.5:9b) returns a response that contains
        * reasoning content but an empty text body, the converted assistant message
        * must use content: "" instead of content: null.
        * Some OpenAI-compatible providers reject content: null with HTTP 400 when

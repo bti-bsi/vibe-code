@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 describe('imageSupport browser bundling', () => {
-  it('does not leave qwen-code-core runtime imports in the webview bundle', async () => {
+  it('does not leave vibe-code-core runtime imports in the webview bundle', async () => {
     const result = await esbuild.build({
       entryPoints: [
         fileURLToPath(new URL('./imageSupport.ts', import.meta.url)),
@@ -28,7 +28,7 @@ describe('imageSupport browser bundling', () => {
     expect(output).not.toContain('supportedImageFormats.js');
   });
 
-  it('does not leave qwen-code-core runtime imports in the App webview bundle', async () => {
+  it('does not leave vibe-code-core runtime imports in the App webview bundle', async () => {
     const result = await esbuild.build({
       entryPoints: [
         fileURLToPath(new URL('../webview/App.tsx', import.meta.url)),

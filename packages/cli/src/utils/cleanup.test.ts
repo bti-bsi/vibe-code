@@ -9,7 +9,7 @@ import {
   _resetCleanupFunctionsForTest,
   registerCleanup,
   runExitCleanup,
-} from './cleanup';
+} from './cleanup.js';
 
 describe('cleanup', () => {
   beforeEach(() => {

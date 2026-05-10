@@ -61,12 +61,13 @@ import { vimCommand } from '../ui/commands/vimCommand.js';
 import { setupGithubCommand } from '../ui/commands/setupGithubCommand.js';
 import { insightCommand } from '../ui/commands/insightCommand.js';
 import { statuslineCommand } from '../ui/commands/statuslineCommand.js';
+import { configCommand } from '../ui/commands/configCommand.js';
 
 const builtinDebugLogger = createDebugLogger('BUILTIN_COMMAND_LOADER');
 
 /**
  * Loads the core, hard-coded slash commands that are an integral part
- * of the Qwen Code application.
+ * of the Vibe Code application.
  */
 export class BuiltinCommandLoader implements ICommandLoader {
   constructor(private config: Config | null) {}
@@ -147,6 +148,7 @@ export class BuiltinCommandLoader implements ICommandLoader {
       terminalSetupCommand,
       insightCommand,
       statuslineCommand,
+      configCommand,
     ];
 
     return allDefinitions

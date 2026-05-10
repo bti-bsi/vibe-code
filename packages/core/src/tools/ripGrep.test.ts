@@ -432,9 +432,9 @@ describe('RipGrepTool', () => {
       expect(result.returnDisplay).toBe('Found 1 match');
     });
 
-    it('should pass .qwenignore to ripgrep when respected', async () => {
+    it('should pass .vibeignore to ripgrep when respected', async () => {
       await fs.writeFile(
-        path.join(tempRootDir, '.qwenignore'),
+        path.join(tempRootDir, '.vibeignore'),
         'ignored.txt\n',
       );
       (runRipgrep as Mock).mockResolvedValue({
@@ -452,13 +452,13 @@ describe('RipGrepTool', () => {
       expect(result.returnDisplay).toBe('No matches found');
     });
 
-    it('should include .qwenignore matches when disabled in config', async () => {
-      await fs.writeFile(path.join(tempRootDir, '.qwenignore'), 'kept.txt\n');
+    it('should include .vibeignore matches when disabled in config', async () => {
+      await fs.writeFile(path.join(tempRootDir, '.vibeignore'), 'kept.txt\n');
       await fs.writeFile(path.join(tempRootDir, 'kept.txt'), 'keep me');
       Object.assign(mockConfig, {
         getFileFilteringOptions: () => ({
           respectGitIgnore: true,
-          respectQwenIgnore: false,
+          respectVibeIgnore: false,
         }),
       });
 
@@ -482,7 +482,7 @@ describe('RipGrepTool', () => {
       Object.assign(mockConfig, {
         getFileFilteringOptions: () => ({
           respectGitIgnore: false,
-          respectQwenIgnore: true,
+          respectVibeIgnore: true,
         }),
       });
 
@@ -699,13 +699,13 @@ describe('RipGrepTool', () => {
       await fs.rm(secondDir, { recursive: true, force: true });
     });
 
-    it('should load .qwenignore from each workspace directory', async () => {
+    it('should load .vibeignore from each workspace directory', async () => {
       const secondDir = await fs.mkdtemp(
         path.join(os.tmpdir(), 'grep-tool-second-'),
       );
-      await fs.writeFile(path.join(secondDir, '.qwenignore'), 'ignored.txt\n');
+      await fs.writeFile(path.join(secondDir, '.vibeignore'), 'ignored.txt\n');
       await fs.writeFile(
-        path.join(tempRootDir, '.qwenignore'),
+        path.join(tempRootDir, '.vibeignore'),
         'other-ignored.txt\n',
       );
 
@@ -727,13 +727,13 @@ describe('RipGrepTool', () => {
       const invocation = multiDirGrepTool.build(params);
       await invocation.execute(abortSignal);
 
-      // Verify both .qwenignore files were passed
+      // Verify both .vibeignore files were passed
       const rgArgs = (runRipgrep as Mock).mock.calls[0][0] as string[];
       const ignoreFileArgs = rgArgs.filter(
         (a: string, i: number) => i > 0 && rgArgs[i - 1] === '--ignore-file',
       );
-      expect(ignoreFileArgs).toContain(path.join(tempRootDir, '.qwenignore'));
-      expect(ignoreFileArgs).toContain(path.join(secondDir, '.qwenignore'));
+      expect(ignoreFileArgs).toContain(path.join(tempRootDir, '.vibeignore'));
+      expect(ignoreFileArgs).toContain(path.join(secondDir, '.vibeignore'));
 
       await fs.rm(secondDir, { recursive: true, force: true });
     });

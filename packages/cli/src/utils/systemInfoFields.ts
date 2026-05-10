@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -96,9 +96,9 @@ function formatAuth(info: ExtendedSystemInfo): string {
 
   if (
     info.selectedAuthType.startsWith('oauth') ||
-    info.selectedAuthType === 'qwen-oauth'
+    info.selectedAuthType === 'vibe-oauth'
   ) {
-    return 'Qwen OAuth';
+    return 'Vibe OAuth';
   }
 
   return `API Key - ${info.selectedAuthType}`;
@@ -111,7 +111,7 @@ function formatBaseUrl(info: ExtendedSystemInfo): string {
 
   if (
     info.selectedAuthType.startsWith('oauth') ||
-    info.selectedAuthType === 'qwen-oauth'
+    info.selectedAuthType === 'vibe-oauth'
   ) {
     return '';
   }

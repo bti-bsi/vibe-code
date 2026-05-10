@@ -226,6 +226,48 @@ const SETTINGS_SCHEMA = {
     mergeStrategy: MergeStrategy.SHALLOW_MERGE,
   },
 
+  scopus_apikey: {
+    type: 'string',
+    label: 'Scopus API Key',
+    category: 'Advanced',
+    requiresRestart: false,
+    default: undefined as string | undefined,
+    description: 'API key for Scopus tools (search, trend, abstract pdf).',
+    showInDialog: false,
+  },
+
+  google_search_api_key: {
+    type: 'string',
+    label: 'Google Search API Key',
+    category: 'Advanced',
+    requiresRestart: false,
+    default: undefined as string | undefined,
+    description: 'API key for Google Search tools.',
+    showInDialog: false,
+  },
+
+  google_search_cx: {
+    type: 'string',
+    label: 'Google Search CX ID',
+    category: 'Advanced',
+    requiresRestart: false,
+    default: undefined as string | undefined,
+    description: 'Search Engine ID (CX) for Google Search tools.',
+    showInDialog: false,
+  },
+
+  whatsapp_allowed: {
+    type: 'array',
+    label: 'WhatsApp Allowed Numbers',
+    category: 'Advanced',
+    requiresRestart: false,
+    default: [] as string[],
+    description:
+      'List of WhatsApp numbers allowed to interact with the system.',
+    showInDialog: false,
+    mergeStrategy: MergeStrategy.UNION,
+  },
+
   // Channels configuration (Telegram, Discord, etc.)
   channels: {
     type: 'object',
@@ -366,7 +408,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: true,
         description:
-          'Automatically add a Co-authored-by trailer to git commit messages when commits are made through Qwen Code.',
+          'Automatically add a Co-authored-by trailer to git commit messages when commits are made through Vibe Code.',
         showInDialog: true,
       },
       checkpointing: {
@@ -407,7 +449,7 @@ const SETTINGS_SCHEMA = {
         description:
           'The language for the user interface. Use "auto" to detect from system settings. ' +
           'You can also use custom language codes (e.g., "es", "fr") by placing JS language files ' +
-          'in ~/.qwen/locales/ (e.g., ~/.qwen/locales/es.js).',
+          'in ~/.vibe/locales/ (e.g., ~/.vibe/locales/es.js).',
         showInDialog: true,
         options: [] as readonly SettingEnumOption[],
       },
@@ -535,7 +577,7 @@ const SETTINGS_SCHEMA = {
         label: 'Theme',
         category: 'UI',
         requiresRestart: false,
-        default: 'Qwen Dark' as string,
+        default: 'Vibe Dark' as string,
         description: 'The color theme for the UI.',
         showInDialog: true,
       },
@@ -580,7 +622,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: false,
         description:
-          'Show Qwen Code status and thoughts in the terminal window title',
+          'Show Vibe Code status and thoughts in the terminal window title',
         showInDialog: false,
       },
       hideTips: {
@@ -636,7 +678,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: true,
         description:
-          'Show optional feedback dialog after conversations to help improve Qwen performance.',
+          'Show optional feedback dialog after conversations to help improve Vibe performance.',
         showInDialog: true,
       },
       enableFollowupSuggestions: {
@@ -799,7 +841,7 @@ const SETTINGS_SCHEMA = {
     requiresRestart: false,
     default: '',
     description:
-      'Model used for generating prompt suggestions and speculative execution. Leave empty to use the main model. A smaller/faster model (e.g., qwen3-coder-flash) reduces latency and cost.',
+      'Model used for generating prompt suggestions and speculative execution. Leave empty to use the main model. A smaller/faster model (e.g., vibe3-coder-flash) reduces latency and cost.',
     showInDialog: true,
   },
 
@@ -953,7 +995,7 @@ const SETTINGS_SCHEMA = {
             requiresRestart: false,
             default: true,
             description:
-              'When false, Qwen Code uses non-streaming chat requests for this model. Useful for custom providers that reject SSE or streaming responses.',
+              'When false, Vibe Code uses non-streaming chat requests for this model. Useful for custom providers that reject SSE or streaming responses.',
             parentKey: 'generationConfig',
             showInDialog: false,
           },
@@ -979,7 +1021,7 @@ const SETTINGS_SCHEMA = {
             requiresRestart: false,
             default: undefined,
             description:
-              "Overrides the default context window size for the selected model. Use this setting when a provider's effective context limit differs from Qwen Code's default. This value defines the model's assumed maximum context capacity, not a per-request token limit.",
+              "Overrides the default context window size for the selected model. Use this setting when a provider's effective context limit differs from Vibe Code's default. This value defines the model's assumed maximum context capacity, not a per-request token limit.",
             parentKey: 'generationConfig',
             showInDialog: false,
           },
@@ -1003,7 +1045,7 @@ const SETTINGS_SCHEMA = {
         >
       | undefined,
     description:
-      'Optional per-model pricing for cost estimation in /stats model. Example: {"qwen3-coder": {"inputPerMillionTokens": 0.30, "outputPerMillionTokens": 1.20}}',
+      'Optional per-model pricing for cost estimation in /stats model. Example: {"vibe3-coder": {"inputPerMillionTokens": 0.30, "outputPerMillionTokens": 1.20}}',
     showInDialog: false,
   },
 
@@ -1104,13 +1146,13 @@ const SETTINGS_SCHEMA = {
             description: 'Respect .gitignore files when searching',
             showInDialog: true,
           },
-          respectQwenIgnore: {
+          respectVibeIgnore: {
             type: 'boolean',
-            label: 'Respect .qwenignore',
+            label: 'Respect .vibeignore',
             category: 'Context',
             requiresRestart: true,
             default: true,
-            description: 'Respect .qwenignore files when searching',
+            description: 'Respect .vibeignore files when searching',
             showInDialog: true,
           },
           enableRecursiveFileSearch: {
@@ -1273,7 +1315,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: true,
         default: undefined as string | undefined,
         description:
-          'Sandbox image URI used by Docker/Podman when --sandbox-image and QWEN_SANDBOX_IMAGE are not set.',
+          'Sandbox image URI used by Docker/Podman when --sandbox-image and VIBE_SANDBOX_IMAGE are not set.',
         showInDialog: false,
       },
       shell: {
@@ -1629,7 +1671,7 @@ const SETTINGS_SCHEMA = {
         default: undefined as string | undefined,
         description:
           'Custom directory for runtime output (temp files, debug logs, session data, todos, etc.). ' +
-          'Config files remain at ~/.qwen. Env var QWEN_RUNTIME_DIR takes priority.',
+          'Config files remain at ~/.vibe. Env var VIBE_RUNTIME_DIR takes priority.',
         showInDialog: false,
       },
     },
@@ -1676,7 +1718,7 @@ const SETTINGS_SCHEMA = {
             requiresRestart: true,
             default: undefined as string | undefined,
             description:
-              'Custom base directory for Arena worktrees. Defaults to ~/.qwen/arena.',
+              'Custom base directory for Arena worktrees. Defaults to ~/.vibe/arena.',
             showInDialog: false,
           },
           preserveArtifacts: {
@@ -1911,7 +1953,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: true,
         default: false,
         description:
-          'Enable in-session cron/loop tools (experimental). When enabled, the model can create recurring prompts using cron_create, cron_list, and cron_delete tools. Can also be enabled via QWEN_CODE_ENABLE_CRON=1 environment variable.',
+          'Enable in-session cron/loop tools (experimental). When enabled, the model can create recurring prompts using cron_create, cron_list, and cron_delete tools. Can also be enabled via VIBE_CODE_ENABLE_CRON=1 environment variable.',
         showInDialog: true,
       },
       emitToolUseSummaries: {
@@ -1921,7 +1963,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: true,
         description:
-          'Generate a short LLM-based label after each tool batch completes. In compact mode the label replaces the generic `Tool × N` header; in full mode it appears as a dim `● <label>` line below the tool group. Requires a fast model to be configured; runs in parallel with the next API call so latency is hidden. Currently affects interactive CLI rendering only — SDK / non-interactive emission of the `tool_use_summary` message is not yet wired (the message factory is exported for a follow-up PR). Can be overridden with QWEN_CODE_EMIT_TOOL_USE_SUMMARIES=0 or =1.',
+          'Generate a short LLM-based label after each tool batch completes. In compact mode the label replaces the generic `Tool × N` header; in full mode it appears as a dim `● <label>` line below the tool group. Requires a fast model to be configured; runs in parallel with the next API call so latency is hidden. Currently affects interactive CLI rendering only — SDK / non-interactive emission of the `tool_use_summary` message is not yet wired (the message factory is exported for a follow-up PR). Can be overridden with VIBE_CODE_EMIT_TOOL_USE_SUMMARIES=0 or =1.',
         showInDialog: true,
       },
     },

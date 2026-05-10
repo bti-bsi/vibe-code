@@ -7,7 +7,7 @@
 export enum TelemetryTarget {
   GCP = 'gcp',
   LOCAL = 'local',
-  QWEN = 'qwen',
+  VIBE = 'vibe',
 }
 
 const DEFAULT_TELEMETRY_TARGET = TelemetryTarget.LOCAL;
@@ -134,5 +134,5 @@ export {
   ApiRequestPhase,
   FileOperation,
 } from './metrics.js';
-export { QwenLogger } from './qwen-logger/qwen-logger.js';
+export { VibeLogger } from './vibe-logger/vibe-logger.js';
 export { sanitizeHookName } from './sanitize.js';

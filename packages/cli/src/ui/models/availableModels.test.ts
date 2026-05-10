@@ -1,35 +1,35 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   getAvailableModelsForAuthType,
-  getFilteredQwenModels,
+  getFilteredVibeModels,
   getOpenAIAvailableModelFromEnv,
 } from './availableModels.js';
 import { AuthType, type Config } from '@vibe-bti/vibe-code-core';
 
 describe('availableModels', () => {
-  describe('Qwen models', () => {
-    const qwenModels = getFilteredQwenModels();
+  describe('Vibe models', () => {
+    const vibeModels = getFilteredVibeModels();
 
     it('should include only coder-model', () => {
-      expect(qwenModels.length).toBe(1);
-      expect(qwenModels[0].id).toBe('coder-model');
+      expect(vibeModels.length).toBe(1);
+      expect(vibeModels[0].id).toBe('coder-model');
     });
 
     it('should have coder-model with vision capability', () => {
-      const coderModel = qwenModels[0];
+      const coderModel = vibeModels[0];
       expect(coderModel.isVision).toBe(true);
     });
   });
 
-  describe('getFilteredQwenModels', () => {
+  describe('getFilteredVibeModels', () => {
     it('should return coder-model with vision capability', () => {
-      const models = getFilteredQwenModels();
+      const models = getFilteredVibeModels();
       expect(models.length).toBe(1);
       expect(models[0].id).toBe('coder-model');
       expect(models[0].isVision).toBe(true);
@@ -77,28 +77,28 @@ describe('availableModels', () => {
       process.env = originalEnv;
     });
 
-    it('should return hard-coded qwen models for qwen-oauth', () => {
-      const models = getAvailableModelsForAuthType(AuthType.QWEN_OAUTH);
+    it('should return hard-coded vibe models for vibe-oauth', () => {
+      const models = getAvailableModelsForAuthType(AuthType.VIBE_OAUTH);
       expect(models.length).toBe(1);
       expect(models[0].id).toBe('coder-model');
       expect(models[0].isVision).toBe(true);
     });
 
-    it('should use config models for qwen-oauth when config is provided', () => {
+    it('should use config models for vibe-oauth when config is provided', () => {
       const mockConfig = {
         getAvailableModelsForAuthType: vi.fn().mockReturnValue([
           {
             id: 'custom',
             label: 'Custom',
             description: 'Custom model',
-            authType: AuthType.QWEN_OAUTH,
+            authType: AuthType.VIBE_OAUTH,
             isVision: false,
           },
         ]),
       } as unknown as Config;
 
       const models = getAvailableModelsForAuthType(
-        AuthType.QWEN_OAUTH,
+        AuthType.VIBE_OAUTH,
         mockConfig,
       );
       expect(models).toEqual([

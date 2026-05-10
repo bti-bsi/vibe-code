@@ -15,7 +15,7 @@ export interface ServiceInfo {
 }
 
 function pidFilePath(): string {
-  return path.join(os.homedir(), '.qwen', 'channels', 'service.pid');
+  return path.join(os.homedir(), '.vibe', 'channels', 'service.pid');
 }
 
 /** Check if a process is alive. */

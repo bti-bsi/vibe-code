@@ -1,7 +1,7 @@
 {
   "name": "@vibe-bti/vibe-code-channel-telegram",
   "version": "0.15.11",
-  "description": "Telegram channel adapter for Qwen Code",
+  "description": "Telegram channel adapter for Vibe Code",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

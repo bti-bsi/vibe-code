@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  *
  * Common component styles for webui
@@ -465,6 +465,77 @@
 .composer-input[contenteditable='false'] {
   color: #999;
   cursor: not-allowed;
+}
+
+.composer-token-summary {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 8px 6px 8px;
+  color: var(--app-secondary-foreground);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.composer-token-summary__items {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.composer-token-summary__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.composer-token-summary__model {
+  min-width: 0;
+  max-width: 30%;
+}
+
+.composer-token-summary__label {
+  color: var(--app-foreground-muted);
+}
+
+.composer-token-summary__value {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--app-input-foreground);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+}
+
+.composer-token-summary__percent {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--app-input-foreground);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+@media (max-width: 520px) {
+  .composer-token-summary {
+    align-items: flex-start;
+  }
+
+  .composer-token-summary__items {
+    flex-wrap: wrap;
+    gap: 2px 8px;
+  }
+
+  .composer-token-summary__model {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
 }
 
 .composer-actions {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -210,7 +210,7 @@ ${escapeXml(cmd.description)}
     let skillDescriptions = '';
     if (allSkillEntries.length === 0) {
       skillDescriptions =
-        'No skills are currently configured. Skills can be created by adding directories with SKILL.md files to .qwen/skills/ or ~/.qwen/skills/.';
+        'No skills are currently configured. Skills can be created by adding directories with SKILL.md files to .vibe/skills/ or ~/.vibe/skills/.';
     } else {
       skillDescriptions = allSkillEntries.join('\n');
     }

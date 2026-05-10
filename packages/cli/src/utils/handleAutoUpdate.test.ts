@@ -44,7 +44,7 @@ describe('handleAutoUpdate', () => {
   let mockUpdateInfo: UpdateObject;
   let mockSettings: LoadedSettings;
   let mockChildProcess: MockChildProcess;
-  let emitSpy: ReturnType<typeof vi.spyOn>;
+  let emitSpy: any;
 
   beforeEach(() => {
     mockSpawn = vi.fn();
@@ -216,7 +216,7 @@ describe('handleAutoUpdate', () => {
   });
 
   it('should use the "@nightly" tag for nightly updates', async () => {
-    mockUpdateInfo.update.latest = '2.0.0-nightly';
+    (mockUpdateInfo.update as any).latest = '2.0.0-nightly';
     mockGetInstallationInfo.mockReturnValue({
       updateCommand: 'npm i -g @vibe-bti/vibe-code@latest',
       updateMessage: 'This is an additional message.',

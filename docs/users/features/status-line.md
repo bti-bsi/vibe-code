@@ -75,7 +75,7 @@ The command receives a JSON object via stdin with the following fields:
   "session_id": "abc-123",
   "version": "0.14.1",
   "model": {
-    "display_name": "qwen-3-235b"
+    "display_name": "vibe-3-235b"
   },
   "context_window": {
     "context_window_size": 131072,
@@ -93,7 +93,7 @@ The command receives a JSON object via stdin with the following fields:
   },
   "metrics": {
     "models": {
-      "qwen-3-235b": {
+      "vibe-3-235b": {
         "api": {
           "total_requests": 10,
           "total_errors": 0,
@@ -122,7 +122,7 @@ The command receives a JSON object via stdin with the following fields:
 | Field                                 | Type             | Description                                                                        |
 | ------------------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
 | `session_id`                          | string           | Unique session identifier                                                          |
-| `version`                             | string           | Qwen Code version                                                                  |
+| `version`                             | string           | Vibe Code version                                                                  |
 | `model.display_name`                  | string           | Current model name                                                                 |
 | `context_window.context_window_size`  | number           | Total context window size in tokens                                                |
 | `context_window.used_percentage`      | number           | Context window usage as percentage (0–100)                                         |
@@ -155,7 +155,7 @@ The command receives a JSON object via stdin with the following fields:
 }
 ```
 
-Output: `qwen-3-235b  ctx:34%`
+Output: `vibe-3-235b  ctx:34%`
 
 ### Git branch + directory
 

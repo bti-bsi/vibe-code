@@ -81,6 +81,7 @@ type SettingInputRequestWrapper = {
   settingName: string;
   settingDescription: string;
   sensitive: boolean;
+  placeholder?: string;
   onSubmit: (value: string) => void;
   onCancel: () => void;
 };
@@ -115,6 +116,7 @@ export const useSettingInputRequests = () => {
         settingName: original.settingName,
         settingDescription: original.settingDescription,
         sensitive: original.sensitive,
+        placeholder: original.placeholder,
         onSubmit: (value: string) => {
           // Remove it from the outstanding list of requests by identity.
           dispatchSettingInputRequests({

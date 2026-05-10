@@ -54,7 +54,7 @@ export interface ContentGenerator {
 
 export enum AuthType {
   USE_OPENAI = 'openai',
-  QWEN_OAUTH = 'qwen-oauth',
+  VIBE_OAUTH = 'vibe-oauth',
   USE_GEMINI = 'gemini',
   USE_VERTEX_AI = 'vertex-ai',
   USE_ANTHROPIC = 'anthropic',
@@ -246,8 +246,8 @@ export function validateModelConfig(
 ): ModelConfigValidationResult {
   const errors: Error[] = [];
 
-  // Qwen OAuth doesn't need validation - it uses dynamic tokens
-  if (config.authType === AuthType.QWEN_OAUTH) {
+  // Vibe OAuth doesn't need validation - it uses dynamic tokens
+  if (config.authType === AuthType.VIBE_OAUTH) {
     return { valid: true, errors: [] };
   }
 
@@ -336,21 +336,21 @@ export async function createContentGenerator(
       './openaiContentGenerator/index.js'
     );
     baseGenerator = createOpenAIContentGenerator(generatorConfig, config);
-  } else if (authType === AuthType.QWEN_OAUTH) {
-    const { getQwenOAuthClient: getQwenOauthClient } = await import(
-      '../qwen/qwenOAuth2.js'
+  } else if (authType === AuthType.VIBE_OAUTH) {
+    const { getVibeOAuthClient: getVibeOauthClient } = await import(
+      '../vibe/vibeOAuth2.js'
     );
-    const { QwenContentGenerator } = await import(
-      '../qwen/qwenContentGenerator.js'
+    const { VibeContentGenerator } = await import(
+      '../vibe/vibeContentGenerator.js'
     );
 
     try {
-      const qwenClient = await getQwenOauthClient(
+      const vibeClient = await getVibeOauthClient(
         config,
         isInitialAuth ? { requireCachedCredentials: true } : undefined,
       );
-      baseGenerator = new QwenContentGenerator(
-        qwenClient,
+      baseGenerator = new VibeContentGenerator(
+        vibeClient,
         generatorConfig,
         config,
       );

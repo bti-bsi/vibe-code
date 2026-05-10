@@ -121,7 +121,7 @@ function buildImage(imageName, dockerfile) {
     if (isWindows) {
       // PowerShell doesn't support <() process substitution.
       // Create a temporary auth file that we will clean up after.
-      tempAuthFile = join(os.tmpdir(), `qwen-auth-${Date.now()}.json`);
+      tempAuthFile = join(os.tmpdir(), `vibe-auth-${Date.now()}.json`);
       writeFileSync(tempAuthFile, '{}');
       buildCommandArgs = `--authfile="${tempAuthFile}"`;
     } else {
@@ -135,7 +135,7 @@ function buildImage(imageName, dockerfile) {
   ).version;
 
   const imageTag =
-    process.env.QWEN_SANDBOX_IMAGE_TAG || imageName.split(':')[1] || 'latest';
+    process.env.VIBE_SANDBOX_IMAGE_TAG || imageName.split(':')[1] || 'latest';
   const finalImageName = `${imageName.split(':')[0]}:${imageTag}`;
 
   try {

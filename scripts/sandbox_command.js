@@ -32,27 +32,27 @@ const argv = yargs(hideBin(process.argv)).option('q', {
   default: false,
 }).argv;
 
-let qwenSandbox = process.env.QWEN_SANDBOX;
+let vibeSandbox = process.env.VIBE_SANDBOX;
 
-if (!qwenSandbox) {
-  const userSettingsFile = join(os.homedir(), '.qwen', 'settings.json');
+if (!vibeSandbox) {
+  const userSettingsFile = join(os.homedir(), '.vibe', 'settings.json');
   if (existsSync(userSettingsFile)) {
     const settings = JSON.parse(
       stripJsonComments(readFileSync(userSettingsFile, 'utf-8')),
     );
     if (settings.sandbox) {
-      qwenSandbox = settings.sandbox;
+      vibeSandbox = settings.sandbox;
     }
   }
 }
 
-if (!qwenSandbox) {
+if (!vibeSandbox) {
   let currentDir = process.cwd();
   while (true) {
-    const qwenEnv = join(currentDir, '.qwen', '.env');
+    const vibeEnv = join(currentDir, '.vibe', '.env');
     const regularEnv = join(currentDir, '.env');
-    if (existsSync(qwenEnv)) {
-      dotenv.config({ path: qwenEnv, quiet: true });
+    if (existsSync(vibeEnv)) {
+      dotenv.config({ path: vibeEnv, quiet: true });
       break;
     } else if (existsSync(regularEnv)) {
       dotenv.config({ path: regularEnv, quiet: true });
@@ -64,10 +64,10 @@ if (!qwenSandbox) {
     }
     currentDir = parentDir;
   }
-  qwenSandbox = process.env.QWEN_SANDBOX;
+  vibeSandbox = process.env.VIBE_SANDBOX;
 }
 
-qwenSandbox = (qwenSandbox || '').toLowerCase();
+vibeSandbox = (vibeSandbox || '').toLowerCase();
 
 const commandExists = (cmd) => {
   // Use 'where.exe' (not 'where') on Windows because PowerShell aliases
@@ -90,23 +90,23 @@ const commandExists = (cmd) => {
 };
 
 let command = '';
-if (['1', 'true'].includes(qwenSandbox)) {
+if (['1', 'true'].includes(vibeSandbox)) {
   if (commandExists('docker')) {
     command = 'docker';
   } else if (commandExists('podman')) {
     command = 'podman';
   } else {
     console.error(
-      'ERROR: install docker or podman or specify command in QWEN_SANDBOX',
+      'ERROR: install docker or podman or specify command in VIBE_SANDBOX',
     );
     process.exit(1);
   }
-} else if (qwenSandbox && !['0', 'false'].includes(qwenSandbox)) {
-  if (commandExists(qwenSandbox)) {
-    command = qwenSandbox;
+} else if (vibeSandbox && !['0', 'false'].includes(vibeSandbox)) {
+  if (commandExists(vibeSandbox)) {
+    command = vibeSandbox;
   } else {
     console.error(
-      `ERROR: missing sandbox command '${qwenSandbox}' (from QWEN_SANDBOX)`,
+      `ERROR: missing sandbox command '${vibeSandbox}' (from VIBE_SANDBOX)`,
     );
     process.exit(1);
   }

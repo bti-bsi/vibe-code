@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -120,10 +120,10 @@ export class ArenaManager {
     this.callbacks = callbacks;
     this.eventEmitter = new ArenaEventEmitter();
     const arenaSettings = config.getAgentsSettings().arena;
-    // Use the user-configured base dir, or default to ~/.qwen/arena.
+    // Use the user-configured base dir, or default to ~/.vibe/arena.
     this.arenaBaseDir =
       arenaSettings?.worktreeBaseDir ??
-      path.join(Storage.getGlobalQwenDir(), 'arena');
+      path.join(Storage.getGlobalVibeDir(), 'arena');
     this.worktreeService = new GitWorktreeService(
       config.getWorkingDir(),
       this.arenaBaseDir,
@@ -1044,7 +1044,7 @@ export class ArenaManager {
     // Construct env vars for the agent
     const arenaSessionDir = this.getArenaSessionDir();
     const env: Record<string, string> = {
-      QWEN_CODE: '1',
+      VIBE_CODE: '1',
       ARENA_AGENT_ID: agentId,
       ARENA_SESSION_ID: this.arenaConfig?.sessionId ?? '',
       ARENA_SESSION_DIR: arenaSessionDir,
@@ -1052,10 +1052,10 @@ export class ArenaManager {
 
     // If the model has auth overrides, pass them via env
     if (model.apiKey) {
-      env['QWEN_API_KEY'] = model.apiKey;
+      env['VIBE_API_KEY'] = model.apiKey;
     }
     if (model.baseUrl) {
-      env['QWEN_BASE_URL'] = model.baseUrl;
+      env['VIBE_BASE_URL'] = model.baseUrl;
     }
 
     const spawnConfig: AgentSpawnConfig = {

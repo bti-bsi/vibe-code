@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -57,7 +57,7 @@ describe('CLI Path Utilities', () => {
     it('should throw descriptive error when bundled CLI not found', () => {
       mockFs.existsSync.mockReturnValue(false);
 
-      expect(() => findBundledCliPath()).toThrow('Bundled qwen CLI not found');
+      expect(() => findBundledCliPath()).toThrow('Bundled vibe CLI not found');
       expect(() => findBundledCliPath()).toThrow('Searched locations:');
     });
   });
@@ -84,45 +84,45 @@ describe('CLI Path Utilities', () => {
       it('should throw when bundled CLI not found', () => {
         mockFs.existsSync.mockReturnValue(false);
 
-        expect(() => prepareSpawnInfo()).toThrow('Bundled qwen CLI not found');
+        expect(() => prepareSpawnInfo()).toThrow('Bundled vibe CLI not found');
       });
     });
 
     describe('command name detection', () => {
       it('should detect command names without path separators', () => {
-        const result = prepareSpawnInfo('qwen');
+        const result = prepareSpawnInfo('vibe');
 
         expect(result).toEqual({
-          command: 'qwen',
+          command: 'vibe',
           args: [],
           type: 'native',
-          originalInput: 'qwen',
+          originalInput: 'vibe',
         });
       });
 
       it('should detect command names on Windows', () => {
-        const result = prepareSpawnInfo('qwen.exe');
+        const result = prepareSpawnInfo('vibe.exe');
 
         expect(result).toEqual({
-          command: 'qwen.exe',
+          command: 'vibe.exe',
           args: [],
           type: 'native',
-          originalInput: 'qwen.exe',
+          originalInput: 'vibe.exe',
         });
       });
 
       it('should reject invalid command name characters', () => {
-        expect(() => prepareSpawnInfo('qwen@invalid')).toThrow(
-          "Invalid command name 'qwen@invalid'. Command names should only contain letters, numbers, dots, hyphens, and underscores.",
+        expect(() => prepareSpawnInfo('vibe@invalid')).toThrow(
+          "Invalid command name 'vibe@invalid'. Command names should only contain letters, numbers, dots, hyphens, and underscores.",
         );
       });
 
       it('should accept valid command names', () => {
-        expect(() => prepareSpawnInfo('qwen')).not.toThrow();
-        expect(() => prepareSpawnInfo('qwen-code')).not.toThrow();
-        expect(() => prepareSpawnInfo('qwen_code')).not.toThrow();
-        expect(() => prepareSpawnInfo('qwen.exe')).not.toThrow();
-        expect(() => prepareSpawnInfo('qwen123')).not.toThrow();
+        expect(() => prepareSpawnInfo('vibe')).not.toThrow();
+        expect(() => prepareSpawnInfo('vibe-code')).not.toThrow();
+        expect(() => prepareSpawnInfo('vibe_code')).not.toThrow();
+        expect(() => prepareSpawnInfo('vibe.exe')).not.toThrow();
+        expect(() => prepareSpawnInfo('vibe123')).not.toThrow();
       });
     });
 
@@ -216,13 +216,13 @@ describe('CLI Path Utilities', () => {
       });
 
       it('should prepare spawn info for native binary path', () => {
-        const result = prepareSpawnInfo('/usr/local/bin/qwen');
+        const result = prepareSpawnInfo('/usr/local/bin/vibe');
 
         expect(result).toEqual({
-          command: path.resolve('/usr/local/bin/qwen'),
+          command: path.resolve('/usr/local/bin/vibe'),
           args: [],
           type: 'native',
-          originalInput: '/usr/local/bin/qwen',
+          originalInput: '/usr/local/bin/vibe',
         });
       });
     });
@@ -231,9 +231,9 @@ describe('CLI Path Utilities', () => {
       it('should resolve absolute file paths', () => {
         mockFs.existsSync.mockReturnValue(true);
 
-        const result = prepareSpawnInfo('/absolute/path/to/qwen');
+        const result = prepareSpawnInfo('/absolute/path/to/vibe');
 
-        expect(result.command).toBe(path.resolve('/absolute/path/to/qwen'));
+        expect(result.command).toBe(path.resolve('/absolute/path/to/vibe'));
         expect(result.type).toBe('native');
       });
 
@@ -333,7 +333,7 @@ describe('CLI Path Utilities', () => {
     });
 
     it('should handle Windows native executables', () => {
-      const windowsPath = 'C:\\Program Files\\qwen\\qwen.exe';
+      const windowsPath = 'C:\\Program Files\\vibe\\vibe.exe';
       const result = prepareSpawnInfo(windowsPath);
 
       // .exe files without .js extension should be treated as native
@@ -386,13 +386,13 @@ describe('CLI Path Utilities', () => {
     });
 
     it('should handle production native binary', () => {
-      const result = prepareSpawnInfo('qwen');
+      const result = prepareSpawnInfo('vibe');
 
       expect(result).toEqual({
-        command: 'qwen',
+        command: 'vibe',
         args: [],
         type: 'native',
-        originalInput: 'qwen',
+        originalInput: 'vibe',
       });
     });
 

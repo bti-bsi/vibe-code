@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach, type Mock } from 'vitest';
 import { reconnectCommand } from './reconnect.js';
 import { loadSettings } from '../../config/settings.js';
 import { Config, ExtensionManager } from '@vibe-bti/vibe-code-core';
@@ -33,22 +33,22 @@ vi.mock('@vibe-bti/vibe-code-core', () => ({
   getErrorMessage: (e: unknown) => (e instanceof Error ? e.message : String(e)),
 }));
 
-const mockedLoadSettings = loadSettings as vi.Mock;
-const MockedConfig = Config as vi.Mock;
-const MockedExtensionManager = ExtensionManager as vi.Mock;
+const mockedLoadSettings = loadSettings as Mock;
+const MockedConfig = Config as Mock;
+const MockedExtensionManager = ExtensionManager as Mock;
 
 describe('mcp reconnect command', () => {
   let mockConfig: {
-    getToolRegistry: vi.Mock;
-    shutdown: vi.Mock;
-    initialize: vi.Mock;
+    getToolRegistry: Mock;
+    shutdown: Mock;
+    initialize: Mock;
   };
   let mockToolRegistry: {
-    discoverToolsForServer: vi.Mock;
+    discoverToolsForServer: Mock;
   };
   let mockExtensionManager: {
-    refreshCache: vi.Mock;
-    getLoadedExtensions: vi.Mock;
+    refreshCache: Mock;
+    getLoadedExtensions: Mock;
   };
 
   beforeEach(() => {

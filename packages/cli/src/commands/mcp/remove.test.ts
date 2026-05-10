@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import yargs from 'yargs';
+import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
+import yargs, { type Argv } from 'yargs';
 import { loadSettings, SettingScope } from '../../config/settings.js';
 import { removeCommand } from './remove.js';
 
@@ -47,11 +47,11 @@ vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
   };
 });
 
-const mockedLoadSettings = loadSettings as vi.Mock;
+const mockedLoadSettings = loadSettings as Mock;
 
 describe('mcp remove command', () => {
-  let parser: yargs.Argv;
-  let mockSetValue: vi.Mock;
+  let parser: Argv;
+  let mockSetValue: Mock;
   let mockSettings: Record<string, unknown>;
 
   beforeEach(() => {

@@ -1,6 +1,6 @@
 # Channel Plugin Developer Guide
 
-A channel plugin connects Qwen Code to a messaging platform. It's packaged as an [extension](../users/extension/introduction) and loaded at startup. For user-facing docs on installing and configuring plugins, see [Plugins](../users/features/channels/plugins).
+A channel plugin connects Vibe Code to a messaging platform. It's packaged as an [extension](../users/extension/introduction) and loaded at startup. For user-facing docs on installing and configuring plugins, see [Plugins](../users/features/channels/plugins).
 
 ## How It Fits Together
 
@@ -126,7 +126,7 @@ The legacy `imageBase64`/`imageMimeType` fields still work for backwards compati
 
 ## Extension Manifest
 
-Your `qwen-extension.json` declares the channel type. The key must match `channelType` in your plugin object:
+Your `vibe-extension.json` declares the channel type. The key must match `channelType` in your plugin object:
 
 ```json
 {

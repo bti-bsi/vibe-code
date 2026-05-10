@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -1499,7 +1499,7 @@ describe('AgentTool', () => {
         'getBackgroundTaskRegistry'
       ] = vi.fn().mockReturnValue(mockRegistry);
       (config as unknown as Record<string, unknown>)['storage'] = {
-        getProjectDir: () => '/tmp/qwen-test',
+        getProjectDir: () => '/tmp/vibe-test',
       };
       (mockAgent as unknown as Record<string, unknown>)[
         'setExternalMessageProvider'
@@ -1587,7 +1587,7 @@ describe('AgentTool', () => {
       ).createInvocation(params);
       await invocation.execute();
       const expectedTranscriptPrefix = path.join(
-        '/tmp/qwen-test',
+        '/tmp/vibe-test',
         'subagents',
         'test-session-id',
         'agent-monitor-',

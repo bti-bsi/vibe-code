@@ -1,6 +1,6 @@
 # @vibe-bti/vibe-code-webui
 
-A shared React component library for Qwen Code applications, providing cross-platform UI components with consistent styling and behavior.
+A shared React component library for Vibe Code applications, providing cross-platform UI components with consistent styling and behavior.
 
 ## Features
 
@@ -73,8 +73,8 @@ You can also use this library directly in the browser via CDN:
     <div id="root"></div>
 
     <script type="text/babel">
-      // Access components from the global QwenCodeWebUI object
-      const { ChatViewer } = QwenCodeWebUI;
+      // Access components from the global VibeCodeWebUI object
+      const { ChatViewer } = VibeCodeWebUI;
 
       // Use the components with JSX support
       const App = () => (
@@ -135,8 +135,8 @@ You can also use this library directly in the browser via CDN:
     <div id="root"></div>
 
     <script>
-      // Access components from the global QwenCodeWebUI object
-      const { ChatViewer } = QwenCodeWebUI;
+      // Access components from the global VibeCodeWebUI object
+      const { ChatViewer } = VibeCodeWebUI;
 
       // Use the components with React.createElement (no JSX)
       const App = React.createElement(ChatViewer, {

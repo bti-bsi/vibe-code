@@ -112,7 +112,7 @@ import {
   DEFAULT_FILE_FILTERING_OPTIONS,
   DEFAULT_MEMORY_FILE_FILTERING_OPTIONS,
 } from './constants.js';
-import { DEFAULT_QWEN_EMBEDDING_MODEL } from './models.js';
+import { DEFAULT_VIBE_EMBEDDING_MODEL } from './models.js';
 import { Storage } from './storage.js';
 import { ChatRecordingService } from '../services/chatRecordingService.js';
 import {
@@ -241,7 +241,7 @@ export interface GitCoAuthorSettings {
   email?: string;
 }
 
-export type ExtensionOriginSource = 'QwenCode' | 'Claude' | 'Gemini';
+export type ExtensionOriginSource = 'VibeCode' | 'Claude' | 'Gemini';
 
 export interface ExtensionInstallMetadata {
   source: string;
@@ -321,7 +321,7 @@ export interface AgentsCollabSettings {
   displayMode?: string;
   /** Arena-specific settings */
   arena?: {
-    /** Custom base directory for Arena worktrees (default: ~/.qwen/arena) */
+    /** Custom base directory for Arena worktrees (default: ~/.vibe/arena) */
     worktreeBaseDir?: string;
     /** Preserve worktrees and state files after session ends */
     preserveArtifacts?: boolean;
@@ -351,7 +351,7 @@ export interface ConfigParameters {
    * CLI surface. Matched case-insensitively on the final (post-rename)
    * command name. Sourced from settings (`slashCommands.disabled`, UNION
    * merged across scopes), the `--disabled-slash-commands` CLI flag, and
-   * the `QWEN_DISABLED_SLASH_COMMANDS` environment variable.
+   * the `VIBE_DISABLED_SLASH_COMMANDS` environment variable.
    */
   disabledSlashCommands?: string[];
   /** Merged permission rules from all sources (settings + CLI args). */
@@ -386,7 +386,7 @@ export interface ConfigParameters {
   fileReadCacheDisabled?: boolean;
   fileFiltering?: {
     respectGitIgnore?: boolean;
-    respectQwenIgnore?: boolean;
+    respectVibeIgnore?: boolean;
     enableRecursiveFileSearch?: boolean;
     enableFuzzySearch?: boolean;
   };
@@ -413,6 +413,9 @@ export interface ConfigParameters {
   folderTrust?: boolean;
   ideMode?: boolean;
   authType?: AuthType;
+  scopusApiKey?: string;
+  googleSearchApiKey?: string;
+  googleSearchCx?: string;
   generationConfig?: Partial<ContentGeneratorConfig>;
   /**
    * Optional source map for generationConfig fields (e.g. CLI/env/settings attribution).
@@ -446,7 +449,7 @@ export interface ConfigParameters {
   channel?: string;
   /**
    * File descriptor number for structured JSON event output (dual output mode).
-   * When set, Qwen Code outputs structured JSON events to this fd while
+   * When set, Vibe Code outputs structured JSON events to this fd while
    * continuing to render the TUI on stdout. The caller must provide this fd
    * via spawn stdio configuration.
    * Mutually exclusive with jsonFile.
@@ -499,7 +502,7 @@ export interface ConfigParameters {
   projectHooks?: Record<string, unknown>;
 
   hooks?: Record<string, unknown>;
-  /** Glob patterns to exclude from .qwen/rules/ loading. */
+  /** Glob patterns to exclude from .vibe/rules/ loading. */
   contextRuleExcludes?: string[];
   /** Warnings generated during configuration resolution */
   warnings?: string[];
@@ -633,7 +636,7 @@ export class Config {
   private cronScheduler: CronScheduler | null = null;
   private readonly fileFiltering: {
     respectGitIgnore: boolean;
-    respectQwenIgnore: boolean;
+    respectVibeIgnore: boolean;
     enableRecursiveFileSearch: boolean;
     enableFuzzySearch: boolean;
   };
@@ -643,6 +646,9 @@ export class Config {
   private chatRecordingService: ChatRecordingService | undefined = undefined;
   private readonly checkpointing: boolean;
   private readonly proxy: string | undefined;
+  private readonly scopusApiKey: string | undefined;
+  private readonly googleSearchApiKey: string | undefined;
+  private readonly googleSearchCx: string | undefined;
   private readonly cwd: string;
   private readonly explicitIncludeDirectories: string[];
   private readonly bugCommand: BugCommandSettings | undefined;
@@ -721,7 +727,7 @@ export class Config {
     this.sessionData = params.sessionData;
     setDebugLogSession(this);
     this.debugLogger = createDebugLogger();
-    this.embeddingModel = params.embeddingModel ?? DEFAULT_QWEN_EMBEDDING_MODEL;
+    this.embeddingModel = params.embeddingModel ?? DEFAULT_VIBE_EMBEDDING_MODEL;
     this.fileSystemService = new StandardFileSystemService();
     this.sandbox = params.sandbox;
     this.targetDir = path.resolve(params.targetDir);
@@ -780,8 +786,8 @@ export class Config {
     };
     this.gitCoAuthor = {
       enabled: params.gitCoAuthor ?? true,
-      name: 'Qwen-Coder',
-      email: 'qwen-coder@alibabacloud.com',
+      name: 'Vibe-Coder',
+      email: 'vibe-coder@alibabacloud.com',
     };
     this.usageStatisticsEnabled = params.usageStatisticsEnabled ?? true;
     this.fileReadCacheDisabled = params.fileReadCacheDisabled ?? false;
@@ -789,7 +795,7 @@ export class Config {
 
     this.fileFiltering = {
       respectGitIgnore: params.fileFiltering?.respectGitIgnore ?? true,
-      respectQwenIgnore: params.fileFiltering?.respectQwenIgnore ?? true,
+      respectVibeIgnore: params.fileFiltering?.respectVibeIgnore ?? true,
       enableRecursiveFileSearch:
         params.fileFiltering?.enableRecursiveFileSearch ?? true,
       enableFuzzySearch: params.fileFiltering?.enableFuzzySearch ?? true,
@@ -819,6 +825,9 @@ export class Config {
     this.ideMode = params.ideMode ?? false;
     this.modelProvidersConfig = params.modelProvidersConfig;
     this.cliVersion = params.cliVersion;
+    this.scopusApiKey = params.scopusApiKey;
+    this.googleSearchApiKey = params.googleSearchApiKey;
+    this.googleSearchCx = params.googleSearchCx;
 
     this.chatRecordingEnabled = params.chatRecording ?? true;
 
@@ -1394,6 +1403,18 @@ export class Config {
     return this.loadMemoryFromIncludeDirectories;
   }
 
+  getScopusApiKey(): string | undefined {
+    return this.scopusApiKey;
+  }
+
+  getGoogleSearchApiKey(): string | undefined {
+    return this.googleSearchApiKey;
+  }
+
+  getGoogleSearchCx(): string | undefined {
+    return this.googleSearchCx;
+  }
+
   getImportFormat(): 'tree' | 'flat' {
     return this.importFormat;
   }
@@ -1487,14 +1508,14 @@ export class Config {
     // Some OpenAI-compatible reasoning models (e.g. DeepSeek) require
     // reasoning_content to be preserved across turns.
 
-    // Hot update path: only supported for qwen-oauth.
+    // Hot update path: only supported for vibe-oauth.
     // For other auth types we always refresh to recreate the ContentGenerator.
     //
     // Rationale:
-    // - Non-qwen providers may need to re-validate credentials / baseUrl / envKey.
+    // - Non-vibe providers may need to re-validate credentials / baseUrl / envKey.
     // - ModelsConfig.applyResolvedModelDefaults can clear or change credentials sources.
     // - Refresh keeps runtime behavior consistent and centralized.
-    if (authType === AuthType.QWEN_OAUTH && !requiresRefresh) {
+    if (authType === AuthType.VIBE_OAUTH && !requiresRefresh) {
       const { config, sources } = resolveContentGeneratorConfigWithSources(
         this,
         authType,
@@ -1506,7 +1527,7 @@ export class Config {
         },
       );
 
-      // Hot-update fields (qwen-oauth models share the same auth + client).
+      // Hot-update fields (vibe-oauth models share the same auth + client).
       this.contentGeneratorConfig.model = config.model;
       this.contentGeneratorConfig.samplingParams = config.samplingParams;
       this.contentGeneratorConfig.contextWindowSize = config.contextWindowSize;
@@ -1578,7 +1599,7 @@ export class Config {
    *
    * For runtime models, the modelId should be in format `$runtime|${authType}|${modelId}`.
    * This triggers a refresh of the ContentGenerator when required (always on authType changes).
-   * For qwen-oauth model switches that are hot-update safe, this may update in place.
+   * For vibe-oauth model switches that are hot-update safe, this may update in place.
    *
    * @param authType - Target authentication type
    * @param modelId - Target model ID (or `$runtime|${authType}|${modelId}` for runtime models)
@@ -2072,7 +2093,7 @@ export class Config {
 
   isCronEnabled(): boolean {
     // Cron is experimental and opt-in: enabled via settings or env var
-    if (process.env['QWEN_CODE_ENABLE_CRON'] === '1') return true;
+    if (process.env['VIBE_CODE_ENABLE_CRON'] === '1') return true;
     return this.cronEnabled;
   }
 
@@ -2082,11 +2103,11 @@ export class Config {
    * `CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES` gate, but defaults to on so the
    * compact-mode UI benefits without configuration.
    *
-   * Env overrides (either direction): `QWEN_CODE_EMIT_TOOL_USE_SUMMARIES=0`
+   * Env overrides (either direction): `VIBE_CODE_EMIT_TOOL_USE_SUMMARIES=0`
    * to force off, `=1` to force on.
    */
   getEmitToolUseSummaries(): boolean {
-    const env = process.env['QWEN_CODE_EMIT_TOOL_USE_SUMMARIES'];
+    const env = process.env['VIBE_CODE_EMIT_TOOL_USE_SUMMARIES'];
     if (env === '0' || env === 'false') return false;
     if (env === '1' || env === 'true') return true;
     return this.emitToolUseSummaries;
@@ -2103,14 +2124,14 @@ export class Config {
   getFileFilteringRespectGitIgnore(): boolean {
     return this.fileFiltering.respectGitIgnore;
   }
-  getFileFilteringRespectQwenIgnore(): boolean {
-    return this.fileFiltering.respectQwenIgnore;
+  getFileFilteringRespectVibeIgnore(): boolean {
+    return this.fileFiltering.respectVibeIgnore;
   }
 
   getFileFilteringOptions(): FileFilteringOptions {
     return {
       respectGitIgnore: this.fileFiltering.respectGitIgnore,
-      respectQwenIgnore: this.fileFiltering.respectQwenIgnore,
+      respectVibeIgnore: this.fileFiltering.respectVibeIgnore,
     };
   }
 
@@ -2888,9 +2909,17 @@ export class Config {
       const { WebFetchTool } = await import('../tools/web-fetch.js');
       return new WebFetchTool(this);
     });
+    await registerLazy(ToolNames.GOOGLE_SEARCH, async () => {
+      const { GoogleSearchTool } = await import('../tools/google-search.js');
+      return new GoogleSearchTool(this);
+    });
     await registerLazy(ToolNames.SCOPUS_SEARCH, async () => {
       const { ScopusSearchTool } = await import('../tools/scopus-search.js');
-      return new ScopusSearchTool();
+      return new ScopusSearchTool(this);
+    });
+    await registerLazy(ToolNames.SCOPUS_ANALYTIC_TREND, async () => {
+      const { ScopusAnalyticTrendTool } = await import('../tools/scopus-analytic-trend.js');
+      return new ScopusAnalyticTrendTool(this);
     });
     await registerLazy(ToolNames.SCOPUS_ABSTRACT_PDF, async () => {
       const { ScopusAbstractPDFTool } =
@@ -2904,6 +2933,22 @@ export class Config {
     await registerLazy(ToolNames.PDF_EXTRACT, async () => {
       const { PDFExtractTool } = await import('../tools/pdf-extract.js');
       return new PDFExtractTool();
+    });
+    await registerLazy(ToolNames.DOCX_EXTRACT, async () => {
+      const { DocxExtractTool } = await import('../tools/docx-extract.js');
+      return new DocxExtractTool();
+    });
+    await registerLazy(ToolNames.WRITE_DOCX, async () => {
+      const { DocxWriteTool } = await import('../tools/docx-write.js');
+      return new DocxWriteTool(this);
+    });
+    await registerLazy(ToolNames.READ_STYLE_DOCX, async () => {
+      const { DocxReadStyleTool } = await import('../tools/docx-read-style.js');
+      return new DocxReadStyleTool(this);
+    });
+    await registerLazy(ToolNames.WRITE_PPTX, async () => {
+      const { WritePptxTool } = await import('../tools/pptx-write.js');
+      return new WritePptxTool(this);
     });
 
     if (this.isLspEnabled() && this.getLspClient()) {

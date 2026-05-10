@@ -29,8 +29,8 @@ provider abstraction.
 
 The user-facing flows are:
 
-- `qwen auth openrouter --key <key>` for automation or direct API-key setup.
-- `qwen auth openrouter` for browser-based OAuth.
+- `vibe auth openrouter --key <key>` for automation or direct API-key setup.
+- `vibe auth openrouter` for browser-based OAuth.
 - `/auth` → API Key → OpenRouter for the TUI flow.
 
 Browser OAuth uses OpenRouter's PKCE flow and writes the exchanged API key into

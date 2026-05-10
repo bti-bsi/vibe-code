@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,7 +12,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import {
   getAllGeminiMdFilenames,
-  QWEN_DIR,
+  VIBE_DIR,
   getAutoMemoryRoot,
   getAutoMemoryProjectStateDir,
 } from '@vibe-bti/vibe-code-core';
@@ -125,8 +125,8 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
     () =>
       path.join(
         os.homedir(),
-        QWEN_DIR,
-        getAllGeminiMdFilenames()[0] ?? 'QWEN.md',
+        VIBE_DIR,
+        getAllGeminiMdFilenames()[0] ?? 'VIBE.md',
       ),
     [],
   );
@@ -134,7 +134,7 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
     () =>
       path.join(
         config.getWorkingDir(),
-        getAllGeminiMdFilenames()[0] ?? 'QWEN.md',
+        getAllGeminiMdFilenames()[0] ?? 'VIBE.md',
       ),
     [config],
   );
@@ -211,12 +211,12 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
         case 'project':
           return resolvePreferredMemoryFile(
             config.getWorkingDir(),
-            getAllGeminiMdFilenames()[0] ?? 'QWEN.md',
+            getAllGeminiMdFilenames()[0] ?? 'VIBE.md',
           );
         case 'global':
           return resolvePreferredMemoryFile(
-            path.join(os.homedir(), QWEN_DIR),
-            getAllGeminiMdFilenames()[0] ?? 'QWEN.md',
+            path.join(os.homedir(), VIBE_DIR),
+            getAllGeminiMdFilenames()[0] ?? 'VIBE.md',
           );
         case 'managed':
           return managedMemoryPath;

@@ -190,7 +190,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 1_500_000,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 10,
@@ -229,7 +228,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 1_500_000,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 10,
@@ -282,7 +280,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 3_000_000,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 20,
@@ -297,7 +294,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 700_000,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 5,
@@ -350,7 +346,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 2_000_000,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 10,
@@ -365,7 +360,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 2_000_000,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 10,
@@ -418,7 +412,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 0,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 0,
@@ -466,7 +459,6 @@ describe('statsCommand', () => {
             cached: 0,
             total: 2_000_000,
             thoughts: 0,
-            tool: 0,
           },
           api: {
             totalRequests: 10,

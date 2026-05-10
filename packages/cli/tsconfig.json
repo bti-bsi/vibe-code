@@ -16,6 +16,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.json",
+    "src/ui/hooks/useTelegramConfigCommand.tsx",
     "./package.json",
     "../core/src/utils/toml-to-markdown-converter.ts"
   ],

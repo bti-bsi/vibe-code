@@ -10,6 +10,7 @@ import type {
   ToolCallConfirmationDetails,
   ToolResult,
   ToolResultDisplay,
+  ToolExecutionDiagnosticDisplay,
   ToolRegistry,
   EditorType,
   Config,
@@ -94,6 +95,8 @@ const TRUNCATION_EDIT_REJECTION =
   'first write_file with a skeleton/partial content, ' +
   'then use edit to add the remaining sections incrementally. ' +
   'Do NOT retry with the same large content.';
+
+const TOOL_EXECUTION_HEARTBEAT_INTERVAL_MS = 5000;
 
 export type ValidatingToolCall = {
   status: 'validating';
@@ -208,6 +211,11 @@ const FS_PATH_TOOL_NAMES: ReadonlySet<string> = new Set<string>([
   ToolNames.GLOB,
   ToolNames.LS,
   ToolNames.LSP,
+  ToolNames.PDF_EXTRACT,
+  ToolNames.DOCX_EXTRACT,
+  ToolNames.WRITE_DOCX,
+  ToolNames.READ_STYLE_DOCX,
+  ToolNames.WRITE_PPTX,
 ]);
 
 function canonicalToolName(toolName: string): string {
@@ -396,6 +404,20 @@ export function extractToolFilePaths(
     case ToolNames.READ_FILE:
     case ToolNames.EDIT:
     case ToolNames.WRITE_FILE:
+      push(obj['file_path']);
+      return out;
+
+    case ToolNames.PDF_EXTRACT:
+    case ToolNames.DOCX_EXTRACT:
+      push(obj['source']);
+      return out;
+
+    case ToolNames.WRITE_DOCX:
+    case ToolNames.READ_STYLE_DOCX:
+    case ToolNames.WRITE_PPTX:
+      push(obj['filePath']);
+      return out;
+
     default:
       push(obj['file_path']);
       return out;
@@ -878,6 +900,21 @@ export class CoreToolScheduler {
     });
   }
 
+  private publishLiveOutput(
+    callId: string,
+    outputChunk: ToolResultDisplay,
+  ): void {
+    if (this.outputUpdateHandler) {
+      this.outputUpdateHandler(callId, outputChunk);
+    }
+    this.toolCalls = this.toolCalls.map((tc) =>
+      tc.request.callId === callId && tc.status === 'executing'
+        ? { ...tc, liveOutput: outputChunk }
+        : tc,
+    );
+    this.notifyToolCallsUpdate();
+  }
+
   private isRunning(): boolean {
     return (
       this.isFinalizingToolCalls ||
@@ -1056,7 +1093,7 @@ export class CoreToolScheduler {
           const ruleInfo = matchingRule
             ? ` Matching deny rule: "${matchingRule}".`
             : '';
-          const permissionErrorMessage = `Qwen Code requires permission to use "${reqInfo.name}", but that permission was declined.${ruleInfo}`;
+          const permissionErrorMessage = `Vibe Code requires permission to use "${reqInfo.name}", but that permission was declined.${ruleInfo}`;
           newToolCalls.push({
             status: 'error',
             request: reqInfo,
@@ -1080,7 +1117,7 @@ export class CoreToolScheduler {
                 excludedTool.toLowerCase().trim() === normalizedToolName,
             );
             if (excludedMatch) {
-              const permissionErrorMessage = `Qwen Code requires permission to use ${excludedMatch}, but that permission was declined.`;
+              const permissionErrorMessage = `Vibe Code requires permission to use ${excludedMatch}, but that permission was declined.`;
               newToolCalls.push({
                 status: 'error',
                 request: reqInfo,
@@ -1312,7 +1349,7 @@ export class CoreToolScheduler {
               this.config.getInputFormat() !== InputFormat.STREAM_JSON;
 
             if (isNonInteractiveDeny) {
-              const errorMessage = `Qwen Code requires permission to use "${reqInfo.name}", but that permission was declined (non-interactive mode cannot prompt for confirmation).`;
+              const errorMessage = `Vibe Code requires permission to use "${reqInfo.name}", but that permission was declined (non-interactive mode cannot prompt for confirmation).`;
               this.setStatusInternal(
                 reqInfo.callId,
                 'error',
@@ -1444,7 +1481,7 @@ export class CoreToolScheduler {
             if (hooksEnabled && messageBus) {
               fireNotificationHook(
                 messageBus,
-                `Qwen Code needs your permission to use ${reqInfo.name}`,
+                `Vibe Code needs your permission to use ${reqInfo.name}`,
                 NotificationType.PermissionPrompt,
                 'Permission needed',
               ).catch((error) => {
@@ -1747,7 +1784,7 @@ export class CoreToolScheduler {
     signal: AbortSignal,
   ): Promise<void> {
     const parsed = parseInt(
-      process.env['QWEN_CODE_MAX_TOOL_CONCURRENCY'] || '',
+      process.env['VIBE_CODE_MAX_TOOL_CONCURRENCY'] || '',
       10,
     );
     const maxConcurrency = Number.isFinite(parsed) && parsed >= 1 ? parsed : 10;
@@ -1819,17 +1856,59 @@ export class CoreToolScheduler {
 
     this.setStatusInternal(callId, 'executing');
 
+    const executionStartedAt = Date.now();
+    let outputUpdateCount = 0;
+    let firstOutputAt: number | undefined = undefined;
+    let lastOutputAt: number | undefined = undefined;
+    let executionPhase: 'running' | 'finalizing' = 'running';
+    const isDebugMode = this.config.getDebugMode();
+    const logExecutionSnapshot = (event: string) => {
+      const elapsedMs = Date.now() - executionStartedAt;
+      const firstOutputPart =
+        firstOutputAt !== undefined
+          ? ` firstOutputLatencyMs=${firstOutputAt - executionStartedAt}`
+          : '';
+      const sinceLastOutputPart =
+        lastOutputAt !== undefined
+          ? ` sinceLastOutputMs=${Date.now() - lastOutputAt}`
+          : '';
+      debugLogger.info(
+        `tool ${event} callId=${callId} tool=${toolName} phase=${executionPhase} ` +
+          `elapsedMs=${elapsedMs} outputUpdates=${outputUpdateCount}${firstOutputPart}${sinceLastOutputPart}`,
+      );
+    };
+    const emitDiagnosticOutput = () => {
+      if (!isDebugMode || outputUpdateCount > 0) {
+        return;
+      }
+      const elapsedMs = Date.now() - executionStartedAt;
+      const diagnostic: ToolExecutionDiagnosticDisplay = {
+        type: 'tool_execution_diagnostic',
+        message:
+          executionPhase === 'finalizing'
+            ? `Debug: ${toolName} finished execution and is finalizing the result (${Math.round(elapsedMs / 1000)}s elapsed).`
+            : `Debug: ${toolName} is still running, waiting for visible output (${Math.round(elapsedMs / 1000)}s elapsed).`,
+        elapsedMs,
+        outputUpdates: outputUpdateCount,
+      };
+      this.publishLiveOutput(callId, diagnostic);
+    };
+    logExecutionSnapshot('start');
+    const heartbeat = setInterval(() => {
+      logExecutionSnapshot('heartbeat');
+      emitDiagnosticOutput();
+    }, TOOL_EXECUTION_HEARTBEAT_INTERVAL_MS);
+
     const liveOutputCallback = scheduledCall.tool.canUpdateOutput
       ? (outputChunk: ToolResultDisplay) => {
-          if (this.outputUpdateHandler) {
-            this.outputUpdateHandler(callId, outputChunk);
+          const now = Date.now();
+          outputUpdateCount += 1;
+          lastOutputAt = now;
+          if (firstOutputAt === undefined) {
+            firstOutputAt = now;
+            logExecutionSnapshot('first_output');
           }
-          this.toolCalls = this.toolCalls.map((tc) =>
-            tc.request.callId === callId && tc.status === 'executing'
-              ? { ...tc, liveOutput: outputChunk }
-              : tc,
-          );
-          this.notifyToolCallsUpdate();
+          this.publishLiveOutput(callId, outputChunk);
         }
       : undefined;
 
@@ -1865,6 +1944,9 @@ export class CoreToolScheduler {
 
     try {
       const toolResult: ToolResult = await promise;
+      executionPhase = 'finalizing';
+      clearInterval(heartbeat);
+      logExecutionSnapshot('completed_invocation');
       if (signal.aborted) {
         // PostToolUseFailure Hook
         if (hooksEnabled && messageBus) {
@@ -1891,6 +1973,7 @@ export class CoreToolScheduler {
             'User cancelled tool execution.',
           );
         }
+        logExecutionSnapshot('cancelled');
         return; // Both code paths should return here
       }
 
@@ -1933,6 +2016,7 @@ export class CoreToolScheduler {
               ToolErrorType.EXECUTION_DENIED,
             );
             this.setStatusInternal(callId, 'error', errorResponse);
+            logExecutionSnapshot('error');
             return;
           }
         }
@@ -2042,6 +2126,7 @@ export class CoreToolScheduler {
             : {}),
         };
         this.setStatusInternal(callId, 'success', successResponse);
+        logExecutionSnapshot('success');
       } else {
         // It is a failure
         // PostToolUseFailure Hook
@@ -2070,8 +2155,12 @@ export class CoreToolScheduler {
           toolResult.error.type,
         );
         this.setStatusInternal(callId, 'error', errorResponse);
+        logExecutionSnapshot('error');
       }
     } catch (executionError: unknown) {
+      executionPhase = 'finalizing';
+      clearInterval(heartbeat);
+      logExecutionSnapshot('failed_invocation');
       const errorMessage =
         executionError instanceof Error
           ? executionError.message
@@ -2103,6 +2192,7 @@ export class CoreToolScheduler {
             'User cancelled tool execution.',
           );
         }
+        logExecutionSnapshot('cancelled');
         return;
       } else {
         // PostToolUseFailure Hook
@@ -2134,6 +2224,7 @@ export class CoreToolScheduler {
             ToolErrorType.UNHANDLED_EXCEPTION,
           ),
         );
+        logExecutionSnapshot('error');
       }
     }
   }

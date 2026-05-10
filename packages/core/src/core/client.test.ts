@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -36,7 +36,7 @@ vi.mock('../utils/retry.js', () => ({
   isUnattendedMode: vi.fn(() => false),
 }));
 import { getCoreSystemPrompt, getCustomSystemPrompt } from './prompts.js';
-import { DEFAULT_QWEN_FLASH_MODEL } from '../config/models.js';
+import { DEFAULT_VIBE_FLASH_MODEL } from '../config/models.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import { promptIdContext } from '../utils/promptIdContext.js';
 import { setSimulate429 } from '../utils/testUtils.js';
@@ -166,7 +166,7 @@ vi.mock('../telemetry/index.js', async (importOriginal) => {
     ...actual,
     uiTelemetryService: mockUiTelemetryService,
     // We keep the real implementations of logChatCompression, etc.
-    // but we can spy on QwenLogger if needed
+    // but we can spy on VibeLogger if needed
   };
 });
 vi.mock('../ide/ideContext.js');
@@ -2014,9 +2014,7 @@ Other open files:
             // consume stream
           }
 
-          const mockChat = client['chat'] as unknown as {
-            addHistory: (typeof vi)['fn'];
-          };
+          const mockChat = client['chat'] as any;
 
           const wasCalled = mockChat.addHistory.mock.calls.length > 0;
           expect(wasCalled).toBe(shouldSendContext);
@@ -2725,12 +2723,12 @@ Other open files:
         contents,
         generationConfig,
         abortSignal,
-        DEFAULT_QWEN_FLASH_MODEL,
+        DEFAULT_VIBE_FLASH_MODEL,
       );
 
       expect(mockContentGenerator.generateContent).toHaveBeenCalledWith(
         expect.objectContaining({
-          model: DEFAULT_QWEN_FLASH_MODEL,
+          model: DEFAULT_VIBE_FLASH_MODEL,
           config: expect.objectContaining({
             abortSignal,
             systemInstruction: getCoreSystemPrompt(''),
@@ -2753,7 +2751,7 @@ Other open files:
         contents,
         {},
         new AbortController().signal,
-        DEFAULT_QWEN_FLASH_MODEL,
+        DEFAULT_VIBE_FLASH_MODEL,
       );
 
       expect(mockContentGenerator.generateContent).not.toHaveBeenCalledWith({
@@ -2763,7 +2761,7 @@ Other open files:
       });
       expect(mockContentGenerator.generateContent).toHaveBeenCalledWith(
         {
-          model: DEFAULT_QWEN_FLASH_MODEL,
+          model: DEFAULT_VIBE_FLASH_MODEL,
           config: expect.any(Object),
           contents,
         },
@@ -2780,13 +2778,13 @@ Other open files:
           contents,
           {},
           abortSignal,
-          DEFAULT_QWEN_FLASH_MODEL,
+          DEFAULT_VIBE_FLASH_MODEL,
         );
       });
 
       expect(mockContentGenerator.generateContent).toHaveBeenCalledWith(
         expect.objectContaining({
-          model: DEFAULT_QWEN_FLASH_MODEL,
+          model: DEFAULT_VIBE_FLASH_MODEL,
           contents,
         }),
         'btw-prompt-id',
@@ -2806,14 +2804,14 @@ Other open files:
           contents,
           {},
           abortSignal,
-          DEFAULT_QWEN_FLASH_MODEL,
+          DEFAULT_VIBE_FLASH_MODEL,
           'override-prompt-id',
         );
       });
 
       expect(mockContentGenerator.generateContent).toHaveBeenCalledWith(
         expect.objectContaining({
-          model: DEFAULT_QWEN_FLASH_MODEL,
+          model: DEFAULT_VIBE_FLASH_MODEL,
           contents,
         }),
         'override-prompt-id',
@@ -2838,7 +2836,7 @@ Other open files:
         contents,
         {},
         abortSignal,
-        DEFAULT_QWEN_FLASH_MODEL,
+        DEFAULT_VIBE_FLASH_MODEL,
       );
 
       expect(getCustomSystemPrompt).toHaveBeenCalledWith(
@@ -2869,7 +2867,7 @@ Other open files:
         contents,
         {},
         abortSignal,
-        DEFAULT_QWEN_FLASH_MODEL,
+        DEFAULT_VIBE_FLASH_MODEL,
       );
 
       expect(getCoreSystemPrompt).toHaveBeenCalledWith(
@@ -2900,7 +2898,7 @@ Other open files:
         contents,
         {},
         abortSignal,
-        DEFAULT_QWEN_FLASH_MODEL,
+        DEFAULT_VIBE_FLASH_MODEL,
       );
 
       expect(getCustomSystemPrompt).toHaveBeenCalledWith(
@@ -3121,7 +3119,7 @@ Other open files:
 
       // Main config uses a different authType
       vi.mocked(mockConfig.getContentGeneratorConfig).mockReturnValue({
-        authType: AuthType.QWEN_OAUTH,
+        authType: AuthType.VIBE_OAUTH,
         apiKey: 'test-key',
         apiModel: 'test-model',
       } as unknown as ContentGeneratorConfig);
@@ -3137,7 +3135,7 @@ Other open files:
       );
 
       // VERIFY: retryWithBackoff was called with the fast model's authType ('openai'),
-      // not the main model's authType ('QWEN_OAUTH').
+      // not the main model's authType ('VIBE_OAUTH').
       expect(retryWithBackoff).toHaveBeenCalledWith(
         expect.any(Function),
         expect.objectContaining({
@@ -3198,7 +3196,7 @@ Other open files:
       };
 
       // resolveModelAcrossAuthTypes calls getResolvedModel multiple times:
-      // 1. main authType (QWEN_OAUTH) → undefined (miss)
+      // 1. main authType (VIBE_OAUTH) → undefined (miss)
       // 2. secondary authType (USE_OPENAI) → mockResolvedModel (hit)
       // 3. buildAgentContentGeneratorConfig calls getResolvedModel again
       //    with the resolved authType → mockResolvedModel (hit)
@@ -3211,9 +3209,9 @@ Other open files:
         getResolvedModel,
       } as unknown as ModelsConfig);
 
-      // Main config uses QWEN_OAUTH — fast model registered under USE_OPENAI
+      // Main config uses VIBE_OAUTH — fast model registered under USE_OPENAI
       vi.mocked(mockConfig.getContentGeneratorConfig).mockReturnValue({
-        authType: AuthType.QWEN_OAUTH,
+        authType: AuthType.VIBE_OAUTH,
         apiKey: 'test-key',
         apiModel: 'test-model',
       } as unknown as ContentGeneratorConfig);
@@ -3229,10 +3227,10 @@ Other open files:
         'fast-model',
       );
 
-      // First call uses main authType (QWEN_OAUTH) — misses
+      // First call uses main authType (VIBE_OAUTH) — misses
       expect(getResolvedModel).toHaveBeenNthCalledWith(
         1,
-        AuthType.QWEN_OAUTH,
+        AuthType.VIBE_OAUTH,
         'fast-model',
       );
       // Second call falls through to secondary authType — hits

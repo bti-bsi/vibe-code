@@ -4,7 +4,7 @@
  * Start the mock WebSocket server for testing the plugin-example channel.
  *
  * Usage:
- *   npx qwen-channel-plugin-example-server
+ *   npx vibe-channel-plugin-example-server
  *   # or
  *   node node_modules/@vibe-bti/vibe-code-channel-plugin-example/dist/start-server.js
  *

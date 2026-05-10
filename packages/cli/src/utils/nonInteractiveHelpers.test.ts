@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -550,7 +550,7 @@ describe('buildSystemMessage', () => {
       model: 'test-model',
       permission_mode: 'auto',
       slash_commands: ['commit', 'compress', 'init', 'summary'],
-      qwen_code_version: '1.0.0',
+      vibe_code_version: '1.0.0',
       agents: [],
     });
   });
@@ -597,7 +597,7 @@ describe('buildSystemMessage', () => {
       'auto' as PermissionMode,
     );
 
-    expect(result.qwen_code_version).toBe('unknown');
+    expect(result.vibe_code_version).toBe('unknown');
   });
 
   it('should include local commands with ACP supportedModes and prompt commands', async () => {

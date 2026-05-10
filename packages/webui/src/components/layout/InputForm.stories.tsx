@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -116,6 +116,10 @@ export const WithContextUsage: Story = {
       percentLeft: 60,
       usedTokens: 40000,
       tokenLimit: 100000,
+      modelName: 'vibe3-coder-plus',
+      inputTokens: 32000,
+      outputTokens: 8000,
+      totalTokens: 40000,
     },
   },
 };
@@ -195,6 +199,10 @@ export const FullyLoaded: Story = {
       percentLeft: 35,
       usedTokens: 65000,
       tokenLimit: 100000,
+      modelName: 'vibe3-coder-plus',
+      inputTokens: 51000,
+      outputTokens: 14000,
+      totalTokens: 65000,
     },
     editModeInfo: {
       label: 'Edit',

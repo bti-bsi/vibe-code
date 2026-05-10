@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -34,6 +34,10 @@ export const Default: Story = {
       percentLeft: 75,
       usedTokens: 25000,
       tokenLimit: 100000,
+      modelName: 'vibe3-coder-plus',
+      inputTokens: 20000,
+      outputTokens: 5000,
+      totalTokens: 25000,
     },
   },
 };

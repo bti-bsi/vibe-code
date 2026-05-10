@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2026 Qwen Team
+ * Copyright 2026 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -867,7 +867,7 @@ export class GeminiClient {
     }
 
     // Prevent context updates from being sent while a tool call is
-    // waiting for a response. The Qwen API requires that a functionResponse
+    // waiting for a response. The Vibe API requires that a functionResponse
     // part from the user immediately follows a functionCall part from the model
     // in the conversation history . The IDE context is not discarded; it will
     // be included in the next regular message sent to the model.
@@ -1231,7 +1231,7 @@ export class GeminiClient {
       // Resolve the authType for retry logic. When using a per-model content
       // generator (e.g. fast model side queries), the retry authType must match
       // the target model's provider, not the main session's provider. This
-      // ensures QWEN_OAUTH quota detection checks against the right provider.
+      // ensures VIBE_OAUTH quota detection checks against the right provider.
       const retryAuthType = isPerModel
         ? (this.createRetryAuthTypeForModel(model) ??
           this.config.getContentGeneratorConfig()?.authType ??
@@ -1259,7 +1259,7 @@ export class GeminiClient {
         signal: abortSignal,
         heartbeatFn: (info) => {
           process.stderr.write(
-            `[qwen-code] Waiting for API capacity... attempt ${info.attempt}, retry in ${Math.ceil(info.remainingMs / 1000)}s\n`,
+            `[vibe-code] Waiting for API capacity... attempt ${info.attempt}, retry in ${Math.ceil(info.remainingMs / 1000)}s\n`,
           );
         },
       });
@@ -1287,7 +1287,7 @@ export class GeminiClient {
   /**
    * Resolve a model across all authTypes. Handles the case where the target
    * model is registered under a different authType than the main model
-   * (e.g. main=QWEN_OAUTH, fast=USE_ANTHROPIC).
+   * (e.g. main=VIBE_OAUTH, fast=USE_ANTHROPIC).
    *
    * TODO: Move cross-authType resolution to ModelRegistry for a cleaner
    * data-layer solution. Follow-up PR.
@@ -1298,7 +1298,7 @@ export class GeminiClient {
   ): ResolvedModelConfig | undefined {
     const modelsConfig = this.config.getModelsConfig();
     const allAuthTypes: AuthType[] = [
-      AuthType.QWEN_OAUTH,
+      AuthType.VIBE_OAUTH,
       AuthType.USE_OPENAI,
       AuthType.USE_VERTEX_AI,
       AuthType.USE_ANTHROPIC,
@@ -1323,7 +1323,7 @@ export class GeminiClient {
 
   /**
    * Resolve the authType for a given model without creating a full generator.
-   * Used by retry logic to ensure provider-specific checks (e.g. QWEN_OAUTH
+   * Used by retry logic to ensure provider-specific checks (e.g. VIBE_OAUTH
    * quota detection) reference the correct provider.
    */
   private createRetryAuthTypeForModel(model: string): string | undefined {

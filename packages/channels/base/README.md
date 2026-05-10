@@ -1,6 +1,6 @@
 # @vibe-bti/vibe-code-channel-base
 
-Base infrastructure for building Qwen Code channel adapters. Provides the abstract base class, access control, session routing, and the ACP bridge that communicates with the agent.
+Base infrastructure for building Vibe Code channel adapters. Provides the abstract base class, access control, session routing, and the ACP bridge that communicates with the agent.
 
 If you're building a channel plugin, this is your only dependency.
 
@@ -81,7 +81,7 @@ Everything between `handleInbound()` and `sendMessage()` is handled by the base 
 | Class           | Purpose                                                          |
 | --------------- | ---------------------------------------------------------------- |
 | `ChannelBase`   | Abstract base class — extend this to build a channel adapter     |
-| `AcpBridge`     | Spawns and communicates with the `qwen-code --acp` agent process |
+| `AcpBridge`     | Spawns and communicates with the `vibe-code --acp` agent process |
 | `BlockStreamer` | Progressive multi-message delivery for block streaming           |
 | `SessionRouter` | Maps senders to ACP sessions with configurable scoping           |
 | `SenderGate`    | DM access control (allowlist / pairing / open)                   |
@@ -135,7 +135,7 @@ constructor(name: string, config: ChannelConfig, bridge: AcpBridge, options?: Ch
 
 ### AcpBridge
 
-Manages the `qwen-code --acp` child process and ACP sessions.
+Manages the `vibe-code --acp` child process and ACP sessions.
 
 ```typescript
 constructor(options: { cliEntryPath: string; cwd: string; model?: string })

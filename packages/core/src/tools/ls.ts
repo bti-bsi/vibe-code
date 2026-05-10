@@ -43,11 +43,11 @@ export interface LSToolParams {
   ignore?: string[];
 
   /**
-   * Whether to respect .gitignore and .qwenignore patterns (optional, defaults to true)
+   * Whether to respect .gitignore and .vibeignore patterns (optional, defaults to true)
    */
   file_filtering_options?: {
     respect_git_ignore?: boolean;
-    respect_qwen_ignore?: boolean;
+    respect_vibe_ignore?: boolean;
   };
 }
 
@@ -204,16 +204,16 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
       );
 
       const fileDiscovery = this.config.getFileService();
-      const { filteredPaths, gitIgnoredCount, qwenIgnoredCount } =
+      const { filteredPaths, gitIgnoredCount, vibeIgnoredCount } =
         fileDiscovery.filterFilesWithReport(relativePaths, {
           respectGitIgnore:
             this.params.file_filtering_options?.respect_git_ignore ??
             this.config.getFileFilteringOptions().respectGitIgnore ??
             DEFAULT_FILE_FILTERING_OPTIONS.respectGitIgnore,
-          respectQwenIgnore:
-            this.params.file_filtering_options?.respect_qwen_ignore ??
-            this.config.getFileFilteringOptions().respectQwenIgnore ??
-            DEFAULT_FILE_FILTERING_OPTIONS.respectQwenIgnore,
+          respectVibeIgnore:
+            this.params.file_filtering_options?.respect_vibe_ignore ??
+            this.config.getFileFilteringOptions().respectVibeIgnore ??
+            DEFAULT_FILE_FILTERING_OPTIONS.respectVibeIgnore,
         });
 
       const entries = [];
@@ -272,8 +272,8 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
       if (gitIgnoredCount > 0) {
         ignoredMessages.push(`${gitIgnoredCount} git-ignored`);
       }
-      if (qwenIgnoredCount > 0) {
-        ignoredMessages.push(`${qwenIgnoredCount} qwen-ignored`);
+      if (vibeIgnoredCount > 0) {
+        ignoredMessages.push(`${vibeIgnoredCount} vibe-ignored`);
       }
       if (ignoredMessages.length > 0) {
         resultMessage += `\n\n(${ignoredMessages.join(', ')})`;
@@ -330,7 +330,7 @@ export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
           },
           file_filtering_options: {
             description:
-              'Optional: Whether to respect ignore patterns from .gitignore or .qwenignore',
+              'Optional: Whether to respect ignore patterns from .gitignore or .vibeignore',
             type: 'object',
             properties: {
               respect_git_ignore: {
@@ -338,9 +338,9 @@ export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
                   'Optional: Whether to respect .gitignore patterns when listing files. Only available in git repositories. Defaults to true.',
                 type: 'boolean',
               },
-              respect_qwen_ignore: {
+              respect_vibe_ignore: {
                 description:
-                  'Optional: Whether to respect .qwenignore patterns when listing files. Defaults to true.',
+                  'Optional: Whether to respect .vibeignore patterns when listing files. Defaults to true.',
                 type: 'boolean',
               },
             },

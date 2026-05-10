@@ -37,8 +37,8 @@ vi.mock('node:fs', async (importOriginal) => {
     statSync: mockStatSync,
     realpathSync: mockRealpathSync,
     openSync: vi.fn(() => 42),
-    readSync: vi.fn((_fd: number, buf: Buffer) => {
-      PNG_HEADER.copy(buf);
+    readSync: vi.fn((_fd: number, buffer: any) => {
+      PNG_HEADER.copy(buffer);
       return PNG_HEADER.length;
     }),
     closeSync: vi.fn(),
@@ -192,8 +192,8 @@ describe('validateImagePath', () => {
       isFile: () => true,
       size: 100,
     } as unknown as ReturnType<(typeof fs)['statSync']>);
-    vi.mocked(fs.readSync).mockImplementation((_fd: number, buf: Buffer) => {
-      PNG_HEADER.copy(buf);
+    vi.mocked(fs.readSync).mockImplementation((_fd: number, buffer: any) => {
+      PNG_HEADER.copy(buffer);
       return PNG_HEADER.length;
     });
   });
@@ -242,9 +242,9 @@ describe('validateImagePath', () => {
 
   it('rejects image with magic bytes that do not match extension', () => {
     // readSync returns JPEG magic, but file extension is .png
-    vi.mocked(fs.readSync).mockImplementation((_fd: number, buf: Buffer) => {
+    vi.mocked(fs.readSync).mockImplementation((_fd: number, buffer: any) => {
       const jpegMagic = Buffer.from([0xff, 0xd8, 0xff]);
-      jpegMagic.copy(buf);
+      buffer.set(jpegMagic);
       return jpegMagic.length;
     });
     expect(() =>

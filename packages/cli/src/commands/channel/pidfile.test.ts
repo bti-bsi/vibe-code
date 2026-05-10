@@ -38,7 +38,7 @@ import {
 const originalKill = process.kill;
 
 function getPidFilePath() {
-  return join(homedir(), '.qwen', 'channels', 'service.pid');
+  return join(homedir(), '.vibe', 'channels', 'service.pid');
 }
 
 beforeEach(() => {

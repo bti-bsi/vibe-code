@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -166,7 +166,7 @@ function flattenContentParts(
 // DeepSeek's chat-completions endpoint accepts a flat `reasoning_effort`
 // body parameter (Possible values: high, max — see
 // https://api-docs.deepseek.com/zh-cn/api/create-chat-completion). The
-// standard qwen-code config shape is `reasoning: { effort, ... }` which gets
+// standard vibe-code config shape is `reasoning: { effort, ... }` which gets
 // passed through verbatim by the OpenAI pipeline. Translate to the flat
 // shape DeepSeek expects so user-configured effort levels actually take
 // effect; otherwise the nested `reasoning` object is ignored and the server

@@ -1,7 +1,7 @@
 {
   "name": "@vibe-bti/vibe-code-channel-weixin",
   "version": "0.15.11",
-  "description": "WeChat (Weixin) channel adapter for Qwen Code",
+  "description": "WeChat (Weixin) channel adapter for Vibe Code",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

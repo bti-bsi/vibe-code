@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2026 Qwen Team
+ * Copyright 2026 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -183,7 +183,7 @@ const listCommand: SlashCommand = {
 export const hooksCommand: SlashCommand = {
   name: 'hooks',
   get description() {
-    return t('Manage Qwen Code hooks');
+    return t('Manage Vibe Code hooks');
   },
   kind: CommandKind.BUILT_IN,
   supportedModes: ['interactive'] as const,

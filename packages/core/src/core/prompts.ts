@@ -10,7 +10,7 @@ import os from 'node:os';
 import { ToolNames } from '../tools/tool-names.js';
 import process from 'node:process';
 import { isGitRepository } from '../utils/gitUtils.js';
-import { QWEN_CONFIG_DIR } from '../memory/const.js';
+import { VIBE_CONFIG_DIR } from '../memory/const.js';
 import type { GenerateContentConfig } from '@google/genai';
 import { createDebugLogger } from '../utils/debugLogger.js';
 
@@ -117,13 +117,13 @@ export function getCoreSystemPrompt(
   model?: string,
   appendInstruction?: string,
 ): string {
-  // if QWEN_SYSTEM_MD is set (and not 0|false), override system prompt from file
-  // default path is .qwen/system.md but can be modified via custom path in QWEN_SYSTEM_MD
+  // if VIBE_SYSTEM_MD is set (and not 0|false), override system prompt from file
+  // default path is .vibe/system.md but can be modified via custom path in VIBE_SYSTEM_MD
   let systemMdEnabled = false;
   // The default path for the system prompt file. This can be overridden.
-  let systemMdPath = path.resolve(path.join(QWEN_CONFIG_DIR, 'system.md'));
+  let systemMdPath = path.resolve(path.join(VIBE_CONFIG_DIR, 'system.md'));
   // Resolve the environment variable to get either a path or a switch value.
-  const systemMdResolution = resolvePathFromEnv(process.env['QWEN_SYSTEM_MD']);
+  const systemMdResolution = resolvePathFromEnv(process.env['VIBE_SYSTEM_MD']);
 
   // Proceed only if the environment variable is set and is not disabled.
   if (systemMdResolution.value && !systemMdResolution.isDisabled) {
@@ -340,9 +340,9 @@ ${getToolCallExamples(model || '')}
 Your core function is efficient and safe assistance. Balance extreme conciseness with the crucial need for clarity, especially regarding safety and potential system modifications. Always prioritize user control and project conventions. Never make assumptions about the contents of files; instead use '${ToolNames.READ_FILE}' to ensure you aren't making broad assumptions. Finally, you are an agent - please keep going until the user's query is completely resolved.
 `.trim();
 
-  // if QWEN_WRITE_SYSTEM_MD is set (and not 0|false), write base system prompt to file
+  // if VIBE_WRITE_SYSTEM_MD is set (and not 0|false), write base system prompt to file
   const writeSystemMdResolution = resolvePathFromEnv(
-    process.env['QWEN_WRITE_SYSTEM_MD'],
+    process.env['VIBE_WRITE_SYSTEM_MD'],
   );
 
   // Check if the feature is enabled. This proceeds only if the environment
@@ -557,7 +557,7 @@ To help you check their settings, I can read their contents. Which one would you
 </example>
 `.trim();
 
-const qwenCoderToolCallExamples = `
+const vibeCoderToolCallExamples = `
 # Examples (Illustrating Tone and Workflow)
 <example>
 user: 1 + 2
@@ -714,7 +714,7 @@ I found the following 'app.config' files:
 To help you check their settings, I can read their contents. Which one would you like to start with, or should I read all of them?
 </example>
 `.trim();
-const qwenVlToolCallExamples = `
+const vibeVlToolCallExamples = `
 # Examples (Illustrating Tone and Workflow)
 <example>
 user: 1 + 2
@@ -815,18 +815,18 @@ To help you check their settings, I can read their contents. Which one would you
 
 function getToolCallExamples(model?: string): string {
   // Check for environment variable override first
-  const toolCallStyle = process.env['QWEN_CODE_TOOL_CALL_STYLE'];
+  const toolCallStyle = process.env['VIBE_CODE_TOOL_CALL_STYLE'];
   if (toolCallStyle) {
     switch (toolCallStyle.toLowerCase()) {
-      case 'qwen-coder':
-        return qwenCoderToolCallExamples;
-      case 'qwen-vl':
-        return qwenVlToolCallExamples;
+      case 'vibe-coder':
+        return vibeCoderToolCallExamples;
+      case 'vibe-vl':
+        return vibeVlToolCallExamples;
       case 'general':
         return generalToolCallExamples;
       default:
         debugLogger.warn(
-          `Unknown QWEN_CODE_TOOL_CALL_STYLE value: ${toolCallStyle}. Using model-based detection.`,
+          `Unknown VIBE_CODE_TOOL_CALL_STYLE value: ${toolCallStyle}. Using model-based detection.`,
         );
         break;
     }
@@ -834,17 +834,17 @@ function getToolCallExamples(model?: string): string {
 
   // Enhanced regex-based model detection
   if (model && model.length < 100) {
-    // Match qwen*-coder patterns (e.g., qwen3-coder, qwen2.5-coder, qwen-coder)
-    if (/qwen[^-]*-coder/i.test(model)) {
-      return qwenCoderToolCallExamples;
+    // Match vibe*-coder patterns (e.g., vibe3-coder, vibe2.5-coder, vibe-coder)
+    if (/vibe[^-]*-coder/i.test(model)) {
+      return vibeCoderToolCallExamples;
     }
-    // Match qwen*-vl patterns (e.g., qwen-vl, qwen2-vl, qwen3-vl)
-    if (/qwen[^-]*-vl/i.test(model)) {
-      return qwenVlToolCallExamples;
+    // Match vibe*-vl patterns (e.g., vibe-vl, vibe2-vl, vibe3-vl)
+    if (/vibe[^-]*-vl/i.test(model)) {
+      return vibeVlToolCallExamples;
     }
-    // Match coder-model pattern (same as qwen3-coder)
+    // Match coder-model pattern (same as vibe3-coder)
     if (/coder-model/i.test(model)) {
-      return qwenCoderToolCallExamples;
+      return vibeCoderToolCallExamples;
     }
   }
 
@@ -1059,7 +1059,7 @@ Find something genuinely interesting or amusing from the session summaries.`,
 
 Call respond_in_schema function with A VALID JSON OBJECT as argument:
 {
-  "Qwen_md_additions": [
+  "Vibe_md_additions": [
     {"addition": "A specific line or block to add to Vibe.md based on workflow patterns. E.g., 'Always run tests after modifying auth-related files'", "why": "1 sentence explaining why this would help based on actual sessions", "prompt_scaffold": "Instructions for where to add this in VIBE.md. E.g., 'Add under ## Testing section'"}
   ],
   "features_to_try": [

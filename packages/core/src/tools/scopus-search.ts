@@ -11,6 +11,7 @@ import { ToolNames, ToolDisplayNames } from './tool-names.js';
 import { createDebugLogger, type DebugLogger } from '../utils/debugLogger.js';
 import https from 'node:https';
 import zlib from 'node:zlib';
+import type { Config } from '../config/config.js';
 
 const SCOPUS_API_BASE_URL = 'https://api.elsevier.com/content/search/scopus';
 const SCOPUS_API_TIMEOUT_MS = 30000;
@@ -153,8 +154,9 @@ export interface ScopusSearchParams {
   /**
    * Scopus API key for authentication
    * Get one from https://dev.elsevier.com/
+   * Optional if configured in settings.
    */
-  apiKey: string;
+  apiKey?: string;
   /**
    * Maximum number of results to return (default: 10, max: 25)
    */
@@ -209,9 +211,11 @@ class ScopusSearchToolInvocation extends BaseToolInvocation<
   ToolResult
 > {
   private readonly debugLogger: DebugLogger;
+  private readonly config?: Config;
 
-  constructor(params: ScopusSearchParams) {
+  constructor(params: ScopusSearchParams, config?: Config) {
     super(params);
+    this.config = config;
     this.debugLogger = createDebugLogger('SCOPUS_SEARCH');
   }
 
@@ -237,6 +241,21 @@ class ScopusSearchToolInvocation extends BaseToolInvocation<
   }
 
   async execute(_signal: AbortSignal): Promise<ToolResult> {
+    const apiKey = this.params.apiKey || this.config?.getScopusApiKey();
+    
+    if (!apiKey) {
+      const errorMessage = 'Scopus API key is missing. Please configure it via the /config command or provide it in the tool parameters.';
+      this.debugLogger.error(`[ScopusSearchTool] ${errorMessage}`);
+      return {
+        llmContent: `Error searching Scopus: ${errorMessage}`,
+        returnDisplay: `Scopus search failed: Missing API Key`,
+        error: {
+          type: ToolErrorType.SCOPE_SEARCH_FAILED,
+          message: errorMessage,
+        },
+      };
+    }
+
     const queryUrl = this.buildQueryUrl();
 
     this.debugLogger.debug(
@@ -246,7 +265,7 @@ class ScopusSearchToolInvocation extends BaseToolInvocation<
     try {
       const response = await scopusGet(
         queryUrl,
-        this.params.apiKey,
+        apiKey,
         SCOPUS_API_TIMEOUT_MS,
       );
 
@@ -384,8 +403,9 @@ export class ScopusSearchTool extends BaseDeclarativeTool<
   ToolResult
 > {
   static readonly Name: string = ToolNames.SCOPUS_SEARCH;
+  private config?: Config;
 
-  constructor() {
+  constructor(config?: Config) {
     super(
       ScopusSearchTool.Name,
       ToolDisplayNames.SCOPUS_SEARCH,
@@ -400,7 +420,7 @@ export class ScopusSearchTool extends BaseDeclarativeTool<
           },
           apiKey: {
             description:
-              'Scopus API key for authentication. Get one from https://dev.elsevier.com/',
+              'Scopus API key for authentication. Get one from https://dev.elsevier.com/. Optional if already configured in settings.',
             type: 'string',
           },
           count: {
@@ -418,10 +438,11 @@ export class ScopusSearchTool extends BaseDeclarativeTool<
             type: 'string',
           },
         },
-        required: ['query', 'apiKey'],
+        required: ['query'],
         type: 'object',
       },
     );
+    this.config = config;
   }
 
   protected override validateToolParamValues(
@@ -429,9 +450,6 @@ export class ScopusSearchTool extends BaseDeclarativeTool<
   ): string | null {
     if (!params.query || params.query.trim() === '') {
       return "The 'query' parameter cannot be empty.";
-    }
-    if (!params.apiKey || params.apiKey.trim() === '') {
-      return "The 'apiKey' parameter cannot be empty. Get a free API key from https://dev.elsevier.com/";
     }
     if (
       params.count !== undefined &&
@@ -448,6 +466,6 @@ export class ScopusSearchTool extends BaseDeclarativeTool<
   protected createInvocation(
     params: ScopusSearchParams,
   ): ToolInvocation<ScopusSearchParams, ToolResult> {
-    return new ScopusSearchToolInvocation(params);
+    return new ScopusSearchToolInvocation(params, this.config);
   }
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -65,14 +65,14 @@ type Story = StoryObj<typeof meta>;
 export const Authenticated: Story = {
   args: {
     isAuthenticated: true,
-    appName: 'Qwen Code',
+    appName: 'Vibe Code',
   },
 };
 
 export const NotAuthenticated: Story = {
   args: {
     isAuthenticated: false,
-    appName: 'Qwen Code',
+    appName: 'Vibe Code',
   },
 };
 
@@ -80,7 +80,7 @@ export const Loading: Story = {
   args: {
     isAuthenticated: false,
     loadingMessage: 'Initializing...',
-    appName: 'Qwen Code',
+    appName: 'Vibe Code',
   },
 };
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -21,7 +21,7 @@ interface ArenaStartDialogProps {
 }
 
 const MODEL_PROVIDERS_DOCUMENTATION_URL =
-  'https://qwenlm.github.io/qwen-code-docs/en/users/configuration/settings/#modelproviders';
+  'https://vibelm.github.io/vibe-code-docs/en/users/configuration/settings/#modelproviders';
 
 export function ArenaStartDialog({
   onClose,
@@ -36,16 +36,16 @@ export function ArenaStartDialog({
 
     return selectableModels.map((model) => {
       const token = `${model.authType}:${model.id}`;
-      const isQwenOauth = model.authType === AuthType.QWEN_OAUTH;
+      const isVibeOauth = model.authType === AuthType.VIBE_OAUTH;
       return {
         key: token,
         value: token,
         label: `[${model.authType}] ${model.label}`,
-        disabled: isQwenOauth,
+        disabled: isVibeOauth,
       };
     });
   }, [config]);
-  const hasDisabledQwenOauth = modelItems.some((item) => item.disabled);
+  const hasDisabledVibeOauth = modelItems.some((item) => item.disabled);
   const selectableModelCount = modelItems.filter(
     (item) => !item.disabled,
   ).length;
@@ -109,11 +109,11 @@ export function ArenaStartDialog({
         </Box>
       )}
 
-      {(hasDisabledQwenOauth || needsMoreModels) && (
+      {(hasDisabledVibeOauth || needsMoreModels) && (
         <Box marginTop={1} flexDirection="column">
-          {hasDisabledQwenOauth && (
+          {hasDisabledVibeOauth && (
             <Text color={theme.status.warning}>
-              {t('Note: qwen-oauth models are not supported in Arena.')}
+              {t('Note: vibe-oauth models are not supported in Arena.')}
             </Text>
           )}
           {needsMoreModels && (

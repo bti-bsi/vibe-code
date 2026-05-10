@@ -66,7 +66,7 @@ describe('query()', () => {
       options: {
         systemPrompt: {
           type: 'preset',
-          preset: 'qwen_code',
+          preset: 'vibe_code',
           append: 'Be terse.',
         },
       } satisfies QueryOptions,
@@ -78,7 +78,7 @@ describe('query()', () => {
     expect(transportOptions.systemPrompt).toBeUndefined();
   });
 
-  it('rejects non-qwen preset names at runtime validation', async () => {
+  it('rejects non-vibe preset names at runtime validation', async () => {
     const { query } = await import('../../src/query/createQuery.js');
 
     expect(() =>

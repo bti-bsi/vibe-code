@@ -168,7 +168,7 @@ describe('ScopusSearchTool', () => {
 
       simulateResponse(200, mockBody);
 
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         query: 'deep learning',
         apiKey: 'test-api-key',
         count: 10,
@@ -197,7 +197,7 @@ describe('ScopusSearchTool', () => {
 
       simulateResponse(401, mockBody);
 
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         query: 'test',
         apiKey: 'invalid-key',
       });
@@ -218,7 +218,7 @@ describe('ScopusSearchTool', () => {
 
       simulateResponse(200, mockBody);
 
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         query: 'nonexistent topic xyz',
         apiKey: 'test-api-key',
       });

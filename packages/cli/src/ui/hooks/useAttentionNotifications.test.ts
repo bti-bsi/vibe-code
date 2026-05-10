@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -82,7 +82,7 @@ describe('useAttentionNotifications', () => {
 
     expect(mockedSendNotification).toHaveBeenCalledTimes(1);
     expect(mockedSendNotification).toHaveBeenCalledWith(
-      expect.objectContaining({ title: 'Qwen Code' }),
+      expect.objectContaining({ title: 'Vibe Code' }),
       mockTerminal,
       true,
     );
@@ -204,7 +204,7 @@ describe('useAttentionNotifications', () => {
     expect(mockedSendNotification).toHaveBeenCalledTimes(1);
     expect(mockedSendNotification).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Qwen Code needs your permission to use Bash',
+        message: 'Vibe Code needs your permission to use Bash',
       }),
       mockTerminal,
       true,
@@ -227,7 +227,7 @@ describe('useAttentionNotifications', () => {
 
     expect(mockedSendNotification).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Qwen Code is waiting for your input',
+        message: 'Vibe Code is waiting for your input',
       }),
       mockTerminal,
       true,
@@ -259,7 +259,7 @@ describe('useAttentionNotifications', () => {
 
     expect(mockedSendNotification).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Qwen Code is waiting for your input',
+        message: 'Vibe Code is waiting for your input',
       }),
       mockTerminal,
       true,

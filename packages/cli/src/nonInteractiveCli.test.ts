@@ -313,7 +313,7 @@ describe('runNonInteractive', () => {
 
   it('on EPIPE, destroys stdout and returns normally instead of process.exit', async () => {
     // Regression: process.exit(0) on EPIPE bypassed runExitCleanup → flush()
-    // and dropped queued JSONL writes for `qwen -p ... | head -1` patterns.
+    // and dropped queued JSONL writes for `vibe -p ... | head -1` patterns.
     // process.exit is mocked to throw in beforeEach, so reaching the
     // assertion also proves the bypass route is gone.
     setupMetricsMock();

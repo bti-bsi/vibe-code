@@ -113,7 +113,7 @@ describe('parseChannelConfig', () => {
       cwd: '/custom',
       approvalMode: 'auto',
       instructions: 'Be helpful',
-      model: 'qwen-coder',
+      model: 'vibe-coder',
       groupPolicy: 'open',
       groups: { g1: { mentionKeywords: ['@bot'] } },
     });
@@ -125,7 +125,7 @@ describe('parseChannelConfig', () => {
     expect(result.cwd).toBe('/custom');
     expect(result.approvalMode).toBe('auto');
     expect(result.instructions).toBe('Be helpful');
-    expect(result.model).toBe('qwen-coder');
+    expect(result.model).toBe('vibe-coder');
     expect(result.groupPolicy).toBe('open');
     expect(result.groups).toEqual({ g1: { mentionKeywords: ['@bot'] } });
   });

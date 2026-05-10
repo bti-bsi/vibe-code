@@ -58,14 +58,14 @@
  *   npx tsx subagent-flicker-regression.ts
  *
  * Useful env:
- *   QWEN_TUI_E2E_REPO=/path/to/qwen-code
- *   QWEN_TUI_E2E_OUT=/tmp/qwen-tui-subagent-flicker
- *   QWEN_TUI_E2E_MAX_CLEAR_PAIRS=10       (default: 10)
- *   QWEN_TUI_E2E_MAX_CLEAR_SCREEN=20      (default: 20)
- *   QWEN_TUI_E2E_MAX_ERASE_LINE=460       (default: 460 — separates fix from
+ *   VIBE_TUI_E2E_REPO=/path/to/vibe-code
+ *   VIBE_TUI_E2E_OUT=/tmp/vibe-tui-subagent-flicker
+ *   VIBE_TUI_E2E_MAX_CLEAR_PAIRS=10       (default: 10)
+ *   VIBE_TUI_E2E_MAX_CLEAR_SCREEN=20      (default: 20)
+ *   VIBE_TUI_E2E_MAX_ERASE_LINE=460       (default: 460 — separates fix from
  *                                          no-fix; reverting the fix raises
  *                                          this counter to ~469)
- *   QWEN_TUI_E2E_SUBAGENT_TOOL_CALLS=5
+ *   VIBE_TUI_E2E_SUBAGENT_TOOL_CALLS=5
  */
 
 import {
@@ -160,7 +160,7 @@ function captureCounts(raw: string): Counts {
 }
 
 function chatCompletionId(suffix: string): string {
-  return `chatcmpl-qwen-tui-subagent-${suffix}-${Date.now()}`;
+  return `chatcmpl-vibe-tui-subagent-${suffix}-${Date.now()}`;
 }
 
 function sendJson(res: ServerResponse, body: unknown): void {
@@ -269,7 +269,7 @@ function sendResponse(
 
 function buildMainAgentToolCall(packageJsonPath: string) {
   return {
-    id: 'chatcmpl-qwen-tui-subagent-dispatch',
+    id: 'chatcmpl-vibe-tui-subagent-dispatch',
     object: 'chat.completion',
     created: Math.floor(Date.now() / 1000),
     model: 'dummy',
@@ -377,7 +377,7 @@ async function startFakeOpenAIServer(
   let subagentTurnCount = 0;
   let requestCount = 0;
 
-  const verbose = process.env['QWEN_TUI_E2E_VERBOSE'] === '1';
+  const verbose = process.env['VIBE_TUI_E2E_VERBOSE'] === '1';
   const log = (...args: unknown[]) => {
     if (verbose) {
       console.error('[fake-openai]', ...args);
@@ -457,7 +457,7 @@ async function startFakeOpenAIServer(
   };
 }
 
-function qwenArgs(baseUrl: string): string[] {
+function vibeArgs(baseUrl: string): string[] {
   // NOTE: --bare is intentionally omitted. Bare mode hard-codes the registered
   // tool set to read_file / edit / shell, which means the model's `agent`
   // tool_call is rejected as "Tool not found in registry" and the SubAgent
@@ -481,21 +481,21 @@ function qwenArgs(baseUrl: string): string[] {
 async function main(): Promise<void> {
   const scriptDir = dirname(fileURLToPath(import.meta.url));
   const defaultRepoRoot = resolve(scriptDir, '../..');
-  const repoRoot = resolve(process.env['QWEN_TUI_E2E_REPO'] ?? defaultRepoRoot);
+  const repoRoot = resolve(process.env['VIBE_TUI_E2E_REPO'] ?? defaultRepoRoot);
   const defaultOut = join(
     tmpdir(),
-    'qwen-tui-subagent-flicker',
+    'vibe-tui-subagent-flicker',
     basename(repoRoot),
   );
-  const outputDir = resolve(process.env['QWEN_TUI_E2E_OUT'] ?? defaultOut);
-  const maxClearPairs = envNumber('QWEN_TUI_E2E_MAX_CLEAR_PAIRS', 10);
-  const maxClearScreen = envNumber('QWEN_TUI_E2E_MAX_CLEAR_SCREEN', 20);
+  const outputDir = resolve(process.env['VIBE_TUI_E2E_OUT'] ?? defaultOut);
+  const maxClearPairs = envNumber('VIBE_TUI_E2E_MAX_CLEAR_PAIRS', 10);
+  const maxClearScreen = envNumber('VIBE_TUI_E2E_MAX_CLEAR_SCREEN', 20);
   // The eraseLine ceiling is the metric that actually distinguishes the
   // visual-height fix from no-fix. With the fix in place we observe ~434;
   // reverting to the old hard-coded budget pushes it to ~469. 460 sits in
   // between so a full regression trips the ratchet.
-  const maxEraseLine = envNumber('QWEN_TUI_E2E_MAX_ERASE_LINE', 460);
-  const subagentToolCalls = envNumber('QWEN_TUI_E2E_SUBAGENT_TOOL_CALLS', 5);
+  const maxEraseLine = envNumber('VIBE_TUI_E2E_MAX_ERASE_LINE', 460);
+  const subagentToolCalls = envNumber('VIBE_TUI_E2E_SUBAGENT_TOOL_CALLS', 5);
   const packageJsonPath = join(repoRoot, 'package.json');
 
   if (existsSync(outputDir)) {
@@ -509,7 +509,7 @@ async function main(): Promise<void> {
   );
   console.error('[fake-openai] baseUrl =', fakeServer.baseUrl);
 
-  // Sandbox HOME to keep ~/.qwen settings out of the run.
+  // Sandbox HOME to keep ~/.vibe settings out of the run.
   const homeDir = join(outputDir, 'home');
   mkdirSync(homeDir, { recursive: true });
 
@@ -517,17 +517,17 @@ async function main(): Promise<void> {
     ...process.env,
     FORCE_COLOR: '1',
     NODE_NO_WARNINGS: '1',
-    QWEN_CODE_DISABLE_SYNCHRONIZED_OUTPUT: '1',
-    QWEN_CODE_NO_RELAUNCH: '1',
-    // Intentionally NOT setting QWEN_CODE_SIMPLE so the agent tool stays in
-    // the registry — see comment in qwenArgs() above.
-    QWEN_SANDBOX: 'false',
+    VIBE_CODE_DISABLE_SYNCHRONIZED_OUTPUT: '1',
+    VIBE_CODE_NO_RELAUNCH: '1',
+    // Intentionally NOT setting VIBE_CODE_SIMPLE so the agent tool stays in
+    // the registry — see comment in vibeArgs() above.
+    VIBE_SANDBOX: 'false',
     TERM: 'xterm-256color',
     HOME: homeDir,
     USERPROFILE: homeDir,
   };
   delete env['NO_COLOR'];
-  delete env['QWEN_CODE_SIMPLE'];
+  delete env['VIBE_CODE_SIMPLE'];
   // OpenAI SDK / undici routes through HTTP_PROXY even when NO_PROXY lists
   // 127.0.0.1, so the fake-server traffic would go to the corp proxy instead
   // of our loopback. Strip every proxy variable so the child process talks
@@ -556,7 +556,7 @@ async function main(): Promise<void> {
   });
 
   try {
-    await terminal.spawn('node', qwenArgs(fakeServer.baseUrl));
+    await terminal.spawn('node', vibeArgs(fakeServer.baseUrl));
     await terminal.waitFor('Type your message', { timeout: 30000 });
 
     const rawBefore = terminal.getRawOutput().length;

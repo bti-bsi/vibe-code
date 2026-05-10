@@ -87,10 +87,7 @@ describe('GeminiContentGenerator', () => {
         config: expect.objectContaining({
           temperature: 1,
           topP: 0.95,
-          thinkingConfig: {
-            includeThoughts: true,
-            thinkingLevel: 'THINKING_LEVEL_UNSPECIFIED',
-          },
+          thinkingConfig: undefined,
         }),
       }),
     );
@@ -112,10 +109,7 @@ describe('GeminiContentGenerator', () => {
         config: expect.objectContaining({
           temperature: 1,
           topP: 0.95,
-          thinkingConfig: {
-            includeThoughts: true,
-            thinkingLevel: 'THINKING_LEVEL_UNSPECIFIED',
-          },
+          thinkingConfig: undefined,
         }),
       }),
     );

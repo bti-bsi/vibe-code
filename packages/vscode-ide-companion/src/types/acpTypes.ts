@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,7 +9,7 @@ import type { Usage } from '@agentclientprotocol/sdk';
 import type { ApprovalModeValue } from './approvalModeValueTypes.js';
 
 // ---------------------------------------------------------------------------
-// Private / Qwen-specific types (not part of ACP spec)
+// Private / Vibe-specific types (not part of ACP spec)
 // ---------------------------------------------------------------------------
 
 // Default auth method for ACP authenticate requests.
@@ -19,7 +19,7 @@ import type { ApprovalModeValue } from './approvalModeValueTypes.js';
 export const authMethod = 'openai';
 
 /**
- * Authenticate update notification (Qwen extension, not ACP spec).
+ * Authenticate update notification (Vibe extension, not ACP spec).
  * Sent by agent during the OAuth flow.
  */
 export interface AuthenticateUpdateNotification {

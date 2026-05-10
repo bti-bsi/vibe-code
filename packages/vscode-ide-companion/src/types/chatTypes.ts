@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 import type {
@@ -57,7 +57,7 @@ export interface UsageStatsPayload {
   tokenLimit?: number | null;
 }
 
-export interface QwenAgentCallbacks {
+export interface VibeAgentCallbacks {
   onMessage?: (message: ChatMessage) => void;
   onStreamChunk?: (chunk: string) => void;
   onThoughtChunk?: (chunk: string) => void;

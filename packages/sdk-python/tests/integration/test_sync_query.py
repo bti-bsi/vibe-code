@@ -4,16 +4,16 @@ import threading
 import time
 
 import pytest
-import qwen_code_sdk.sync_query as sync_query_module
-from qwen_code_sdk import is_sdk_result_message, query_sync
-from qwen_code_sdk.sync_query import SyncQuery
+import vibe_code_sdk.sync_query as sync_query_module
+from vibe_code_sdk import is_sdk_result_message, query_sync
+from vibe_code_sdk.sync_query import SyncQuery
 
 
-def test_sync_query_single_turn(fake_qwen_path: str) -> None:
+def test_sync_query_single_turn(fake_vibe_path: str) -> None:
     result = query_sync(
         "hello sync",
         {
-            "path_to_qwen_executable": fake_qwen_path,
+            "path_to_vibe_executable": fake_vibe_path,
         },
     )
 
@@ -41,7 +41,7 @@ def test_sync_query_bootstrap_failure_cleans_up_loop_thread(
     baseline_threads = {
         thread.ident
         for thread in threading.enumerate()
-        if thread.name == "qwen-sdk-sync-loop"
+        if thread.name == "vibe-sdk-sync-loop"
     }
 
     with pytest.raises(RuntimeError, match="bootstrap failed"):
@@ -52,7 +52,7 @@ def test_sync_query_bootstrap_failure_cleans_up_loop_thread(
         active_threads = {
             thread.ident
             for thread in threading.enumerate()
-            if thread.name == "qwen-sdk-sync-loop"
+            if thread.name == "vibe-sdk-sync-loop"
         }
         if active_threads == baseline_threads:
             break
@@ -61,16 +61,16 @@ def test_sync_query_bootstrap_failure_cleans_up_loop_thread(
     active_threads = {
         thread.ident
         for thread in threading.enumerate()
-        if thread.name == "qwen-sdk-sync-loop"
+        if thread.name == "vibe-sdk-sync-loop"
     }
     assert active_threads == baseline_threads
 
 
-def test_sync_query_context_manager(fake_qwen_path: str) -> None:
+def test_sync_query_context_manager(fake_vibe_path: str) -> None:
     with query_sync(
         "hello context",
         {
-            "path_to_qwen_executable": fake_qwen_path,
+            "path_to_vibe_executable": fake_vibe_path,
         },
     ) as result:
         messages = list(result)

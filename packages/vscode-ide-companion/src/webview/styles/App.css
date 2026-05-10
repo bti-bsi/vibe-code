@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  *
  * VSCode IDE Companion - Theme Variables
@@ -16,16 +16,16 @@
    VSCode Theme Variables
    =========================== */
 :root {
-  /* Qwen Brand Colors - these override webui defaults */
-  --app-qwen-theme: #615fff;
-  --app-qwen-clay-button-orange: #4f46e5;
-  --app-qwen-ivory: #f5f5ff;
-  --app-qwen-slate: #141420;
-  --app-qwen-green: #6bcf7f;
+  /* Vibe Brand Colors - these override webui defaults */
+  --app-vibe-theme: #615fff;
+  --app-vibe-clay-button-orange: #4f46e5;
+  --app-vibe-ivory: #f5f5ff;
+  --app-vibe-slate: #141420;
+  --app-vibe-green: #6bcf7f;
 
   /* Primary color - components use var(--app-primary) */
-  --app-primary: var(--app-qwen-theme);
-  --app-primary-hover: var(--app-qwen-clay-button-orange);
+  --app-primary: var(--app-vibe-theme);
+  --app-primary-hover: var(--app-vibe-clay-button-orange);
 
   /* Spacing */
   --app-spacing-small: 4px;
@@ -97,11 +97,11 @@
   --app-ghost-button-hover-background: var(--vscode-toolbar-hoverBackground);
   --app-button-foreground: var(
     --vscode-button-foreground,
-    var(--app-qwen-ivory)
+    var(--app-vibe-ivory)
   );
   --app-button-background: var(
     --vscode-button-background,
-    var(--app-qwen-clay-button-orange)
+    var(--app-vibe-clay-button-orange)
   );
   --app-button-hover-background: var(--vscode-button-hoverBackground);
 

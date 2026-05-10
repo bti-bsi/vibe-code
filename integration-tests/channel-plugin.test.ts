@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,7 +16,7 @@
  *         → SenderGate (open policy)
  *         → SessionRouter (creates/reuses session)
  *         → AcpBridge.prompt(sessionId, text)
- *           → qwen-code --acp (REAL model request)
+ *           → vibe-code --acp (REAL model request)
  *       → MockPluginChannel.sendMessage(chatId, response)
  *         → WebSocket response to mock server
  *     → server resolves promise with agent text
@@ -66,7 +66,7 @@ describe('Channel Plugin (Mock WebSocket E2E)', () => {
     // 1. Start mock server on random ports (no port conflicts)
     server = await createMockServer({ httpPort: 0, wsPort: 0 });
 
-    // 2. Start AcpBridge (spawns real qwen-code --acp)
+    // 2. Start AcpBridge (spawns real vibe-code --acp)
     bridge = new AcpBridge({
       cliEntryPath: CLI_PATH,
       cwd: testDir,

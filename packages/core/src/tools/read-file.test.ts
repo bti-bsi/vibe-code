@@ -44,7 +44,7 @@ describe('ReadFileTool', () => {
       storage: {
         getProjectTempDir: () => path.join(tempRootDir, '.temp'),
         getProjectDir: () => path.join(tempRootDir, '.project'),
-        getUserSkillsDirs: () => [path.join(os.homedir(), '.qwen', 'skills')],
+        getUserSkillsDirs: () => [path.join(os.homedir(), '.vibe', 'skills')],
       },
       getTruncateToolOutputThreshold: () => 2500,
       getTruncateToolOutputLines: () => 500,
@@ -753,10 +753,10 @@ describe('ReadFileTool', () => {
         // re-emitted) but they MUST still be recorded in the cache
         // — otherwise the prior-read enforcement on Edit / WriteFile
         // would refuse to mutate a file the model legitimately just
-        // read. Put a file under .qwen/<auto-memory>/ via
-        // QWEN_CODE_MEMORY_LOCAL=1 and assert recordRead happened.
-        const previousLocal = process.env['QWEN_CODE_MEMORY_LOCAL'];
-        process.env['QWEN_CODE_MEMORY_LOCAL'] = '1';
+        // read. Put a file under .vibe/<auto-memory>/ via
+        // VIBE_CODE_MEMORY_LOCAL=1 and assert recordRead happened.
+        const previousLocal = process.env['VIBE_CODE_MEMORY_LOCAL'];
+        process.env['VIBE_CODE_MEMORY_LOCAL'] = '1';
         try {
           const { getAutoMemoryRoot, clearAutoMemoryRootCache } = await import(
             '../memory/paths.js'
@@ -788,9 +788,9 @@ describe('ReadFileTool', () => {
           }
         } finally {
           if (previousLocal === undefined) {
-            delete process.env['QWEN_CODE_MEMORY_LOCAL'];
+            delete process.env['VIBE_CODE_MEMORY_LOCAL'];
           } else {
-            process.env['QWEN_CODE_MEMORY_LOCAL'] = previousLocal;
+            process.env['VIBE_CODE_MEMORY_LOCAL'] = previousLocal;
           }
         }
       });
@@ -857,7 +857,7 @@ describe('ReadFileTool', () => {
             getProjectTempDir: () => path.join(tempRootDir, '.temp'),
             getProjectDir: () => path.join(tempRootDir, '.project'),
             getUserSkillsDirs: () => [
-              path.join(os.homedir(), '.qwen', 'skills'),
+              path.join(os.homedir(), '.vibe', 'skills'),
             ],
           },
           getTruncateToolOutputThreshold: () => 2500,
@@ -883,21 +883,21 @@ describe('ReadFileTool', () => {
       });
     });
 
-    describe('with .qwenignore', () => {
+    describe('with .vibeignore', () => {
       beforeEach(async () => {
         await fsp.writeFile(
-          path.join(tempRootDir, '.qwenignore'),
+          path.join(tempRootDir, '.vibeignore'),
           ['foo.*', 'ignored/'].join('\n'),
         );
       });
 
-      it('should throw error if path is ignored by a .qwenignore pattern', async () => {
+      it('should throw error if path is ignored by a .vibeignore pattern', async () => {
         const ignoredFilePath = path.join(tempRootDir, 'foo.bar');
         await fsp.writeFile(ignoredFilePath, 'content', 'utf-8');
         const params: ReadFileToolParams = {
           file_path: ignoredFilePath,
         };
-        const expectedError = `File path '${ignoredFilePath}' is ignored by .qwenignore pattern(s).`;
+        const expectedError = `File path '${ignoredFilePath}' is ignored by .vibeignore pattern(s).`;
         expect(() => tool.build(params)).toThrow(expectedError);
       });
 
@@ -909,7 +909,7 @@ describe('ReadFileTool', () => {
         const params: ReadFileToolParams = {
           file_path: ignoredFilePath,
         };
-        const expectedError = `File path '${ignoredFilePath}' is ignored by .qwenignore pattern(s).`;
+        const expectedError = `File path '${ignoredFilePath}' is ignored by .vibeignore pattern(s).`;
         expect(() => tool.build(params)).toThrow(expectedError);
       });
 

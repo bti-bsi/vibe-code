@@ -160,8 +160,8 @@ export function useAtCompletion(props: UseAtCompletionProps): void {
           ignoreDirs: [],
           useGitignore:
             config?.getFileFilteringOptions()?.respectGitIgnore ?? true,
-          useQwenignore:
-            config?.getFileFilteringOptions()?.respectQwenIgnore ?? true,
+          useVibeignore:
+            config?.getFileFilteringOptions()?.respectVibeIgnore ?? true,
           cache: true,
           cacheTtl: 30, // 30 seconds
           enableRecursiveFileSearch:

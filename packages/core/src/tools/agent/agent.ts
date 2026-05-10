@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -51,6 +51,8 @@ import type {
   AgentErrorEvent,
   AgentApprovalRequestEvent,
   AgentUsageEvent,
+  AgentRoundEvent,
+  AgentRoundTextEvent,
 } from '../../agents/runtime/agent-events.js';
 import { BuiltinAgentRegistry } from '../../subagents/builtin-agents.js';
 import { createDebugLogger } from '../../utils/debugLogger.js';
@@ -413,6 +415,10 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
   readonly eventEmitter: AgentEventEmitter = new AgentEventEmitter();
   private currentDisplay: AgentResultDisplay | null = null;
   private currentToolCalls: AgentResultDisplay['toolCalls'] = [];
+  private roundStates = new Map<
+    number,
+    NonNullable<AgentResultDisplay['rounds']>[number]
+  >();
   private callId?: string;
 
   constructor(
@@ -447,6 +453,25 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
     }
   }
 
+  private syncRounds(updateOutput?: (output: ToolResultDisplay) => void): void {
+    const rounds = Array.from(this.roundStates.values()).sort(
+      (a, b) => a.round - b.round,
+    );
+    const currentRound =
+      rounds.length > 0 ? rounds[rounds.length - 1].round : undefined;
+    const completedRounds = rounds.filter(
+      (round) => round.status === 'completed',
+    ).length;
+    this.updateDisplay(
+      {
+        rounds,
+        currentRound,
+        completedRounds,
+      },
+      updateOutput,
+    );
+  }
+
   /**
    * Sets up event listeners for real-time subagent progress updates
    */
@@ -459,6 +484,42 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
       this.updateDisplay({ status: 'running' }, updateOutput);
     });
 
+    this.eventEmitter.on(AgentEventType.ROUND_START, (...args: unknown[]) => {
+      const event = args[0] as AgentRoundEvent;
+      this.roundStates.set(event.round, {
+        round: event.round,
+        status: 'running',
+      });
+      this.syncRounds(updateOutput);
+    });
+
+    this.eventEmitter.on(AgentEventType.ROUND_TEXT, (...args: unknown[]) => {
+      const event = args[0] as AgentRoundTextEvent;
+      const existing = this.roundStates.get(event.round) ?? {
+        round: event.round,
+        status: 'running' as const,
+      };
+      this.roundStates.set(event.round, {
+        ...existing,
+        text: event.text || existing.text,
+        thoughtText: event.thoughtText || existing.thoughtText,
+      });
+      this.syncRounds(updateOutput);
+    });
+
+    this.eventEmitter.on(AgentEventType.ROUND_END, (...args: unknown[]) => {
+      const event = args[0] as AgentRoundEvent;
+      const existing = this.roundStates.get(event.round) ?? {
+        round: event.round,
+        status: 'running' as const,
+      };
+      this.roundStates.set(event.round, {
+        ...existing,
+        status: 'completed',
+      });
+      this.syncRounds(updateOutput);
+    });
+
     this.eventEmitter.on(AgentEventType.TOOL_CALL, (...args: unknown[]) => {
       const event = args[0] as AgentToolCallEvent;
       const newToolCall = {
@@ -469,6 +530,13 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
         description: event.description,
       };
       this.currentToolCalls!.push(newToolCall);
+      const roundState = this.roundStates.get(event.round);
+      if (roundState) {
+        this.roundStates.set(event.round, {
+          ...roundState,
+          toolCalls: (roundState.toolCalls ?? 0) + 1,
+        });
+      }
 
       this.updateDisplay(
         {
@@ -476,6 +544,7 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
         },
         updateOutput,
       );
+      this.syncRounds(updateOutput);
     });
 
     this.eventEmitter.on(AgentEventType.TOOL_RESULT, (...args: unknown[]) => {
@@ -545,13 +614,19 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
       (...args: unknown[]) => {
         const event = args[0] as AgentUsageEvent;
         const outputTokens = event.usage?.candidatesTokenCount ?? 0;
+        const roundState = this.roundStates.get(event.round);
+        if (roundState) {
+          this.roundStates.set(event.round, {
+            ...roundState,
+            outputTokens: (roundState.outputTokens ?? 0) + outputTokens,
+            durationMs: event.durationMs,
+          });
+        }
         if (outputTokens > 0) {
           accumulatedOutputTokens += outputTokens;
-          this.updateDisplay(
-            { tokenCount: accumulatedOutputTokens },
-            updateOutput,
-          );
+          this.updateDisplay({ tokenCount: accumulatedOutputTokens }, updateOutput);
         }
+        this.syncRounds(updateOutput);
       },
     );
 
@@ -974,6 +1049,8 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
         taskPrompt: this.params.prompt,
         status: 'running' as const,
         subagentColor: subagentConfig.color,
+        rounds: [],
+        completedRounds: 0,
       };
       this.setupEventListeners(updateOutput);
       if (updateOutput) {

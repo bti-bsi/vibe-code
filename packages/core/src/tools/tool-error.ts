@@ -10,10 +10,12 @@
 export enum ToolErrorType {
   // General Errors
   INVALID_TOOL_PARAMS = 'invalid_tool_params',
+  CONFIG_ERROR = 'config_error',
   UNKNOWN = 'unknown',
   UNHANDLED_EXCEPTION = 'unhandled_exception',
   TOOL_NOT_REGISTERED = 'tool_not_registered',
   EXECUTION_FAILED = 'execution_failed',
+  EXTERNAL_SERVICE_ERROR = 'external_service_error',
   // Try to execute a tool that is excluded due to the approval mode
   EXECUTION_DENIED = 'execution_denied',
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -107,8 +107,8 @@ describe('validateAuthMethod', () => {
     expect(result).toContain('GEMINI_API_KEY_ALTERED');
   });
 
-  it('should return an error for QWEN_OAUTH (free tier discontinued)', () => {
-    const result = validateAuthMethod(AuthType.QWEN_OAUTH);
+  it('should return an error for VIBE_OAUTH (free tier discontinued)', () => {
+    const result = validateAuthMethod(AuthType.VIBE_OAUTH);
     expect(result).toContain('discontinued on 2026-04-15');
   });
 

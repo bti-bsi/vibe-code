@@ -1,8 +1,8 @@
 /**
  * Terminal-Bench Integration Tests
  *
- * Tests qwen-code integration with terminal-bench tasks
- * using both oracle (for debugging) and qwen-code agents
+ * Tests vibe-code integration with terminal-bench tasks
+ * using both oracle (for debugging) and vibe-code agents
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -211,29 +211,29 @@ describe('terminal-bench integration', () => {
     );
 
     it(
-      `should complete ${taskId} task with qwen-code agent`,
+      `should complete ${taskId} task with vibe-code agent`,
       async () => {
-        rig.setup(`terminal-bench-qwen-${taskId}`);
+        rig.setup(`terminal-bench-vibe-${taskId}`);
 
-        const outputPath = join(outputBase, `qwen-${taskId}`);
+        const outputPath = join(outputBase, `vibe-${taskId}`);
 
         // Check if API key is available
         const apiKey = process.env['OPENAI_API_KEY'];
         if (!apiKey) {
           throw new Error(
-            'OPENAI_API_KEY environment variable is not set. This test requires an API key to run the qwen-code agent.',
+            'OPENAI_API_KEY environment variable is not set. This test requires an API key to run the vibe-code agent.',
           );
         }
 
-        // Run qwen-code agent using spawn to avoid blocking event loop
+        // Run vibe-code agent using spawn to avoid blocking event loop
         const args = [
           'run',
           '--agent-import-path',
-          'integration-tests.terminal-bench.qwen_code:QwenCodeAgent',
+          'integration-tests.terminal-bench.vibe_code:VibeCodeAgent',
           '--agent-kwarg',
           `api_key=${apiKey}`,
           '--agent-kwarg',
-          `version=${process.env['QWEN_CODE_VERSION'] || 'latest'}`,
+          `version=${process.env['VIBE_CODE_VERSION'] || 'latest'}`,
           '--dataset-path',
           ciTasksPath,
           '--task-id',
@@ -247,7 +247,7 @@ describe('terminal-bench integration', () => {
         const env = {
           ...process.env,
           OPENAI_API_KEY: apiKey,
-          OPENAI_MODEL: process.env['OPENAI_MODEL'] || 'qwen3-coder-plus',
+          OPENAI_MODEL: process.env['OPENAI_MODEL'] || 'vibe3-coder-plus',
           OPENAI_BASE_URL:
             process.env['OPENAI_BASE_URL'] ||
             'https://dashscope.aliyuncs.com/compatible-mode/v1',
@@ -271,7 +271,7 @@ describe('terminal-bench integration', () => {
           child.on('close', (code) => {
             if (code !== 0) {
               console.error(
-                `qwen-code agent failed for ${taskId} with stderr:`,
+                `vibe-code agent failed for ${taskId} with stderr:`,
                 stderr,
               );
               reject(new Error(`Process exited with code ${code}: ${stderr}`));

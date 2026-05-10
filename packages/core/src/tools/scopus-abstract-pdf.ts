@@ -6,9 +6,10 @@
 
 import type { Config } from '../config/config.js';
 import { getResponseText } from '../utils/partUtils.js';
-import { DEFAULT_QWEN_MODEL } from '../config/models.js';
+import { DEFAULT_VIBE_MODEL } from '../config/models.js';
+import { createDebugLogger } from '../utils/debugLogger.js';
 import { ToolErrorType } from './tool-error.js';
-import type { ToolInvocation, ToolResult } from './tools.js';
+import type { ToolInvocation, ToolResult, ToolResultDisplay } from './tools.js';
 import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { ToolNames, ToolDisplayNames } from './tool-names.js';
 import https from 'node:https';
@@ -184,7 +185,7 @@ Return ONLY a valid JSON object with the exact schema above. Do not include any 
           'Return ONLY a valid JSON object with "abstract" and "pdfLink" fields.',
       },
       signal,
-      config.getModel() || DEFAULT_QWEN_MODEL,
+      config.getModel() || DEFAULT_VIBE_MODEL,
     );
     const resultText = getResponseText(result) || '';
 
@@ -216,6 +217,96 @@ Return ONLY a valid JSON object with the exact schema above. Do not include any 
       pdfLink: '',
     };
   }
+}
+
+/**
+ * Fetches paper information using Scopus Abstract Retrieval API.
+ */
+async function fetchPaperInfoWithScopusAPI(
+  doi: string,
+  apiKey: string,
+  signal: AbortSignal,
+): Promise<{
+  abstract: string;
+  pdfLink: string;
+  publisherUrl: string;
+} | null> {
+  const url = `https://api.elsevier.com/content/abstract/doi/${doi}?view=FULL`;
+  
+  try {
+    const response = await new Promise<string>((resolve, reject) => {
+      const reqClient = https;
+      const req = reqClient.get(
+        url,
+        {
+          headers: {
+            'X-ELS-APIKey': apiKey,
+            'Accept': 'application/json',
+          },
+          signal,
+        },
+        (res) => {
+          let data = '';
+          res.on('data', (chunk) => (data += chunk));
+          res.on('end', () => resolve(data));
+        }
+      );
+      req.on('error', reject);
+    });
+
+    const json = JSON.parse(response);
+    const coredata = json['abstracts-retrieval-response']?.['coredata'];
+    const item = json['abstracts-retrieval-response']?.['item'];
+    
+    if (!coredata) return null;
+
+    // Extract abstract from various possible locations in the JSON
+    let abstract = coredata['dc:description'] || '';
+    if (!abstract && item?.['bibrecord']?.['head']?.['abstracts']?.['abstract']) {
+      const abstractObj = item['bibrecord']['head']['abstracts']['abstract'];
+      const abstractArr = Array.isArray(abstractObj) ? abstractObj : [abstractObj];
+      abstract = abstractArr.map((a: any) => a['ce:para'] || '').join('\n\n');
+    }
+
+    // Extract PDF link/publisher link
+    const links = coredata['link'] || [];
+    const scopusUrl = links.find((l: any) => l['@rel'] === 'scopus')?.['@href'] || '';
+    const fullTextUrl = links.find((l: any) => l['@rel'] === 'full-text')?.['@href'] || '';
+
+    return {
+      abstract: abstract.trim(),
+      pdfLink: fullTextUrl,
+      publisherUrl: scopusUrl,
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * Main function to fetch paper information, trying Scopus API first if key is available,
+ * then falling back to LLM-based scraping.
+ */
+async function fetchPaperInfo(
+  config: Config,
+  doi: string,
+  signal: AbortSignal,
+  apiKey?: string,
+): Promise<{
+  abstract: string;
+  pdfLink: string;
+  publisherUrl: string;
+}> {
+  // Try Scopus API first if we have a key
+  if (apiKey) {
+    const apiResult = await fetchPaperInfoWithScopusAPI(doi, apiKey, signal);
+    if (apiResult && apiResult.abstract) {
+      return apiResult;
+    }
+  }
+
+  // Fallback to LLM scraping
+  return fetchPaperInfoWithLLM(config, doi, signal);
 }
 
 /**
@@ -266,6 +357,10 @@ export interface ScopusAbstractPDFParams {
    * Can also include full DOI URLs like "https://doi.org/10.1016/j.jafr.2026.102712"
    */
   dois: string[];
+  /**
+   * Optional Scopus API key. If not provided, will try to read from settings.
+   */
+  apiKey?: string;
 }
 
 /**
@@ -287,6 +382,8 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
   ScopusAbstractPDFParams,
   ToolResult
 > {
+  private readonly debugLogger = createDebugLogger('SCOPUS_ABSTRACT_PDF');
+
   constructor(
     private readonly config: Config,
     params: ScopusAbstractPDFParams,
@@ -294,12 +391,23 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
     super(params);
   }
 
+  private currentProgress: string = '';
+
   getDescription(): string {
-    return `Fetch abstracts and PDF links for ${this.params.dois.length} DOIs`;
+    const base = `Fetch abstracts and PDF links for ${this.params.dois.length} DOIs`;
+    return this.currentProgress ? `${base} - ${this.currentProgress}` : base;
   }
 
-  async execute(signal: AbortSignal): Promise<ToolResult> {
+  async execute(
+    signal: AbortSignal,
+    updateOutput?: (output: ToolResultDisplay) => void,
+  ): Promise<ToolResult> {
     const dois = this.params.dois;
+    const apiKey = this.params.apiKey || this.config?.getScopusApiKey();
+    
+    if (apiKey) {
+      this.debugLogger.info('[ScopusAbstractPDFTool] Using Scopus API key for metadata extraction');
+    }
 
     if (dois.length === 0) {
       return {
@@ -334,7 +442,13 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
     });
 
     // Fetch all DOIs in parallel with concurrency limit
-    const results = await this.fetchDOIsParallel(cleanedDOIs, signal);
+    const results = await this.fetchDOIsParallel(
+      cleanedDOIs,
+      signal,
+      apiKey,
+      5,
+      updateOutput,
+    );
 
     return this.formatResults(results);
   }
@@ -345,9 +459,21 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
   private async fetchDOIsParallel(
     dois: string[],
     signal: AbortSignal,
+    apiKey?: string,
     concurrency: number = 5,
+    updateOutput?: (output: ToolResultDisplay) => void,
   ): Promise<DOIFetchResult[]> {
     const results: DOIFetchResult[] = [];
+    let completedCount = 0;
+    
+    const reportProgress = (msg: string) => {
+      this.currentProgress = msg;
+      if (updateOutput) {
+        updateOutput(msg);
+      }
+    };
+    
+    reportProgress(`Preparing to fetch ${dois.length} DOIs...`);
 
     // Process in batches of `concurrency` size
     for (let i = 0; i < dois.length; i += concurrency) {
@@ -365,10 +491,11 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
         }
 
         try {
-          const paperInfo = await fetchPaperInfoWithLLM(
+          const paperInfo = await fetchPaperInfo(
             this.config,
             doi,
             signal,
+            apiKey,
           );
 
           return {
@@ -387,6 +514,9 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
           };
+        } finally {
+          completedCount++;
+          reportProgress(`Processed ${completedCount} of ${dois.length} DOIs...`);
         }
       });
 

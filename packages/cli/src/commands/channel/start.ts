@@ -19,6 +19,7 @@ import {
   removeServiceInfo,
 } from './pidfile.js';
 import { getExtensionManager } from '../extensions/utils.js';
+import { startWhatsAppServer } from '../../services/whatsappServer.js';
 
 const MAX_CRASH_RESTARTS = 3;
 const CRASH_WINDOW_MS = 5 * 60 * 1000; // 5-minute window for counting crashes
@@ -54,7 +55,7 @@ export function resolveProxy(
 }
 
 function sessionsPath(): string {
-  return path.join(os.homedir(), '.qwen', 'channels', 'sessions.json');
+  return path.join(os.homedir(), '.vibe', 'channels', 'sessions.json');
 }
 
 function loadChannelsConfig(): Record<string, unknown> {
@@ -67,7 +68,7 @@ function loadChannelsConfig(): Record<string, unknown> {
 
 /**
  * Load channel plugins from active extensions.
- * Extensions declare channels in their qwen-extension.json manifest.
+ * Extensions declare channels in their vibe-extension.json manifest.
  */
 async function loadChannelsFromExtensions(): Promise<number> {
   let loaded = 0;
@@ -163,7 +164,7 @@ function checkDuplicateInstance(): void {
     writeStderrLine(
       `Error: Channel service is already running (PID ${existing.pid}, started ${existing.startedAt}).`,
     );
-    writeStderrLine('Use "qwen channel stop" to stop it first.');
+    writeStderrLine('Use "vibe channel stop" to stop it first.');
     process.exit(1);
   }
 }
@@ -214,6 +215,12 @@ async function startSingle(name: string, proxy?: string): Promise<void> {
   const channel = await createChannel(name, config, bridge, { router, proxy });
   channels.set(name, channel);
   registerToolCallDispatch(bridge, router, channels);
+
+  if (config.type === 'whatsapp') {
+    startWhatsAppServer().catch(() => {
+      // Silently fail if server cannot start (e.g. port in use)
+    });
+  }
 
   try {
     await channel.connect();
@@ -364,6 +371,12 @@ async function startAll(proxy?: string): Promise<void> {
     );
   }
   registerToolCallDispatch(bridge, router, channels);
+
+  if (parsed.some((p) => p.config.type === 'whatsapp')) {
+    startWhatsAppServer().catch(() => {
+      // Silently fail if server cannot start (e.g. port in use)
+    });
+  }
 
   // Connect all channels
   let connectedCount = 0;

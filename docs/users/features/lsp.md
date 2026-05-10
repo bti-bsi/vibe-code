@@ -1,10 +1,10 @@
 # Language Server Protocol (LSP) Support
 
-Qwen Code provides native Language Server Protocol (LSP) support, enabling advanced code intelligence features like go-to-definition, find references, diagnostics, and code actions. This integration allows the AI agent to understand your code more deeply and provide more accurate assistance.
+Vibe Code provides native Language Server Protocol (LSP) support, enabling advanced code intelligence features like go-to-definition, find references, diagnostics, and code actions. This integration allows the AI agent to understand your code more deeply and provide more accurate assistance.
 
 ## Overview
 
-LSP support in Qwen Code works by connecting to language servers that understand your code. Once you configure servers via `.lsp.json` (or extensions), Qwen Code can start them and use them to:
+LSP support in Vibe Code works by connecting to language servers that understand your code. Once you configure servers via `.lsp.json` (or extensions), Vibe Code can start them and use them to:
 
 - Navigate to symbol definitions
 - Find all references to a symbol
@@ -15,13 +15,13 @@ LSP support in Qwen Code works by connecting to language servers that understand
 
 ## Quick Start
 
-LSP is an experimental feature in Qwen Code. To enable it, use the `--experimental-lsp` command line flag:
+LSP is an experimental feature in Vibe Code. To enable it, use the `--experimental-lsp` command line flag:
 
 ```bash
-qwen --experimental-lsp
+vibe --experimental-lsp
 ```
 
-LSP servers are configuration-driven. You must define them in `.lsp.json` (or via extensions) for Qwen Code to start them.
+LSP servers are configuration-driven. You must define them in `.lsp.json` (or via extensions) for Vibe Code to start them.
 
 ### Prerequisites
 
@@ -146,7 +146,7 @@ For servers that use TCP or Unix socket transport:
 
 ## Available LSP Operations
 
-Qwen Code exposes LSP functionality through the unified `lsp` tool. Here are the available operations:
+Vibe Code exposes LSP functionality through the unified `lsp` tool. Here are the available operations:
 
 Location-based operations (`goToDefinition`, `findReferences`, `hover`, `goToImplementation`, and `prepareCallHierarchy`) require an exact `filePath` + `line` + `character` position. If you do not know the exact position, use `workspaceSymbol` or `documentSymbol` first to locate the symbol.
 
@@ -340,7 +340,7 @@ You can override trust requirements for specific servers in their configuration:
 
 ### Server Not Starting
 
-1. **Verify `--experimental-lsp` flag**: Make sure you're using the flag when starting Qwen Code
+1. **Verify `--experimental-lsp` flag**: Make sure you're using the flag when starting Vibe Code
 2. **Check if the server is installed**: Run the command manually (e.g. `clangd --version`) to verify
 3. **Check the command**: The server binary must be in your system `PATH`, or specified as an absolute path (e.g. `/opt/llvm/bin/clangd`). Relative paths that escape the workspace are blocked
 4. **Check workspace trust**: The workspace must be trusted for LSP (use `/trust`)
@@ -381,7 +381,7 @@ ps aux | grep clangd   # or typescript-language-server, jdtls, etc.
 
 ## Extension LSP Configuration
 
-Extensions can provide LSP server configurations through the `lspServers` field in their `plugin.json`. This can be either an inline object or a path to a `.lsp.json` file. Qwen Code loads these configs when the extension is enabled. The format is the same language-keyed layout used in project `.lsp.json` files.
+Extensions can provide LSP server configurations through the `lspServers` field in their `plugin.json`. This can be either an inline object or a path to a `.lsp.json` file. Vibe Code loads these configs when the extension is enabled. The format is the same language-keyed layout used in project `.lsp.json` files.
 
 ## Best Practices
 
@@ -394,10 +394,10 @@ Extensions can provide LSP server configurations through the `lspServers` field 
 
 ### Q: How do I enable LSP?
 
-Use the `--experimental-lsp` flag when starting Qwen Code:
+Use the `--experimental-lsp` flag when starting Vibe Code:
 
 ```bash
-qwen --experimental-lsp
+vibe --experimental-lsp
 ```
 
 ### Q: How do I know which language servers are running?

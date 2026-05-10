@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2026 Qwen Team
+ * Copyright 2026 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -1153,13 +1153,13 @@ describe('HookSystem', () => {
       );
 
       await hookSystem.fireNotificationEvent(
-        'Qwen Code is waiting for your input',
+        'Vibe Code is waiting for your input',
         NotificationType.IdlePrompt,
         'Waiting for input',
       );
 
       expect(mockHookEventHandler.fireNotificationEvent).toHaveBeenCalledWith(
-        'Qwen Code is waiting for your input',
+        'Vibe Code is waiting for your input',
         NotificationType.IdlePrompt,
         'Waiting for input',
         undefined,
@@ -1565,7 +1565,7 @@ describe('HookSystem', () => {
 
       await hookSystem.fireSubagentStopEvent(
         'agent-456',
-        'qwen-tester',
+        'vibe-tester',
         '/transcript/path.jsonl',
         'last message from agent',
         true,
@@ -1574,7 +1574,7 @@ describe('HookSystem', () => {
 
       expect(mockHookEventHandler.fireSubagentStopEvent).toHaveBeenCalledWith(
         'agent-456',
-        'qwen-tester',
+        'vibe-tester',
         '/transcript/path.jsonl',
         'last message from agent',
         true,

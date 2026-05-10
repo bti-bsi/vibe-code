@@ -122,7 +122,7 @@ describe('useWelcomeBack', () => {
 
     await waitFor(() => {
       expect(buffer.setText).toHaveBeenCalledWith(
-        "@.qwen/PROJECT_SUMMARY.md, Based on our previous conversation,Let's continue?",
+        "@.vibe/PROJECT_SUMMARY.md, Based on our previous conversation,Let's continue?",
       );
     });
 

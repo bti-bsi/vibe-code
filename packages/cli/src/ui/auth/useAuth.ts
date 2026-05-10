@@ -29,7 +29,7 @@ export interface OpenAICredentials {
   baseUrl?: string;
   model?: string;
 }
-import { useQwenAuth } from '../hooks/useQwenAuth.js';
+import { useVibeAuth } from '../hooks/useVibeAuth.js';
 import { AuthState, MessageType } from '../types.js';
 import type { HistoryItem } from '../types.js';
 import { t } from '../../i18n/index.js';
@@ -47,8 +47,8 @@ import {
 } from '../../commands/auth/openrouterOAuth.js';
 
 /**
- * Generate a Qwen-managed env key from protocol and base URL.
- * Format: QWEN_CUSTOM_API_KEY_${PROTOCOL}_${NORMALIZED_BASE_URL}
+ * Generate a Vibe-managed env key from protocol and base URL.
+ * Format: VIBE_CUSTOM_API_KEY_${PROTOCOL}_${NORMALIZED_BASE_URL}
  */
 export function generateCustomApiKeyEnvKey(
   protocol: string,
@@ -62,7 +62,7 @@ export function generateCustomApiKeyEnvKey(
       .replace(/_+/g, '_')
       .replace(/^_+|_+$/g, '');
 
-  return `QWEN_CUSTOM_API_KEY_${normalize(protocol)}_${normalize(baseUrl)}`;
+  return `VIBE_CUSTOM_API_KEY_${normalize(protocol)}_${normalize(baseUrl)}`;
 }
 
 /**
@@ -87,7 +87,7 @@ export function maskApiKey(apiKey: string): string {
   return `${head}...${tail}`;
 }
 
-export type { QwenAuthState } from '../hooks/useQwenAuth.js';
+export type { VibeAuthState } from '../hooks/useVibeAuth.js';
 
 export const useAuthCommand = (
   settings: LoadedSettings,
@@ -116,7 +116,7 @@ export const useAuthCommand = (
   const [openRouterAuthAbortController, setOpenRouterAuthAbortController] =
     useState<AbortController | null>(null);
 
-  const { qwenAuthState, cancelQwenAuth } = useQwenAuth(
+  const { vibeAuthState, cancelVibeAuth } = useVibeAuth(
     pendingAuthType,
     isAuthenticating,
   );
@@ -179,9 +179,9 @@ export const useAuthCommand = (
           );
         }
 
-        // Only update credentials if not switching to QWEN_OAUTH,
-        // so that OpenAI credentials are preserved when switching to QWEN_OAUTH.
-        if (authType !== AuthType.QWEN_OAUTH && credentials) {
+        // Only update credentials if not switching to VIBE_OAUTH,
+        // so that OpenAI credentials are preserved when switching to VIBE_OAUTH.
+        if (authType !== AuthType.VIBE_OAUTH && credentials) {
           if (credentials?.apiKey != null) {
             settings.setValue(
               authTypeScope,
@@ -327,8 +327,8 @@ export const useAuthCommand = (
   }, []);
 
   const cancelAuthentication = useCallback(() => {
-    if (isAuthenticating && pendingAuthType === AuthType.QWEN_OAUTH) {
-      cancelQwenAuth();
+    if (isAuthenticating && pendingAuthType === AuthType.VIBE_OAUTH) {
+      cancelVibeAuth();
     }
 
     if (isAuthenticating && pendingAuthType === AuthType.USE_OPENAI) {
@@ -350,7 +350,7 @@ export const useAuthCommand = (
   }, [
     isAuthenticating,
     pendingAuthType,
-    cancelQwenAuth,
+    cancelVibeAuth,
     config,
     openRouterAuthAbortController,
   ]);
@@ -908,11 +908,11 @@ export const useAuthCommand = (
     * or broken authentication cycles.
     */
   useEffect(() => {
-    const defaultAuthType = process.env['QWEN_DEFAULT_AUTH_TYPE'];
+    const defaultAuthType = process.env['VIBE_DEFAULT_AUTH_TYPE'];
     if (
       defaultAuthType &&
       ![
-        AuthType.QWEN_OAUTH,
+        AuthType.VIBE_OAUTH,
         AuthType.USE_OPENAI,
         AuthType.USE_ANTHROPIC,
         AuthType.USE_GEMINI,
@@ -921,11 +921,11 @@ export const useAuthCommand = (
     ) {
       onAuthError(
         t(
-          'Invalid QWEN_DEFAULT_AUTH_TYPE value: "{{value}}". Valid values are: {{validValues}}',
+          'Invalid VIBE_DEFAULT_AUTH_TYPE value: "{{value}}". Valid values are: {{validValues}}',
           {
             value: defaultAuthType,
             validValues: [
-              AuthType.QWEN_OAUTH,
+              AuthType.VIBE_OAUTH,
               AuthType.USE_OPENAI,
               AuthType.USE_ANTHROPIC,
               AuthType.USE_GEMINI,
@@ -946,7 +946,7 @@ export const useAuthCommand = (
     isAuthenticating,
     pendingAuthType,
     externalAuthState,
-    qwenAuthState,
+    vibeAuthState,
     handleAuthSelect,
     handleCodingPlanSubmit,
     handleAlibabaStandardSubmit,

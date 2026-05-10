@@ -1,11 +1,11 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import type * as vscode from 'vscode';
-import type { ChatMessage } from './qwenAgentManager.js';
+import type { ChatMessage } from './vibeAgentManager.js';
 
 export interface Conversation {
   id: string;

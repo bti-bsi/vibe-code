@@ -18,7 +18,7 @@ import type {
   PluginChoiceRequest,
 } from '../types.js';
 import type { TodoItem } from '../components/TodoDisplay.js';
-import type { ExternalAuthState, QwenAuthState } from '../hooks/useQwenAuth.js';
+import type { ExternalAuthState, VibeAuthState } from '../hooks/useVibeAuth.js';
 import type { CommandContext, SlashCommand } from '../commands/types.js';
 import type { TextBuffer } from '../components/shared/text-buffer.js';
 import type {
@@ -49,8 +49,8 @@ export interface UIState {
   isAuthDialogOpen: boolean;
   pendingAuthType: AuthType | undefined;
   externalAuthState: ExternalAuthState | null;
-  // Qwen OAuth state
-  qwenAuthState: QwenAuthState;
+  // Vibe OAuth state
+  vibeAuthState: VibeAuthState;
   editorError: string | null;
   isEditorDialogOpen: boolean;
   debugMessage: string;
@@ -167,6 +167,9 @@ export interface UIState {
   // Rewind selector
   isRewindSelectorOpen: boolean;
   rewindEscPending: boolean;
+  isConfigDialogOpen: boolean;
+  isTelegramConfigDialogOpen: boolean;
+  isWhatsAppConfigDialogOpen: boolean;
 }
 
 export const UIStateContext = createContext<UIState | null>(null);

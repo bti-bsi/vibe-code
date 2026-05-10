@@ -502,6 +502,17 @@ export interface AgentResultDisplay {
   taskDescription: string;
   taskPrompt: string;
   status: 'running' | 'completed' | 'failed' | 'cancelled' | 'background';
+  currentRound?: number;
+  completedRounds?: number;
+  rounds?: Array<{
+    round: number;
+    status: 'running' | 'completed';
+    text?: string;
+    thoughtText?: string;
+    toolCalls?: number;
+    outputTokens?: number;
+    durationMs?: number;
+  }>;
   terminateReason?: string;
   result?: string;
   executionSummary?: AgentStatsSummary;
@@ -546,6 +557,14 @@ export interface McpToolProgressData {
   message?: string;
 }
 
+export interface ToolExecutionDiagnosticDisplay {
+  type: 'tool_execution_diagnostic';
+  message: string;
+  elapsedMs: number;
+  sinceLastOutputMs?: number;
+  outputUpdates: number;
+}
+
 export type ToolResultDisplay =
   | string
   | FileDiff
@@ -553,7 +572,8 @@ export type ToolResultDisplay =
   | PlanResultDisplay
   | AgentResultDisplay
   | AnsiOutputDisplay
-  | McpToolProgressData;
+  | McpToolProgressData
+  | ToolExecutionDiagnosticDisplay;
 
 export interface FileDiff {
   fileDiff: string;

@@ -7,12 +7,12 @@ import { runWithAcpRuntimeOutputDir } from './runtimeOutputDirContext.js';
 describe('runWithAcpRuntimeOutputDir', () => {
   beforeEach(() => {
     Storage.setRuntimeBaseDir(null);
-    delete process.env['QWEN_RUNTIME_DIR'];
+    delete process.env['VIBE_RUNTIME_DIR'];
   });
 
   afterEach(() => {
     Storage.setRuntimeBaseDir(null);
-    delete process.env['QWEN_RUNTIME_DIR'];
+    delete process.env['VIBE_RUNTIME_DIR'];
   });
 
   it('uses the merged runtimeOutputDir relative to cwd within the async context', async () => {
@@ -20,15 +20,15 @@ describe('runWithAcpRuntimeOutputDir', () => {
     const settings = {
       merged: {
         advanced: {
-          runtimeOutputDir: '.qwen-runtime',
+          runtimeOutputDir: '.vibe-runtime',
         },
       },
     } as LoadedSettings;
 
     await runWithAcpRuntimeOutputDir(settings, cwd, async () => {
-      expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.qwen-runtime'));
+      expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.vibe-runtime'));
     });
 
-    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalQwenDir());
+    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalVibeDir());
   });
 });

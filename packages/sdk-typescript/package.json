@@ -1,7 +1,7 @@
 {
   "name": "@vibe-bti/vibe-code-sdk",
   "version": "0.1.8",
-  "description": "TypeScript SDK for programmatic access to qwen-code CLI",
+  "description": "TypeScript SDK for programmatic access to vibe-code CLI",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -33,14 +33,14 @@
     "prepack": "npm run build && npm run bundle:cli"
   },
   "keywords": [
-    "qwen",
-    "qwen-code",
+    "vibe",
+    "vibe-code",
     "ai",
     "code-assistant",
     "sdk",
     "typescript"
   ],
-  "author": "Qwen Team",
+  "author": "Vibe Team",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.0.0"
@@ -71,5 +71,5 @@
   "bugs": {
     "url": "https://github.com/vibe-bti/vibe-code/issues"
   },
-  "homepage": "https://qwenlm.github.io/qwen-code-docs/"
+  "homepage": "https://vibelm.github.io/vibe-code-docs/"
 }

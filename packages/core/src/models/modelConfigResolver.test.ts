@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,7 +10,7 @@ import {
   validateModelConfig,
 } from './modelConfigResolver.js';
 import { AuthType } from '../core/contentGenerator.js';
-import { DEFAULT_QWEN_MODEL, MAINLINE_CODER_MODEL } from '../config/models.js';
+import { DEFAULT_VIBE_MODEL, MAINLINE_CODER_MODEL } from '../config/models.js';
 
 describe('modelConfigResolver', () => {
   describe('resolveModelConfig', () => {
@@ -127,39 +127,39 @@ describe('modelConfigResolver', () => {
         expect(result.sources['apiKey'].via?.kind).toBe('modelProviders');
       });
 
-      it('reads QWEN_MODEL as fallback for OPENAI_MODEL', () => {
+      it('reads VIBE_MODEL as fallback for OPENAI_MODEL', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,
           cli: {},
           settings: {},
           env: {
-            QWEN_MODEL: 'qwen-model',
+            VIBE_MODEL: 'vibe-model',
             OPENAI_API_KEY: 'key',
           },
         });
 
-        expect(result.config.model).toBe('qwen-model');
-        expect(result.sources['model'].envKey).toBe('QWEN_MODEL');
+        expect(result.config.model).toBe('vibe-model');
+        expect(result.sources['model'].envKey).toBe('VIBE_MODEL');
       });
     });
 
-    describe('Qwen OAuth auth type', () => {
-      it('uses default model for Qwen OAuth', () => {
+    describe('Vibe OAuth auth type', () => {
+      it('uses default model for Vibe OAuth', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {},
         });
 
-        expect(result.config.model).toBe(DEFAULT_QWEN_MODEL);
-        expect(result.config.apiKey).toBe('QWEN_OAUTH_DYNAMIC_TOKEN');
+        expect(result.config.model).toBe(DEFAULT_VIBE_MODEL);
+        expect(result.config.apiKey).toBe('VIBE_OAUTH_DYNAMIC_TOKEN');
         expect(result.sources['apiKey'].kind).toBe('computed');
       });
 
-      it('allows coder-model for Qwen OAuth', () => {
+      it('allows coder-model for Vibe OAuth', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {
             model: 'coder-model',
           },
@@ -171,9 +171,9 @@ describe('modelConfigResolver', () => {
         expect(result.sources['model'].kind).toBe('cli');
       });
 
-      it('warns and falls back for unsupported Qwen OAuth models', () => {
+      it('warns and falls back for unsupported Vibe OAuth models', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {
             model: 'unsupported-model',
           },
@@ -181,18 +181,18 @@ describe('modelConfigResolver', () => {
           env: {},
         });
 
-        expect(result.config.model).toBe(DEFAULT_QWEN_MODEL);
+        expect(result.config.model).toBe(DEFAULT_VIBE_MODEL);
         expect(result.warnings).toHaveLength(1);
         expect(result.warnings[0]).toContain('unsupported-model');
       });
 
-      it('QWEN_CODE_API_TIMEOUT_MS applies in Qwen OAuth path', () => {
+      it('VIBE_CODE_API_TIMEOUT_MS applies in Vibe OAuth path', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {
-            QWEN_CODE_API_TIMEOUT_MS: '45000',
+            VIBE_CODE_API_TIMEOUT_MS: '45000',
           },
         });
 
@@ -200,22 +200,22 @@ describe('modelConfigResolver', () => {
         expect(result.sources['timeout']).toBeDefined();
         expect(result.sources['timeout'].kind).toBe('env');
         expect(result.sources['timeout'].envKey).toBe(
-          'QWEN_CODE_API_TIMEOUT_MS',
+          'VIBE_CODE_API_TIMEOUT_MS',
         );
-        expect(result.config.model).toBe(DEFAULT_QWEN_MODEL);
+        expect(result.config.model).toBe(DEFAULT_VIBE_MODEL);
       });
 
-      it('modelProvider timeout takes precedence over QWEN_CODE_API_TIMEOUT_MS in OAuth', () => {
+      it('modelProvider timeout takes precedence over VIBE_CODE_API_TIMEOUT_MS in OAuth', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {
-            QWEN_CODE_API_TIMEOUT_MS: '45000',
+            VIBE_CODE_API_TIMEOUT_MS: '45000',
           },
           modelProvider: {
-            id: 'qwen-oauth',
-            name: 'Qwen OAuth',
+            id: 'vibe-oauth',
+            name: 'Vibe OAuth',
             generationConfig: {
               timeout: 120000,
             },
@@ -226,65 +226,65 @@ describe('modelConfigResolver', () => {
         expect(result.sources['timeout'].kind).toBe('modelProviders');
       });
 
-      it('invalid QWEN_CODE_API_TIMEOUT_MS ignored in OAuth path', () => {
+      it('invalid VIBE_CODE_API_TIMEOUT_MS ignored in OAuth path', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {
-            QWEN_CODE_API_TIMEOUT_MS: 'not-a-number',
+            VIBE_CODE_API_TIMEOUT_MS: 'not-a-number',
           },
         });
 
         expect(result.config.timeout).toBeUndefined();
       });
 
-      it('negative QWEN_CODE_API_TIMEOUT_MS ignored in OAuth path', () => {
+      it('negative VIBE_CODE_API_TIMEOUT_MS ignored in OAuth path', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {
-            QWEN_CODE_API_TIMEOUT_MS: '-100',
+            VIBE_CODE_API_TIMEOUT_MS: '-100',
           },
         });
 
         expect(result.config.timeout).toBeUndefined();
       });
 
-      it('zero QWEN_CODE_API_TIMEOUT_MS ignored in OAuth path', () => {
+      it('zero VIBE_CODE_API_TIMEOUT_MS ignored in OAuth path', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {
-            QWEN_CODE_API_TIMEOUT_MS: '0',
+            VIBE_CODE_API_TIMEOUT_MS: '0',
           },
         });
 
         expect(result.config.timeout).toBeUndefined();
       });
 
-      it('QWEN_CODE_API_TIMEOUT_MS works with float value in OAuth', () => {
+      it('VIBE_CODE_API_TIMEOUT_MS works with float value in OAuth', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {
-            QWEN_CODE_API_TIMEOUT_MS: '12345.67',
+            VIBE_CODE_API_TIMEOUT_MS: '12345.67',
           },
         });
 
         expect(result.config.timeout).toBe(12345);
       });
 
-      it('QWEN_CODE_API_TIMEOUT_MS works with proxy in OAuth path', () => {
+      it('VIBE_CODE_API_TIMEOUT_MS works with proxy in OAuth path', () => {
         const result = resolveModelConfig({
-          authType: AuthType.QWEN_OAUTH,
+          authType: AuthType.VIBE_OAUTH,
           cli: {},
           settings: {},
           env: {
-            QWEN_CODE_API_TIMEOUT_MS: '60000',
+            VIBE_CODE_API_TIMEOUT_MS: '60000',
           },
           proxy: 'http://proxy.example.com:8080',
         });
@@ -367,7 +367,7 @@ describe('modelConfigResolver', () => {
         expect(result.sources['timeout'].kind).toBe('modelProviders');
       });
 
-      it('QWEN_CODE_API_TIMEOUT_MS env var overrides settings timeout', () => {
+      it('VIBE_CODE_API_TIMEOUT_MS env var overrides settings timeout', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,
           cli: {},
@@ -379,25 +379,25 @@ describe('modelConfigResolver', () => {
           },
           env: {
             OPENAI_API_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: '900000',
+            VIBE_CODE_API_TIMEOUT_MS: '900000',
           },
         });
 
         expect(result.config.timeout).toBe(900000);
         expect(result.sources['timeout'].kind).toBe('env');
         expect(result.sources['timeout'].envKey).toBe(
-          'QWEN_CODE_API_TIMEOUT_MS',
+          'VIBE_CODE_API_TIMEOUT_MS',
         );
       });
 
-      it('modelProvider timeout wins over QWEN_CODE_API_TIMEOUT_MS', () => {
+      it('modelProvider timeout wins over VIBE_CODE_API_TIMEOUT_MS', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,
           cli: {},
           settings: {},
           env: {
             MY_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: '900000',
+            VIBE_CODE_API_TIMEOUT_MS: '900000',
           },
           modelProvider: {
             id: 'model',
@@ -415,14 +415,14 @@ describe('modelConfigResolver', () => {
         expect(result.sources['timeout'].kind).toBe('modelProviders');
       });
 
-      it('QWEN_CODE_API_TIMEOUT_MS applies when modelProvider has no timeout', () => {
+      it('VIBE_CODE_API_TIMEOUT_MS applies when modelProvider has no timeout', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,
           cli: {},
           settings: {},
           env: {
             MY_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: '900000',
+            VIBE_CODE_API_TIMEOUT_MS: '900000',
           },
           modelProvider: {
             id: 'model',
@@ -436,11 +436,11 @@ describe('modelConfigResolver', () => {
         expect(result.config.timeout).toBe(900000);
         expect(result.sources['timeout'].kind).toBe('env');
         expect(result.sources['timeout'].envKey).toBe(
-          'QWEN_CODE_API_TIMEOUT_MS',
+          'VIBE_CODE_API_TIMEOUT_MS',
         );
       });
 
-      it('ignores invalid QWEN_CODE_API_TIMEOUT_MS values', () => {
+      it('ignores invalid VIBE_CODE_API_TIMEOUT_MS values', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,
           cli: {},
@@ -452,7 +452,7 @@ describe('modelConfigResolver', () => {
           },
           env: {
             OPENAI_API_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: 'invalid',
+            VIBE_CODE_API_TIMEOUT_MS: 'invalid',
           },
         });
 
@@ -461,7 +461,7 @@ describe('modelConfigResolver', () => {
         expect(result.sources['timeout'].kind).toBe('settings');
       });
 
-      it('ignores negative or zero QWEN_CODE_API_TIMEOUT_MS values', () => {
+      it('ignores negative or zero VIBE_CODE_API_TIMEOUT_MS values', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,
           cli: {},
@@ -473,7 +473,7 @@ describe('modelConfigResolver', () => {
           },
           env: {
             OPENAI_API_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: '0',
+            VIBE_CODE_API_TIMEOUT_MS: '0',
           },
         });
 
@@ -499,7 +499,7 @@ describe('modelConfigResolver', () => {
         expect(result.config.timeout).toBeUndefined();
       });
 
-      it('QWEN_CODE_API_TIMEOUT_MS works for Anthropic auth type', () => {
+      it('VIBE_CODE_API_TIMEOUT_MS works for Anthropic auth type', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_ANTHROPIC,
           cli: {},
@@ -507,14 +507,14 @@ describe('modelConfigResolver', () => {
           env: {
             ANTHROPIC_API_KEY: 'key',
             ANTHROPIC_BASE_URL: 'https://api.anthropic.com',
-            QWEN_CODE_API_TIMEOUT_MS: '600000',
+            VIBE_CODE_API_TIMEOUT_MS: '600000',
           },
         });
 
         expect(result.config.timeout).toBe(600000);
         expect(result.sources['timeout'].kind).toBe('env');
         expect(result.sources['timeout'].envKey).toBe(
-          'QWEN_CODE_API_TIMEOUT_MS',
+          'VIBE_CODE_API_TIMEOUT_MS',
         );
       });
 
@@ -531,7 +531,7 @@ describe('modelConfigResolver', () => {
           },
           env: {
             OPENAI_API_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: '900000',
+            VIBE_CODE_API_TIMEOUT_MS: '900000',
           },
         });
 
@@ -539,7 +539,7 @@ describe('modelConfigResolver', () => {
         expect(result.config.timeout).toBe(900000);
         expect(result.sources['timeout'].kind).toBe('env');
         expect(result.sources['timeout'].envKey).toBe(
-          'QWEN_CODE_API_TIMEOUT_MS',
+          'VIBE_CODE_API_TIMEOUT_MS',
         );
 
         // Prove it would be used by the client (default.ts:48 reads config.timeout)
@@ -554,7 +554,7 @@ describe('modelConfigResolver', () => {
           settings: { apiKey: 'key' },
           env: {
             OPENAI_API_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: '999999999',
+            VIBE_CODE_API_TIMEOUT_MS: '999999999',
           },
         });
 
@@ -569,7 +569,7 @@ describe('modelConfigResolver', () => {
           settings: { apiKey: 'key' },
           env: {
             OPENAI_API_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: ' 300000 ',
+            VIBE_CODE_API_TIMEOUT_MS: ' 300000 ',
           },
         });
 
@@ -578,7 +578,7 @@ describe('modelConfigResolver', () => {
         expect(result.sources['timeout'].kind).toBe('env');
       });
 
-      it('ignores negative QWEN_CODE_API_TIMEOUT_MS values', () => {
+      it('ignores negative VIBE_CODE_API_TIMEOUT_MS values', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,
           cli: {},
@@ -588,7 +588,7 @@ describe('modelConfigResolver', () => {
           },
           env: {
             OPENAI_API_KEY: 'key',
-            QWEN_CODE_API_TIMEOUT_MS: '-100',
+            VIBE_CODE_API_TIMEOUT_MS: '-100',
           },
         });
 
@@ -648,11 +648,11 @@ describe('modelConfigResolver', () => {
       expect(result.errors[0].message).toContain('Missing model');
     });
 
-    it('always passes for Qwen OAuth', () => {
+    it('always passes for Vibe OAuth', () => {
       const result = validateModelConfig({
-        authType: AuthType.QWEN_OAUTH,
-        model: DEFAULT_QWEN_MODEL,
-        apiKey: 'QWEN_OAUTH_DYNAMIC_TOKEN',
+        authType: AuthType.VIBE_OAUTH,
+        model: DEFAULT_VIBE_MODEL,
+        apiKey: 'VIBE_OAUTH_DYNAMIC_TOKEN',
       });
 
       expect(result.valid).toBe(true);
@@ -687,39 +687,39 @@ describe('modelConfigResolver', () => {
   });
 
   describe('[Regression] timeout env override refactor', () => {
-    it('[Regression] OAuth path must apply QWEN_CODE_API_TIMEOUT_MS (was broken before fix #3629)', () => {
-      // Guards against the original bug where resolveQwenOAuthConfig()
+    it('[Regression] OAuth path must apply VIBE_CODE_API_TIMEOUT_MS (was broken before fix #3629)', () => {
+      // Guards against the original bug where resolveVibeOAuthConfig()
       // returned before applying the env override.
       const result = resolveModelConfig({
-        authType: AuthType.QWEN_OAUTH,
+        authType: AuthType.VIBE_OAUTH,
         cli: {},
         settings: {},
         env: {
-          QWEN_CODE_API_TIMEOUT_MS: '45000',
+          VIBE_CODE_API_TIMEOUT_MS: '45000',
         },
       });
 
       expect(result.config.timeout).toBe(45000);
       expect(result.sources['timeout']).toBeDefined();
       expect(result.sources['timeout'].kind).toBe('env');
-      expect(result.sources['timeout'].envKey).toBe('QWEN_CODE_API_TIMEOUT_MS');
-      expect(result.config.model).toBe(DEFAULT_QWEN_MODEL);
+      expect(result.sources['timeout'].envKey).toBe('VIBE_CODE_API_TIMEOUT_MS');
+      expect(result.config.model).toBe(DEFAULT_VIBE_MODEL);
     });
 
-    it('[Regression] non-OAuth path must apply QWEN_CODE_API_TIMEOUT_MS', () => {
+    it('[Regression] non-OAuth path must apply VIBE_CODE_API_TIMEOUT_MS', () => {
       const result = resolveModelConfig({
         authType: AuthType.USE_OPENAI,
         cli: {},
         settings: { apiKey: 'key' },
         env: {
           OPENAI_API_KEY: 'key',
-          QWEN_CODE_API_TIMEOUT_MS: '900000',
+          VIBE_CODE_API_TIMEOUT_MS: '900000',
         },
       });
 
       expect(result.config.timeout).toBe(900000);
       expect(result.sources['timeout'].kind).toBe('env');
-      expect(result.sources['timeout'].envKey).toBe('QWEN_CODE_API_TIMEOUT_MS');
+      expect(result.sources['timeout'].envKey).toBe('VIBE_CODE_API_TIMEOUT_MS');
     });
 
     it('[Regression] modelProvider timeout must win over env in both paths', () => {
@@ -730,7 +730,7 @@ describe('modelConfigResolver', () => {
         settings: {},
         env: {
           MY_KEY: 'key',
-          QWEN_CODE_API_TIMEOUT_MS: '900000',
+          VIBE_CODE_API_TIMEOUT_MS: '900000',
         },
         modelProvider: {
           id: 'model',
@@ -745,15 +745,15 @@ describe('modelConfigResolver', () => {
 
       // OAuth
       const oauth = resolveModelConfig({
-        authType: AuthType.QWEN_OAUTH,
+        authType: AuthType.VIBE_OAUTH,
         cli: {},
         settings: {},
         env: {
-          QWEN_CODE_API_TIMEOUT_MS: '45000',
+          VIBE_CODE_API_TIMEOUT_MS: '45000',
         },
         modelProvider: {
-          id: 'qwen-oauth',
-          name: 'Qwen OAuth',
+          id: 'vibe-oauth',
+          name: 'Vibe OAuth',
           generationConfig: { timeout: 120000 },
         },
       });
@@ -771,7 +771,7 @@ describe('modelConfigResolver', () => {
         },
         env: {
           OPENAI_API_KEY: 'key',
-          QWEN_CODE_API_TIMEOUT_MS: '900000',
+          VIBE_CODE_API_TIMEOUT_MS: '900000',
         },
       });
 
@@ -782,14 +782,14 @@ describe('modelConfigResolver', () => {
   });
 
   describe('[Additional] timeout env override edge cases', () => {
-    it('handles scientific notation in QWEN_CODE_API_TIMEOUT_MS', () => {
+    it('handles scientific notation in VIBE_CODE_API_TIMEOUT_MS', () => {
       const result = resolveModelConfig({
         authType: AuthType.USE_OPENAI,
         cli: {},
         settings: { apiKey: 'key' },
         env: {
           OPENAI_API_KEY: 'key',
-          QWEN_CODE_API_TIMEOUT_MS: '1.5e5',
+          VIBE_CODE_API_TIMEOUT_MS: '1.5e5',
         },
       });
 
@@ -797,14 +797,14 @@ describe('modelConfigResolver', () => {
       expect(result.sources['timeout'].kind).toBe('env');
     });
 
-    it('handles hex values in QWEN_CODE_API_TIMEOUT_MS', () => {
+    it('handles hex values in VIBE_CODE_API_TIMEOUT_MS', () => {
       const result = resolveModelConfig({
         authType: AuthType.USE_OPENAI,
         cli: {},
         settings: { apiKey: 'key', generationConfig: { timeout: 30000 } },
         env: {
           OPENAI_API_KEY: 'key',
-          QWEN_CODE_API_TIMEOUT_MS: '0x2BF20', // 180000 in hex
+          VIBE_CODE_API_TIMEOUT_MS: '0x2BF20', // 180000 in hex
         },
       });
 
@@ -812,14 +812,14 @@ describe('modelConfigResolver', () => {
       expect(result.sources['timeout'].kind).toBe('env');
     });
 
-    it('ignores empty string QWEN_CODE_API_TIMEOUT_MS', () => {
+    it('ignores empty string VIBE_CODE_API_TIMEOUT_MS', () => {
       const result = resolveModelConfig({
         authType: AuthType.USE_OPENAI,
         cli: {},
         settings: { apiKey: 'key', generationConfig: { timeout: 30000 } },
         env: {
           OPENAI_API_KEY: 'key',
-          QWEN_CODE_API_TIMEOUT_MS: '',
+          VIBE_CODE_API_TIMEOUT_MS: '',
         },
       });
 
@@ -846,7 +846,7 @@ describe('modelConfigResolver', () => {
           settings: {
             ...(type === AuthType.USE_OPENAI ? { apiKey: 'key' } : {}),
           },
-          env: { ...env, QWEN_CODE_API_TIMEOUT_MS: '99999' },
+          env: { ...env, VIBE_CODE_API_TIMEOUT_MS: '99999' },
         });
 
         expect(result.config.timeout).toBe(99999);

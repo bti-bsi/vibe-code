@@ -11,22 +11,22 @@
  * TUIs — it just analyses what you recorded):
  *
  *   # macOS / BSD `script`:
- *   script -q /tmp/qwen.before.raw node dist/cli.js --yolo
- *   # …drive a SubAgent scenario, then exit qwen with /quit or Ctrl-D
+ *   script -q /tmp/vibe.before.raw node dist/cli.js --yolo
+ *   # …drive a SubAgent scenario, then exit vibe with /quit or Ctrl-D
  *
  *   # Linux / util-linux `script`:
- *   script -q -c 'node dist/cli.js --yolo' /tmp/qwen.before.raw
+ *   script -q -c 'node dist/cli.js --yolo' /tmp/vibe.before.raw
  *
  *   # tmux variant: a tmux session preserves whatever you do live; pipe-pane
  *   # gives you the same raw bytes.
  *   tmux new -s flicker -d 'node dist/cli.js --yolo'
- *   tmux pipe-pane -t flicker -o 'cat > /tmp/qwen.before.raw'
+ *   tmux pipe-pane -t flicker -o 'cat > /tmp/vibe.before.raw'
  *   tmux attach -t flicker
  *
  * Then:
  *
- *   node scripts/measure-flicker.mjs /tmp/qwen.before.raw
- *   node scripts/measure-flicker.mjs /tmp/qwen.after.raw /tmp/qwen.before.raw
+ *   node scripts/measure-flicker.mjs /tmp/vibe.before.raw
+ *   node scripts/measure-flicker.mjs /tmp/vibe.after.raw /tmp/vibe.before.raw
  *
  * The second form prints both, and the delta — lower clearTerminalPair on
  * "current" vs "baseline" is the win condition for a flicker fix.
@@ -117,7 +117,7 @@ function renderDelta(current, baseline) {
   );
 }
 
-if (process.env.QWEN_FLICKER_VERBOSE) {
+if (process.env.VIBE_FLICKER_VERBOSE) {
   stdout.write('patterns:\n');
   for (const p of PATTERNS) {
     stdout.write(`  ${p.name.padEnd(18)} = ${p.description}\n`);

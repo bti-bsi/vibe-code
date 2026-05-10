@@ -1,12 +1,12 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import * as vscode from 'vscode';
 import { BaseMessageHandler } from './BaseMessageHandler.js';
-import type { ChatMessage } from '../../services/qwenAgentManager.js';
+import type { ChatMessage } from '../../services/vibeAgentManager.js';
 import type { ImageAttachment } from '../../utils/imageSupport.js';
 import type { ApprovalModeValue } from '../../types/approvalModeValueTypes.js';
 import {
@@ -43,12 +43,12 @@ export class SessionMessageHandler extends BaseMessageHandler {
   canHandle(messageType: string): boolean {
     return [
       'sendMessage',
-      'newQwenSession',
-      'switchQwenSession',
-      'getQwenSessions',
+      'newVibeSession',
+      'switchVibeSession',
+      'getVibeSessions',
       'resumeSession',
-      'deleteQwenSession',
-      'renameQwenSession',
+      'deleteVibeSession',
+      'renameVibeSession',
       'cancelStreaming',
       // UI action: open a new chat tab (new WebviewPanel)
       'openNewChatTab',
@@ -93,16 +93,16 @@ export class SessionMessageHandler extends BaseMessageHandler {
         );
         break;
 
-      case 'newQwenSession':
-        await this.handleNewQwenSession();
+      case 'newVibeSession':
+        await this.handleNewVibeSession();
         break;
 
-      case 'switchQwenSession':
-        await this.handleSwitchQwenSession((data?.sessionId as string) || '');
+      case 'switchVibeSession':
+        await this.handleSwitchVibeSession((data?.sessionId as string) || '');
         break;
 
-      case 'getQwenSessions':
-        await this.handleGetQwenSessions(
+      case 'getVibeSessions':
+        await this.handleGetVibeSessions(
           (data?.cursor as number | undefined) ?? undefined,
           (data?.size as number | undefined) ?? undefined,
         );
@@ -112,12 +112,12 @@ export class SessionMessageHandler extends BaseMessageHandler {
         await this.handleResumeSession((data?.sessionId as string) || '');
         break;
 
-      case 'deleteQwenSession':
-        await this.handleDeleteQwenSession((data?.sessionId as string) || '');
+      case 'deleteVibeSession':
+        await this.handleDeleteVibeSession((data?.sessionId as string) || '');
         break;
 
-      case 'renameQwenSession':
-        await this.handleRenameQwenSession(
+      case 'renameVibeSession':
+        await this.handleRenameVibeSession(
           (data?.sessionId as string) || '',
           (data?.title as string) || '',
         );
@@ -132,7 +132,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
             typeof data?.modelId === 'string' && data.modelId.trim().length > 0
               ? data.modelId.trim()
               : undefined;
-          await vscode.commands.executeCommand('qwenCode.openNewChatTab', {
+          await vscode.commands.executeCommand('vibeCode.openNewChatTab', {
             initialModelId: modelId,
           });
         } catch (error) {
@@ -260,7 +260,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
       if (this.authHandler) {
         await this.authHandler();
       } else {
-        await vscode.commands.executeCommand('qwen-code.auth');
+        await vscode.commands.executeCommand('vibe-code.auth');
       }
       return true;
     }
@@ -284,7 +284,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
       if (this.authHandler) {
         await this.authHandler();
       } else {
-        await vscode.commands.executeCommand('qwen-code.auth');
+        await vscode.commands.executeCommand('vibe-code.auth');
       }
       return 'auth';
     }
@@ -536,7 +536,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
 
       // Show non-modal notification with Configure button
       await this.promptAuth(
-        'You need to configure your provider to use Qwen Code.',
+        'You need to configure your provider to use Vibe Code.',
       );
       return;
     }
@@ -555,7 +555,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
         const errorMsg = this.getErrorMessage(createErr);
         if (this.shouldPromptAuth(createErr)) {
           await this.promptAuth(
-            'Your session has expired or is invalid. Please configure your provider to continue using Qwen Code.',
+            'Your session has expired or is invalid. Please configure your provider to continue using Vibe Code.',
           );
           return;
         }
@@ -653,7 +653,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
       ) {
         // Show a more user-friendly error message for expired sessions
         await this.promptAuth(
-          'Your session has expired or is invalid. Please configure your provider to continue using Qwen Code.',
+          'Your session has expired or is invalid. Please configure your provider to continue using Vibe Code.',
         );
 
         // Send a specific error to the webview for better UI handling
@@ -699,11 +699,11 @@ export class SessionMessageHandler extends BaseMessageHandler {
   }
 
   /**
-   * Handle new Qwen session request
+   * Handle new Vibe session request
    */
-  private async handleNewQwenSession(): Promise<void> {
+  private async handleNewVibeSession(): Promise<void> {
     try {
-      console.log('[SessionMessageHandler] Creating new Qwen session...');
+      console.log('[SessionMessageHandler] Creating new Vibe session...');
 
       // Ensure connection (auth) before creating a new session
       if (!this.agentManager.isConnected) {
@@ -758,9 +758,9 @@ export class SessionMessageHandler extends BaseMessageHandler {
   }
 
   /**
-   * Handle switch Qwen session request
+   * Handle switch Vibe session request
    */
-  private async handleSwitchQwenSession(sessionId: string): Promise<void> {
+  private async handleSwitchVibeSession(sessionId: string): Promise<void> {
     try {
       console.log('[SessionMessageHandler] Switching to session:', sessionId);
 
@@ -776,7 +776,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
             await this.agentManager.getSessionMessages(sessionId);
           this.currentConversationId = sessionId;
           this.sendToWebView({
-            type: 'qwenSessionSwitched',
+            type: 'vibeSessionSwitched',
             data: { sessionId, messages },
           });
           this.sendToWebView({
@@ -821,7 +821,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
         // Set current id and clear UI first so replayed updates append afterwards
         this.currentConversationId = sessionId;
         this.sendToWebView({
-          type: 'qwenSessionSwitched',
+          type: 'vibeSessionSwitched',
           data: { sessionId, messages: [], session: sessionDetails },
         });
 
@@ -887,7 +887,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
             this.currentConversationId = sessionId;
 
             this.sendToWebView({
-              type: 'qwenSessionSwitched',
+              type: 'vibeSessionSwitched',
               data: { sessionId, messages, session: sessionDetails },
             });
             this.sendToWebView({
@@ -937,7 +937,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
           // Offline view only
           this.currentConversationId = sessionId;
           this.sendToWebView({
-            type: 'qwenSessionSwitched',
+            type: 'vibeSessionSwitched',
             data: { sessionId, messages, session: sessionDetails },
           });
           this.sendToWebView({
@@ -976,9 +976,9 @@ export class SessionMessageHandler extends BaseMessageHandler {
   }
 
   /**
-   * Handle get Qwen sessions request
+   * Handle get Vibe sessions request
    */
-  private async handleGetQwenSessions(
+  private async handleGetVibeSessions(
     cursor?: number,
     size?: number,
   ): Promise<void> {
@@ -990,7 +990,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
       });
       const append = typeof cursor === 'number';
       this.sendToWebView({
-        type: 'qwenSessionList',
+        type: 'vibeSessionList',
         data: {
           sessions: page.sessions,
           nextCursor: page.nextCursor,
@@ -1062,7 +1062,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
             await this.agentManager.getSessionMessages(sessionId);
           this.currentConversationId = sessionId;
           this.sendToWebView({
-            type: 'qwenSessionSwitched',
+            type: 'vibeSessionSwitched',
             data: { sessionId, messages },
           });
           vscode.window.showInformationMessage(
@@ -1079,7 +1079,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
         // Pre-clear UI so replayed updates append afterwards
         this.currentConversationId = sessionId;
         this.sendToWebView({
-          type: 'qwenSessionSwitched',
+          type: 'vibeSessionSwitched',
           data: { sessionId, messages: [] },
         });
 
@@ -1089,7 +1089,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
         this.isTitleSet = false;
 
         // Successfully loaded session, return early to avoid fallback logic
-        await this.handleGetQwenSessions();
+        await this.handleGetVibeSessions();
         return;
       } catch (acpError) {
         // Check for authentication/session expiration errors
@@ -1108,7 +1108,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
         }
       }
 
-      await this.handleGetQwenSessions();
+      await this.handleGetVibeSessions();
     } catch (error) {
       console.error('[SessionMessageHandler] Failed to resume session:', error);
 
@@ -1138,7 +1138,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
   /**
    * Handle delete session request
    */
-  private async handleDeleteQwenSession(sessionId: string): Promise<void> {
+  private async handleDeleteVibeSession(sessionId: string): Promise<void> {
     try {
       if (
         sessionId === this.currentConversationId ||
@@ -1175,7 +1175,7 @@ export class SessionMessageHandler extends BaseMessageHandler {
   /**
    * Handle rename session request
    */
-  private async handleRenameQwenSession(
+  private async handleRenameVibeSession(
     sessionId: string,
     title: string,
   ): Promise<void> {

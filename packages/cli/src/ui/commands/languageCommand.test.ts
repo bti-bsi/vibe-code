@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -64,7 +64,7 @@ vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
   return {
     ...actual,
     Storage: {
-      getGlobalQwenDir: vi.fn().mockReturnValue('/mock/.vibe'),
+      getGlobalVibeDir: vi.fn().mockReturnValue('/mock/.vibe'),
       getGlobalSettingsPath: vi
         .fn()
         .mockReturnValue('/mock/.vibe/settings.json'),
@@ -741,7 +741,7 @@ describe('languageCommand', () => {
       vi.mocked(i18n.detectSystemLanguage).mockReturnValue('en');
       vi.mocked(fs.readFileSync).mockReturnValue(
         `# Output language preference: English
-<!-- qwen-code:llm-output-language: English -->
+<!-- vibe-code:llm-output-language: English -->
 `,
       );
 
@@ -754,7 +754,7 @@ describe('languageCommand', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readFileSync).mockReturnValue(
         `# Output language preference: English
-<!-- qwen-code:llm-output-language: English -->
+<!-- vibe-code:llm-output-language: English -->
 `,
       );
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -64,7 +64,7 @@ describe('resetConversationState', () => {
     expect(setCurrentSessionTitle).toHaveBeenCalledWith('Past Conversations');
     expect(postMessage).toHaveBeenCalledWith({
       type: 'updatePanelTitle',
-      data: { title: 'Qwen Code' },
+      data: { title: 'Vibe Code' },
     });
   });
 });

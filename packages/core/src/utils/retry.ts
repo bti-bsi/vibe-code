@@ -6,7 +6,7 @@
 
 import type { GenerateContentResponse } from '@google/genai';
 import { AuthType } from '../core/contentGenerator.js';
-import { isQwenQuotaExceededError } from './quotaErrorDetection.js';
+import { isVibeQuotaExceededError } from './quotaErrorDetection.js';
 import { createDebugLogger } from './debugLogger.js';
 import { getErrorStatus } from './errors.js';
 
@@ -75,12 +75,12 @@ export function isTransientCapacityError(error: unknown): boolean {
 
 /**
  * Detects whether persistent retry mode is explicitly enabled.
- * Requires the user to opt in via QWEN_CODE_UNATTENDED_RETRY — we intentionally
+ * Requires the user to opt in via VIBE_CODE_UNATTENDED_RETRY — we intentionally
  * do NOT auto-activate on CI=true, because silently turning a fast-fail CI job
  * into an infinite-wait job would be surprising and dangerous.
  */
 export function isUnattendedMode(): boolean {
-  const val = process.env['QWEN_CODE_UNATTENDED_RETRY'];
+  const val = process.env['VIBE_CODE_UNATTENDED_RETRY'];
   return val === 'true' || val === '1';
 }
 
@@ -196,11 +196,11 @@ export async function retryWithBackoff<T>(
     } catch (error) {
       const errorStatus = getErrorStatus(error);
 
-      // Check for Qwen OAuth quota exceeded error - throw immediately without retry
-      if (authType === AuthType.QWEN_OAUTH && isQwenQuotaExceededError(error)) {
+      // Check for Vibe OAuth quota exceeded error - throw immediately without retry
+      if (authType === AuthType.VIBE_OAUTH && isVibeQuotaExceededError(error)) {
         throw new Error(
-          `Qwen OAuth free tier has been discontinued as of 2026-04-15.\n\n` +
-            `To continue using Qwen Code, try one of these alternatives:\n` +
+          `Vibe OAuth free tier has been discontinued as of 2026-04-15.\n\n` +
+            `To continue using Vibe Code, try one of these alternatives:\n` +
             `  - OpenRouter:    https://openrouter.ai/docs/quickstart\n` +
             `  - Fireworks AI:  https://docs.fireworks.ai/api-reference/introduction\n` +
             `  - ModelStudio:   https://help.aliyun.com/zh/model-studio/coding-plan\n\n` +

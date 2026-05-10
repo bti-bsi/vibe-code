@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -63,7 +63,7 @@ function generateCustomModelEnvKey(
   authType: CustomModelAuthType,
   baseUrl: string,
 ): string {
-  return `QWEN_CUSTOM_MODEL_API_KEY_${normalizeConfigToken(authType)}_${normalizeConfigToken(baseUrl)}`;
+  return `VIBE_CUSTOM_MODEL_API_KEY_${normalizeConfigToken(authType)}_${normalizeConfigToken(baseUrl)}`;
 }
 
 function maskApiKey(apiKey: string): string {

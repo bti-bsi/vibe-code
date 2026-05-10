@@ -668,6 +668,7 @@ export interface SettingInputRequest {
   settingName: string;
   settingDescription: string;
   sensitive: boolean;
+  placeholder?: string;
   onSubmit: (value: string) => void;
   onCancel: () => void;
 }

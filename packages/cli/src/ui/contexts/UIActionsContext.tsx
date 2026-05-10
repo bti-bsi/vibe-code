@@ -17,7 +17,7 @@ import {
 } from '@vibe-bti/vibe-code-core';
 import { type SettingScope } from '../../config/settings.js';
 import { type AlibabaStandardRegion } from '../../constants/alibabaStandardApiKey.js';
-import type { AuthState, HistoryItem } from '../types.js';
+import type { AuthState, HistoryItem, SettingInputRequest } from '../types.js';
 import { type ArenaDialogType } from '../hooks/useArenaCommand.js';
 // OpenAICredentials type (previously imported from OpenAIKeyPrompt)
 export interface OpenAICredentials {
@@ -139,6 +139,13 @@ export interface UIActions {
   openRewindSelector: () => void;
   closeRewindSelector: () => void;
   handleRewindConfirm: (userItem: HistoryItem) => void;
+  openConfigDialog: () => void;
+  closeConfigDialog: () => void;
+  openTelegramConfigDialog: () => void;
+  closeTelegramConfigDialog: () => void;
+  openWhatsAppConfigDialog: () => void;
+  closeWhatsAppConfigDialog: () => void;
+  addSettingInputRequest: (request: SettingInputRequest) => void;
 }
 
 export const UIActionsContext = createContext<UIActions | null>(null);

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -79,10 +79,10 @@ describe('modelCommand', () => {
     });
   });
 
-  it('should return dialog action for QWEN_OAUTH auth type', async () => {
+  it('should return dialog action for VIBE_OAUTH auth type', async () => {
     const mockConfig = createMockConfig({
       model: 'test-model',
-      authType: AuthType.QWEN_OAUTH,
+      authType: AuthType.VIBE_OAUTH,
     });
     mockContext.services.config = mockConfig as Config;
 
@@ -147,10 +147,10 @@ describe('modelCommand', () => {
         services: {
           config: {
             getContentGeneratorConfig: vi.fn().mockReturnValue({
-              model: 'qwen-max',
-              authType: AuthType.QWEN_OAUTH,
+              model: 'vibe-max',
+              authType: AuthType.VIBE_OAUTH,
             }),
-            getModel: vi.fn().mockReturnValue('qwen-max'),
+            getModel: vi.fn().mockReturnValue('vibe-max'),
           },
         },
       });
@@ -160,7 +160,7 @@ describe('modelCommand', () => {
       expect(result).toEqual({
         type: 'message',
         messageType: 'info',
-        content: expect.stringContaining('qwen-max'),
+        content: expect.stringContaining('vibe-max'),
       });
       expect((result as { type: string }).type).toBe('message');
     });
@@ -172,13 +172,13 @@ describe('modelCommand', () => {
         services: {
           config: {
             getContentGeneratorConfig: vi.fn().mockReturnValue({
-              model: 'qwen-max',
-              authType: AuthType.QWEN_OAUTH,
+              model: 'vibe-max',
+              authType: AuthType.VIBE_OAUTH,
             }),
-            getModel: vi.fn().mockReturnValue('qwen-max'),
+            getModel: vi.fn().mockReturnValue('vibe-max'),
           },
           settings: {
-            merged: { fastModel: 'qwen-turbo' } as Record<string, unknown>,
+            merged: { fastModel: 'vibe-turbo' } as Record<string, unknown>,
           },
         },
       });
@@ -188,7 +188,7 @@ describe('modelCommand', () => {
       expect(result).toEqual({
         type: 'message',
         messageType: 'info',
-        content: expect.stringContaining('qwen-turbo'),
+        content: expect.stringContaining('vibe-turbo'),
       });
     });
   });

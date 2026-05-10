@@ -19,7 +19,7 @@ import { getRenderableGradientColors } from '../utils/gradientUtils.js';
  * Simplified representation of authentication method shown to users.
  */
 export enum AuthDisplayType {
-  QWEN_OAUTH = 'Qwen OAuth',
+  VIBE_OAUTH = 'Vibe OAuth',
   CODING_PLAN = 'Coding Plan',
   API_KEY = 'API Key',
   UNKNOWN = 'Unknown',

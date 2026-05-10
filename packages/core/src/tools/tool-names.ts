@@ -31,9 +31,14 @@ export const ToolNames = {
   EXIT_PLAN_MODE: 'exit_plan_mode',
   WEB_FETCH: 'web_fetch',
   SCOPUS_SEARCH: 'scopus_search',
+  SCOPUS_ANALYTIC_TREND: 'scopus_analytic_trend',
   SCOPUS_ABSTRACT_PDF: 'scopus_abstract_pdf',
   FILE_DOWNLOAD: 'file_download',
   PDF_EXTRACT: 'pdf_extract',
+  DOCX_EXTRACT: 'docx_extract',
+  WRITE_DOCX: 'write_docx',
+  READ_STYLE_DOCX: 'read_style_docx',
+  WRITE_PPTX: 'write_pptx',
   LS: 'list_directory',
   LSP: 'lsp',
   ASK_USER_QUESTION: 'ask_user_question',
@@ -43,6 +48,7 @@ export const ToolNames = {
   TASK_STOP: 'task_stop',
   SEND_MESSAGE: 'send_message',
   MONITOR: 'monitor',
+  GOOGLE_SEARCH: 'google_search',
 } as const;
 
 /**
@@ -64,9 +70,14 @@ export const ToolDisplayNames = {
   EXIT_PLAN_MODE: 'ExitPlanMode',
   WEB_FETCH: 'WebFetch',
   SCOPUS_SEARCH: 'ScopusSearch',
+  SCOPUS_ANALYTIC_TREND: 'ScopusAnalyticTrend',
   SCOPUS_ABSTRACT_PDF: 'ScopusAbstractPDF',
   FILE_DOWNLOAD: 'FileDownload',
   PDF_EXTRACT: 'PDFExtract',
+  DOCX_EXTRACT: 'ReadFileDocx',
+  WRITE_DOCX: 'WriteDocx',
+  READ_STYLE_DOCX: 'ReadStyleDocx',
+  WRITE_PPTX: 'WritePptx',
   LS: 'ListFiles',
   LSP: 'Lsp',
   ASK_USER_QUESTION: 'AskUserQuestion',
@@ -76,6 +87,7 @@ export const ToolDisplayNames = {
   TASK_STOP: 'TaskStop',
   SEND_MESSAGE: 'SendMessage',
   MONITOR: 'Monitor',
+  GOOGLE_SEARCH: 'GoogleSearch',
 } as const;
 
 // Migration from old tool names to new tool names

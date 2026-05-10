@@ -1,8 +1,8 @@
 # Quickstart
 
-> 👏 Welcome to Qwen Code!
+> 👏 Welcome to Vibe Code!
 
-This quickstart guide will have you using AI-powered coding assistance in just a few minutes. By the end, you'll understand how to use Qwen Code for common development tasks.
+This quickstart guide will have you using AI-powered coding assistance in just a few minutes. By the end, you'll understand how to use Vibe Code for common development tasks.
 
 ## Before you begin
 
@@ -12,22 +12,22 @@ Make sure you have:
 - A code project to work with
 - An API key from Alibaba Cloud Model Studio ([Beijing](https://bailian.console.aliyun.com/) / [intl](https://modelstudio.console.alibabacloud.com/)), or an Alibaba Cloud Coding Plan ([Beijing](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index) / [intl](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) subscription
 
-## Step 1: Install Qwen Code
+## Step 1: Install Vibe Code
 
-To install Qwen Code, use one of the following methods:
+To install Vibe Code, use one of the following methods:
 
 ### Quick Install (Recommended)
 
 **Linux / macOS**
 
 ```sh
-curl -fsSL https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen.sh | bash
+curl -fsSL https://vibe-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-vibe.sh | bash
 ```
 
 **Windows (Run as Administrator)**
 
 ```cmd
-powershell -Command "Invoke-WebRequest 'https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen.bat' -OutFile (Join-Path $env:TEMP 'install-qwen.bat'); & (Join-Path $env:TEMP 'install-qwen.bat')"
+powershell -Command "Invoke-WebRequest 'https://vibe-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-vibe.bat' -OutFile (Join-Path $env:TEMP 'install-vibe.bat'); & (Join-Path $env:TEMP 'install-vibe.bat')"
 ```
 
 > [!note]
@@ -49,16 +49,16 @@ npm install -g @vibe-bti/vibe-code@latest
 **Homebrew (macOS, Linux)**
 
 ```bash
-brew install qwen-code
+brew install vibe-code
 ```
 
 ## Step 2: Set up authentication
 
-When you start an interactive session with the `qwen` command, you'll be prompted to configure authentication:
+When you start an interactive session with the `vibe` command, you'll be prompted to configure authentication:
 
 ```bash
 # You'll be prompted to set up authentication on first use
-qwen
+vibe
 ```
 
 ```bash
@@ -71,58 +71,58 @@ Choose your preferred authentication method:
 - **Alibaba Cloud Coding Plan**: Select `Alibaba Cloud Coding Plan` for a fixed monthly fee with diverse model options. See the [Coding Plan guide](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index) ([intl](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) for setup instructions.
 - **API Key**: Select `API Key`, then enter your API key from Alibaba Cloud Model Studio ([Beijing](https://bailian.console.aliyun.com/) / [intl](https://modelstudio.console.alibabacloud.com/)). See the API setup guide ([Beijing](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3023091) / [intl](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model&url=2974721)) for details.
 
-> ⚠️ **Note**: Qwen OAuth was discontinued on April 15, 2026. If you were previously using Qwen OAuth, please switch to one of the methods above.
+> ⚠️ **Note**: Vibe OAuth was discontinued on April 15, 2026. If you were previously using Vibe OAuth, please switch to one of the methods above.
 
 > [!note]
 >
-> When you first authenticate Qwen Code with your Qwen account, a workspace called ".qwen" is automatically created for you. This workspace provides centralized cost tracking and management for all Qwen Code usage in your organization.
+> When you first authenticate Vibe Code with your Vibe account, a workspace called ".vibe" is automatically created for you. This workspace provides centralized cost tracking and management for all Vibe Code usage in your organization.
 
 > [!tip]
 >
-> You can also configure authentication directly from the terminal without starting a session by running `qwen auth`. Use `qwen auth status` to check your current configuration at any time. See the [Authentication](./configuration/auth) page for details.
+> You can also configure authentication directly from the terminal without starting a session by running `vibe auth`. Use `vibe auth status` to check your current configuration at any time. See the [Authentication](./configuration/auth) page for details.
 
 ## Step 3: Start your first session
 
-Open your terminal in any project directory and start Qwen Code:
+Open your terminal in any project directory and start Vibe Code:
 
 ```bash
 # optiona
 cd /path/to/your/project
-# start qwen
-qwen
+# start vibe
+vibe
 ```
 
-You'll see the Qwen Code welcome screen with your session information, recent conversations, and latest updates. Type `/help` for available commands.
+You'll see the Vibe Code welcome screen with your session information, recent conversations, and latest updates. Type `/help` for available commands.
 
-## Chat with Qwen Code
+## Chat with Vibe Code
 
 ### Ask your first question
 
-Qwen Code will analyze your files and provide a summary. You can also ask more specific questions:
+Vibe Code will analyze your files and provide a summary. You can also ask more specific questions:
 
 ```
 explain the folder structure
 ```
 
-You can also ask Qwen Code about its own capabilities:
+You can also ask Vibe Code about its own capabilities:
 
 ```
-what can Qwen Code do?
+what can Vibe Code do?
 ```
 
 > [!note]
 >
-> Qwen Code reads your files as needed - you don't have to manually add context. Qwen Code also has access to its own documentation and can answer questions about its features and capabilities.
+> Vibe Code reads your files as needed - you don't have to manually add context. Vibe Code also has access to its own documentation and can answer questions about its features and capabilities.
 
 ### Make your first code change
 
-Now let's make Qwen Code do some actual coding. Try a simple task:
+Now let's make Vibe Code do some actual coding. Try a simple task:
 
 ```
 add a hello world function to the main file
 ```
 
-Qwen Code will:
+Vibe Code will:
 
 1. Find the appropriate file
 2. Show you the proposed changes
@@ -131,11 +131,11 @@ Qwen Code will:
 
 > [!note]
 >
-> Qwen Code always asks for permission before modifying files. You can approve individual changes or enable "Accept all" mode for a session.
+> Vibe Code always asks for permission before modifying files. You can approve individual changes or enable "Accept all" mode for a session.
 
-### Use Git with Qwen Code
+### Use Git with Vibe Code
 
-Qwen Code makes Git operations conversational:
+Vibe Code makes Git operations conversational:
 
 ```
 what files have I changed?
@@ -161,7 +161,7 @@ help me resolve merge conflicts
 
 ### Fix a bug or add a feature
 
-Qwen Code is proficient at debugging and feature implementation.
+Vibe Code is proficient at debugging and feature implementation.
 
 Describe what you want in natural language:
 
@@ -175,7 +175,7 @@ Or fix existing issues:
 there's a bug where users can submit empty forms - fix it
 ```
 
-Qwen Code will:
+Vibe Code will:
 
 - Locate the relevant code
 - Understand the context
@@ -184,7 +184,7 @@ Qwen Code will:
 
 ### Test out other common workflows
 
-There are a number of ways to work with Qwen Code:
+There are a number of ways to work with Vibe Code:
 
 **Refactor code**
 
@@ -212,7 +212,7 @@ review my changes and suggest improvements
 
 > [!tip]
 >
-> **Remember**: Qwen Code is your AI pair programmer. Talk to it like you would a helpful colleague - describe what you want to achieve, and it will help you get there.
+> **Remember**: Vibe Code is your AI pair programmer. Talk to it like you would a helpful colleague - describe what you want to achieve, and it will help you get there.
 
 ## Essential commands
 
@@ -220,19 +220,19 @@ Here are the most important commands for daily use:
 
 | Command               | What it does                                     | Example                       |
 | --------------------- | ------------------------------------------------ | ----------------------------- |
-| `qwen`                | start Qwen Code                                  | `qwen`                        |
+| `vibe`                | start Vibe Code                                  | `vibe`                        |
 | `/auth`               | Change authentication method (in session)        | `/auth`                       |
-| `qwen auth`           | Configure authentication from the terminal       | `qwen auth`                   |
-| `qwen auth api-key`   | Configure API key authentication                 | `qwen auth api-key`           |
-| `qwen auth status`    | Check current authentication status              | `qwen auth status`            |
+| `vibe auth`           | Configure authentication from the terminal       | `vibe auth`                   |
+| `vibe auth api-key`   | Configure API key authentication                 | `vibe auth api-key`           |
+| `vibe auth status`    | Check current authentication status              | `vibe auth status`            |
 | `/help`               | Display help information for available commands  | `/help` or `/?`               |
 | `/compress`           | Replace chat history with summary to save Tokens | `/compress`                   |
 | `/clear`              | Clear terminal screen content                    | `/clear` (shortcut: `Ctrl+L`) |
-| `/theme`              | Change Qwen Code visual theme                    | `/theme`                      |
+| `/theme`              | Change Vibe Code visual theme                    | `/theme`                      |
 | `/language`           | View or change language settings                 | `/language`                   |
 | → `ui [language]`     | Set UI interface language                        | `/language ui zh-CN`          |
 | → `output [language]` | Set LLM output language                          | `/language output Chinese`    |
-| `/quit`               | Exit Qwen Code immediately                       | `/quit` or `/exit`            |
+| `/quit`               | Exit Vibe Code immediately                       | `/quit` or `/exit`            |
 
 See the [CLI reference](./features/commands) for a complete list of commands.
 
@@ -253,9 +253,9 @@ See the [CLI reference](./features/commands) for a complete list of commands.
 3. build a webpage that allows users to see and edit their information
 ```
 
-**Let Qwen Code explore first**
+**Let Vibe Code explore first**
 
-- Before making changes, let Qwen Code understand your code:
+- Before making changes, let Vibe Code understand your code:
 
 ```
 analyze the database schema
@@ -274,6 +274,6 @@ build a dashboard showing products that are most frequently returned by our UK c
 
 ## Getting help
 
-- **In Qwen Code**: Type `/help` or ask "how do I..."
+- **In Vibe Code**: Type `/help` or ask "how do I..."
 - **Documentation**: You're here! Browse other guides
 - **Community**: Join our [GitHub Discussion](https://github.com/vibe-bti/vibe-code/discussions) for tips and support

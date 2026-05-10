@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -173,7 +173,7 @@ describe('<EditModelDialog />', () => {
     );
     expect(mockSettings.setValue).toHaveBeenCalledWith(
       SettingScope.User,
-      expect.stringMatching(/^env\.QWEN_CUSTOM_MODEL_API_KEY_ANTHROPIC_/),
+      expect.stringMatching(/^env\.VIBE_CUSTOM_MODEL_API_KEY_ANTHROPIC_/),
       'new-secret',
     );
     expect(mockSettings.setValue).toHaveBeenCalledWith(

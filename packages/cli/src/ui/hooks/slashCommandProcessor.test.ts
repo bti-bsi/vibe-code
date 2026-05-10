@@ -151,6 +151,7 @@ describe('useSlashCommandProcessor', () => {
     openAgentsManagerDialog: vi.fn(),
     openExtensionsManagerDialog: vi.fn(),
     openMcpDialog: vi.fn(),
+    openConfigDialog: vi.fn(),
     openHooksDialog: vi.fn(),
     openRewindSelector: vi.fn(),
   });
@@ -599,7 +600,6 @@ describe('useSlashCommandProcessor', () => {
       });
 
       expect(mockClient.setHistory).toHaveBeenCalledTimes(1);
-      expect(mockClient.stripThoughtsFromHistory).not.toHaveBeenCalled();
     });
 
     it('should handle a "quit" action', async () => {

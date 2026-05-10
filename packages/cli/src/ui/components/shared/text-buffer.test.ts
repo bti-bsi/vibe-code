@@ -34,6 +34,13 @@ const initialState: TextBufferState = {
   redoStack: [],
   clipboard: null,
   selectionAnchor: null,
+  viewportWidth: 80,
+  viewportHeight: 24,
+  visualLayout: {
+    visualLines: [''],
+    logicalToVisualMap: [[[0, 0]]],
+    visualToLogicalMap: [[0, 0]],
+  },
 };
 
 describe('textBufferReducer', () => {
@@ -1711,17 +1718,11 @@ describe('logicalPosToOffset', () => {
 describe('textBufferReducer vim operations', () => {
   describe('vim_delete_line', () => {
     it('should delete a single line including newline in multi-line text', () => {
-      const initialState: TextBufferState = {
+      const state: TextBufferState = {
+        ...initialState,
         lines: ['line1', 'line2', 'line3'],
         cursorRow: 1,
         cursorCol: 2,
-        preferredCol: null,
-        visualLines: [['line1'], ['line2'], ['line3']],
-        visualScrollRow: 0,
-        visualCursor: { row: 1, col: 2 },
-        viewport: { width: 10, height: 5 },
-        undoStack: [],
-        redoStack: [],
       };
 
       const action: TextBufferAction = {
@@ -1729,7 +1730,7 @@ describe('textBufferReducer vim operations', () => {
         payload: { count: 1 },
       };
 
-      const result = textBufferReducer(initialState, action);
+      const result = textBufferReducer(state, action);
       expect(result).toHaveOnlyValidCharacters();
 
       // After deleting line2, we should have line1 and line3, with cursor on line3 (now at index 1)
@@ -1739,17 +1740,11 @@ describe('textBufferReducer vim operations', () => {
     });
 
     it('should delete multiple lines when count > 1', () => {
-      const initialState: TextBufferState = {
+      const state: TextBufferState = {
+        ...initialState,
         lines: ['line1', 'line2', 'line3', 'line4'],
         cursorRow: 1,
         cursorCol: 0,
-        preferredCol: null,
-        visualLines: [['line1'], ['line2'], ['line3'], ['line4']],
-        visualScrollRow: 0,
-        visualCursor: { row: 1, col: 0 },
-        viewport: { width: 10, height: 5 },
-        undoStack: [],
-        redoStack: [],
       };
 
       const action: TextBufferAction = {
@@ -1757,7 +1752,7 @@ describe('textBufferReducer vim operations', () => {
         payload: { count: 2 },
       };
 
-      const result = textBufferReducer(initialState, action);
+      const result = textBufferReducer(state, action);
       expect(result).toHaveOnlyValidCharacters();
 
       // Should delete line2 and line3, leaving line1 and line4
@@ -1767,17 +1762,11 @@ describe('textBufferReducer vim operations', () => {
     });
 
     it('should clear single line content when only one line exists', () => {
-      const initialState: TextBufferState = {
+      const state: TextBufferState = {
+        ...initialState,
         lines: ['only line'],
         cursorRow: 0,
         cursorCol: 5,
-        preferredCol: null,
-        visualLines: [['only line']],
-        visualScrollRow: 0,
-        visualCursor: { row: 0, col: 5 },
-        viewport: { width: 10, height: 5 },
-        undoStack: [],
-        redoStack: [],
       };
 
       const action: TextBufferAction = {
@@ -1785,7 +1774,7 @@ describe('textBufferReducer vim operations', () => {
         payload: { count: 1 },
       };
 
-      const result = textBufferReducer(initialState, action);
+      const result = textBufferReducer(state, action);
       expect(result).toHaveOnlyValidCharacters();
 
       // Should clear the line content but keep the line
@@ -1795,17 +1784,11 @@ describe('textBufferReducer vim operations', () => {
     });
 
     it('should handle deleting the last line properly', () => {
-      const initialState: TextBufferState = {
+      const state: TextBufferState = {
+        ...initialState,
         lines: ['line1', 'line2'],
         cursorRow: 1,
         cursorCol: 0,
-        preferredCol: null,
-        visualLines: [['line1'], ['line2']],
-        visualScrollRow: 0,
-        visualCursor: { row: 1, col: 0 },
-        viewport: { width: 10, height: 5 },
-        undoStack: [],
-        redoStack: [],
       };
 
       const action: TextBufferAction = {
@@ -1813,7 +1796,7 @@ describe('textBufferReducer vim operations', () => {
         payload: { count: 1 },
       };
 
-      const result = textBufferReducer(initialState, action);
+      const result = textBufferReducer(state, action);
       expect(result).toHaveOnlyValidCharacters();
 
       // Should delete the last line completely, not leave empty line
@@ -1823,17 +1806,11 @@ describe('textBufferReducer vim operations', () => {
     });
 
     it('should handle deleting all lines and maintain valid state for subsequent paste', () => {
-      const initialState: TextBufferState = {
+      const state: TextBufferState = {
+        ...initialState,
         lines: ['line1', 'line2', 'line3', 'line4'],
         cursorRow: 0,
         cursorCol: 0,
-        preferredCol: null,
-        visualLines: [['line1'], ['line2'], ['line3'], ['line4']],
-        visualScrollRow: 0,
-        visualCursor: { row: 0, col: 0 },
-        viewport: { width: 10, height: 5 },
-        undoStack: [],
-        redoStack: [],
       };
 
       // Delete all 4 lines with 4dd
@@ -1842,7 +1819,7 @@ describe('textBufferReducer vim operations', () => {
         payload: { count: 4 },
       };
 
-      const afterDelete = textBufferReducer(initialState, deleteAction);
+      const afterDelete = textBufferReducer(state, deleteAction);
       expect(afterDelete).toHaveOnlyValidCharacters();
 
       // After deleting all lines, should have one empty line
@@ -1966,14 +1943,10 @@ describe('CJK word navigation', () => {
   describe('delete_word_left with CJK', () => {
     it('should delete CJK word to the left', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['你好世界'],
         cursorRow: 0,
         cursorCol: 4, // At end
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, { type: 'delete_word_left' });
       expect(newState).toHaveOnlyValidCharacters();
@@ -1984,14 +1957,10 @@ describe('CJK word navigation', () => {
 
     it('should delete mixed CJK/Latin word to the left', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['hello你好'],
         cursorRow: 0,
         cursorCol: 7, // After 你好
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, { type: 'delete_word_left' });
       expect(newState).toHaveOnlyValidCharacters();
@@ -2004,14 +1973,10 @@ describe('CJK word navigation', () => {
   describe('delete_word_right with CJK', () => {
     it('should delete CJK word to the right', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['你好世界'],
         cursorRow: 0,
         cursorCol: 2, // In middle (after 你好)
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, { type: 'delete_word_right' });
       expect(newState).toHaveOnlyValidCharacters();
@@ -2021,14 +1986,10 @@ describe('CJK word navigation', () => {
 
     it('should delete mixed CJK/Latin word to the right', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['你好world'],
         cursorRow: 0,
         cursorCol: 2, // After 你好
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, { type: 'delete_word_right' });
       expect(newState).toHaveOnlyValidCharacters();
@@ -2041,14 +2002,10 @@ describe('CJK word navigation', () => {
   describe('wordLeft/wordRight navigation with CJK', () => {
     it('should navigate wordLeft through CJK text', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['hello你好world'],
         cursorRow: 0,
         cursorCol: 14, // At end
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2061,14 +2018,10 @@ describe('CJK word navigation', () => {
 
     it('should navigate wordRight through CJK text', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['hello你好world'],
         cursorRow: 0,
         cursorCol: 5, // After 'hello'
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2083,14 +2036,10 @@ describe('CJK word navigation', () => {
 
     it('should handle pure CJK text navigation with wordLeft', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['你好世界'],
         cursorRow: 0,
         cursorCol: 4, // At end
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2103,14 +2052,10 @@ describe('CJK word navigation', () => {
 
     it('should handle pure CJK text navigation with wordRight', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['你好世界'],
         cursorRow: 0,
         cursorCol: 0, // At start
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2126,14 +2071,10 @@ describe('CJK word navigation', () => {
     it('should use char-by-char fallback for long lines (>1500 chars)', () => {
       const longText = '你'.repeat(2000);
       const state: TextBufferState = {
+        ...initialState,
         lines: [longText],
         cursorRow: 0,
         cursorCol: 2000,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2146,14 +2087,10 @@ describe('CJK word navigation', () => {
 
     it('should handle word navigation on empty line', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: [''],
         cursorRow: 0,
         cursorCol: 0,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const leftState = textBufferReducer(state, {
         type: 'move',
@@ -2172,14 +2109,10 @@ describe('CJK word navigation', () => {
 
     it('should handle word navigation on single character', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['a'],
         cursorRow: 0,
         cursorCol: 0,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const rightState = textBufferReducer(state, {
         type: 'move',
@@ -2198,14 +2131,10 @@ describe('CJK word navigation', () => {
 
     it('should handle wordLeft at absolute start of document', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['hello'],
         cursorRow: 0,
         cursorCol: 0,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2217,14 +2146,10 @@ describe('CJK word navigation', () => {
 
     it('should handle wordRight at absolute end of document', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['hello'],
         cursorRow: 0,
         cursorCol: 5,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2236,14 +2161,10 @@ describe('CJK word navigation', () => {
 
     it('should handle word navigation across multiple empty lines', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['', ''],
         cursorRow: 0,
         cursorCol: 0,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const rightState = textBufferReducer(state, {
         type: 'move',
@@ -2259,14 +2180,10 @@ describe('CJK word navigation', () => {
   describe('word navigation edge cases', () => {
     it('should skip whitespace after word in wordRight', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['hello world'],
         cursorRow: 0,
         cursorCol: 0,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',
@@ -2278,14 +2195,10 @@ describe('CJK word navigation', () => {
 
     it('should navigate consistently through dotted identifiers', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['Intl.Segmenter'],
         cursorRow: 0,
         cursorCol: 14,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const leftState = textBufferReducer(state, {
         type: 'move',
@@ -2295,14 +2208,10 @@ describe('CJK word navigation', () => {
       expect(leftState.cursorCol).toBe(5);
 
       const dotState: TextBufferState = {
+        ...initialState,
         lines: ['Intl.Segmenter'],
         cursorRow: 0,
         cursorCol: 4,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const rightState = textBufferReducer(dotState, {
         type: 'move',
@@ -2314,14 +2223,10 @@ describe('CJK word navigation', () => {
 
     it('should navigate through repeated identical words', () => {
       const state: TextBufferState = {
+        ...initialState,
         lines: ['variable_name variable_name'],
         cursorRow: 0,
         cursorCol: 0,
-        preferredCol: null,
-        undoStack: [],
-        redoStack: [],
-        clipboard: null,
-        selectionAnchor: null,
       };
       const newState = textBufferReducer(state, {
         type: 'move',

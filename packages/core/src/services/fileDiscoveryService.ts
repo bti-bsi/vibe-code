@@ -5,26 +5,26 @@
  */
 
 import type { GitIgnoreFilter } from '../utils/gitIgnoreParser.js';
-import type { QwenIgnoreFilter } from '../utils/qwenIgnoreParser.js';
+import type { VibeIgnoreFilter } from '../utils/vibeIgnoreParser.js';
 import { GitIgnoreParser } from '../utils/gitIgnoreParser.js';
-import { QwenIgnoreParser } from '../utils/qwenIgnoreParser.js';
+import { VibeIgnoreParser } from '../utils/vibeIgnoreParser.js';
 import { isGitRepository } from '../utils/gitUtils.js';
 import * as path from 'node:path';
 
 export interface FilterFilesOptions {
   respectGitIgnore?: boolean;
-  respectQwenIgnore?: boolean;
+  respectVibeIgnore?: boolean;
 }
 
 export interface FilterReport {
   filteredPaths: string[];
   gitIgnoredCount: number;
-  qwenIgnoredCount: number;
+  vibeIgnoredCount: number;
 }
 
 export class FileDiscoveryService {
   private gitIgnoreFilter: GitIgnoreFilter | null = null;
-  private qwenIgnoreFilter: QwenIgnoreFilter | null = null;
+  private vibeIgnoreFilter: VibeIgnoreFilter | null = null;
   private projectRoot: string;
 
   constructor(projectRoot: string) {
@@ -32,7 +32,7 @@ export class FileDiscoveryService {
     if (isGitRepository(this.projectRoot)) {
       this.gitIgnoreFilter = new GitIgnoreParser(this.projectRoot);
     }
-    this.qwenIgnoreFilter = new QwenIgnoreParser(this.projectRoot);
+    this.vibeIgnoreFilter = new VibeIgnoreParser(this.projectRoot);
   }
 
   /**
@@ -42,14 +42,14 @@ export class FileDiscoveryService {
     filePaths: string[],
     options: FilterFilesOptions = {
       respectGitIgnore: true,
-      respectQwenIgnore: true,
+      respectVibeIgnore: true,
     },
   ): string[] {
     return filePaths.filter((filePath) => {
       if (options.respectGitIgnore && this.shouldGitIgnoreFile(filePath)) {
         return false;
       }
-      if (options.respectQwenIgnore && this.shouldQwenIgnoreFile(filePath)) {
+      if (options.respectVibeIgnore && this.shouldVibeIgnoreFile(filePath)) {
         return false;
       }
       return true;
@@ -64,12 +64,12 @@ export class FileDiscoveryService {
     filePaths: string[],
     opts: FilterFilesOptions = {
       respectGitIgnore: true,
-      respectQwenIgnore: true,
+      respectVibeIgnore: true,
     },
   ): FilterReport {
     const filteredPaths: string[] = [];
     let gitIgnoredCount = 0;
-    let qwenIgnoredCount = 0;
+    let vibeIgnoredCount = 0;
 
     for (const filePath of filePaths) {
       if (opts.respectGitIgnore && this.shouldGitIgnoreFile(filePath)) {
@@ -77,8 +77,8 @@ export class FileDiscoveryService {
         continue;
       }
 
-      if (opts.respectQwenIgnore && this.shouldQwenIgnoreFile(filePath)) {
-        qwenIgnoredCount++;
+      if (opts.respectVibeIgnore && this.shouldVibeIgnoreFile(filePath)) {
+        vibeIgnoredCount++;
         continue;
       }
 
@@ -88,7 +88,7 @@ export class FileDiscoveryService {
     return {
       filteredPaths,
       gitIgnoredCount,
-      qwenIgnoredCount,
+      vibeIgnoredCount,
     };
   }
 
@@ -103,11 +103,11 @@ export class FileDiscoveryService {
   }
 
   /**
-   * Checks if a single file should be qwen-ignored
+   * Checks if a single file should be vibe-ignored
    */
-  shouldQwenIgnoreFile(filePath: string): boolean {
-    if (this.qwenIgnoreFilter) {
-      return this.qwenIgnoreFilter.isIgnored(filePath);
+  shouldVibeIgnoreFile(filePath: string): boolean {
+    if (this.vibeIgnoreFilter) {
+      return this.vibeIgnoreFilter.isIgnored(filePath);
     }
     return false;
   }
@@ -121,22 +121,22 @@ export class FileDiscoveryService {
   ): boolean {
     const {
       respectGitIgnore = true,
-      respectQwenIgnore: respectQwenIgnore = true,
+      respectVibeIgnore: respectVibeIgnore = true,
     } = options;
 
     if (respectGitIgnore && this.shouldGitIgnoreFile(filePath)) {
       return true;
     }
-    if (respectQwenIgnore && this.shouldQwenIgnoreFile(filePath)) {
+    if (respectVibeIgnore && this.shouldVibeIgnoreFile(filePath)) {
       return true;
     }
     return false;
   }
 
   /**
-   * Returns loaded patterns from .qwenignore
+   * Returns loaded patterns from .vibeignore
    */
-  getQwenIgnorePatterns(): string[] {
-    return this.qwenIgnoreFilter?.getPatterns() ?? [];
+  getVibeIgnorePatterns(): string[] {
+    return this.vibeIgnoreFilter?.getPatterns() ?? [];
   }
 }

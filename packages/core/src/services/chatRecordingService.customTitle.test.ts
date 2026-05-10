@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Code
+ * Copyright 2025 Vibe Code
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -49,7 +49,7 @@ describe('ChatRecordingService - recordCustomTitle', () => {
           .fn()
           .mockReturnValue('/test/project/root/.vibe/projects/test-project'),
       },
-      getModel: vi.fn().mockReturnValue('qwen-plus'),
+      getModel: vi.fn().mockReturnValue('vibe-plus'),
       getFastModel: vi.fn().mockReturnValue(undefined),
       isInteractive: vi.fn().mockReturnValue(false),
       getDebugMode: vi.fn().mockReturnValue(false),

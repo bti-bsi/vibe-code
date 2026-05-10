@@ -2,16 +2,16 @@
 
 ## `vibe-code-sdk`
 
-`vibe-code-sdk` is an experimental Python SDK for Qwen Code. v1 targets the
+`vibe-code-sdk` is an experimental Python SDK for Vibe Code. v1 targets the
 existing `stream-json` CLI protocol and keeps the transport surface small and
 testable.
 
 ## Scope
 
 - Package name: `vibe-code-sdk`
-- Import path: `qwen_code_sdk`
+- Import path: `vibe_code_sdk`
 - Runtime requirement: Python `>=3.10`
-- CLI dependency: external `qwen` executable is required in v1
+- CLI dependency: external `vibe` executable is required in v1
 - Transport scope: process transport only
 - Not included in v1: ACP transport, SDK-embedded MCP servers
 
@@ -21,14 +21,14 @@ testable.
 pip install vibe-code-sdk
 ```
 
-If `qwen` is not on `PATH`, pass `path_to_qwen_executable` explicitly.
+If `vibe` is not on `PATH`, pass `path_to_vibe_executable` explicitly.
 
 ## Quick Start
 
 ```python
 import asyncio
 
-from qwen_code_sdk import is_sdk_result_message, query
+from vibe_code_sdk import is_sdk_result_message, query
 
 
 async def main() -> None:
@@ -36,7 +36,7 @@ async def main() -> None:
         "Explain the repository structure.",
         {
             "cwd": "/path/to/project",
-            "path_to_qwen_executable": "qwen",
+            "path_to_vibe_executable": "vibe",
         },
     )
 
@@ -78,7 +78,7 @@ Supported options in v1:
 
 - `cwd`
 - `model`
-- `path_to_qwen_executable`
+- `path_to_vibe_executable`
 - `permission_mode`
 - `can_use_tool`
 - `env`
@@ -129,14 +129,14 @@ When the CLI emits a `can_use_tool` control request, the SDK routes it through
 
 If the SDK cannot start the CLI:
 
-- Verify `qwen --version` works in the target environment
-- Pass `path_to_qwen_executable` if your shell uses `nvm`, `pyenv`, or other
+- Verify `vibe --version` works in the target environment
+- Pass `path_to_vibe_executable` if your shell uses `nvm`, `pyenv`, or other
   non-standard PATH setup
 - Use `debug=True` or `stderr=print` to surface CLI stderr while debugging
 
 If session control calls time out:
 
-- Check that the target `qwen` version supports `--input-format stream-json`
+- Check that the target `vibe` version supports `--input-format stream-json`
 - Increase `timeout.control_request`
 - Verify that no wrapper script is swallowing stdout/stderr
 
@@ -147,16 +147,16 @@ Repository-level helper commands:
 - `npm run test:sdk:python`
 - `npm run lint:sdk:python`
 - `npm run typecheck:sdk:python`
-- `npm run smoke:sdk:python -- --qwen qwen`
+- `npm run smoke:sdk:python -- --vibe vibe`
 
 ## Real E2E Smoke
 
-For a real runtime check (actual `qwen` process + real model call), run from
+For a real runtime check (actual `vibe` process + real model call), run from
 the repository root. The npm helper uses `python3`, so ensure it resolves to a
 Python `>=3.10` interpreter:
 
 ```bash
-npm run smoke:sdk:python -- --qwen qwen
+npm run smoke:sdk:python -- --vibe vibe
 ```
 
 This script runs:

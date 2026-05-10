@@ -1,12 +1,31 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "description": "Qwen Code settings configuration",
+  "description": "Vibe Code settings configuration",
   "properties": {
     "mcpServers": {
       "description": "Configuration for MCP servers.",
       "type": "object",
       "additionalProperties": true
+    },
+    "scopus_apikey": {
+      "description": "API key for Scopus tools (search, trend, abstract pdf).",
+      "type": "string"
+    },
+    "google_search_api_key": {
+      "description": "API key for Google Search tools.",
+      "type": "string"
+    },
+    "google_search_cx": {
+      "description": "Search Engine ID (CX) for Google Search tools.",
+      "type": "string"
+    },
+    "whatsapp_allowed": {
+      "description": "List of WhatsApp numbers allowed to interact with the system.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "channels": {
       "description": "Configuration for messaging channels.",
@@ -66,7 +85,7 @@
           "default": 5
         },
         "gitCoAuthor": {
-          "description": "Automatically add a Co-authored-by trailer to git commit messages when commits are made through Qwen Code.",
+          "description": "Automatically add a Co-authored-by trailer to git commit messages when commits are made through Vibe Code.",
           "type": "boolean",
           "default": true
         },
@@ -87,7 +106,7 @@
           "default": false
         },
         "language": {
-          "description": "The language for the user interface. Use \"auto\" to detect from system settings. You can also use custom language codes (e.g., \"es\", \"fr\") by placing JS language files in ~/.qwen/locales/ (e.g., ~/.qwen/locales/es.js). Options: auto, en, zh-TW, zh, ru, de, ja, pt, fr, ca, id",
+          "description": "The language for the user interface. Use \"auto\" to detect from system settings. You can also use custom language codes (e.g., \"es\", \"fr\") by placing JS language files in ~/.vibe/locales/ (e.g., ~/.vibe/locales/es.js). Options: auto, en, zh-TW, zh, ru, de, ja, pt, fr, ca, id",
           "enum": [
             "auto",
             "en",
@@ -163,7 +182,7 @@
         "theme": {
           "description": "The color theme for the UI.",
           "type": "string",
-          "default": "Qwen Dark"
+          "default": "Vibe Dark"
         },
         "statusLine": {
           "description": "Custom status line display configuration. Optional `refreshInterval` (seconds, >= 1) re-runs the command on a timer so external data stays fresh.",
@@ -181,7 +200,7 @@
           "default": false
         },
         "showStatusInTitle": {
-          "description": "Show Qwen Code status and thoughts in the terminal window title",
+          "description": "Show Vibe Code status and thoughts in the terminal window title",
           "type": "boolean",
           "default": false
         },
@@ -213,7 +232,7 @@
           "default": true
         },
         "enableUserFeedback": {
-          "description": "Show optional feedback dialog after conversations to help improve Qwen performance.",
+          "description": "Show optional feedback dialog after conversations to help improve Vibe performance.",
           "type": "boolean",
           "default": true
         },
@@ -297,7 +316,7 @@
       "additionalProperties": true
     },
     "fastModel": {
-      "description": "Model used for generating prompt suggestions and speculative execution. Leave empty to use the main model. A smaller/faster model (e.g., qwen3-coder-flash) reduces latency and cost.",
+      "description": "Model used for generating prompt suggestions and speculative execution. Leave empty to use the main model. A smaller/faster model (e.g., vibe3-coder-flash) reduces latency and cost.",
       "type": "string",
       "default": ""
     },
@@ -370,7 +389,7 @@
               "default": false
             },
             "useStreaming": {
-              "description": "When false, Qwen Code uses non-streaming chat requests for this model. Useful for custom providers that reject SSE or streaming responses.",
+              "description": "When false, Vibe Code uses non-streaming chat requests for this model. Useful for custom providers that reject SSE or streaming responses.",
               "type": "boolean",
               "default": true
             },
@@ -383,7 +402,7 @@
               "default": "auto"
             },
             "contextWindowSize": {
-              "description": "Overrides the default context window size for the selected model. Use this setting when a provider's effective context limit differs from Qwen Code's default. This value defines the model's assumed maximum context capacity, not a per-request token limit.",
+              "description": "Overrides the default context window size for the selected model. Use this setting when a provider's effective context limit differs from Vibe Code's default. This value defines the model's assumed maximum context capacity, not a per-request token limit.",
               "type": "number"
             }
           }
@@ -391,7 +410,7 @@
       }
     },
     "modelPricing": {
-      "description": "Optional per-model pricing for cost estimation in /stats model. Example: {\"qwen3-coder\": {\"inputPerMillionTokens\": 0.30, \"outputPerMillionTokens\": 1.20}}",
+      "description": "Optional per-model pricing for cost estimation in /stats model. Example: {\"vibe3-coder\": {\"inputPerMillionTokens\": 0.30, \"outputPerMillionTokens\": 1.20}}",
       "type": "object",
       "additionalProperties": true
     },
@@ -445,8 +464,8 @@
               "type": "boolean",
               "default": true
             },
-            "respectQwenIgnore": {
-              "description": "Respect .qwenignore files when searching",
+            "respectVibeIgnore": {
+              "description": "Respect .vibeignore files when searching",
               "type": "boolean",
               "default": true
             },
@@ -530,7 +549,7 @@
           "additionalProperties": true
         },
         "sandboxImage": {
-          "description": "Sandbox image URI used by Docker/Podman when --sandbox-image and QWEN_SANDBOX_IMAGE are not set.",
+          "description": "Sandbox image URI used by Docker/Podman when --sandbox-image and VIBE_SANDBOX_IMAGE are not set.",
           "type": "string"
         },
         "shell": {
@@ -725,7 +744,7 @@
           "additionalProperties": true
         },
         "runtimeOutputDir": {
-          "description": "Custom directory for runtime output (temp files, debug logs, session data, todos, etc.). Config files remain at ~/.qwen. Env var QWEN_RUNTIME_DIR takes priority.",
+          "description": "Custom directory for runtime output (temp files, debug logs, session data, todos, etc.). Config files remain at ~/.vibe. Env var VIBE_RUNTIME_DIR takes priority.",
           "type": "string"
         }
       }
@@ -745,7 +764,7 @@
           "type": "object",
           "properties": {
             "worktreeBaseDir": {
-              "description": "Custom base directory for Arena worktrees. Defaults to ~/.qwen/arena.",
+              "description": "Custom base directory for Arena worktrees. Defaults to ~/.vibe/arena.",
               "type": "string"
             },
             "preserveArtifacts": {
@@ -2027,12 +2046,12 @@
       "type": "object",
       "properties": {
         "cron": {
-          "description": "Enable in-session cron/loop tools (experimental). When enabled, the model can create recurring prompts using cron_create, cron_list, and cron_delete tools. Can also be enabled via QWEN_CODE_ENABLE_CRON=1 environment variable.",
+          "description": "Enable in-session cron/loop tools (experimental). When enabled, the model can create recurring prompts using cron_create, cron_list, and cron_delete tools. Can also be enabled via VIBE_CODE_ENABLE_CRON=1 environment variable.",
           "type": "boolean",
           "default": false
         },
         "emitToolUseSummaries": {
-          "description": "Generate a short LLM-based label after each tool batch completes. In compact mode the label replaces the generic `Tool × N` header; in full mode it appears as a dim `● <label>` line below the tool group. Requires a fast model to be configured; runs in parallel with the next API call so latency is hidden. Currently affects interactive CLI rendering only — SDK / non-interactive emission of the `tool_use_summary` message is not yet wired (the message factory is exported for a follow-up PR). Can be overridden with QWEN_CODE_EMIT_TOOL_USE_SUMMARIES=0 or =1.",
+          "description": "Generate a short LLM-based label after each tool batch completes. In compact mode the label replaces the generic `Tool × N` header; in full mode it appears as a dim `● <label>` line below the tool group. Requires a fast model to be configured; runs in parallel with the next API call so latency is hidden. Currently affects interactive CLI rendering only — SDK / non-interactive emission of the `tool_use_summary` message is not yet wired (the message factory is exported for a follow-up PR). Can be overridden with VIBE_CODE_EMIT_TOOL_USE_SUMMARIES=0 or =1.",
           "type": "boolean",
           "default": true
         }

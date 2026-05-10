@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2026 Qwen Team
+ * Copyright 2026 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -45,7 +45,7 @@ describe('managed auto-memory lifecycle integration', () => {
     );
     mockConfig = {
       getSessionId: () => 'session-1',
-      getModel: () => 'qwen3-coder-plus',
+      getModel: () => 'vibe3-coder-plus',
     } as Config;
     vi.clearAllMocks();
     extractionCount = 0;

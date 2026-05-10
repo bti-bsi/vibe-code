@@ -16,6 +16,7 @@ type SettingInputPromptProps = {
   settingName: string;
   settingDescription: string;
   sensitive: boolean;
+  placeholder?: string;
   onSubmit: (value: string) => void;
   onCancel: () => void;
   terminalWidth: number;
@@ -94,6 +95,7 @@ export const SettingInputPrompt = (props: SettingInputPromptProps) => {
     settingName,
     settingDescription,
     sensitive,
+    placeholder,
     onSubmit,
     onCancel,
     terminalWidth,
@@ -136,14 +138,14 @@ export const SettingInputPrompt = (props: SettingInputPromptProps) => {
             value={value}
             onChange={setValue}
             onSubmit={handleSubmit}
-            placeholder={t('Enter sensitive value...')}
+            placeholder={placeholder || t('Enter sensitive value...')}
           />
         ) : (
           <TextInput
             value={value}
             onChange={setValue}
             onSubmit={handleSubmit}
-            placeholder={t('Enter value...')}
+            placeholder={placeholder || t('Enter value...')}
             inputWidth={Math.min(terminalWidth - 10, 60)}
             isActive={true}
           />

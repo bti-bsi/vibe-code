@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -116,7 +116,7 @@ export const useMessageSubmit = ({
           data: {},
         });
         try {
-          messageHandling.setWaitingForResponse('Authenticating Qwen Code...');
+          messageHandling.setWaitingForResponse('Authenticating Vibe Code...');
         } catch (_err) {
           // Best-effort UI hint; ignore if hook not available
         }

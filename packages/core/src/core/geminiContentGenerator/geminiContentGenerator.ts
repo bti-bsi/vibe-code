@@ -107,10 +107,7 @@ export class GeminiContentGenerator implements ContentGenerator {
       thinkingConfig: getParameterValue(
         this.buildThinkingConfig(),
         'thinkingConfig',
-        {
-          includeThoughts: true,
-          thinkingLevel: 'THINKING_LEVEL_UNSPECIFIED' as ThinkingLevel,
-        },
+        undefined,
       ),
     };
   }

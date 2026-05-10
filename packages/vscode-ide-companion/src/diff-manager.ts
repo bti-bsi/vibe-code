@@ -191,7 +191,7 @@ export class DiffManager {
       this.recentlyShown.set(key, now);
       return;
     }
-    // Left side: old content using qwen-diff scheme
+    // Left side: old content using vibe-diff scheme
     // Use Uri.file() to properly handle Windows paths (e.g., C:\Users\...)
     // then change the scheme to our custom diff scheme
     const leftDocUri = vscode.Uri.file(normalizedPath).with({
@@ -200,7 +200,7 @@ export class DiffManager {
     });
     this.diffContentProvider.setContent(leftDocUri, oldContent);
 
-    // Right side: new content using qwen-diff scheme
+    // Right side: new content using vibe-diff scheme
     const rightDocUri = vscode.Uri.file(normalizedPath).with({
       scheme: DIFF_SCHEME,
       query: `new&rand=${Math.random()}`,
@@ -218,7 +218,7 @@ export class DiffManager {
     const diffTitle = `${path.basename(normalizedPath)} (Before ↔ After)`;
     await vscode.commands.executeCommand(
       'setContext',
-      'qwen.diff.isVisible',
+      'vibe.diff.isVisible',
       true,
     );
 
@@ -358,7 +358,7 @@ export class DiffManager {
     }
     await vscode.commands.executeCommand(
       'setContext',
-      'qwen.diff.isVisible',
+      'vibe.diff.isVisible',
       isVisible,
     );
   }
@@ -371,7 +371,7 @@ export class DiffManager {
     const diffInfo = this.diffDocuments.get(rightDocUri.toString());
     await vscode.commands.executeCommand(
       'setContext',
-      'qwen.diff.isVisible',
+      'vibe.diff.isVisible',
       false,
     );
 
@@ -395,7 +395,7 @@ export class DiffManager {
     }
   }
 
-  /** Close all open qwen-diff editors */
+  /** Close all open vibe-diff editors */
   async closeAll(): Promise<void> {
     // Collect keys first to avoid iterator invalidation while closing
     const uris = Array.from(this.diffDocuments.keys()).map((k) =>

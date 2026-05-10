@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen
+ * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -154,11 +154,11 @@ describe('BundledSkillLoader', () => {
 
   it('should resolve {{model}} template variable in skill body', async () => {
     const skill = makeSkill({
-      body: 'Review by {{model}} via Qwen Code',
+      body: 'Review by {{model}} via Vibe Code',
     });
     mockSkillManager.listSkills.mockResolvedValue([skill]);
     (mockConfig.getModel as ReturnType<typeof vi.fn>).mockReturnValue(
-      'qwen3-coder',
+      'vibe3-coder',
     );
 
     const loader = new BundledSkillLoader(mockConfig);
@@ -172,7 +172,7 @@ describe('BundledSkillLoader', () => {
       type: 'submit_prompt',
       content: [
         {
-          text: 'YOUR_MODEL_ID="qwen3-coder"\n\nReview by qwen3-coder via Qwen Code',
+          text: 'YOUR_MODEL_ID="vibe3-coder"\n\nReview by vibe3-coder via Vibe Code',
         },
       ],
     });
@@ -204,7 +204,7 @@ describe('BundledSkillLoader', () => {
     });
     mockSkillManager.listSkills.mockResolvedValue([skill]);
     (mockConfig.getModel as ReturnType<typeof vi.fn>).mockReturnValue(
-      'qwen3-coder',
+      'vibe3-coder',
     );
 
     const loader = new BundledSkillLoader(mockConfig);
@@ -218,7 +218,7 @@ describe('BundledSkillLoader', () => {
       type: 'submit_prompt',
       content: [
         {
-          text: 'YOUR_MODEL_ID="qwen3-coder"\n\nReview by qwen3-coder\n\n/review 123',
+          text: 'YOUR_MODEL_ID="vibe3-coder"\n\nReview by vibe3-coder\n\n/review 123',
         },
       ],
     });

@@ -38,17 +38,17 @@ class CORSError extends Error {
 }
 
 const MCP_SESSION_ID_HEADER = 'mcp-session-id';
-const IDE_SERVER_PORT_ENV_VAR = 'QWEN_CODE_IDE_SERVER_PORT';
-const IDE_WORKSPACE_PATH_ENV_VAR = 'QWEN_CODE_IDE_WORKSPACE_PATH';
-const QWEN_DIR = '.qwen';
+const IDE_SERVER_PORT_ENV_VAR = 'VIBE_CODE_IDE_SERVER_PORT';
+const IDE_WORKSPACE_PATH_ENV_VAR = 'VIBE_CODE_IDE_WORKSPACE_PATH';
+const VIBE_DIR = '.vibe';
 const IDE_DIR = 'ide';
 
 async function getGlobalIdeDir(): Promise<string> {
   const homeDir = os.homedir();
   // Prefer home dir, but fall back to tmpdir if unavailable (matches core Storage behavior).
   const baseDir = homeDir
-    ? path.join(homeDir, QWEN_DIR)
-    : path.join(os.tmpdir(), QWEN_DIR);
+    ? path.join(homeDir, VIBE_DIR)
+    : path.join(os.tmpdir(), VIBE_DIR);
   const ideDir = path.join(baseDir, IDE_DIR);
   await fs.mkdir(ideDir, { recursive: true });
   return ideDir;
@@ -430,7 +430,7 @@ export class IDEServer {
 const createMcpServer = (diffManager: DiffManager) => {
   const server = new McpServer(
     {
-      name: 'qwen-code-companion-mcp-server',
+      name: 'vibe-code-companion-mcp-server',
       version: '1.0.0',
     },
     { capabilities: { logging: {} } },

@@ -1,12 +1,12 @@
 # Followup Suggestions
 
-Qwen Code can predict what you want to type next and show it as ghost text in the input area. This feature uses an LLM call to analyze the conversation context and generate a natural next step suggestion.
+Vibe Code can predict what you want to type next and show it as ghost text in the input area. This feature uses an LLM call to analyze the conversation context and generate a natural next step suggestion.
 
 This feature works end-to-end in the CLI. In the WebUI, the hook and UI plumbing are available, but host applications must trigger suggestion generation and wire the followup state for suggestions to appear.
 
 ## How It Works
 
-After Qwen Code finishes responding, a suggestion appears as dimmed text in the input area after a short delay (~300ms). For example, after fixing a bug, you might see:
+After Vibe Code finishes responding, a suggestion appears as dimmed text in the input area after a short delay (~300ms). For example, after fixing a bug, you might see:
 
 ```
 > run the tests
@@ -49,7 +49,7 @@ By default, suggestions use the same model as your main conversation. For faster
 ### Via command
 
 ```
-/model --fast qwen3-coder-flash
+/model --fast vibe3-coder-flash
 ```
 
 Or use `/model --fast` (without a model name) to open a selection dialog.
@@ -58,7 +58,7 @@ Or use `/model --fast` (without a model name) to open a selection dialog.
 
 ```json
 {
-  "fastModel": "qwen3-coder-flash"
+  "fastModel": "vibe3-coder-flash"
 }
 ```
 
@@ -81,7 +81,7 @@ These settings can be configured in `settings.json`:
 
 ```json
 {
-  "fastModel": "qwen3-coder-flash",
+  "fastModel": "vibe3-coder-flash",
   "ui": {
     "enableFollowupSuggestions": true,
     "enableCacheSharing": true

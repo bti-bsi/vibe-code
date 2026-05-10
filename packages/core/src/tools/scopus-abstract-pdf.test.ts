@@ -129,7 +129,7 @@ describe('ScopusAbstractPDFTool', () => {
 
   describe('tool execution', () => {
     it('should reject empty dois array', async () => {
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         dois: [],
       });
 
@@ -141,7 +141,7 @@ describe('ScopusAbstractPDFTool', () => {
 
     it('should reject too many dois', async () => {
       const dois = Array(51).fill('10.1234/test');
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         dois,
       });
 
@@ -159,7 +159,7 @@ describe('ScopusAbstractPDFTool', () => {
         '<html><body><p>Some HTML content</p></body></html>',
       );
 
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         dois: ['10.1234/test'],
       });
 
@@ -173,7 +173,7 @@ describe('ScopusAbstractPDFTool', () => {
     it('should handle full DOI URLs', async () => {
       simulateDOIResponse(200, '<html><body><p>Content</p></body></html>');
 
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         dois: ['https://doi.org/10.1234/test'],
       });
 
@@ -202,7 +202,7 @@ describe('ScopusAbstractPDFTool', () => {
         },
       );
 
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         dois: ['10.1234/fail'],
       });
 
@@ -217,7 +217,7 @@ describe('ScopusAbstractPDFTool', () => {
       // Actual HTTP behavior tested via integration tests
       simulateDOIResponse(200, '<html><body><p>Content</p></body></html>');
 
-      const invocation = tool.createInvocation({
+      const invocation = (tool as any).createInvocation({
         dois: ['10.1234/doi1', '10.1234/doi2'],
       });
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -27,7 +27,7 @@ vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
 
 import { CODING_PLAN_ENV_KEY, AuthType } from '@vibe-bti/vibe-code-core';
 import {
-  readQwenSettingsForVSCode,
+  readVibeSettingsForVSCode,
   writeCodingPlanConfig,
   writeModelProvidersConfig,
 } from './settingsWriter.js';
@@ -38,8 +38,8 @@ describe('settingsWriter', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qwen-vscode-settings-'));
-    settingsPath = path.join(tempDir, '.qwen', 'settings.json');
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vibe-vscode-settings-'));
+    settingsPath = path.join(tempDir, '.vibe', 'settings.json');
     mockGetGlobalSettingsPath.mockReturnValue(settingsPath);
   });
 
@@ -96,7 +96,7 @@ describe('settingsWriter', () => {
       activeModel: 'gpt-4o',
     });
 
-    expect(readQwenSettingsForVSCode()).toEqual({
+    expect(readVibeSettingsForVSCode()).toEqual({
       provider: 'api-key',
       apiKey: 'manual-key',
       codingPlanRegion: 'china',

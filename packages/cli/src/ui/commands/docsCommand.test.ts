@@ -35,7 +35,7 @@ describe('docsCommand', () => {
       throw new Error('docsCommand must have an action.');
     }
 
-    const docsUrl = 'https://qwenlm.github.io/qwen-code-docs/en';
+    const docsUrl = 'https://vibelm.github.io/vibe-code-docs/en';
 
     await docsCommand.action(mockContext, '');
 
@@ -57,7 +57,7 @@ describe('docsCommand', () => {
 
     // Simulate a sandbox environment
     vi.stubEnv('SANDBOX', 'gemini-sandbox');
-    const docsUrl = 'https://qwenlm.github.io/qwen-code-docs/en';
+    const docsUrl = 'https://vibelm.github.io/vibe-code-docs/en';
 
     await docsCommand.action(mockContext, '');
 
@@ -80,7 +80,7 @@ describe('docsCommand', () => {
 
     // Simulate the specific 'sandbox-exec' environment
     vi.stubEnv('SANDBOX', 'sandbox-exec');
-    const docsUrl = 'https://qwenlm.github.io/qwen-code-docs/en';
+    const docsUrl = 'https://vibelm.github.io/vibe-code-docs/en';
 
     await docsCommand.action(mockContext, '');
 
@@ -110,7 +110,7 @@ describe('docsCommand', () => {
       expect(result).toEqual({
         type: 'message',
         messageType: 'info',
-        content: expect.stringContaining('qwenlm.github.io'),
+        content: expect.stringContaining('vibelm.github.io'),
       });
       expect(open).not.toHaveBeenCalled();
       expect(nonInteractiveContext.ui.addItem).not.toHaveBeenCalled();

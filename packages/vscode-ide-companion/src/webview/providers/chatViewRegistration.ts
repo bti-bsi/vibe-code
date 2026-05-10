@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,7 +14,7 @@ import {
   type WebViewProviderFactory,
 } from './ChatWebviewViewProvider.js';
 
-const SECONDARY_SIDEBAR_CONTEXT_KEY = 'qwen-code:supportsSecondarySidebar';
+const SECONDARY_SIDEBAR_CONTEXT_KEY = 'vibe-code:supportsSecondarySidebar';
 
 export function detectSecondarySidebarSupport(vscodeVersion: string): boolean {
   const [major, minor] = vscodeVersion.split('.').map(Number);

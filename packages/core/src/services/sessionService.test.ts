@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Code
+ * Copyright 2025 Vibe Code
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -140,7 +140,7 @@ describe('SessionService', () => {
       readdirSyncSpy.mockReturnValue([
         `${sessionIdA}.jsonl`,
         `${sessionIdB}.jsonl`,
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      ] as any);
 
       statSyncSpy.mockImplementation((filePath: fs.PathLike) => {
         const path = filePath.toString();
@@ -170,9 +170,7 @@ describe('SessionService', () => {
     it('should extract prompt text from first record', async () => {
       const now = Date.now();
 
-      readdirSyncSpy.mockReturnValue([
-        `${sessionIdA}.jsonl`,
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      readdirSyncSpy.mockReturnValue([`${sessionIdA}.jsonl`] as any);
 
       statSyncSpy.mockReturnValue({
         mtimeMs: now,
@@ -194,9 +192,7 @@ describe('SessionService', () => {
         message: { role: 'user', parts: [{ text: longPrompt }] },
       };
 
-      readdirSyncSpy.mockReturnValue([
-        `${sessionIdA}.jsonl`,
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      readdirSyncSpy.mockReturnValue([`${sessionIdA}.jsonl`] as any);
       statSyncSpy.mockReturnValue({
         mtimeMs: Date.now(),
         isFile: () => true,
@@ -216,7 +212,7 @@ describe('SessionService', () => {
         `${sessionIdA}.jsonl`,
         `${sessionIdB}.jsonl`,
         `${sessionIdC}.jsonl`,
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      ] as any);
 
       statSyncSpy.mockImplementation((filePath: fs.PathLike) => {
         const path = filePath.toString();
@@ -259,7 +255,7 @@ describe('SessionService', () => {
         `${sessionIdA}.jsonl`,
         `${sessionIdB}.jsonl`,
         `${sessionIdC}.jsonl`,
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      ] as any);
 
       statSyncSpy.mockImplementation((filePath: fs.PathLike) => {
         const path = filePath.toString();
@@ -283,9 +279,7 @@ describe('SessionService', () => {
     });
 
     it('should skip files from different projects', async () => {
-      readdirSyncSpy.mockReturnValue([
-        `${sessionIdA}.jsonl`,
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      readdirSyncSpy.mockReturnValue([`${sessionIdA}.jsonl`] as any);
       statSyncSpy.mockReturnValue({
         mtimeMs: Date.now(),
         isFile: () => true,
@@ -314,7 +308,7 @@ describe('SessionService', () => {
         'not-a-uuid.jsonl', // invalid pattern
         'readme.txt', // not jsonl
         '.hidden.jsonl', // hidden file
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      ] as any);
       statSyncSpy.mockReturnValue({
         mtimeMs: Date.now(),
         isFile: () => true,
@@ -560,7 +554,7 @@ describe('SessionService', () => {
       readdirSyncSpy.mockReturnValue([
         `${sessionIdA}.jsonl`,
         `${sessionIdB}.jsonl`,
-      ] as unknown as Array<fs.Dirent<Buffer>>);
+      ] as any);
 
       statSyncSpy.mockImplementation((filePath: fs.PathLike) => {
         const path = filePath.toString();

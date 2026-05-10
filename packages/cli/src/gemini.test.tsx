@@ -111,18 +111,18 @@ vi.mock('./core/initializer.js', () => ({
 describe('gemini.tsx main function', () => {
   let originalEnvGeminiSandbox: string | undefined;
   let originalEnvSandbox: string | undefined;
-  let originalEnvQwenCodeSimple: string | undefined;
+  let originalEnvVibeCodeSimple: string | undefined;
   let initialUnhandledRejectionListeners: NodeJS.UnhandledRejectionListener[] =
     [];
 
   beforeEach(() => {
     // Store and clear sandbox-related env variables to ensure a consistent test environment
-    originalEnvGeminiSandbox = process.env['QWEN_SANDBOX'];
+    originalEnvGeminiSandbox = process.env['VIBE_SANDBOX'];
     originalEnvSandbox = process.env['SANDBOX'];
-    originalEnvQwenCodeSimple = process.env['QWEN_CODE_SIMPLE'];
-    delete process.env['QWEN_SANDBOX'];
+    originalEnvVibeCodeSimple = process.env['VIBE_CODE_SIMPLE'];
+    delete process.env['VIBE_SANDBOX'];
     delete process.env['SANDBOX'];
-    delete process.env['QWEN_CODE_SIMPLE'];
+    delete process.env['VIBE_CODE_SIMPLE'];
 
     initialUnhandledRejectionListeners =
       process.listeners('unhandledRejection');
@@ -131,19 +131,19 @@ describe('gemini.tsx main function', () => {
   afterEach(() => {
     // Restore original env variables
     if (originalEnvGeminiSandbox !== undefined) {
-      process.env['QWEN_SANDBOX'] = originalEnvGeminiSandbox;
+      process.env['VIBE_SANDBOX'] = originalEnvGeminiSandbox;
     } else {
-      delete process.env['QWEN_SANDBOX'];
+      delete process.env['VIBE_SANDBOX'];
     }
     if (originalEnvSandbox !== undefined) {
       process.env['SANDBOX'] = originalEnvSandbox;
     } else {
       delete process.env['SANDBOX'];
     }
-    if (originalEnvQwenCodeSimple !== undefined) {
-      process.env['QWEN_CODE_SIMPLE'] = originalEnvQwenCodeSimple;
+    if (originalEnvVibeCodeSimple !== undefined) {
+      process.env['VIBE_CODE_SIMPLE'] = originalEnvVibeCodeSimple;
     } else {
-      delete process.env['QWEN_CODE_SIMPLE'];
+      delete process.env['VIBE_CODE_SIMPLE'];
     }
 
     const currentListeners = process.listeners('unhandledRejection');
@@ -498,8 +498,8 @@ describe('gemini.tsx main function kitty protocol', () => {
 
   beforeEach(() => {
     // Set no relaunch in tests since process spawning causing issues in tests
-    originalEnvNoRelaunch = process.env['QWEN_CODE_NO_RELAUNCH'];
-    process.env['QWEN_CODE_NO_RELAUNCH'] = 'true';
+    originalEnvNoRelaunch = process.env['VIBE_CODE_NO_RELAUNCH'];
+    process.env['VIBE_CODE_NO_RELAUNCH'] = 'true';
     initialSigintListeners = process.listeners(
       'SIGINT',
     ) as NodeJS.SignalsListener[];
@@ -538,9 +538,9 @@ describe('gemini.tsx main function kitty protocol', () => {
 
     // Restore original env variables
     if (originalEnvNoRelaunch !== undefined) {
-      process.env['QWEN_CODE_NO_RELAUNCH'] = originalEnvNoRelaunch;
+      process.env['VIBE_CODE_NO_RELAUNCH'] = originalEnvNoRelaunch;
     } else {
-      delete process.env['QWEN_CODE_NO_RELAUNCH'];
+      delete process.env['VIBE_CODE_NO_RELAUNCH'];
     }
     vi.restoreAllMocks();
   });

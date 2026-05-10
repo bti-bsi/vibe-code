@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -182,7 +182,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
             value: 'api-key' as const,
           },
         ],
-        'Qwen Code: Auth',
+        'Vibe Code: Auth',
         'Select authentication method',
       );
       if (!provider) {
@@ -221,7 +221,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
           value: 'global' as const,
         },
       ],
-      'Qwen Code: Coding Plan Region',
+      'Vibe Code: Coding Plan Region',
       'Select region',
     );
     if (!region) {
@@ -229,7 +229,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
     }
 
     const apiKey = await this.input({
-      title: 'Qwen Code: API Key',
+      title: 'Vibe Code: API Key',
       prompt: 'Enter your Coding Plan API key',
       placeHolder: 'sk-...',
       password: true,
@@ -262,7 +262,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
           value: 'custom' as const,
         },
       ],
-      'Qwen Code: Select API Key Type',
+      'Vibe Code: Select API Key Type',
       'Select API key type',
     );
     if (!keyType) {
@@ -295,7 +295,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
         description: `Endpoint: ${endpoint}`,
         value: key,
       })),
-      'Qwen Code: Select Region',
+      'Vibe Code: Select Region',
       'Select region for Alibaba Cloud ModelStudio',
     );
     if (!region) {
@@ -303,7 +303,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
     }
 
     const apiKey = await this.input({
-      title: 'Qwen Code: API Key',
+      title: 'Vibe Code: API Key',
       prompt: 'Enter your Alibaba Cloud ModelStudio API key',
       placeHolder: 'sk-...',
       password: true,
@@ -314,10 +314,10 @@ export class AuthMessageHandler extends BaseMessageHandler {
     }
 
     const modelIds = await this.input({
-      title: 'Qwen Code: Model IDs',
+      title: 'Vibe Code: Model IDs',
       prompt: 'Enter model IDs (comma-separated)',
-      placeHolder: 'qwen3.5-plus,glm-5,kimi-k2.5',
-      value: 'qwen3.5-plus',
+      placeHolder: 'vibe3.5-plus,glm-5,kimi-k2.5',
+      value: 'vibe3.5-plus',
       required: true,
     });
     if (!modelIds) {
@@ -325,7 +325,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
     }
 
     const baseUrl = endpoints[region] || endpoints['cn-beijing'];
-    const firstModel = modelIds.split(',')[0]?.trim() || 'qwen3.5-plus';
+    const firstModel = modelIds.split(',')[0]?.trim() || 'vibe3.5-plus';
 
     if (this.authInteractiveHandler) {
       await this.authInteractiveHandler(
@@ -344,7 +344,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
    */
   private async authCustom(): Promise<void> {
     const baseUrl = await this.input({
-      title: 'Qwen Code: Base URL',
+      title: 'Vibe Code: Base URL',
       prompt: 'Enter API base URL',
       placeHolder: 'https://api.openai.com/v1',
       value: 'https://api.openai.com/v1',
@@ -354,7 +354,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
     }
 
     const apiKey = await this.input({
-      title: 'Qwen Code: API Key',
+      title: 'Vibe Code: API Key',
       prompt: 'Enter your API key',
       placeHolder: 'sk-...',
       password: true,
@@ -365,7 +365,7 @@ export class AuthMessageHandler extends BaseMessageHandler {
     }
 
     const model = await this.input({
-      title: 'Qwen Code: Model',
+      title: 'Vibe Code: Model',
       prompt: 'Enter model name',
       placeHolder: 'gpt-4o',
       required: true,

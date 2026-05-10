@@ -75,7 +75,7 @@ export async function readPathFromWorkspace(
     const filteringOptions = config.getFileFilteringOptions();
     const filteredFiles = fileService.filterFiles(relativeFiles, {
       respectGitIgnore: filteringOptions.respectGitIgnore,
-      respectQwenIgnore: filteringOptions.respectQwenIgnore,
+      respectVibeIgnore: filteringOptions.respectVibeIgnore,
     });
     const finalFiles = filteredFiles.map((p) =>
       path.resolve(config.getTargetDir(), p),
@@ -97,7 +97,7 @@ export async function readPathFromWorkspace(
     const singleFileFilteringOptions = config.getFileFilteringOptions();
     const filtered = fileService.filterFiles([relativePath], {
       respectGitIgnore: singleFileFilteringOptions.respectGitIgnore,
-      respectQwenIgnore: singleFileFilteringOptions.respectQwenIgnore,
+      respectVibeIgnore: singleFileFilteringOptions.respectVibeIgnore,
     });
 
     if (filtered.length === 0) {

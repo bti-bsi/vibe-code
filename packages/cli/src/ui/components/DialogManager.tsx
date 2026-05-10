@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useEffect } from 'react';
 import { Box, Text } from 'ink';
 import { IdeIntegrationNudge } from '../IdeIntegrationNudge.js';
 import { CommandFormatMigrationNudge } from '../CommandFormatMigrationNudge.js';
@@ -15,7 +16,7 @@ import { SettingInputPrompt } from './SettingInputPrompt.js';
 import { PluginChoicePrompt } from './PluginChoicePrompt.js';
 import { ThemeDialog } from './ThemeDialog.js';
 import { SettingsDialog } from './SettingsDialog.js';
-import { QwenOAuthProgress } from './QwenOAuthProgress.js';
+import { VibeOAuthProgress } from './VibeOAuthProgress.js';
 import { ExternalAuthProgress } from './ExternalAuthProgress.js';
 import { AuthDialog } from '../auth/AuthDialog.js';
 import { EditorSettingsDialog } from './EditorSettingsDialog.js';
@@ -50,8 +51,13 @@ import { SessionPicker } from './SessionPicker.js';
 import { RewindSelector } from './RewindSelector.js';
 import { MemoryDialog } from './MemoryDialog.js';
 import { BackgroundTasksDialog } from './background-view/BackgroundTasksDialog.js';
+import { ConfigDialog } from './ConfigDialog.js';
+import { TelegramChannelConfigDialog } from './TelegramChannelConfigDialog.js';
+import { WhatsAppChannelConfigDialog } from './WhatsAppChannelConfigDialog.js';
 import { useBackgroundTaskViewState } from '../contexts/BackgroundTaskViewContext.js';
 import { t } from '../../i18n/index.js';
+import { SettingScope } from '../../config/settings.js';
+import { startWhatsAppServer, stopWhatsAppServer } from '../../services/whatsappServer.js';
 
 interface DialogManagerProps {
   addItem: UseHistoryManagerReturn['addItem'];
@@ -71,6 +77,14 @@ export const DialogManager = ({
   const { dialogOpen: bgTasksDialogOpen } = useBackgroundTaskViewState();
   const { constrainHeight, terminalHeight, staticExtraHeight, mainAreaWidth } =
     uiState;
+
+  useEffect(() => {
+    if (uiState.isWhatsAppConfigDialogOpen) {
+      startWhatsAppServer().catch(() => {});
+    } else {
+      stopWhatsAppServer().catch(() => {});
+    }
+  }, [uiState.isWhatsAppConfigDialogOpen]);
 
   if (uiState.showWelcomeBackDialog && uiState.welcomeBackInfo?.hasHistory) {
     return (
@@ -157,6 +171,7 @@ export const DialogManager = ({
         settingName={request.settingName}
         settingDescription={request.settingDescription}
         sensitive={request.sensitive}
+        placeholder={request.placeholder}
         onSubmit={request.onSubmit}
         onCancel={request.onCancel}
         terminalWidth={terminalWidth}
@@ -349,15 +364,15 @@ export const DialogManager = ({
     }
 
     // Custom API authentication is handled through AuthDialog.
-    // Qwen OAuth remains as a separate legacy progress flow.
-    if (uiState.pendingAuthType === AuthType.QWEN_OAUTH) {
+    // Vibe OAuth remains as a separate legacy progress flow.
+    if (uiState.pendingAuthType === AuthType.VIBE_OAUTH) {
       return (
-        <QwenOAuthProgress
-          deviceAuth={uiState.qwenAuthState.deviceAuth || undefined}
-          authStatus={uiState.qwenAuthState.authStatus}
-          authMessage={uiState.qwenAuthState.authMessage}
+        <VibeOAuthProgress
+          deviceAuth={uiState.vibeAuthState.deviceAuth || undefined}
+          authStatus={uiState.vibeAuthState.authStatus}
+          authMessage={uiState.vibeAuthState.authMessage}
           onTimeout={() => {
-            uiActions.onAuthError('Qwen OAuth authentication timed out.');
+            uiActions.onAuthError('Vibe OAuth authentication timed out.');
             uiActions.cancelAuthentication();
             uiActions.setAuthState(AuthState.Updating);
           }}
@@ -443,6 +458,117 @@ export const DialogManager = ({
         history={uiState.history}
         onRewind={uiActions.handleRewindConfirm}
         onCancel={uiActions.closeRewindSelector}
+      />
+    );
+  }
+
+  if (uiState.isTelegramConfigDialogOpen) {
+    return (
+      <TelegramChannelConfigDialog
+        onClose={uiActions.closeTelegramConfigDialog}
+      />
+    );
+  }
+
+  if (uiState.isWhatsAppConfigDialogOpen) {
+    return (
+      <WhatsAppChannelConfigDialog
+        onClose={uiActions.closeWhatsAppConfigDialog}
+      />
+    );
+  }
+
+  if (uiState.isConfigDialogOpen) {
+    return (
+      <ConfigDialog
+        onSelect={(value) => {
+          if (value === 'scopus') {
+            const currentApiKey = (settings.merged as any).scopus_apikey || '';
+            let placeholder = '';
+            if (currentApiKey) {
+              const len = currentApiKey.length;
+              if (len > 8) {
+                placeholder = `${currentApiKey.substring(0, 4)}...${currentApiKey.substring(len - 4)}`;
+              } else {
+                placeholder = '...';
+              }
+            }
+
+            uiActions.addSettingInputRequest({
+              settingName: t('Scopus API Key'),
+              settingDescription: t('Enter your Scopus API Key to save in your configuration.'),
+              sensitive: false,
+              placeholder,
+              onSubmit: (apiKey: string) => {
+                settings.setValue(SettingScope.User, 'scopus_apikey', apiKey);
+                uiActions.closeConfigDialog();
+              },
+              onCancel: () => {
+                // Do NOT close the config dialog — just remove the setting input
+                // request so the user returns to the config menu.
+                uiActions.openConfigDialog();
+              },
+            });
+            // We do not close config dialog immediately so that SettingInputPrompt replaces it in the UI stack (via rendering precedence).
+            // Actually, SettingInputPrompt is rendered earlier in the file (line 152), so it will overlay/hide this if we trigger it.
+          } else if (value === 'telegram') {
+            uiActions.openTelegramConfigDialog();
+          } else if (value === 'whatsapp') {
+            uiActions.openWhatsAppConfigDialog();
+            uiActions.closeConfigDialog();
+          } else if (value === 'google_search') {
+            const currentApiKey = (settings.merged as any).google_search_api_key || '';
+            const currentCx = (settings.merged as any).google_search_cx || '';
+
+            uiActions.addSettingInputRequest({
+              settingName: t('Google Search API Key'),
+              settingDescription: t(
+                'Enter your Google API Key (from Google Cloud Console).',
+              ),
+              sensitive: false,
+              placeholder: currentApiKey
+                ? `${currentApiKey.substring(0, 4)}...`
+                : '',
+              onSubmit: (apiKey: string) => {
+                settings.setValue(
+                  SettingScope.User,
+                  'google_search_api_key',
+                  apiKey,
+                );
+              },
+              onCancel: () => {
+                uiActions.openConfigDialog();
+              },
+            });
+            uiActions.addSettingInputRequest({
+              settingName: t('Google Search CX ID'),
+              settingDescription: t(
+                'Enter your Search Engine ID (CX) from Programmable Search Engine.',
+              ),
+              sensitive: false,
+              placeholder: currentCx ? `${currentCx.substring(0, 4)}...` : '',
+              onSubmit: (cx: string) => {
+                settings.setValue(SettingScope.User, 'google_search_cx', cx);
+                uiActions.closeConfigDialog();
+              },
+              onCancel: () => {
+                uiActions.openConfigDialog();
+              },
+            });
+          } else if (value) {
+            addItem(
+              {
+                type: 'info',
+                text: t('Selected config: {{value}}', { value }),
+              },
+              Date.now(),
+            );
+            uiActions.closeConfigDialog();
+          } else {
+            uiActions.closeConfigDialog();
+          }
+        }}
+        availableTerminalHeight={terminalHeight - staticExtraHeight}
       />
     );
   }

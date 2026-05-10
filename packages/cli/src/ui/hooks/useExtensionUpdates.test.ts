@@ -16,7 +16,7 @@ import {
   usePluginChoiceRequests,
 } from './useExtensionUpdates.js';
 import {
-  QWEN_DIR,
+  VIBE_DIR,
   type ExtensionManager,
   type Extension,
   type ExtensionUpdateInfo,
@@ -277,9 +277,9 @@ describe('useExtensionUpdates', () => {
   let userExtensionsDir: string;
 
   beforeEach(() => {
-    tempHomeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qwen-cli-test-home-'));
+    tempHomeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vibe-cli-test-home-'));
     vi.mocked(os.homedir).mockReturnValue(tempHomeDir);
-    userExtensionsDir = path.join(tempHomeDir, QWEN_DIR, 'extensions');
+    userExtensionsDir = path.join(tempHomeDir, VIBE_DIR, 'extensions');
     fs.mkdirSync(userExtensionsDir, { recursive: true });
   });
 

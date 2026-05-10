@@ -9,7 +9,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import {
   ToolNames,
-  DEFAULT_QWEN_MODEL,
+  DEFAULT_VIBE_MODEL,
   OutputFormat,
   NativeLspService,
   Storage,
@@ -160,11 +160,11 @@ vi.mock('@vibe-bti/vibe-code-core', async (importOriginal) => {
     ),
     DEFAULT_MEMORY_FILE_FILTERING_OPTIONS: {
       respectGitIgnore: false,
-      respectQwenIgnore: true,
+      respectVibeIgnore: true,
     },
     DEFAULT_FILE_FILTERING_OPTIONS: {
       respectGitIgnore: true,
-      respectQwenIgnore: true,
+      respectVibeIgnore: true,
     },
   };
 });
@@ -606,7 +606,7 @@ describe('loadCliConfig', () => {
     vi.restoreAllMocks();
   });
 
-  it('should reset context file names to QWEN.md and AGENTS.md by default', async () => {
+  it('should reset context file names to VIBE.md and AGENTS.md by default', async () => {
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = {};
@@ -666,7 +666,7 @@ describe('loadCliConfig', () => {
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = {};
-    const defaultContextFiles = ['QWEN.md', 'AGENTS.md'];
+    const defaultContextFiles = ['VIBE.md', 'AGENTS.md'];
     const getAllSpy = vi
       .spyOn(ServerConfig, 'getAllGeminiMdFilenames')
       .mockReturnValue(defaultContextFiles);
@@ -1598,12 +1598,13 @@ describe('loadCliConfig with --mcp-config', () => {
     const config = await loadCliConfig(baseSettings, argv);
 
     const mcpServers = config.getMcpServers();
-    expect(mcpServers['cli-server']).toEqual({
+    expect(mcpServers).toBeDefined();
+    expect(mcpServers!['cli-server']).toEqual({
       command: 'node',
       args: ['server.js'],
     });
     // Settings server should still be present
-    expect(mcpServers['settings-server']).toEqual({
+    expect(mcpServers!['settings-server']).toEqual({
       url: 'http://localhost:9000',
     });
   });
@@ -1616,7 +1617,7 @@ describe('loadCliConfig with --mcp-config', () => {
     const argv = await parseArguments();
     const config = await loadCliConfig(baseSettings, argv);
 
-    expect(config.getMcpServers()['direct-server']).toEqual({
+    expect(config.getMcpServers()!['direct-server']).toEqual({
       url: 'http://localhost:8080',
     });
   });
@@ -1630,7 +1631,7 @@ describe('loadCliConfig with --mcp-config', () => {
     const config = await loadCliConfig(baseSettings, argv);
 
     // CLI config should override settings
-    expect(config.getMcpServers()['settings-server']).toEqual({
+    expect(config.getMcpServers()!['settings-server']).toEqual({
       url: 'http://localhost:8888',
     });
   });
@@ -1676,7 +1677,7 @@ describe('loadCliConfig model selection', () => {
     const config = await loadCliConfig(
       {
         model: {
-          name: 'qwen3-coder-plus',
+          name: 'vibe3-coder-plus',
         },
       },
       argv,
@@ -1684,7 +1685,7 @@ describe('loadCliConfig model selection', () => {
       [],
     );
 
-    expect(config.getModel()).toBe('qwen3-coder-plus');
+    expect(config.getModel()).toBe('vibe3-coder-plus');
   });
 
   it.skip('uses the default gemini model if nothing is set', async () => {
@@ -1699,7 +1700,7 @@ describe('loadCliConfig model selection', () => {
       [],
     );
 
-    expect(config.getModel()).toBe(DEFAULT_QWEN_MODEL);
+    expect(config.getModel()).toBe(DEFAULT_VIBE_MODEL);
   });
 
   it('always prefers model from argvs', async () => {
@@ -1709,13 +1710,13 @@ describe('loadCliConfig model selection', () => {
       '--auth-type',
       'openai',
       '--model',
-      'qwen3-coder-plus',
+      'vibe3-coder-plus',
     ];
     const argv = await parseArguments();
     const config = await loadCliConfig(
       {
         model: {
-          name: 'qwen3-coder-flash',
+          name: 'vibe3-coder-flash',
         },
       },
       argv,
@@ -1723,7 +1724,7 @@ describe('loadCliConfig model selection', () => {
       [],
     );
 
-    expect(config.getModel()).toBe('qwen3-coder-plus');
+    expect(config.getModel()).toBe('vibe3-coder-plus');
   });
 
   it('selects the model from argvs if provided', async () => {
@@ -1733,7 +1734,7 @@ describe('loadCliConfig model selection', () => {
       '--auth-type',
       'openai',
       '--model',
-      'qwen3-coder-plus',
+      'vibe3-coder-plus',
     ];
     const argv = await parseArguments();
     const config = await loadCliConfig(
@@ -1745,7 +1746,7 @@ describe('loadCliConfig model selection', () => {
       [],
     );
 
-    expect(config.getModel()).toBe('qwen3-coder-plus');
+    expect(config.getModel()).toBe('vibe3-coder-plus');
   });
 });
 
@@ -2467,13 +2468,13 @@ describe('loadCliConfig fileFiltering', () => {
       value: false,
     },
     {
-      property: 'respectQwenIgnore',
-      getter: (c) => c.getFileFilteringRespectQwenIgnore(),
+      property: 'respectVibeIgnore',
+      getter: (c) => c.getFileFilteringRespectVibeIgnore(),
       value: true,
     },
     {
-      property: 'respectQwenIgnore',
-      getter: (c) => c.getFileFilteringRespectQwenIgnore(),
+      property: 'respectVibeIgnore',
+      getter: (c) => c.getFileFilteringRespectVibeIgnore(),
       value: false,
     },
     {
@@ -2599,8 +2600,8 @@ describe('parseArguments with positional prompt', () => {
 });
 
 describe('Telemetry configuration via environment variables', () => {
-  it('should prioritize QWEN_TELEMETRY_ENABLED over settings', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_ENABLED', 'true');
+  it('should prioritize VIBE_TELEMETRY_ENABLED over settings', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_ENABLED', 'true');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = { telemetry: { enabled: false } };
@@ -2608,8 +2609,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryEnabled()).toBe(true);
   });
 
-  it('should prioritize QWEN_TELEMETRY_TARGET over settings', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_TARGET', 'gcp');
+  it('should prioritize VIBE_TELEMETRY_TARGET over settings', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_TARGET', 'gcp');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = {
@@ -2619,8 +2620,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryTarget()).toBe('gcp');
   });
 
-  it('should throw when QWEN_TELEMETRY_TARGET is invalid', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_TARGET', 'bogus');
+  it('should throw when VIBE_TELEMETRY_TARGET is invalid', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_TARGET', 'bogus');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = {
@@ -2632,9 +2633,9 @@ describe('Telemetry configuration via environment variables', () => {
     vi.unstubAllEnvs();
   });
 
-  it('should prioritize QWEN_TELEMETRY_OTLP_ENDPOINT over settings and default env var', async () => {
+  it('should prioritize VIBE_TELEMETRY_OTLP_ENDPOINT over settings and default env var', async () => {
     vi.stubEnv('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://default.env.com');
-    vi.stubEnv('QWEN_TELEMETRY_OTLP_ENDPOINT', 'http://gemini.env.com');
+    vi.stubEnv('VIBE_TELEMETRY_OTLP_ENDPOINT', 'http://gemini.env.com');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = {
@@ -2644,8 +2645,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryOtlpEndpoint()).toBe('http://gemini.env.com');
   });
 
-  it('should prioritize QWEN_TELEMETRY_OTLP_PROTOCOL over settings', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_OTLP_PROTOCOL', 'http');
+  it('should prioritize VIBE_TELEMETRY_OTLP_PROTOCOL over settings', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_OTLP_PROTOCOL', 'http');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = { telemetry: { otlpProtocol: 'grpc' } };
@@ -2653,8 +2654,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryOtlpProtocol()).toBe('http');
   });
 
-  it('should prioritize QWEN_TELEMETRY_LOG_PROMPTS over settings', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_LOG_PROMPTS', 'false');
+  it('should prioritize VIBE_TELEMETRY_LOG_PROMPTS over settings', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_LOG_PROMPTS', 'false');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = { telemetry: { logPrompts: true } };
@@ -2662,8 +2663,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryLogPromptsEnabled()).toBe(false);
   });
 
-  it('should prioritize QWEN_TELEMETRY_OUTFILE over settings', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_OUTFILE', '/gemini/env/telemetry.log');
+  it('should prioritize VIBE_TELEMETRY_OUTFILE over settings', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_OUTFILE', '/gemini/env/telemetry.log');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = {
@@ -2673,8 +2674,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryOutfile()).toBe('/gemini/env/telemetry.log');
   });
 
-  it('should prioritize QWEN_TELEMETRY_USE_COLLECTOR over settings', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_USE_COLLECTOR', 'true');
+  it('should prioritize VIBE_TELEMETRY_USE_COLLECTOR over settings', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_USE_COLLECTOR', 'true');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = { telemetry: { useCollector: false } };
@@ -2682,8 +2683,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryUseCollector()).toBe(true);
   });
 
-  it('should use settings value when QWEN_TELEMETRY_ENABLED is not set', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_ENABLED', undefined);
+  it('should use settings value when VIBE_TELEMETRY_ENABLED is not set', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_ENABLED', undefined);
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = { telemetry: { enabled: true } };
@@ -2691,8 +2692,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryEnabled()).toBe(true);
   });
 
-  it('should use settings value when QWEN_TELEMETRY_TARGET is not set', async () => {
-    vi.stubEnv('QWEN_TELEMETRY_TARGET', undefined);
+  it('should use settings value when VIBE_TELEMETRY_TARGET is not set', async () => {
+    vi.stubEnv('VIBE_TELEMETRY_TARGET', undefined);
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const settings: Settings = {
@@ -2702,16 +2703,16 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryTarget()).toBe('local');
   });
 
-  it("should treat QWEN_TELEMETRY_ENABLED='1' as true", async () => {
-    vi.stubEnv('QWEN_TELEMETRY_ENABLED', '1');
+  it("should treat VIBE_TELEMETRY_ENABLED='1' as true", async () => {
+    vi.stubEnv('VIBE_TELEMETRY_ENABLED', '1');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const config = await loadCliConfig({}, argv, undefined, []);
     expect(config.getTelemetryEnabled()).toBe(true);
   });
 
-  it("should treat QWEN_TELEMETRY_ENABLED='0' as false", async () => {
-    vi.stubEnv('QWEN_TELEMETRY_ENABLED', '0');
+  it("should treat VIBE_TELEMETRY_ENABLED='0' as false", async () => {
+    vi.stubEnv('VIBE_TELEMETRY_ENABLED', '0');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const config = await loadCliConfig(
@@ -2723,16 +2724,16 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryEnabled()).toBe(false);
   });
 
-  it("should treat QWEN_TELEMETRY_LOG_PROMPTS='1' as true", async () => {
-    vi.stubEnv('QWEN_TELEMETRY_LOG_PROMPTS', '1');
+  it("should treat VIBE_TELEMETRY_LOG_PROMPTS='1' as true", async () => {
+    vi.stubEnv('VIBE_TELEMETRY_LOG_PROMPTS', '1');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const config = await loadCliConfig({}, argv, undefined, []);
     expect(config.getTelemetryLogPromptsEnabled()).toBe(true);
   });
 
-  it("should treat QWEN_TELEMETRY_LOG_PROMPTS='false' as false", async () => {
-    vi.stubEnv('QWEN_TELEMETRY_LOG_PROMPTS', 'false');
+  it("should treat VIBE_TELEMETRY_LOG_PROMPTS='false' as false", async () => {
+    vi.stubEnv('VIBE_TELEMETRY_LOG_PROMPTS', 'false');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments();
     const config = await loadCliConfig(
@@ -2752,18 +2753,18 @@ describe('sandbox image resolution precedence', () => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
     vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
-    delete process.env['QWEN_SANDBOX_IMAGE'];
+    delete process.env['VIBE_SANDBOX_IMAGE'];
   });
 
   afterEach(() => {
     process.argv = originalArgv;
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
-    delete process.env['QWEN_SANDBOX_IMAGE'];
+    delete process.env['VIBE_SANDBOX_IMAGE'];
   });
 
   it('uses --sandbox-image over env and settings', async () => {
-    vi.stubEnv('QWEN_SANDBOX_IMAGE', 'env-image');
+    vi.stubEnv('VIBE_SANDBOX_IMAGE', 'env-image');
     process.argv = [
       'node',
       'script.js',
@@ -2782,8 +2783,8 @@ describe('sandbox image resolution precedence', () => {
     expect(config.getSandbox()?.image).toBe('cli-image');
   });
 
-  it('uses QWEN_SANDBOX_IMAGE over tools.sandboxImage', async () => {
-    vi.stubEnv('QWEN_SANDBOX_IMAGE', 'env-image');
+  it('uses VIBE_SANDBOX_IMAGE over tools.sandboxImage', async () => {
+    vi.stubEnv('VIBE_SANDBOX_IMAGE', 'env-image');
     process.argv = ['node', 'script.js', '--sandbox'];
     const argv = await parseArguments();
     const settings: Settings = {
@@ -2824,21 +2825,21 @@ describe('sandbox image resolution precedence', () => {
 
 describe('loadCliConfig runtimeOutputDir', () => {
   const originalArgv = process.argv;
-  const originalRuntimeEnv = process.env['QWEN_RUNTIME_DIR'];
+  const originalRuntimeEnv = process.env['VIBE_RUNTIME_DIR'];
 
   beforeEach(() => {
     process.argv = ['node', 'script.js'];
     Storage.setRuntimeBaseDir(null);
-    delete process.env['QWEN_RUNTIME_DIR'];
+    delete process.env['VIBE_RUNTIME_DIR'];
   });
 
   afterEach(() => {
     process.argv = originalArgv;
     Storage.setRuntimeBaseDir(null);
     if (originalRuntimeEnv !== undefined) {
-      process.env['QWEN_RUNTIME_DIR'] = originalRuntimeEnv;
+      process.env['VIBE_RUNTIME_DIR'] = originalRuntimeEnv;
     } else {
-      delete process.env['QWEN_RUNTIME_DIR'];
+      delete process.env['VIBE_RUNTIME_DIR'];
     }
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
@@ -2857,24 +2858,24 @@ describe('loadCliConfig runtimeOutputDir', () => {
   it('should resolve relative runtimeOutputDir against cwd', async () => {
     const argv = await parseArguments();
     const settings: Settings = {
-      advanced: { runtimeOutputDir: '.qwen' },
+      advanced: { runtimeOutputDir: '.vibe' },
     };
     const cwd = path.resolve('workspace', 'my-project');
     await loadCliConfig(settings, argv, cwd);
-    expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.qwen'));
+    expect(Storage.getRuntimeBaseDir()).toBe(path.join(cwd, '.vibe'));
   });
 
   it('should not set runtime base dir when runtimeOutputDir is absent', async () => {
     const argv = await parseArguments();
     const settings: Settings = {};
     await loadCliConfig(settings, argv);
-    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalQwenDir());
+    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalVibeDir());
   });
 
-  it('should let QWEN_RUNTIME_DIR env var take priority over settings', async () => {
+  it('should let VIBE_RUNTIME_DIR env var take priority over settings', async () => {
     const envDir = path.resolve('from-env');
     const settingsDir = path.resolve('from-settings');
-    process.env['QWEN_RUNTIME_DIR'] = envDir;
+    process.env['VIBE_RUNTIME_DIR'] = envDir;
     const argv = await parseArguments();
     const settings: Settings = {
       advanced: { runtimeOutputDir: settingsDir },
@@ -2894,6 +2895,6 @@ describe('loadCliConfig runtimeOutputDir', () => {
     expect(Storage.getRuntimeBaseDir()).toBe(firstRuntimeDir);
 
     await loadCliConfig({}, argv);
-    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalQwenDir());
+    expect(Storage.getRuntimeBaseDir()).toBe(Storage.getGlobalVibeDir());
   });
 });

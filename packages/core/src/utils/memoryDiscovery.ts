@@ -11,7 +11,7 @@ import { homedir } from 'node:os';
 import { getAllGeminiMdFilenames } from '../memory/const.js';
 import type { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import { processImports } from './memoryImportProcessor.js';
-import { QWEN_DIR } from './paths.js';
+import { VIBE_DIR } from './paths.js';
 import { createDebugLogger } from './debugLogger.js';
 import { loadRules, type RuleFile } from './rulesDiscovery.js';
 
@@ -132,7 +132,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
     const resolvedHome = path.resolve(userHomePath);
     const globalMemoryPath = path.join(
       resolvedHome,
-      QWEN_DIR,
+      VIBE_DIR,
       geminiMdFilename,
     );
 
@@ -169,7 +169,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
     }
 
     if (isHomeDirectory) {
-      // For home directory, only check for QWEN.md directly in the home directory
+      // For home directory, only check for VIBE.md directly in the home directory
       const homeContextPath = path.join(resolvedHome, geminiMdFilename);
       try {
         await fs.access(homeContextPath, fsSync.constants.R_OK);
@@ -200,7 +200,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
         : path.dirname(resolvedHome);
 
       while (currentDir && currentDir !== path.dirname(currentDir)) {
-        if (currentDir === path.join(resolvedHome, QWEN_DIR)) {
+        if (currentDir === path.join(resolvedHome, VIBE_DIR)) {
           break;
         }
 
@@ -338,7 +338,7 @@ export interface LoadServerHierarchicalMemoryOptions {
 }
 
 /**
- * Loads hierarchical QWEN.md files and concatenates their content.
+ * Loads hierarchical VIBE.md files and concatenates their content.
  * Also loads path-based context rules from `.vibe/rules/` directories.
  * This function is intended for use by the server.
  *
@@ -383,7 +383,7 @@ export async function loadServerHierarchicalMemory(
       currentWorkingDirectory,
     );
 
-    // Only count files that match configured memory filenames (e.g., QWEN.md),
+    // Only count files that match configured memory filenames (e.g., VIBE.md),
     // excluding system context files like output-language.md
     const memoryFilenames = new Set(getAllGeminiMdFilenames());
     fileCount = contentsWithPaths.filter((item) =>
@@ -391,7 +391,7 @@ export async function loadServerHierarchicalMemory(
     ).length;
   }
 
-  // Load path-based context rules from .qwen/rules/ directories
+  // Load path-based context rules from .vibe/rules/ directories
   const resolvedCwd = path.resolve(currentWorkingDirectory);
   const foundRoot = await findProjectRoot(resolvedCwd);
   const effectiveRoot = foundRoot ?? resolvedCwd;
@@ -413,7 +413,7 @@ export async function loadServerHierarchicalMemory(
   }
 
   if (!memoryContent && filePaths.length === 0 && ruleCount === 0) {
-    logger.debug('No QWEN.md files or rules found.');
+    logger.debug('No VIBE.md files or rules found.');
   }
 
   return {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  *
  * Unified message types for adapter layer
@@ -54,7 +54,7 @@ export interface JSONLMessage {
   type: 'user' | 'assistant' | 'system' | 'tool_call';
   message?: {
     role?: string;
-    parts?: Array<{ text: string }>; // Qwen format
+    parts?: Array<{ text: string }>; // Vibe format
     content?: string | unknown[]; // Claude format
   };
   model?: string;

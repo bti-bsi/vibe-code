@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -210,7 +210,7 @@ function findMessageIndex(
 ): number {
   // Walk up from the click target to find the direct child of the container.
   // This works for all message types regardless of whether they have
-  // .qwen-message class (e.g. InterruptedMessage does not).
+  // .vibe-message class (e.g. InterruptedMessage does not).
   let directChild: Element | null = target;
   while (directChild && directChild.parentElement !== container) {
     directChild = directChild.parentElement;
@@ -1256,7 +1256,7 @@ export const App: React.FC = () => {
             } else if (msg.role === 'thinking') {
               parts.push(`**Thinking:** ${content}`);
             } else {
-              parts.push(`**Qwen Code:** ${content}`);
+              parts.push(`**Vibe Code:** ${content}`);
             }
           } else if (
             item.type === 'completed-tool-call' ||
@@ -1309,7 +1309,7 @@ export const App: React.FC = () => {
             <p className="text-muted-foreground text-sm">
               {sessionManagement.isSwitchingSession
                 ? 'Loading conversation...'
-                : 'Preparing Qwen Code...'}
+                : 'Preparing Vibe Code...'}
             </p>
           </div>
         </div>
@@ -1335,9 +1335,9 @@ export const App: React.FC = () => {
 
       <ChatHeader
         currentSessionTitle={sessionManagement.currentSessionTitle}
-        onLoadSessions={sessionManagement.handleLoadQwenSessions}
+        onLoadSessions={sessionManagement.handleLoadVibeSessions}
         onNewSession={() =>
-          sessionManagement.handleNewQwenSession(modelInfo?.modelId ?? null)
+          sessionManagement.handleNewVibeSession(modelInfo?.modelId ?? null)
         }
       />
 
@@ -1364,7 +1364,7 @@ export const App: React.FC = () => {
                 className="text-sm"
                 style={{ color: 'var(--app-secondary-foreground)' }}
               >
-                Preparing Qwen Code...
+                Preparing Vibe Code...
               </span>
             </div>
           ) : (

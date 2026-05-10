@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Qwen Team
+ * Copyright 2025 Vibe Team
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -86,8 +86,8 @@ vi.mock('@vibe-bti/vibe-code-core', () => ({
   APPROVAL_MODES: [],
   AuthType: {},
   clearCachedCredentialFile: vi.fn(),
-  QwenOAuth2Event: {},
-  qwenOAuth2Events: { on: vi.fn(), off: vi.fn() },
+  VibeOAuth2Event: {},
+  vibeOAuth2Events: { on: vi.fn(), off: vi.fn() },
   MCPServerConfig: vi.fn().mockImplementation((...args: unknown[]) => ({
     _args: args,
   })),
@@ -618,10 +618,10 @@ describe('toHttpServer', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Tests for QwenAgent.initialize() mcpCapabilities + newSession SSE/HTTP
+// Tests for VibeAgent.initialize() mcpCapabilities + newSession SSE/HTTP
 // ---------------------------------------------------------------------------
 
-describe('QwenAgent MCP SSE/HTTP support', () => {
+describe('VibeAgent MCP SSE/HTTP support', () => {
   // We need to capture the agent factory from AgentSideConnection constructor
   let capturedAgentFactory:
     | ((conn: AgentSideConnectionLike) => AgentLike)
