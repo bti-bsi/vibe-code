@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-channel-telegram",
-  "version": "0.15.11",
+  "version": "0.16.6",
   "description": "Telegram channel adapter for Vibe Code",
   "type": "module",
   "main": "dist/index.js",

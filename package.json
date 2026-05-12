@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code",
-  "version": "0.15.11",
+  "version": "0.16.6",
   "engines": {
     "node": ">=20.0.0"
   },
@@ -18,7 +18,7 @@
     "url": "git+https://github.com/vibe-bti/vibe-code.git"
   },
   "config": {
-    "sandboxImageUri": "ghcr.io/vibe-bti/vibe-code:0.15.11"
+    "sandboxImageUri": "ghcr.io/vibe-bti/vibe-code:0.16.6"
   },
   "scripts": {
     "start": "cross-env node scripts/start.js",

@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-channel-base",
-  "version": "0.15.11",
+  "version": "0.16.6",
   "description": "Base channel infrastructure for Vibe Code",
   "type": "module",
   "main": "dist/index.js",
