@@ -880,14 +880,18 @@ export class GeminiChat {
 
     if (useStreaming) {
       const streamResponse = await retryWithBackoff(
-        () => this.config.getContentGenerator().generateContentStream(request, prompt_id),
+        () =>
+          this.config
+            .getContentGenerator()
+            .generateContentStream(request, prompt_id),
         retryOptions,
       );
       return this.processStreamResponse(model, streamResponse);
     }
 
     const response = await retryWithBackoff(
-      () => this.config.getContentGenerator().generateContent(request, prompt_id),
+      () =>
+        this.config.getContentGenerator().generateContent(request, prompt_id),
       retryOptions,
     );
     const streamResponse = (async function* () {

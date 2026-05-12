@@ -6,7 +6,10 @@ import {
   clearAccount,
   DEFAULT_BASE_URL,
 } from '@vibe-bti/vibe-code-channel-weixin/accounts';
-import { startLogin, waitForLogin } from '@vibe-bti/vibe-code-channel-weixin/login';
+import {
+  startLogin,
+  waitForLogin,
+} from '@vibe-bti/vibe-code-channel-weixin/login';
 
 export const configureWeixinCommand: CommandModule<
   object,

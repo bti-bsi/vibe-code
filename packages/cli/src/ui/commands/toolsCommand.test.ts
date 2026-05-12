@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { describe, it, expect, vi, type Mock } from 'vitest';
+import { describe, it, expect, type Mock } from 'vitest';
 import { toolsCommand } from './toolsCommand.js';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
 import { MessageType } from '../types.js';
@@ -52,7 +52,9 @@ describe('toolsCommand', () => {
     const mockContext = createMockCommandContext({
       services: {
         config: {
-          getToolRegistry: () => ({ getAllTools: () => [] as AnyDeclarativeTool[] }),
+          getToolRegistry: () => ({
+            getAllTools: () => [] as AnyDeclarativeTool[],
+          }),
         },
       },
     });

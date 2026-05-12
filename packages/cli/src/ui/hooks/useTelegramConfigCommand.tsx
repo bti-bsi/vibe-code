@@ -7,7 +7,8 @@
 import { useState, useCallback } from 'react';
 
 export function useTelegramConfigCommand() {
-  const [isTelegramConfigDialogOpen, setIsTelegramConfigDialogOpen] = useState(false);
+  const [isTelegramConfigDialogOpen, setIsTelegramConfigDialogOpen] =
+    useState(false);
 
   const openTelegramConfigDialog = useCallback(() => {
     setIsTelegramConfigDialogOpen(true);

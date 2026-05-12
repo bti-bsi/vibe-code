@@ -26,9 +26,9 @@ export function ConfigDialog({
   // Generate config items
   const configItems = [
     { label: t('Scopus API'), value: 'scopus', key: 'scopus' },
+    { label: t('Serper API'), value: 'serper', key: 'serper' },
     { label: t('Telegram Channel'), value: 'telegram', key: 'telegram' },
     { label: t('Whatsapp Channel'), value: 'whatsapp', key: 'whatsapp' },
-    { label: t('Google search API'), value: 'google_search', key: 'google_search' },
   ];
 
   const handleConfigSelect = useCallback(
@@ -73,7 +73,9 @@ export function ConfigDialog({
       </Box>
       <Box marginTop={1}>
         <Text color={theme.text.secondary} wrap="truncate">
-          {t('(Use arrow keys or numbers to select, Enter to confirm, Esc to exit)')}
+          {t(
+            '(Use arrow keys or numbers to select, Enter to confirm, Esc to exit)',
+          )}
         </Text>
       </Box>
     </Box>

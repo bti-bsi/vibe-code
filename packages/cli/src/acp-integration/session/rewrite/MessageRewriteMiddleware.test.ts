@@ -26,9 +26,8 @@ vi.mock('./LlmRewriter.js', () => ({
 }));
 
 // Import after mocks are set up
-const { MessageRewriteMiddleware } = await import(
-  './MessageRewriteMiddleware.js'
-);
+const { MessageRewriteMiddleware } =
+  await import('./MessageRewriteMiddleware.js');
 
 function createMiddleware(
   target: 'message' | 'thought' | 'all' = 'all',

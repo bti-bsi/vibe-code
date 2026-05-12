@@ -332,17 +332,14 @@ export async function createContentGenerator(
   let baseGenerator: ContentGenerator;
 
   if (authType === AuthType.USE_OPENAI) {
-    const { createOpenAIContentGenerator } = await import(
-      './openaiContentGenerator/index.js'
-    );
+    const { createOpenAIContentGenerator } =
+      await import('./openaiContentGenerator/index.js');
     baseGenerator = createOpenAIContentGenerator(generatorConfig, config);
   } else if (authType === AuthType.VIBE_OAUTH) {
-    const { getVibeOAuthClient: getVibeOauthClient } = await import(
-      '../vibe/vibeOAuth2.js'
-    );
-    const { VibeContentGenerator } = await import(
-      '../vibe/vibeContentGenerator.js'
-    );
+    const { getVibeOAuthClient: getVibeOauthClient } =
+      await import('../vibe/vibeOAuth2.js');
+    const { VibeContentGenerator } =
+      await import('../vibe/vibeContentGenerator.js');
 
     try {
       const vibeClient = await getVibeOauthClient(
@@ -360,17 +357,15 @@ export async function createContentGenerator(
       );
     }
   } else if (authType === AuthType.USE_ANTHROPIC) {
-    const { createAnthropicContentGenerator } = await import(
-      './anthropicContentGenerator/index.js'
-    );
+    const { createAnthropicContentGenerator } =
+      await import('./anthropicContentGenerator/index.js');
     baseGenerator = createAnthropicContentGenerator(generatorConfig, config);
   } else if (
     authType === AuthType.USE_GEMINI ||
     authType === AuthType.USE_VERTEX_AI
   ) {
-    const { createGeminiContentGenerator } = await import(
-      './geminiContentGenerator/index.js'
-    );
+    const { createGeminiContentGenerator } =
+      await import('./geminiContentGenerator/index.js');
     baseGenerator = createGeminiContentGenerator(generatorConfig, config);
   } else {
     throw new Error(

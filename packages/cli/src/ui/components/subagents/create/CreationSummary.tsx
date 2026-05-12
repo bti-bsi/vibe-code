@@ -7,10 +7,7 @@
 import { useCallback, useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
 import type { WizardStepProps } from '../types.js';
-import type {
-  SubagentManager,
-  SubagentConfig,
-} from '@vibe-bti/vibe-code-core';
+import type { SubagentManager, SubagentConfig } from '@vibe-bti/vibe-code-core';
 import { createDebugLogger } from '@vibe-bti/vibe-code-core';
 import { theme } from '../../../semantic-colors.js';
 import { shouldShowColor, getColorForDisplay } from '../utils.js';

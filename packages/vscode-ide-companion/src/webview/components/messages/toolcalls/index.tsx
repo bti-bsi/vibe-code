@@ -7,7 +7,10 @@
  * All UI components are now imported from @vibe-bti/vibe-code-webui
  */
 
-import { shouldShowToolCall, getToolCallComponent } from '@vibe-bti/vibe-code-webui';
+import {
+  shouldShowToolCall,
+  getToolCallComponent,
+} from '@vibe-bti/vibe-code-webui';
 import type { FC } from 'react';
 import type { BaseToolCallProps } from '@vibe-bti/vibe-code-webui';
 
@@ -32,4 +35,7 @@ export const ToolCallRouter: FC<BaseToolCallProps> = ({
 };
 
 // Re-export types for convenience
-export type { BaseToolCallProps, ToolCallData } from '@vibe-bti/vibe-code-webui';
+export type {
+  BaseToolCallProps,
+  ToolCallData,
+} from '@vibe-bti/vibe-code-webui';

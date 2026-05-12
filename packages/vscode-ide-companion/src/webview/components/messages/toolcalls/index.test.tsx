@@ -44,10 +44,9 @@ vi.mock('@vibe-bti/vibe-code-webui', async () => {
   const {
     getToolCallComponent: realGetToolCallComponent,
     isAgentExecutionToolCall,
-  } =
-    await vi.importActual<typeof import('@vibe-bti/vibe-code-webui')>(
-      '@vibe-bti/vibe-code-webui',
-    );
+  } = await vi.importActual<typeof import('@vibe-bti/vibe-code-webui')>(
+    '@vibe-bti/vibe-code-webui',
+  );
 
   // Map each real component to its label-based mock.
   const componentMocks: Record<string, ReturnType<typeof renderLabel>> = {

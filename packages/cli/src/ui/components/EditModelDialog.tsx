@@ -93,7 +93,9 @@ function getEditableEntries(
   const entries: EditableModelEntry[] = [];
 
   for (const authType of authTypes) {
-    for (const [index, config] of (modelProviders?.[authType] ?? []).entries()) {
+    for (const [index, config] of (
+      modelProviders?.[authType] ?? []
+    ).entries()) {
       const envValue =
         typeof config.envKey === 'string' &&
         typeof mergedEnv?.[config.envKey] === 'string'
@@ -152,7 +154,8 @@ export function EditModelDialog({
   );
 
   const selectedEntry = useMemo(
-    () => editableEntries.find((entry) => entry.key === selectedEntryKey) ?? null,
+    () =>
+      editableEntries.find((entry) => entry.key === selectedEntryKey) ?? null,
     [editableEntries, selectedEntryKey],
   );
 
@@ -214,166 +217,176 @@ export function EditModelDialog({
     { isActive: true },
   );
 
-  const saveEditedModel = useCallback(async (reasoningOverride?: ReasoningEffort) => {
-    if (!config || !selectedEntry) {
-      return;
-    }
-
-    const trimmedBaseUrl = customBaseUrl.trim();
-    const trimmedApiKey = customApiKey.trim();
-    const trimmedModelId = customModelId.trim();
-    const trimmedModelName = customModelName.trim();
-    const effectiveReasoningEffort =
-      reasoningOverride ?? customReasoningEffort;
-
-    if (!trimmedBaseUrl) {
-      setErrorMessage(t('Base URL cannot be empty.'));
-      setDialogMode('edit-base-url');
-      return;
-    }
-    if (!/^https?:\/\//i.test(trimmedBaseUrl)) {
-      setErrorMessage(t('Base URL must start with http:// or https://.'));
-      setDialogMode('edit-base-url');
-      return;
-    }
-    if (!trimmedApiKey) {
-      setErrorMessage(t('API key cannot be empty.'));
-      setDialogMode('edit-api-key');
-      return;
-    }
-    if (!trimmedModelId) {
-      setErrorMessage(t('Model ID cannot be empty.'));
-      setDialogMode('edit-model-id');
-      return;
-    }
-    if (!trimmedModelName) {
-      setErrorMessage(t('Model name cannot be empty.'));
-      setDialogMode('edit-model-name');
-      return;
-    }
-
-    const persistScope = getPersistScopeForModelSelection(settings);
-    const previousModelProviders = settings.merged
-      .modelProviders as ModelProvidersConfig | undefined;
-    const previousEnvValue =
-      selectedEntry.config.envKey &&
-      typeof process.env[selectedEntry.config.envKey] === 'string'
-        ? process.env[selectedEntry.config.envKey]
-        : undefined;
-    const previousTargetEnvValue =
-      typeof process.env[
-        generateCustomModelEnvKey(customModelAuthType, trimmedBaseUrl)
-      ] === 'string'
-        ? process.env[generateCustomModelEnvKey(customModelAuthType, trimmedBaseUrl)]
-        : undefined;
-
-    const nextEnvKey = generateCustomModelEnvKey(customModelAuthType, trimmedBaseUrl);
-    const oldEnvKey = selectedEntry.config.envKey;
-    const previousGenerationConfig = selectedEntry.config.generationConfig ?? {};
-    const nextConfig: ProviderModelConfig = {
-      ...selectedEntry.config,
-      id: trimmedModelId,
-      name: trimmedModelName,
-      baseUrl: trimmedBaseUrl,
-      envKey: nextEnvKey,
-      generationConfig: {
-        ...previousGenerationConfig,
-        reasoning: { effort: effectiveReasoningEffort },
-      },
-    };
-
-    const nextModelProviders: ModelProvidersConfig = {
-      ...(previousModelProviders ?? {}),
-    };
-    const sourceEntries = (previousModelProviders?.[selectedEntry.authType] ?? []).filter(
-      (entry) => !isSameModelEntry(entry, selectedEntry.config),
-    );
-    const targetEntries = [
-      ...(selectedEntry.authType === customModelAuthType
-        ? sourceEntries
-        : previousModelProviders?.[customModelAuthType] ?? []
-      ).filter((entry) => entry.id !== trimmedModelId),
-      nextConfig,
-    ];
-
-    nextModelProviders[selectedEntry.authType] = sourceEntries;
-    nextModelProviders[customModelAuthType] = targetEntries;
-
-    process.env[nextEnvKey] = trimmedApiKey;
-    if (oldEnvKey && oldEnvKey !== nextEnvKey) {
-      delete process.env[oldEnvKey];
-    }
-    config.reloadModelProvidersConfig(nextModelProviders);
-
-    try {
-      await config.switchModel(customModelAuthType, trimmedModelId);
-
-      const settingsFile = settings.forScope(persistScope);
-      backupSettingsFile(settingsFile.path);
-      if (oldEnvKey && oldEnvKey !== nextEnvKey) {
-        settings.setValue(persistScope, `env.${oldEnvKey}`, undefined);
+  const saveEditedModel = useCallback(
+    async (reasoningOverride?: ReasoningEffort) => {
+      if (!config || !selectedEntry) {
+        return;
       }
-      settings.setValue(persistScope, `env.${nextEnvKey}`, trimmedApiKey);
-      settings.setValue(
-        persistScope,
-        `modelProviders.${selectedEntry.authType}`,
-        sourceEntries,
-      );
-      settings.setValue(
-        persistScope,
-        `modelProviders.${customModelAuthType}`,
-        targetEntries,
-      );
-      settings.setValue(
-        persistScope,
-        'security.auth.selectedType',
+
+      const trimmedBaseUrl = customBaseUrl.trim();
+      const trimmedApiKey = customApiKey.trim();
+      const trimmedModelId = customModelId.trim();
+      const trimmedModelName = customModelName.trim();
+      const effectiveReasoningEffort =
+        reasoningOverride ?? customReasoningEffort;
+
+      if (!trimmedBaseUrl) {
+        setErrorMessage(t('Base URL cannot be empty.'));
+        setDialogMode('edit-base-url');
+        return;
+      }
+      if (!/^https?:\/\//i.test(trimmedBaseUrl)) {
+        setErrorMessage(t('Base URL must start with http:// or https://.'));
+        setDialogMode('edit-base-url');
+        return;
+      }
+      if (!trimmedApiKey) {
+        setErrorMessage(t('API key cannot be empty.'));
+        setDialogMode('edit-api-key');
+        return;
+      }
+      if (!trimmedModelId) {
+        setErrorMessage(t('Model ID cannot be empty.'));
+        setDialogMode('edit-model-id');
+        return;
+      }
+      if (!trimmedModelName) {
+        setErrorMessage(t('Model name cannot be empty.'));
+        setDialogMode('edit-model-name');
+        return;
+      }
+
+      const persistScope = getPersistScopeForModelSelection(settings);
+      const previousModelProviders = settings.merged.modelProviders as
+        | ModelProvidersConfig
+        | undefined;
+      const previousEnvValue =
+        selectedEntry.config.envKey &&
+        typeof process.env[selectedEntry.config.envKey] === 'string'
+          ? process.env[selectedEntry.config.envKey]
+          : undefined;
+      const previousTargetEnvValue =
+        typeof process.env[
+          generateCustomModelEnvKey(customModelAuthType, trimmedBaseUrl)
+        ] === 'string'
+          ? process.env[
+              generateCustomModelEnvKey(customModelAuthType, trimmedBaseUrl)
+            ]
+          : undefined;
+
+      const nextEnvKey = generateCustomModelEnvKey(
         customModelAuthType,
+        trimmedBaseUrl,
       );
-      settings.setValue(persistScope, 'model.name', trimmedModelId);
-
-      uiState?.historyManager.addItem(
-        {
-          type: 'success',
-          text: t(
-            'Model "{{modelId}}" updated in settings.json and selected.',
-            { modelId: trimmedModelId },
-          ),
+      const oldEnvKey = selectedEntry.config.envKey;
+      const previousGenerationConfig =
+        selectedEntry.config.generationConfig ?? {};
+      const nextConfig: ProviderModelConfig = {
+        ...selectedEntry.config,
+        id: trimmedModelId,
+        name: trimmedModelName,
+        baseUrl: trimmedBaseUrl,
+        envKey: nextEnvKey,
+        generationConfig: {
+          ...previousGenerationConfig,
+          reasoning: { effort: effectiveReasoningEffort },
         },
-        Date.now(),
-      );
+      };
 
-      resetState();
-      onClose();
-    } catch (error) {
-      config.reloadModelProvidersConfig(previousModelProviders);
-      if (oldEnvKey) {
-        if (previousEnvValue !== undefined) {
-          process.env[oldEnvKey] = previousEnvValue;
-        } else if (oldEnvKey !== nextEnvKey) {
-          delete process.env[oldEnvKey];
+      const nextModelProviders: ModelProvidersConfig = {
+        ...(previousModelProviders ?? {}),
+      };
+      const sourceEntries = (
+        previousModelProviders?.[selectedEntry.authType] ?? []
+      ).filter((entry) => !isSameModelEntry(entry, selectedEntry.config));
+      const targetEntries = [
+        ...(selectedEntry.authType === customModelAuthType
+          ? sourceEntries
+          : (previousModelProviders?.[customModelAuthType] ?? [])
+        ).filter((entry) => entry.id !== trimmedModelId),
+        nextConfig,
+      ];
+
+      nextModelProviders[selectedEntry.authType] = sourceEntries;
+      nextModelProviders[customModelAuthType] = targetEntries;
+
+      process.env[nextEnvKey] = trimmedApiKey;
+      if (oldEnvKey && oldEnvKey !== nextEnvKey) {
+        delete process.env[oldEnvKey];
+      }
+      config.reloadModelProvidersConfig(nextModelProviders);
+
+      try {
+        await config.switchModel(customModelAuthType, trimmedModelId);
+
+        const settingsFile = settings.forScope(persistScope);
+        backupSettingsFile(settingsFile.path);
+        if (oldEnvKey && oldEnvKey !== nextEnvKey) {
+          settings.setValue(persistScope, `env.${oldEnvKey}`, undefined);
         }
+        settings.setValue(persistScope, `env.${nextEnvKey}`, trimmedApiKey);
+        settings.setValue(
+          persistScope,
+          `modelProviders.${selectedEntry.authType}`,
+          sourceEntries,
+        );
+        settings.setValue(
+          persistScope,
+          `modelProviders.${customModelAuthType}`,
+          targetEntries,
+        );
+        settings.setValue(
+          persistScope,
+          'security.auth.selectedType',
+          customModelAuthType,
+        );
+        settings.setValue(persistScope, 'model.name', trimmedModelId);
+
+        uiState?.historyManager.addItem(
+          {
+            type: 'success',
+            text: t(
+              'Model "{{modelId}}" updated in settings.json and selected.',
+              { modelId: trimmedModelId },
+            ),
+          },
+          Date.now(),
+        );
+
+        resetState();
+        onClose();
+      } catch (error) {
+        config.reloadModelProvidersConfig(previousModelProviders);
+        if (oldEnvKey) {
+          if (previousEnvValue !== undefined) {
+            process.env[oldEnvKey] = previousEnvValue;
+          } else if (oldEnvKey !== nextEnvKey) {
+            delete process.env[oldEnvKey];
+          }
+        }
+        if (previousTargetEnvValue !== undefined) {
+          process.env[nextEnvKey] = previousTargetEnvValue;
+        } else if (nextEnvKey !== oldEnvKey) {
+          delete process.env[nextEnvKey];
+        }
+        setErrorMessage(error instanceof Error ? error.message : String(error));
       }
-      if (previousTargetEnvValue !== undefined) {
-        process.env[nextEnvKey] = previousTargetEnvValue;
-      } else if (nextEnvKey !== oldEnvKey) {
-        delete process.env[nextEnvKey];
-      }
-      setErrorMessage(error instanceof Error ? error.message : String(error));
-    }
-  }, [
-    config,
-    customApiKey,
-    customBaseUrl,
-    customModelAuthType,
-    customModelId,
-    customModelName,
-    customReasoningEffort,
-    onClose,
-    resetState,
-    selectedEntry,
-    settings,
-    uiState,
-  ]);
+    },
+    [
+      config,
+      customApiKey,
+      customBaseUrl,
+      customModelAuthType,
+      customModelId,
+      customModelName,
+      customReasoningEffort,
+      onClose,
+      resetState,
+      selectedEntry,
+      settings,
+      uiState,
+    ],
+  );
 
   const selectItems = useMemo(
     () =>
@@ -405,7 +418,9 @@ export function EditModelDialog({
         editableEntries.length === 0 ? (
           <Box marginTop={1} flexDirection="column">
             <Text color={theme.status.warning}>
-              {t('No editable model configurations were found in settings.json.')}
+              {t(
+                'No editable model configurations were found in settings.json.',
+              )}
             </Text>
           </Box>
         ) : (
@@ -413,7 +428,9 @@ export function EditModelDialog({
             <DescriptiveRadioButtonSelect
               items={selectItems}
               onSelect={(value) => {
-                const entry = editableEntries.find((item) => item.key === value);
+                const entry = editableEntries.find(
+                  (item) => item.key === value,
+                );
                 if (!entry) {
                   return;
                 }
@@ -429,7 +446,8 @@ export function EditModelDialog({
         <Box marginTop={1} flexDirection="column">
           <Text color={theme.text.secondary}>
             {t('Edit API type for {{modelName}}', {
-              modelName: selectedEntry?.config.name ?? selectedEntry?.config.id ?? '',
+              modelName:
+                selectedEntry?.config.name ?? selectedEntry?.config.id ?? '',
             })}
           </Text>
           <Box marginTop={1}>
@@ -546,25 +564,33 @@ export function EditModelDialog({
                   key: 'reasoning-low',
                   value: 'low',
                   title: 'low',
-                  description: t('Use lower reasoning cost and faster responses.'),
+                  description: t(
+                    'Use lower reasoning cost and faster responses.',
+                  ),
                 },
                 {
                   key: 'reasoning-medium',
                   value: 'medium',
                   title: 'medium',
-                  description: t('Use balanced reasoning for general chat sessions.'),
+                  description: t(
+                    'Use balanced reasoning for general chat sessions.',
+                  ),
                 },
                 {
                   key: 'reasoning-high',
                   value: 'high',
                   title: 'high',
-                  description: t('Use deeper reasoning for harder chat requests.'),
+                  description: t(
+                    'Use deeper reasoning for harder chat requests.',
+                  ),
                 },
                 {
                   key: 'reasoning-max',
                   value: 'max',
                   title: 'max',
-                  description: t('Use the strongest reasoning tier for compatible providers.'),
+                  description: t(
+                    'Use the strongest reasoning tier for compatible providers.',
+                  ),
                 },
               ]}
               initialIndex={

@@ -454,10 +454,10 @@ describe('useSlashCommandProcessor', () => {
       expect(mockOpenThemeDialog).toHaveBeenCalled();
     });
 
-      it('should handle "dialog: model" action', async () => {
-        const command = createTestCommand({
-          name: 'modelcmd',
-          action: vi.fn().mockResolvedValue({ type: 'dialog', dialog: 'model' }),
+    it('should handle "dialog: model" action', async () => {
+      const command = createTestCommand({
+        name: 'modelcmd',
+        action: vi.fn().mockResolvedValue({ type: 'dialog', dialog: 'model' }),
       });
       const result = setupProcessorHook([command]);
       await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
@@ -466,45 +466,45 @@ describe('useSlashCommandProcessor', () => {
         await result.current.handleSlashCommand('/modelcmd');
       });
 
-        expect(mockOpenModelDialog).toHaveBeenCalled();
+      expect(mockOpenModelDialog).toHaveBeenCalled();
+    });
+
+    it('should handle "dialog: edit-model" action', async () => {
+      const command = createTestCommand({
+        name: 'editmodelcmd',
+        action: vi
+          .fn()
+          .mockResolvedValue({ type: 'dialog', dialog: 'edit-model' }),
+      });
+      const result = setupProcessorHook([command]);
+      await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
+
+      await act(async () => {
+        await result.current.handleSlashCommand('/editmodelcmd');
       });
 
-      it('should handle "dialog: edit-model" action', async () => {
-        const command = createTestCommand({
-          name: 'editmodelcmd',
-          action: vi
-            .fn()
-            .mockResolvedValue({ type: 'dialog', dialog: 'edit-model' }),
-        });
-        const result = setupProcessorHook([command]);
-        await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
+      expect(mockOpenEditModelDialog).toHaveBeenCalled();
+    });
 
-        await act(async () => {
-          await result.current.handleSlashCommand('/editmodelcmd');
-        });
+    it('should handle "dialog: remove-model" action', async () => {
+      const command = createTestCommand({
+        name: 'removemodelcmd',
+        action: vi
+          .fn()
+          .mockResolvedValue({ type: 'dialog', dialog: 'remove-model' }),
+      });
+      const result = setupProcessorHook([command]);
+      await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
 
-        expect(mockOpenEditModelDialog).toHaveBeenCalled();
+      await act(async () => {
+        await result.current.handleSlashCommand('/removemodelcmd');
       });
 
-      it('should handle "dialog: remove-model" action', async () => {
-        const command = createTestCommand({
-          name: 'removemodelcmd',
-          action: vi
-            .fn()
-            .mockResolvedValue({ type: 'dialog', dialog: 'remove-model' }),
-        });
-        const result = setupProcessorHook([command]);
-        await waitFor(() => expect(result.current.slashCommands).toHaveLength(1));
+      expect(mockOpenRemoveModelDialog).toHaveBeenCalled();
+    });
 
-        await act(async () => {
-          await result.current.handleSlashCommand('/removemodelcmd');
-        });
-
-        expect(mockOpenRemoveModelDialog).toHaveBeenCalled();
-      });
-
-      it('should handle "dialog: memory" action', async () => {
-        const command = createTestCommand({
+    it('should handle "dialog: memory" action', async () => {
+      const command = createTestCommand({
         name: 'memorycmd',
         action: vi.fn().mockResolvedValue({ type: 'dialog', dialog: 'memory' }),
       });

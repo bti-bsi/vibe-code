@@ -5,10 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import type {
-  Config,
-  ServerGeminiStreamEvent,
-} from '@vibe-bti/vibe-code-core';
+import type { Config, ServerGeminiStreamEvent } from '@vibe-bti/vibe-code-core';
 import { GeminiEventType, OutputFormat } from '@vibe-bti/vibe-code-core';
 import type { Part } from '@google/genai';
 import { JsonOutputAdapter } from './JsonOutputAdapter.js';
@@ -632,7 +629,9 @@ describe('JsonOutputAdapter', () => {
       expect(userMessage).toBeDefined();
       expect(Array.isArray(userMessage.message.content)).toBe(true);
       if (Array.isArray(userMessage.message.content)) {
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(userMessage.message.content).toHaveLength(1);
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(userMessage.message.content[0]).toEqual({
           type: 'text',
           text: 'Hello user',

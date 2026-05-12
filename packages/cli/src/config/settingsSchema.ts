@@ -236,23 +236,13 @@ const SETTINGS_SCHEMA = {
     showInDialog: false,
   },
 
-  google_search_api_key: {
+  serper_api: {
     type: 'string',
-    label: 'Google Search API Key',
+    label: 'Serper API Key',
     category: 'Advanced',
     requiresRestart: false,
     default: undefined as string | undefined,
-    description: 'API key for Google Search tools.',
-    showInDialog: false,
-  },
-
-  google_search_cx: {
-    type: 'string',
-    label: 'Google Search CX ID',
-    category: 'Advanced',
-    requiresRestart: false,
-    default: undefined as string | undefined,
-    description: 'Search Engine ID (CX) for Google Search tools.',
+    description: 'API key for Serper (Google Search API).',
     showInDialog: false,
   },
 

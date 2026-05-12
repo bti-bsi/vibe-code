@@ -44,6 +44,7 @@ describe('handleAutoUpdate', () => {
   let mockUpdateInfo: UpdateObject;
   let mockSettings: LoadedSettings;
   let mockChildProcess: MockChildProcess;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let emitSpy: any;
 
   beforeEach(() => {
@@ -98,8 +99,7 @@ describe('handleAutoUpdate', () => {
     mockSettings.merged.general!.enableAutoUpdate = false;
     mockGetInstallationInfo.mockReturnValue({
       updateCommand: 'npm i -g @vibe-bti/vibe-code@latest',
-      updateMessage:
-        'Please run npm i -g @vibe-bti/vibe-code@latest to update',
+      updateMessage: 'Please run npm i -g @vibe-bti/vibe-code@latest to update',
       isGlobal: true,
       packageManager: PackageManager.NPM,
     });
@@ -216,6 +216,7 @@ describe('handleAutoUpdate', () => {
   });
 
   it('should use the "@nightly" tag for nightly updates', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (mockUpdateInfo.update as any).latest = '2.0.0-nightly';
     mockGetInstallationInfo.mockReturnValue({
       updateCommand: 'npm i -g @vibe-bti/vibe-code@latest',

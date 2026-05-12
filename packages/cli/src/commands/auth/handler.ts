@@ -705,7 +705,9 @@ export async function showAuthStatus(): Promise<void> {
     if (!selectedType) {
       writeStdoutLine(t('⚠️  No authentication method configured.\n'));
       writeStdoutLine(t('Run one of the following commands to get started:\n'));
-      writeStdoutLine(t('  vibe auth api-key        - Authenticate with an API key'));
+      writeStdoutLine(
+        t('  vibe auth api-key        - Authenticate with an API key'),
+      );
       writeStdoutLine(t('Or simply run:'));
       writeStdoutLine(
         t('  vibe auth                - Interactive authentication setup\n'),

@@ -60,7 +60,9 @@ function getRemovableEntries(
   const entries: RemovableModelEntry[] = [];
 
   for (const authType of authTypes) {
-    for (const [index, config] of (modelProviders?.[authType] ?? []).entries()) {
+    for (const [index, config] of (
+      modelProviders?.[authType] ?? []
+    ).entries()) {
       const envValue =
         typeof config.envKey === 'string' &&
         typeof mergedEnv?.[config.envKey] === 'string'
@@ -157,9 +159,11 @@ export function RemoveModelDialog({
     }
 
     const persistScope = getPersistScopeForModelSelection(settings);
-    const previousModelProviders = settings.merged
-      .modelProviders as ModelProvidersConfig | undefined;
-    const previousCurrentAuthType = config.getContentGeneratorConfig()?.authType;
+    const previousModelProviders = settings.merged.modelProviders as
+      | ModelProvidersConfig
+      | undefined;
+    const previousCurrentAuthType =
+      config.getContentGeneratorConfig()?.authType;
     const previousCurrentModelId = config.getModel();
     const previousEnvKey = selectedEntry.config.envKey;
     const previousEnvValue =
@@ -213,7 +217,10 @@ export function RemoveModelDialog({
       );
 
       if (removedActiveModel && fallbackEntry) {
-        await config.switchModel(fallbackEntry.authType, fallbackEntry.config.id);
+        await config.switchModel(
+          fallbackEntry.authType,
+          fallbackEntry.config.id,
+        );
         settings.setValue(
           persistScope,
           'security.auth.selectedType',
@@ -252,7 +259,15 @@ export function RemoveModelDialog({
       }
       setErrorMessage(error instanceof Error ? error.message : String(error));
     }
-  }, [config, onClose, removableEntries, resetState, selectedEntry, settings, uiState]);
+  }, [
+    config,
+    onClose,
+    removableEntries,
+    resetState,
+    selectedEntry,
+    settings,
+    uiState,
+  ]);
 
   const selectItems = useMemo(
     () =>
@@ -349,7 +364,9 @@ export function RemoveModelDialog({
         <Text color={theme.text.secondary}>
           {dialogMode === 'select-model'
             ? t('Select a saved model to remove. Press Esc to close.')
-            : t('Choose Yes to delete or Cancel to go back. Press Esc to return.')}
+            : t(
+                'Choose Yes to delete or Cancel to go back. Press Esc to return.',
+              )}
         </Text>
       </Box>
     </Box>

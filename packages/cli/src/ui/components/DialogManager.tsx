@@ -57,7 +57,10 @@ import { WhatsAppChannelConfigDialog } from './WhatsAppChannelConfigDialog.js';
 import { useBackgroundTaskViewState } from '../contexts/BackgroundTaskViewContext.js';
 import { t } from '../../i18n/index.js';
 import { SettingScope } from '../../config/settings.js';
-import { startWhatsAppServer, stopWhatsAppServer } from '../../services/whatsappServer.js';
+import {
+  startWhatsAppServer,
+  stopWhatsAppServer,
+} from '../../services/whatsappServer.js';
 
 interface DialogManagerProps {
   addItem: UseHistoryManagerReturn['addItem'];
@@ -483,6 +486,7 @@ export const DialogManager = ({
       <ConfigDialog
         onSelect={(value) => {
           if (value === 'scopus') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const currentApiKey = (settings.merged as any).scopus_apikey || '';
             let placeholder = '';
             if (currentApiKey) {
@@ -496,7 +500,9 @@ export const DialogManager = ({
 
             uiActions.addSettingInputRequest({
               settingName: t('Scopus API Key'),
-              settingDescription: t('Enter your Scopus API Key to save in your configuration.'),
+              settingDescription: t(
+                'Enter your Scopus API Key to save in your configuration.',
+              ),
               sensitive: false,
               placeholder,
               onSubmit: (apiKey: string) => {
@@ -511,50 +517,40 @@ export const DialogManager = ({
             });
             // We do not close config dialog immediately so that SettingInputPrompt replaces it in the UI stack (via rendering precedence).
             // Actually, SettingInputPrompt is rendered earlier in the file (line 152), so it will overlay/hide this if we trigger it.
-          } else if (value === 'telegram') {
-            uiActions.openTelegramConfigDialog();
-          } else if (value === 'whatsapp') {
-            uiActions.openWhatsAppConfigDialog();
-            uiActions.closeConfigDialog();
-          } else if (value === 'google_search') {
-            const currentApiKey = (settings.merged as any).google_search_api_key || '';
-            const currentCx = (settings.merged as any).google_search_cx || '';
+          } else if (value === 'serper') {
+            const currentApiKey =
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (settings.merged as any).serper_api || '';
+            let placeholder = '';
+            if (currentApiKey) {
+              const len = currentApiKey.length;
+              if (len > 8) {
+                placeholder = `${currentApiKey.substring(0, 4)}...${currentApiKey.substring(len - 4)}`;
+              } else {
+                placeholder = '...';
+              }
+            }
 
             uiActions.addSettingInputRequest({
-              settingName: t('Google Search API Key'),
+              settingName: t('Serper API Key'),
               settingDescription: t(
-                'Enter your Google API Key (from Google Cloud Console).',
+                'Enter your Serper API Key to save in your configuration.',
               ),
               sensitive: false,
-              placeholder: currentApiKey
-                ? `${currentApiKey.substring(0, 4)}...`
-                : '',
+              placeholder,
               onSubmit: (apiKey: string) => {
-                settings.setValue(
-                  SettingScope.User,
-                  'google_search_api_key',
-                  apiKey,
-                );
-              },
-              onCancel: () => {
-                uiActions.openConfigDialog();
-              },
-            });
-            uiActions.addSettingInputRequest({
-              settingName: t('Google Search CX ID'),
-              settingDescription: t(
-                'Enter your Search Engine ID (CX) from Programmable Search Engine.',
-              ),
-              sensitive: false,
-              placeholder: currentCx ? `${currentCx.substring(0, 4)}...` : '',
-              onSubmit: (cx: string) => {
-                settings.setValue(SettingScope.User, 'google_search_cx', cx);
+                settings.setValue(SettingScope.User, 'serper_api', apiKey);
                 uiActions.closeConfigDialog();
               },
               onCancel: () => {
                 uiActions.openConfigDialog();
               },
             });
+          } else if (value === 'telegram') {
+            uiActions.openTelegramConfigDialog();
+          } else if (value === 'whatsapp') {
+            uiActions.openWhatsAppConfigDialog();
+            uiActions.closeConfigDialog();
           } else if (value) {
             addItem(
               {

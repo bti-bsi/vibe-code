@@ -12,12 +12,8 @@
       "description": "API key for Scopus tools (search, trend, abstract pdf).",
       "type": "string"
     },
-    "google_search_api_key": {
-      "description": "API key for Google Search tools.",
-      "type": "string"
-    },
-    "google_search_cx": {
-      "description": "Search Engine ID (CX) for Google Search tools.",
+    "serper_api": {
+      "description": "API key for Serper (Google Search API).",
       "type": "string"
     },
     "whatsapp_allowed": {

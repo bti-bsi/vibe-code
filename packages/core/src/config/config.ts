@@ -414,8 +414,7 @@ export interface ConfigParameters {
   ideMode?: boolean;
   authType?: AuthType;
   scopusApiKey?: string;
-  googleSearchApiKey?: string;
-  googleSearchCx?: string;
+  serperApiKey?: string;
   generationConfig?: Partial<ContentGeneratorConfig>;
   /**
    * Optional source map for generationConfig fields (e.g. CLI/env/settings attribution).
@@ -647,8 +646,7 @@ export class Config {
   private readonly checkpointing: boolean;
   private readonly proxy: string | undefined;
   private readonly scopusApiKey: string | undefined;
-  private readonly googleSearchApiKey: string | undefined;
-  private readonly googleSearchCx: string | undefined;
+  private readonly serperApiKey: string | undefined;
   private readonly cwd: string;
   private readonly explicitIncludeDirectories: string[];
   private readonly bugCommand: BugCommandSettings | undefined;
@@ -826,8 +824,7 @@ export class Config {
     this.modelProvidersConfig = params.modelProvidersConfig;
     this.cliVersion = params.cliVersion;
     this.scopusApiKey = params.scopusApiKey;
-    this.googleSearchApiKey = params.googleSearchApiKey;
-    this.googleSearchCx = params.googleSearchCx;
+    this.serperApiKey = params.serperApiKey;
 
     this.chatRecordingEnabled = params.chatRecording ?? true;
 
@@ -1407,12 +1404,8 @@ export class Config {
     return this.scopusApiKey;
   }
 
-  getGoogleSearchApiKey(): string | undefined {
-    return this.googleSearchApiKey;
-  }
-
-  getGoogleSearchCx(): string | undefined {
-    return this.googleSearchCx;
+  getSerperApiKey(): string | undefined {
+    return this.serperApiKey;
   }
 
   getImportFormat(): 'tree' | 'flat' {
@@ -2826,6 +2819,15 @@ export class Config {
       const { SendMessageTool } = await import('../tools/send-message.js');
       return new SendMessageTool(this);
     });
+    await registerLazy(ToolNames.JOURNAL_SINTA_SEARCH, async () => {
+      const { JournalSintaSearchTool } =
+        await import('../tools/sinta-search.js');
+      return new JournalSintaSearchTool();
+    });
+    await registerLazy(ToolNames.SEARCH_WEB, async () => {
+      const { SearchWebTool } = await import('../tools/search-web.js');
+      return new SearchWebTool(this);
+    });
     await registerLazy(ToolNames.SKILL, async () => {
       const { SkillTool } = await import('../tools/skill.js');
       return new SkillTool(this);
@@ -2909,16 +2911,13 @@ export class Config {
       const { WebFetchTool } = await import('../tools/web-fetch.js');
       return new WebFetchTool(this);
     });
-    await registerLazy(ToolNames.GOOGLE_SEARCH, async () => {
-      const { GoogleSearchTool } = await import('../tools/google-search.js');
-      return new GoogleSearchTool(this);
-    });
     await registerLazy(ToolNames.SCOPUS_SEARCH, async () => {
       const { ScopusSearchTool } = await import('../tools/scopus-search.js');
       return new ScopusSearchTool(this);
     });
     await registerLazy(ToolNames.SCOPUS_ANALYTIC_TREND, async () => {
-      const { ScopusAnalyticTrendTool } = await import('../tools/scopus-analytic-trend.js');
+      const { ScopusAnalyticTrendTool } =
+        await import('../tools/scopus-analytic-trend.js');
       return new ScopusAnalyticTrendTool(this);
     });
     await registerLazy(ToolNames.SCOPUS_ABSTRACT_PDF, async () => {
@@ -2945,6 +2944,10 @@ export class Config {
     await registerLazy(ToolNames.READ_STYLE_DOCX, async () => {
       const { DocxReadStyleTool } = await import('../tools/docx-read-style.js');
       return new DocxReadStyleTool(this);
+    });
+    await registerLazy(ToolNames.EDIT_DOCX, async () => {
+      const { DocxEditTool } = await import('../tools/docx-edit.js');
+      return new DocxEditTool(this);
     });
     await registerLazy(ToolNames.WRITE_PPTX, async () => {
       const { WritePptxTool } = await import('../tools/pptx-write.js');

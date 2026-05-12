@@ -115,27 +115,35 @@ class DocxExtractToolInvocation extends BaseToolInvocation<
       const imageInfos: Array<{ filename: string; contentType: string }> = [];
       let imageCounter = 0;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const options: any = {};
       if (this.params.extractImages !== false) {
         if (!fs.existsSync(imagesDir)) {
           fs.mkdirSync(imagesDir, { recursive: true });
         }
-        options.convertImage = (mammoth.images as any).inline((element: any) => {
-          imageCounter++;
-          const extension = element.contentType.split('/')[1] || 'png';
-          const imageName = `${baseName}_image_${imageCounter}.${extension}`;
-          const imagePath = path.join(imagesDir, imageName);
-          
-          return element.read().then((imageBuffer: Buffer) => {
-            fs.writeFileSync(imagePath, imageBuffer);
-            imageInfos.push({ filename: imageName, contentType: element.contentType });
-            // Return empty src as we'll handle image references in markdown manually if needed
-            // Or we can return a relative path
-            return {
-              src: `images/${imageName}`
-            };
-          });
-        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        options.convertImage = (mammoth.images as any).inline(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (element: any) => {
+            imageCounter++;
+            const extension = element.contentType.split('/')[1] || 'png';
+            const imageName = `${baseName}_image_${imageCounter}.${extension}`;
+            const imagePath = path.join(imagesDir, imageName);
+
+            return element.read().then((imageBuffer: Buffer) => {
+              fs.writeFileSync(imagePath, imageBuffer);
+              imageInfos.push({
+                filename: imageName,
+                contentType: element.contentType,
+              });
+              // Return empty src as we'll handle image references in markdown manually if needed
+              // Or we can return a relative path
+              return {
+                src: `images/${imageName}`,
+              };
+            });
+          },
+        );
       }
 
       const result = await mammoth.convertToHtml({ path: sourcePath }, options);
@@ -144,7 +152,7 @@ class DocxExtractToolInvocation extends BaseToolInvocation<
 
       // Basic HTML to Markdown conversion (since we don't want to add more deps like turndown)
       // This is a simplified version, but mammoth's HTML is quite clean.
-      let markdown = html
+      const markdown = html
         .replace(/<h1>(.*?)<\/h1>/gi, '# $1\n\n')
         .replace(/<h2>(.*?)<\/h2>/gi, '## $1\n\n')
         .replace(/<h3>(.*?)<\/h3>/gi, '### $1\n\n')
@@ -161,19 +169,19 @@ class DocxExtractToolInvocation extends BaseToolInvocation<
         .replace(/<img src="(.*?)" \/>/gi, '![]($1)\n\n')
         // Table conversion
         .replace(/<table>(.*?)<\/table>/gis, (match, tableContent) => {
-           let tableMd = '\n';
-           const rows = tableContent.match(/<tr>(.*?)<\/tr>/gis) || [];
-           rows.forEach((row: string, index: number) => {
-             const cells = row.match(/<(td|th)>(.*?)<\/\1>/gis) || [];
-             const cellTexts = cells.map((cell: string) => {
-               return cell.replace(/<(td|th)>(.*?)<\/\1>/gis, '$2').trim();
-             });
-             tableMd += `| ${cellTexts.join(' | ')} |\n`;
-             if (index === 0) {
-               tableMd += `| ${cellTexts.map(() => '---').join(' | ')} |\n`;
-             }
-           });
-           return tableMd + '\n';
+          let tableMd = '\n';
+          const rows = tableContent.match(/<tr>(.*?)<\/tr>/gis) || [];
+          rows.forEach((row: string, index: number) => {
+            const cells = row.match(/<(td|th)>(.*?)<\/\1>/gis) || [];
+            const cellTexts = cells.map((cell: string) =>
+              cell.replace(/<(td|th)>(.*?)<\/\1>/gis, '$2').trim(),
+            );
+            tableMd += `| ${cellTexts.join(' | ')} |\n`;
+            if (index === 0) {
+              tableMd += `| ${cellTexts.map(() => '---').join(' | ')} |\n`;
+            }
+          });
+          return tableMd + '\n';
         })
         .replace(/<br\s*\/?>/gi, '\n')
         .replace(/&nbsp;/g, ' ')
@@ -195,16 +203,19 @@ class DocxExtractToolInvocation extends BaseToolInvocation<
       }
       if (messages.length > 0) {
         llmOutput.push(`\n### Messages/Warnings:`);
-        messages.forEach((m: any) => llmOutput.push(`- [${m.type}] ${m.message}`));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        messages.forEach((m: any) =>
+          llmOutput.push(`- [${m.type}] ${m.message}`),
+        );
       }
 
       return {
         llmContent: llmOutput.join('\n'),
         returnDisplay: `Extracted ${baseName}.md and ${imageInfos.length} images`,
       };
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       return {
         llmContent: `DOCX extraction failed: ${errorMessage}`,
         returnDisplay: `Extraction failed: ${errorMessage}`,
@@ -239,7 +250,8 @@ export class DocxExtractTool extends BaseDeclarativeTool<
             type: 'string',
           },
           outputDir: {
-            description: 'Optional: directory to save extracted files to. Default: ./extract-doc',
+            description:
+              'Optional: directory to save extracted files to. Default: ./extract-doc',
             type: 'string',
           },
           extractImages: {

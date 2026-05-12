@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import _AdmZip from 'adm-zip';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AdmZip = (_AdmZip as any).default || _AdmZip;
 import { XMLParser } from 'fast-xml-parser';
 import type { Config } from '../config/config.js';
@@ -37,11 +38,13 @@ class DocxReadStyleToolInvocation extends BaseToolInvocation<
 
   constructor(
     private readonly config: Config,
-    params: DocxReadStyleParams
+    params: DocxReadStyleParams,
   ) {
     super(params);
     this.debugLogger = createDebugLogger('DOCX_READ_STYLE');
-    this.debugLogger.debug(`Initializing DocxReadStyleToolInvocation for ${this.config.getTargetDir()}`);
+    this.debugLogger.debug(
+      `Initializing DocxReadStyleToolInvocation for ${this.config.getTargetDir()}`,
+    );
   }
 
   getDescription(): string {
@@ -94,8 +97,8 @@ class DocxReadStyleToolInvocation extends BaseToolInvocation<
 
           styles.push({
             id: styleId,
-            name: name,
-            type: type,
+            name,
+            type,
             formatting: {
               font,
               size: size ? parseInt(size, 10) : undefined,
@@ -110,7 +113,7 @@ class DocxReadStyleToolInvocation extends BaseToolInvocation<
       const output = {
         filePath: this.params.filePath,
         stylesCount: styles.length,
-        styles: styles,
+        styles,
       };
 
       return {

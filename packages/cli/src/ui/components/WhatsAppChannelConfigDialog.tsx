@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/exhaustive-deps */
+
 import type React from 'react';
 import { useCallback, useState } from 'react';
 import { Box, Text } from 'ink';
@@ -23,8 +25,9 @@ export function WhatsAppChannelConfigDialog({
   onClose,
 }: WhatsAppChannelConfigDialogProps): React.JSX.Element {
   const settings = useSettings();
-  const allowedNumbers = ((settings.merged as any).whatsapp_allowed || []) as string[];
-  
+  const allowedNumbers = ((settings.merged as any).whatsapp_allowed ||
+    []) as string[];
+
   const [phoneInput, setPhoneInput] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -46,11 +49,10 @@ export function WhatsAppChannelConfigDialog({
       return;
     }
 
-    settings.setValue(
-      SettingScope.User,
-      'whatsapp_allowed',
-      [...allowedNumbers, trimmed],
-    );
+    settings.setValue(SettingScope.User, 'whatsapp_allowed', [
+      ...allowedNumbers,
+      trimmed,
+    ]);
     setPhoneInput('');
     setErrorMessage(null);
   }, [phoneInput, allowedNumbers, settings]);
@@ -64,33 +66,37 @@ export function WhatsAppChannelConfigDialog({
       width="100%"
     >
       <Text bold>{t('WhatsApp Channel Configuration')}</Text>
-      
+
       <Box marginTop={1} flexDirection="column">
         <Text color={theme.text.secondary}>{t('Server URL:')}</Text>
         <Text color={theme.text.accent}>{WHATSAPP_SERVER_URL}</Text>
         <Text color={theme.text.secondary}>
-            {t('Open this URL in your browser to pair your WhatsApp account.')}
+          {t('Open this URL in your browser to pair your WhatsApp account.')}
         </Text>
       </Box>
 
       <Box marginTop={1} flexDirection="column">
         <Text color={theme.text.secondary}>{t('Allowed Phone Numbers:')}</Text>
         {allowedNumbers.length === 0 ? (
-            <Text color={theme.text.secondary}>{t('(No numbers added)')}</Text>
+          <Text color={theme.text.secondary}>{t('(No numbers added)')}</Text>
         ) : (
-            allowedNumbers.map((num) => (
-                <Box key={num}>
-                    <Text>• {num} </Text>
-                    <Text color={theme.text.secondary}>(Press Enter to save to add, Ctrl+D to manage in settings)</Text>
-                </Box>
-            ))
+          allowedNumbers.map((num) => (
+            <Box key={num}>
+              <Text>• {num} </Text>
+              <Text color={theme.text.secondary}>
+                (Press Enter to save to add, Ctrl+D to manage in settings)
+              </Text>
+            </Box>
+          ))
         )}
         <Box marginTop={1}>
           <TextInput
             value={phoneInput}
             onChange={setPhoneInput}
             onSubmit={addNumber}
-            placeholder={t('Enter phone number (e.g., 62812...) and press Enter')}
+            placeholder={t(
+              'Enter phone number (e.g., 62812...) and press Enter',
+            )}
           />
         </Box>
       </Box>
@@ -102,9 +108,7 @@ export function WhatsAppChannelConfigDialog({
       )}
 
       <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
-          {t('Esc to close')}
-        </Text>
+        <Text color={theme.text.secondary}>{t('Esc to close')}</Text>
       </Box>
     </Box>
   );

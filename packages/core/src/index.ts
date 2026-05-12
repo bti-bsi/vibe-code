@@ -133,8 +133,9 @@ export type {
   ScopusSearchParams,
 } from './tools/scopus-search.js';
 export type {
-  GoogleSearchTool,
-} from './tools/google-search.js';
+  JournalSintaSearchTool,
+  JournalSintaSearchParams,
+} from './tools/sinta-search.js';
 export type { WriteFileTool, WriteFileToolParams } from './tools/write-file.js';
 export type { CronCreateTool, CronCreateParams } from './tools/cron-create.js';
 export type { CronListTool, CronListParams } from './tools/cron-list.js';
@@ -144,6 +145,7 @@ export type {
   DocxReadStyleTool,
   DocxReadStyleParams,
 } from './tools/docx-read-style.js';
+export type { DocxEditTool, DocxEditParams } from './tools/docx-edit.js';
 export type { WritePptxTool, WritePptxParams } from './tools/pptx-write.js';
 
 // ============================================================================

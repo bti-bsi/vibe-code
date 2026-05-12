@@ -85,7 +85,9 @@ describe('themeManager.loadCustomThemes', () => {
     delete legacyTheme.DiffAdded;
     delete legacyTheme.DiffRemoved;
 
-    themeManager.loadCustomThemes({ 'Legacy Custom Theme': legacyTheme as CustomTheme });
+    themeManager.loadCustomThemes({
+      'Legacy Custom Theme': legacyTheme as CustomTheme,
+    });
     const result = themeManager.getTheme('Legacy Custom Theme')!;
 
     // Should use DEFAULT_THEME (VibeDark) values for missing fields

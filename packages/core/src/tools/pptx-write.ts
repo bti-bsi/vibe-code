@@ -18,42 +18,43 @@ import { createDebugLogger, type DebugLogger } from '../utils/debugLogger.js';
 /**
  * Predefined styles for PPTX
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const PPTX_PRESETS: Record<string, any> = {
   professional: {
     background: 'F1F1F1',
     titleColor: '002060',
     bodyColor: '333333',
     fontFace: 'Arial',
-    accentColor: '0070C0'
+    accentColor: '0070C0',
   },
   ecommerce: {
     background: 'FFFFFF',
     titleColor: 'FF6600',
     bodyColor: '444444',
     fontFace: 'Segoe UI',
-    accentColor: '0088CC'
+    accentColor: '0088CC',
   },
   futuristic: {
     background: '0A0A2A',
     titleColor: '00FFFF',
     bodyColor: 'E0E0E0',
     fontFace: 'Courier New',
-    accentColor: 'FF00FF'
+    accentColor: 'FF00FF',
   },
   babies: {
     background: 'FFF5E1',
     titleColor: 'FF69B4',
     bodyColor: '5F9EA0',
     fontFace: 'Comic Sans MS',
-    accentColor: '98FB98'
+    accentColor: '98FB98',
   },
   techno: {
     background: '000000',
     titleColor: '00FF00',
     bodyColor: '00CC00',
     fontFace: 'Consolas',
-    accentColor: '003300'
-  }
+    accentColor: '003300',
+  },
 };
 
 /**
@@ -98,11 +99,13 @@ class WritePptxToolInvocation extends BaseToolInvocation<
 
   constructor(
     private readonly config: Config,
-    params: WritePptxParams
+    params: WritePptxParams,
   ) {
     super(params);
     this.debugLogger = createDebugLogger('WRITE_PPTX');
-    this.debugLogger.debug(`Initializing WritePptxToolInvocation for ${this.config.getTargetDir()}`);
+    this.debugLogger.debug(
+      `Initializing WritePptxToolInvocation for ${this.config.getTargetDir()}`,
+    );
   }
 
   getDescription(): string {
@@ -132,9 +135,9 @@ class WritePptxToolInvocation extends BaseToolInvocation<
         fs.mkdirSync(outputDir, { recursive: true });
       }
 
-      // @ts-ignore
+      // @ts-expect-error pptxgenjs constructor has no typed export
       const pres = new pptxgen();
-      
+
       // Select preset or default
       const style = PPTX_PRESETS[this.params.preset || 'professional'];
       const bg = this.params.theme?.background || style.background;
@@ -148,29 +151,47 @@ class WritePptxToolInvocation extends BaseToolInvocation<
         const slide = pres.addSlide();
         if (bg) slide.background = { fill: bg };
         slide.addText(this.params.title, {
-          x: '10%', y: '40%', w: '80%', h: '20%',
-          fontSize: 44, align: pres.AlignH.center, bold: true,
-          color: titleColor, fontFace: font
+          x: '10%',
+          y: '40%',
+          w: '80%',
+          h: '20%',
+          fontSize: 44,
+          align: pres.AlignH.center,
+          bold: true,
+          color: titleColor,
+          fontFace: font,
         });
       }
 
       const tokens = marked.lexer(this.params.content);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let currentSlide: any = null;
       let yOffset = 0.5;
 
       const addSlide = (slideTitle: string) => {
         currentSlide = pres.addSlide();
         if (bg) currentSlide.background = { fill: bg };
-        
+
         // Add a small accent line or shape for some presets
         if (this.params.preset === 'techno') {
-           currentSlide.addShape(pres.ShapeType.rect, { x: 0, y: 0, w: '100%', h: 0.1, fill: { color: style.accentColor } });
+          currentSlide.addShape(pres.ShapeType.rect, {
+            x: 0,
+            y: 0,
+            w: '100%',
+            h: 0.1,
+            fill: { color: style.accentColor },
+          });
         }
 
         currentSlide.addText(slideTitle, {
-          x: 0.5, y: 0.3, w: '90%', h: 0.8,
-          fontSize: 28, bold: true, color: titleColor,
-          fontFace: font
+          x: 0.5,
+          y: 0.3,
+          w: '90%',
+          h: 0.8,
+          fontSize: 28,
+          bold: true,
+          color: titleColor,
+          fontFace: font,
         });
         yOffset = 1.2;
       };
@@ -182,19 +203,26 @@ class WritePptxToolInvocation extends BaseToolInvocation<
           } else {
             if (!currentSlide) addSlide('Slide');
             currentSlide.addText(token.text, {
-              x: 0.5, y: yOffset, w: '90%', h: 0.4,
-              fontSize: 20, bold: true, color: titleColor,
-              fontFace: font
+              x: 0.5,
+              y: yOffset,
+              w: '90%',
+              h: 0.4,
+              fontSize: 20,
+              bold: true,
+              color: titleColor,
+              fontFace: font,
             });
             yOffset += 0.5;
           }
         } else if (token.type === 'paragraph') {
           if (!currentSlide) addSlide('Slide');
-          
+
           // Handle images in paragraph
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const images = token.tokens?.filter((t: any) => t.type === 'image');
           if (images && images.length > 0) {
             for (const imgToken of images) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const img = imgToken as any;
               try {
                 const imgPath = path.resolve(img.href);
@@ -202,31 +230,45 @@ class WritePptxToolInvocation extends BaseToolInvocation<
                   const data = fs.readFileSync(imgPath, { encoding: 'base64' });
                   currentSlide!.addImage({
                     data: `data:image/png;base64,${data}`,
-                    x: 0.5, y: yOffset, w: 4, h: 3
+                    x: 0.5,
+                    y: yOffset,
+                    w: 4,
+                    h: 3,
                   });
                   yOffset += 3.2;
                 }
-              } catch (e) {
+              } catch (_e) {
                 this.debugLogger.warn(`Failed to add image: ${img.href}`);
               }
             }
           } else {
             currentSlide!.addText(token.text, {
-              x: 0.5, y: yOffset, w: '90%', h: 1,
-              fontSize: 16, color: bodyColor, align: pres.AlignH.left,
-              valign: pres.AlignV.top, fontFace: font
+              x: 0.5,
+              y: yOffset,
+              w: '90%',
+              h: 1,
+              fontSize: 16,
+              color: bodyColor,
+              align: pres.AlignH.left,
+              valign: pres.AlignV.top,
+              fontFace: font,
             });
             yOffset += 1.2;
           }
         } else if (token.type === 'list') {
           if (!currentSlide) addSlide('Slide');
-          const listItems = token.items.map((item: any) => {
-              return { text: item.text, options: { bullet: true, color: bodyColor, fontFace: font } };
-          });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const listItems = token.items.map((item: any) => ({
+            text: item.text,
+            options: { bullet: true, color: bodyColor, fontFace: font },
+          }));
           currentSlide!.addText(listItems, {
-            x: 0.5, y: yOffset, w: '90%', h: 2,
+            x: 0.5,
+            y: yOffset,
+            w: '90%',
+            h: 2,
             fontSize: 14,
-            valign: pres.AlignV.top
+            valign: pres.AlignV.top,
           });
           yOffset += 2.2;
         }
@@ -243,10 +285,13 @@ class WritePptxToolInvocation extends BaseToolInvocation<
         llmContent: `Successfully wrote PPTX file to ${filePath} using preset ${this.params.preset || 'professional'}`,
         returnDisplay: `Wrote ${filePath} (${this.params.preset || 'professional'})`,
       };
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.debugLogger.error(`[WritePptxTool] Writing failed: ${errorMessage}`, error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.debugLogger.error(
+        `[WritePptxTool] Writing failed: ${errorMessage}`,
+        error,
+      );
       return {
         llmContent: `PPTX writing failed: ${errorMessage}`,
         returnDisplay: `Writing failed: ${errorMessage}`,
@@ -277,7 +322,8 @@ export class WritePptxTool extends BaseDeclarativeTool<
       {
         properties: {
           filePath: {
-            description: 'Path where the .pptx file will be saved. Example: "./presentation.pptx"',
+            description:
+              'Path where the .pptx file will be saved. Example: "./presentation.pptx"',
             type: 'string',
           },
           content: {
@@ -291,17 +337,26 @@ export class WritePptxTool extends BaseDeclarativeTool<
           preset: {
             description: 'Optional: Predefined style preset.',
             type: 'string',
-            enum: ['professional', 'ecommerce', 'futuristic', 'babies', 'techno']
+            enum: [
+              'professional',
+              'ecommerce',
+              'futuristic',
+              'babies',
+              'techno',
+            ],
           },
           theme: {
             description: 'Optional: Theme configurations (overrides preset).',
             type: 'object',
             properties: {
-              background: { type: 'string', description: 'Background hex color (e.g., "FFFFFF")' },
+              background: {
+                type: 'string',
+                description: 'Background hex color (e.g., "FFFFFF")',
+              },
               font: { type: 'string', description: 'Font family' },
               titleColor: { type: 'string', description: 'Title text color' },
               bodyColor: { type: 'string', description: 'Body text color' },
-            }
+            },
           },
         },
         required: ['filePath', 'content'],

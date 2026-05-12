@@ -653,11 +653,8 @@ export const AppContainer = (props: AppContainerProps) => {
     openModelDialog,
     closeModelDialog,
   } = useModelCommand();
-  const {
-    isEditModelDialogOpen,
-    openEditModelDialog,
-    closeEditModelDialog,
-  } = useEditModelCommand();
+  const { isEditModelDialogOpen, openEditModelDialog, closeEditModelDialog } =
+    useEditModelCommand();
   const {
     isRemoveModelDialogOpen,
     openRemoveModelDialog,
@@ -844,7 +841,9 @@ export const AppContainer = (props: AppContainerProps) => {
   useEffect(() => {
     (
       config as Config & {
-        setUiDebugMessageSink?: (sink: ((message: string) => void) | undefined) => void;
+        setUiDebugMessageSink?: (
+          sink: ((message: string) => void) | undefined,
+        ) => void;
       }
     ).setUiDebugMessageSink?.(setDebugMessage);
     return () => {
@@ -1603,9 +1602,9 @@ export const AppContainer = (props: AppContainerProps) => {
   }, []);
   const shouldShowIdePrompt = Boolean(
     currentIDE &&
-      !config.getIdeMode() &&
-      !settings.merged.ide?.hasSeenNudge &&
-      !idePromptAnswered,
+    !config.getIdeMode() &&
+    !settings.merged.ide?.hasSeenNudge &&
+    !idePromptAnswered,
   );
 
   // Command migration nudge
@@ -1656,7 +1655,6 @@ export const AppContainer = (props: AppContainerProps) => {
     history: historyManager.history,
     sessionStats,
   });
-
 
   const dialogsVisible =
     showWelcomeBackDialog ||

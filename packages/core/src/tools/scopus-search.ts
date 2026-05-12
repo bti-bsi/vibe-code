@@ -242,9 +242,10 @@ class ScopusSearchToolInvocation extends BaseToolInvocation<
 
   async execute(_signal: AbortSignal): Promise<ToolResult> {
     const apiKey = this.params.apiKey || this.config?.getScopusApiKey();
-    
+
     if (!apiKey) {
-      const errorMessage = 'Scopus API key is missing. Please configure it via the /config command or provide it in the tool parameters.';
+      const errorMessage =
+        'Scopus API key is missing. Please configure it via the /config command or provide it in the tool parameters.';
       this.debugLogger.error(`[ScopusSearchTool] ${errorMessage}`);
       return {
         llmContent: `Error searching Scopus: ${errorMessage}`,
@@ -263,11 +264,7 @@ class ScopusSearchToolInvocation extends BaseToolInvocation<
     );
 
     try {
-      const response = await scopusGet(
-        queryUrl,
-        apiKey,
-        SCOPUS_API_TIMEOUT_MS,
-      );
+      const response = await scopusGet(queryUrl, apiKey, SCOPUS_API_TIMEOUT_MS);
 
       if (!response.ok) {
         const errorText = await response.text();

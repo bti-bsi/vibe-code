@@ -293,16 +293,17 @@ export const AgentExecutionDisplay: React.FC<AgentExecutionDisplayProps> = ({
           </Box>
         )}
 
-        {data.status === 'running' && verboseData.currentRound !== undefined && (
-          <Box flexDirection="row" paddingLeft={2}>
-            <Text color={theme.text.secondary}>
-              Iteration {verboseData.currentRound}
-              {verboseData.completedRounds
-                ? ` · ${verboseData.completedRounds} completed`
-                : ''}
-            </Text>
-          </Box>
-        )}
+        {data.status === 'running' &&
+          verboseData.currentRound !== undefined && (
+            <Box flexDirection="row" paddingLeft={2}>
+              <Text color={theme.text.secondary}>
+                Iteration {verboseData.currentRound}
+                {verboseData.completedRounds
+                  ? ` · ${verboseData.completedRounds} completed`
+                  : ''}
+              </Text>
+            </Box>
+          )}
 
         {/* Running state: Show current tool call and progress */}
         {data.status === 'running' && (
@@ -581,7 +582,7 @@ function extractToolDetail(
 ): string {
   if (!args) return '';
   const str = (v: unknown) =>
-    typeof v === 'string' ? v : JSON.stringify(v) ?? '';
+    typeof v === 'string' ? v : (JSON.stringify(v) ?? '');
 
   switch (name) {
     case 'grep_search': {
@@ -663,8 +664,7 @@ const ToolCallItem: React.FC<{
   // Prefer explicit description; fall back to arg-extracted detail
   const detail = React.useMemo(() => {
     const raw =
-      toolCall.description ||
-      extractToolDetail(toolCall.name, toolCall.args);
+      toolCall.description || extractToolDetail(toolCall.name, toolCall.args);
     const firstLine = raw.split('\n')[0];
     return truncateToVisualWidth(firstLine, textWidth);
   }, [toolCall.description, toolCall.name, toolCall.args, textWidth]);
@@ -685,9 +685,7 @@ const ToolCallItem: React.FC<{
         <Box minWidth={STATUS_INDICATOR_WIDTH}>{statusIcon}</Box>
         <Text wrap="truncate-end">
           <Text color={statusColor}>{toolCall.name}</Text>
-          {detail ? (
-            <Text color={theme.text.secondary}> {detail}</Text>
-          ) : null}
+          {detail ? <Text color={theme.text.secondary}> {detail}</Text> : null}
           {toolCall.status === 'failed' && toolCall.error ? (
             <Text color={theme.status.error}> — {toolCall.error}</Text>
           ) : null}
@@ -841,31 +839,33 @@ const RoundHistorySection: React.FC<{
         <Text color={theme.text.primary}>Iterations:</Text>
       </Box>
       <Box flexDirection="column" paddingLeft={1}>
-        {displayRounds.map((round: NonNullable<AgentResultDisplay['rounds']>[number]) => {
-          const summarySource =
-            round.text || round.thoughtText || '(no text yet)';
-          const summary = truncateToVisualWidth(
-            summarySource,
-            Math.max(16, childWidth - 6),
-          );
-          const stats = [
-            round.status,
-            round.toolCalls ? `${round.toolCalls} tool` : undefined,
-            round.outputTokens ? `${round.outputTokens} out tok` : undefined,
-          ]
-            .filter(Boolean)
-            .join(' · ');
+        {displayRounds.map(
+          (round: NonNullable<AgentResultDisplay['rounds']>[number]) => {
+            const summarySource =
+              round.text || round.thoughtText || '(no text yet)';
+            const summary = truncateToVisualWidth(
+              summarySource,
+              Math.max(16, childWidth - 6),
+            );
+            const stats = [
+              round.status,
+              round.toolCalls ? `${round.toolCalls} tool` : undefined,
+              round.outputTokens ? `${round.outputTokens} out tok` : undefined,
+            ]
+              .filter(Boolean)
+              .join(' · ');
 
-          return (
-            <Text key={round.round}>
-              <Text color={theme.text.secondary}>#{round.round}</Text>{' '}
-              <Text>{summary}</Text>
-              {stats ? (
-                <Text color={theme.text.secondary}> ({stats})</Text>
-              ) : null}
-            </Text>
-          );
-        })}
+            return (
+              <Text key={round.round}>
+                <Text color={theme.text.secondary}>#{round.round}</Text>{' '}
+                <Text>{summary}</Text>
+                {stats ? (
+                  <Text color={theme.text.secondary}> ({stats})</Text>
+                ) : null}
+              </Text>
+            );
+          },
+        )}
       </Box>
     </Box>
   );

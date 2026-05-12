@@ -38,6 +38,7 @@ export const ToolNames = {
   DOCX_EXTRACT: 'docx_extract',
   WRITE_DOCX: 'write_docx',
   READ_STYLE_DOCX: 'read_style_docx',
+  EDIT_DOCX: 'edit_docx',
   WRITE_PPTX: 'write_pptx',
   LS: 'list_directory',
   LSP: 'lsp',
@@ -48,7 +49,8 @@ export const ToolNames = {
   TASK_STOP: 'task_stop',
   SEND_MESSAGE: 'send_message',
   MONITOR: 'monitor',
-  GOOGLE_SEARCH: 'google_search',
+  SEARCH_WEB: 'search_web',
+  JOURNAL_SINTA_SEARCH: 'journal_sinta_search',
 } as const;
 
 /**
@@ -77,6 +79,7 @@ export const ToolDisplayNames = {
   DOCX_EXTRACT: 'ReadFileDocx',
   WRITE_DOCX: 'WriteDocx',
   READ_STYLE_DOCX: 'ReadStyleDocx',
+  EDIT_DOCX: 'EditDocx',
   WRITE_PPTX: 'WritePptx',
   LS: 'ListFiles',
   LSP: 'Lsp',
@@ -87,7 +90,8 @@ export const ToolDisplayNames = {
   TASK_STOP: 'TaskStop',
   SEND_MESSAGE: 'SendMessage',
   MONITOR: 'Monitor',
-  GOOGLE_SEARCH: 'GoogleSearch',
+  SEARCH_WEB: 'SearchWeb',
+  JOURNAL_SINTA_SEARCH: 'JournalSintaSearch',
 } as const;
 
 // Migration from old tool names to new tool names

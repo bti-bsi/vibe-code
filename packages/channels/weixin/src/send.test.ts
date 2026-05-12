@@ -37,6 +37,7 @@ vi.mock('node:fs', async (importOriginal) => {
     statSync: mockStatSync,
     realpathSync: mockRealpathSync,
     openSync: vi.fn(() => 42),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     readSync: vi.fn((_fd: number, buffer: any) => {
       PNG_HEADER.copy(buffer);
       return PNG_HEADER.length;
@@ -69,9 +70,8 @@ vi.mock('./api.js', () => ({
 const { encryptAesEcb, computeMd5 } =
   await vi.importActual<typeof import('./media.js')>('./media.js');
 
-const { sendImage, detectImageMime, validateImagePath } = await import(
-  './send.js'
-);
+const { sendImage, detectImageMime, validateImagePath } =
+  await import('./send.js');
 
 describe('markdownToPlainText', () => {
   it('strips code blocks', () => {
@@ -192,6 +192,7 @@ describe('validateImagePath', () => {
       isFile: () => true,
       size: 100,
     } as unknown as ReturnType<(typeof fs)['statSync']>);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(fs.readSync).mockImplementation((_fd: number, buffer: any) => {
       PNG_HEADER.copy(buffer);
       return PNG_HEADER.length;
@@ -242,6 +243,7 @@ describe('validateImagePath', () => {
 
   it('rejects image with magic bytes that do not match extension', () => {
     // readSync returns JPEG magic, but file extension is .png
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(fs.readSync).mockImplementation((_fd: number, buffer: any) => {
       const jpegMagic = Buffer.from([0xff, 0xd8, 0xff]);
       buffer.set(jpegMagic);

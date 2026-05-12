@@ -64,7 +64,11 @@ const renderAuthDialog = (
   return renderWithProviders(
     <UIStateContext.Provider value={uiState}>
       <UIActionsContext.Provider value={uiActions}>
-        {startInApiKeyFlow ? <AuthDialogWithMode startInApiKeyFlow /> : <AuthDialog />}
+        {startInApiKeyFlow ? (
+          <AuthDialogWithMode startInApiKeyFlow />
+        ) : (
+          <AuthDialog />
+        )}
       </UIActionsContext.Provider>
     </UIStateContext.Provider>,
     { settings, config: mockConfig },
@@ -574,7 +578,9 @@ describe('AuthDialog', () => {
     // Should show error message instead of calling handleAuthSelect
     await vi.waitFor(() => {
       const frame = lastFrame();
-      expect(frame).toContain('You must configure API authentication to proceed.');
+      expect(frame).toContain(
+        'You must configure API authentication to proceed.',
+      );
       expect(frame).toContain('Press Ctrl+C again to exit');
     });
     expect(handleAuthSelect).not.toHaveBeenCalled();
@@ -786,12 +792,17 @@ describe('AuthDialog Custom API Key Wizard', () => {
 
       await vi.waitFor(() => {
         const frame = lastFrame();
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('https://api.mistral.ai/v1');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('https://api.openai.com/v1');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('https://api.groq.com/openai/v1');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain(
           'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
         );
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('Custom');
       });
 
@@ -844,11 +855,17 @@ describe('AuthDialog Custom API Key Wizard', () => {
 
       await vi.waitFor(() => {
         const frame = lastFrame();
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('Step 6/6 · Review');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('The following JSON will be saved');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('VIBE_CUSTOM_API_KEY_OPENAI');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('vibe/vibe3-coder');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('gpt-4.1');
+        // eslint-disable-next-line vitest/no-standalone-expect
         expect(frame).toContain('Enter to save');
       });
 

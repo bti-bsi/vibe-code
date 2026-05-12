@@ -8,10 +8,7 @@
 import type { CommandModule } from 'yargs';
 import { loadSettings, SettingScope } from '../../config/settings.js';
 import { writeStdoutLine, writeStderrLine } from '../../utils/stdioHelpers.js';
-import type {
-  MCPServerConfig,
-  MCPOAuthConfig,
-} from '@vibe-bti/vibe-code-core';
+import type { MCPServerConfig, MCPOAuthConfig } from '@vibe-bti/vibe-code-core';
 
 async function addMcpServer(
   name: string,
@@ -75,11 +72,11 @@ async function addMcpServer(
 
   const hasOAuth = Boolean(
     oauthClientId ||
-      oauthClientSecret ||
-      oauthRedirectUri ||
-      oauthAuthorizationUrl ||
-      oauthTokenUrl ||
-      (scopes && scopes.length > 0),
+    oauthClientSecret ||
+    oauthRedirectUri ||
+    oauthAuthorizationUrl ||
+    oauthTokenUrl ||
+    (scopes && scopes.length > 0),
   );
 
   // OAuth only applies to remote HTTP/SSE transports. Reject mixing with stdio

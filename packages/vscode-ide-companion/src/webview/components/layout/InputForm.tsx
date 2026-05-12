@@ -8,7 +8,10 @@
  */
 
 import type { ClipboardEvent, FC, ReactNode } from 'react';
-import { InputForm as BaseInputForm, getEditModeIcon } from '@vibe-bti/vibe-code-webui';
+import {
+  InputForm as BaseInputForm,
+  getEditModeIcon,
+} from '@vibe-bti/vibe-code-webui';
 import type {
   InputFormProps as BaseInputFormProps,
   EditModeInfo,
@@ -22,8 +25,10 @@ import { ModelSelector } from './ModelSelector.js';
 /**
  * Extended props that accept ApprovalModeValue and ModelSelector
  */
-export interface InputFormProps
-  extends Omit<BaseInputFormProps, 'editModeInfo' | 'onCompletionFill'> {
+export interface InputFormProps extends Omit<
+  BaseInputFormProps,
+  'editModeInfo' | 'onCompletionFill'
+> {
   /** Edit mode value (local type) */
   editMode: ApprovalModeValue;
   /** Optional paste handler forwarded to the base input */

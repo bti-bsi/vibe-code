@@ -22,7 +22,10 @@ import {
   shouldSendMessage,
   useMessageSubmit,
 } from './hooks/useMessageSubmit.js';
-import type { PermissionOption, PermissionToolCall } from '@vibe-bti/vibe-code-webui';
+import type {
+  PermissionOption,
+  PermissionToolCall,
+} from '@vibe-bti/vibe-code-webui';
 import { stripZeroWidthSpaces } from '@vibe-bti/vibe-code-webui';
 import type { TextMessage } from './hooks/message/useMessageHandling.js';
 import type { ToolCallData } from './components/messages/toolcalls/ToolCall.js';

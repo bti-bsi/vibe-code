@@ -232,7 +232,7 @@ async function fetchPaperInfoWithScopusAPI(
   publisherUrl: string;
 } | null> {
   const url = `https://api.elsevier.com/content/abstract/doi/${doi}?view=FULL`;
-  
+
   try {
     const response = await new Promise<string>((resolve, reject) => {
       const reqClient = https;
@@ -241,7 +241,7 @@ async function fetchPaperInfoWithScopusAPI(
         {
           headers: {
             'X-ELS-APIKey': apiKey,
-            'Accept': 'application/json',
+            Accept: 'application/json',
           },
           signal,
         },
@@ -249,7 +249,7 @@ async function fetchPaperInfoWithScopusAPI(
           let data = '';
           res.on('data', (chunk) => (data += chunk));
           res.on('end', () => resolve(data));
-        }
+        },
       );
       req.on('error', reject);
     });
@@ -257,28 +257,38 @@ async function fetchPaperInfoWithScopusAPI(
     const json = JSON.parse(response);
     const coredata = json['abstracts-retrieval-response']?.['coredata'];
     const item = json['abstracts-retrieval-response']?.['item'];
-    
+
     if (!coredata) return null;
 
     // Extract abstract from various possible locations in the JSON
     let abstract = coredata['dc:description'] || '';
-    if (!abstract && item?.['bibrecord']?.['head']?.['abstracts']?.['abstract']) {
+    if (
+      !abstract &&
+      item?.['bibrecord']?.['head']?.['abstracts']?.['abstract']
+    ) {
       const abstractObj = item['bibrecord']['head']['abstracts']['abstract'];
-      const abstractArr = Array.isArray(abstractObj) ? abstractObj : [abstractObj];
+      const abstractArr = Array.isArray(abstractObj)
+        ? abstractObj
+        : [abstractObj];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       abstract = abstractArr.map((a: any) => a['ce:para'] || '').join('\n\n');
     }
 
     // Extract PDF link/publisher link
     const links = coredata['link'] || [];
-    const scopusUrl = links.find((l: any) => l['@rel'] === 'scopus')?.['@href'] || '';
-    const fullTextUrl = links.find((l: any) => l['@rel'] === 'full-text')?.['@href'] || '';
+    const scopusUrl =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      links.find((l: any) => l['@rel'] === 'scopus')?.['@href'] || '';
+    const fullTextUrl =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      links.find((l: any) => l['@rel'] === 'full-text')?.['@href'] || '';
 
     return {
       abstract: abstract.trim(),
       pdfLink: fullTextUrl,
       publisherUrl: scopusUrl,
     };
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -404,9 +414,11 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
   ): Promise<ToolResult> {
     const dois = this.params.dois;
     const apiKey = this.params.apiKey || this.config?.getScopusApiKey();
-    
+
     if (apiKey) {
-      this.debugLogger.info('[ScopusAbstractPDFTool] Using Scopus API key for metadata extraction');
+      this.debugLogger.info(
+        '[ScopusAbstractPDFTool] Using Scopus API key for metadata extraction',
+      );
     }
 
     if (dois.length === 0) {
@@ -465,14 +477,14 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
   ): Promise<DOIFetchResult[]> {
     const results: DOIFetchResult[] = [];
     let completedCount = 0;
-    
+
     const reportProgress = (msg: string) => {
       this.currentProgress = msg;
       if (updateOutput) {
         updateOutput(msg);
       }
     };
-    
+
     reportProgress(`Preparing to fetch ${dois.length} DOIs...`);
 
     // Process in batches of `concurrency` size
@@ -489,6 +501,10 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
             error: 'Aborted',
           };
         }
+
+        reportProgress(
+          `Processing ${completedCount + 1} of ${dois.length}: ${doi}...`,
+        );
 
         try {
           const paperInfo = await fetchPaperInfo(
@@ -516,7 +532,6 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
           };
         } finally {
           completedCount++;
-          reportProgress(`Processed ${completedCount} of ${dois.length} DOIs...`);
         }
       });
 
@@ -525,10 +540,12 @@ class ScopusAbstractPDFToolInvocation extends BaseToolInvocation<
 
       // Small delay between batches to avoid rate limiting
       if (i + concurrency < dois.length) {
+        reportProgress(`Batch complete. Waiting 1.5s before next batch...`);
         await new Promise((r) => setTimeout(r, 1500));
       }
     }
 
+    reportProgress(`Finished processing ${results.length} DOIs.`);
     return results;
   }
 

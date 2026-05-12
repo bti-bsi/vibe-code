@@ -229,7 +229,11 @@ import { Tooltip } from '@vibe-bti/vibe-code-webui';
 ### Icons
 
 ```tsx
-import { FileIcon, FolderIcon, CheckIcon } from '@vibe-bti/vibe-code-webui/icons';
+import {
+  FileIcon,
+  FolderIcon,
+  CheckIcon,
+} from '@vibe-bti/vibe-code-webui/icons';
 
 <FileIcon size={16} className="text-gray-500" />;
 ```
@@ -263,7 +267,10 @@ Available icon categories:
 The Platform Context provides an abstraction layer for platform-specific capabilities:
 
 ```tsx
-import { PlatformProvider, usePlatform } from '@vibe-bti/vibe-code-webui/context';
+import {
+  PlatformProvider,
+  usePlatform,
+} from '@vibe-bti/vibe-code-webui/context';
 
 const platformContext = {
   postMessage: (message) => vscode.postMessage(message),

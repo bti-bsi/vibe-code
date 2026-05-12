@@ -78,7 +78,7 @@ Contributors to the project will want to run the CLI directly from the source co
 
 You can run the most recently committed version of Vibe Code directly from the GitHub repository. This is useful for testing features still in development.
 
-```bash
+````bash
 # Execute the CLI directly from the main branch on GitHub
 npx https://github.com/vibe-bti/vibe-code ```
 
@@ -114,3 +114,4 @@ The release process is automated through GitHub Actions. The release workflow pe
 1.  Build the NPM packages using `tsc`.
 2.  Publish the NPM packages to the artifact registry.
 3.  Create GitHub releases with bundled assets.
+````

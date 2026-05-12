@@ -139,7 +139,8 @@ export default {
     'Konfigurasi informasi autentikasi untuk login',
   'Copy the last result or code snippet to clipboard':
     'Salin hasil atau cuplikan kode terakhir ke clipboard',
-  'View and edit Vibe Code configuration': 'Lihat dan ubah konfigurasi Vibe Code',
+  'View and edit Vibe Code configuration':
+    'Lihat dan ubah konfigurasi Vibe Code',
   'Configuration Menu': 'Menu Konfigurasi',
   'Scopus API': 'Scopus API',
   'Telegram Channel': 'Saluran Telegram',

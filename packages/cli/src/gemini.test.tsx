@@ -229,12 +229,10 @@ describe('gemini.tsx main function', () => {
     const originalArgv = process.argv;
     process.argv = ['node', 'script.js', '--bare'];
 
-    const { loadCliConfig, parseArguments } = await import(
-      './config/config.js'
-    );
-    const { loadSettings, createMinimalSettings } = await import(
-      './config/settings.js'
-    );
+    const { loadCliConfig, parseArguments } =
+      await import('./config/config.js');
+    const { loadSettings, createMinimalSettings } =
+      await import('./config/settings.js');
     const { loadSandboxConfig } = await import('./config/sandboxConfig.js');
     const { relaunchAppInChildProcess } = await import('./utils/relaunch.js');
     const nonInteractiveModule = await import('./nonInteractiveCli.js');
@@ -373,18 +371,16 @@ describe('gemini.tsx main function', () => {
         throw new MockProcessExitError(code);
       });
 
-    const { loadCliConfig, parseArguments } = await import(
-      './config/config.js'
-    );
+    const { loadCliConfig, parseArguments } =
+      await import('./config/config.js');
     const { loadSettings } = await import('./config/settings.js');
     const cleanupModule = await import('./utils/cleanup.js');
     const validatorModule = await import('./validateNonInterActiveAuth.js');
     const streamJsonModule = await import('./nonInteractive/session.js');
     const initializerModule = await import('./core/initializer.js');
     const startupWarningsModule = await import('./utils/startupWarnings.js');
-    const userStartupWarningsModule = await import(
-      './utils/userStartupWarnings.js'
-    );
+    const userStartupWarningsModule =
+      await import('./utils/userStartupWarnings.js');
 
     vi.mocked(cleanupModule.cleanupCheckpoints).mockResolvedValue(undefined);
     vi.mocked(cleanupModule.registerCleanup).mockImplementation(() => {});
@@ -546,12 +542,10 @@ describe('gemini.tsx main function kitty protocol', () => {
   });
 
   it('should call setRawMode and detectAndEnableKittyProtocol when isInteractive is true', async () => {
-    const { detectAndEnableKittyProtocol } = await import(
-      './ui/utils/kittyProtocolDetector.js'
-    );
-    const { loadCliConfig, parseArguments } = await import(
-      './config/config.js'
-    );
+    const { detectAndEnableKittyProtocol } =
+      await import('./ui/utils/kittyProtocolDetector.js');
+    const { loadCliConfig, parseArguments } =
+      await import('./config/config.js');
     const { loadSettings } = await import('./config/settings.js');
     vi.mocked(loadCliConfig).mockResolvedValue({
       isInteractive: () => true,
@@ -640,9 +634,8 @@ describe('gemini.tsx main function kitty protocol', () => {
   });
 
   it('should run cleanup before exiting on interactive SIGINT', async () => {
-    const { loadCliConfig, parseArguments } = await import(
-      './config/config.js'
-    );
+    const { loadCliConfig, parseArguments } =
+      await import('./config/config.js');
     const { loadSettings } = await import('./config/settings.js');
     const cleanupModule = await import('./utils/cleanup.js');
     const signalHandlers = new Map<string, (...args: unknown[]) => void>();

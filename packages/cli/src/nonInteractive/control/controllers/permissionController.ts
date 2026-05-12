@@ -20,10 +20,7 @@ import type {
   ToolMcpConfirmationDetails,
   ApprovalMode,
 } from '@vibe-bti/vibe-code-core';
-import {
-  InputFormat,
-  ToolConfirmationOutcome,
-} from '@vibe-bti/vibe-code-core';
+import { InputFormat, ToolConfirmationOutcome } from '@vibe-bti/vibe-code-core';
 import type {
   CLIControlPermissionRequest,
   CLIControlSetPermissionModeRequest,

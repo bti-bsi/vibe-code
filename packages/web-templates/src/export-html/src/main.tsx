@@ -13,18 +13,16 @@ declare global {
 }
 
 const ReactDOM = window.ReactDOM;
-const React = window.React;
 
 declare const VibeCodeWebUI: {
   ChatViewer: (props: {
     messages: unknown[];
     autoScroll: boolean;
     theme: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) => any;
-  PlatformProvider: (props: {
-    value: unknown;
-    children: any;
-  }) => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  PlatformProvider: (props: { value: unknown; children: any }) => any;
 };
 
 const { ChatViewer, PlatformProvider } = VibeCodeWebUI;

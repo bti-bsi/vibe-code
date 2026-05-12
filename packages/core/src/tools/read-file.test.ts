@@ -758,9 +758,8 @@ describe('ReadFileTool', () => {
         const previousLocal = process.env['VIBE_CODE_MEMORY_LOCAL'];
         process.env['VIBE_CODE_MEMORY_LOCAL'] = '1';
         try {
-          const { getAutoMemoryRoot, clearAutoMemoryRootCache } = await import(
-            '../memory/paths.js'
-          );
+          const { getAutoMemoryRoot, clearAutoMemoryRootCache } =
+            await import('../memory/paths.js');
           clearAutoMemoryRootCache();
           const memRoot = getAutoMemoryRoot(tempRootDir);
           await fsp.mkdir(memRoot, { recursive: true });
@@ -782,8 +781,11 @@ describe('ReadFileTool', () => {
           const status = fileReadCache.check(fs.statSync(memFile));
           expect(status.state).toBe('fresh');
           if (status.state === 'fresh') {
+            // eslint-disable-next-line vitest/no-conditional-expect
             expect(status.entry.lastReadAt).toBeDefined();
+            // eslint-disable-next-line vitest/no-conditional-expect
             expect(status.entry.lastReadWasFull).toBe(true);
+            // eslint-disable-next-line vitest/no-conditional-expect
             expect(status.entry.lastReadCacheable).toBe(true);
           }
         } finally {
@@ -819,8 +821,11 @@ describe('ReadFileTool', () => {
         const status = fileReadCache.check(fs.statSync(svgPath));
         expect(status.state).toBe('fresh');
         if (status.state === 'fresh') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(status.entry.lastReadAt).toBeDefined();
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(status.entry.lastReadWasFull).toBe(true);
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(status.entry.lastReadCacheable).toBe(true);
         }
       });

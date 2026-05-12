@@ -9,8 +9,7 @@ import type { ToolInvocation, ToolResult } from './tools.js';
 import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { ToolNames, ToolDisplayNames } from './tool-names.js';
 import { createDebugLogger, type DebugLogger } from '../utils/debugLogger.js';
-import https from 'node:https';
-import zlib from 'node:zlib';
+import { request } from 'undici';
 import type { Config } from '../config/config.js';
 
 const SCOPUS_API_BASE_URL = 'https://api.elsevier.com/content/search/scopus';
@@ -19,79 +18,79 @@ const SCOPUS_API_TIMEOUT_MS = 30000;
 const BROWSER_USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0';
 
-function decompressBody(body: Buffer, encoding: string | undefined): string {
-  if (!encoding) return body.toString('utf-8');
-
-  try {
-    if (encoding.includes('br')) {
-      return zlib.brotliDecompressSync(body).toString('utf-8');
-    }
-    if (encoding.includes('gzip')) {
-      return zlib.gunzipSync(body).toString('utf-8');
-    }
-    if (encoding.includes('deflate')) {
-      return zlib.inflateSync(body).toString('utf-8');
-    }
-  } catch {
-    // Fallback to raw body if decompression fails
-  }
-  return body.toString('utf-8');
+interface ScopusEntryResult {
+  judul: string;
+  tahun: string;
+  penulis: string;
+  sitasi: number;
+  kata_kunci: string[];
+  abstrak: string;
 }
 
-async function scopusGet(
-  url: string,
-  apiKey: string,
-  timeoutMs: number = SCOPUS_API_TIMEOUT_MS,
-): Promise<Response> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error(`Request timed out after ${timeoutMs}ms`));
-    }, timeoutMs);
+interface ProcessedEntries {
+  daftarArtikel: ScopusEntryResult[];
+  penghitungTahun: Record<string, number>;
+  penghitungKataKunci: Record<string, number>;
+}
 
-    const req = https.get(
-      url,
-      {
-        headers: {
-          Accept: 'application/json',
-          'X-ELS-APIKey': apiKey,
-          'User-Agent': BROWSER_USER_AGENT,
-          'Accept-Language': 'en-US,en;q=0.5',
-        },
-        timeout: timeoutMs,
-      },
-      (res) => {
-        const chunks: Buffer[] = [];
-        res.on('data', (chunk: Buffer) => chunks.push(chunk));
-        res.on('end', () => {
-          clearTimeout(timer);
-          const fullBuffer = Buffer.concat(chunks);
-          const contentEncoding = res.headers['content-encoding'];
-          const bodyText = decompressBody(fullBuffer, contentEncoding);
-          resolve(
-            new Response(bodyText, {
-              status: res.statusCode || 500,
-              statusText: res.statusMessage || '',
-              headers: {
-                'Content-Type':
-                  res.headers['content-type'] || 'application/json',
-              },
-            }),
-          );
-        });
-      },
-    );
+function formatPenulis(penulisArray: string[]): string {
+  if (penulisArray.length === 0) return 'Penulis tidak diketahui';
+  if (penulisArray.length <= 3) return penulisArray.join(', ');
+  return `${penulisArray.slice(0, 3).join(', ')} dkk.`;
+}
 
-    req.on('error', (err) => {
-      clearTimeout(timer);
-      reject(err);
+function strVal(v: unknown, fallback = ''): string {
+  if (v === null || v === undefined) return fallback;
+  if (typeof v === 'string') return v || fallback;
+  if (typeof v === 'number') return String(v);
+  return fallback;
+}
+
+function processEntries(entries: Array<Record<string, unknown>>): ProcessedEntries {
+  const daftarArtikel: ScopusEntryResult[] = [];
+  const penghitungTahun: Record<string, number> = {};
+  const penghitungKataKunci: Record<string, number> = {};
+
+  for (const item of entries) {
+    const judul = strVal(item['dc:title'], 'Tidak ada judul');
+    const coverDate = strVal(item['prism:coverDate']);
+    const tahun = coverDate ? coverDate.substring(0, 4) : 'Tidak diketahui';
+    const sitasi = Number.parseInt(strVal(item['citedby-count'], '0'), 10);
+    const abstrakRaw =
+      strVal(item['dc:description']) ||
+      strVal(item['abstract']) ||
+      'Tidak ada abstrak';
+    const abstrak =
+      abstrakRaw.length > 200
+        ? `${abstrakRaw.substring(0, 200)}...`
+        : abstrakRaw;
+
+    const penulis = formatPenulis(parseAuthors(item['dc:creator']));
+
+    const daftarKataKunci = strVal(item['authkeywords'])
+      .split('|')
+      .map((k) => k.trim())
+      .filter(Boolean);
+
+    if (tahun !== 'Tidak diketahui') {
+      penghitungTahun[tahun] = (penghitungTahun[tahun] || 0) + 1;
+    }
+    for (const kk of daftarKataKunci) {
+      const kkl = kk.toLowerCase();
+      penghitungKataKunci[kkl] = (penghitungKataKunci[kkl] || 0) + 1;
+    }
+
+    daftarArtikel.push({
+      judul,
+      tahun,
+      penulis,
+      sitasi,
+      kata_kunci: daftarKataKunci,
+      abstrak,
     });
+  }
 
-    req.on('timeout', () => {
-      req.destroy();
-      clearTimeout(timer);
-      reject(new Error(`Request timed out after ${timeoutMs}ms`));
-    });
-  });
+  return { daftarArtikel, penghitungTahun, penghitungKataKunci };
 }
 
 function parseAuthors(creator: unknown): string[] {
@@ -151,9 +150,10 @@ class ScopusAnalyticTrendToolInvocation extends BaseToolInvocation<
 
   async execute(_signal: AbortSignal): Promise<ToolResult> {
     const apiKey = this.params.apiKey || this.config?.getScopusApiKey();
-    
+
     if (!apiKey) {
-      const errorMessage = 'Scopus API key is missing. Please configure it via the /config command or provide it in the tool parameters.';
+      const errorMessage =
+        'Scopus API key is missing. Please configure it via the /config command or provide it in the tool parameters.';
       this.debugLogger.error(`[ScopusAnalyticTrendTool] ${errorMessage}`);
       return {
         llmContent: JSON.stringify({ error: errorMessage }),
@@ -173,21 +173,27 @@ class ScopusAnalyticTrendToolInvocation extends BaseToolInvocation<
     url.searchParams.set('sort', '-coverDate');
     url.searchParams.set('view', 'STANDARD');
     url.searchParams.set('httpAccept', 'application/json');
-    
+
     this.debugLogger.debug(
       `[ScopusAnalyticTrendTool] Analyzing trends for: ${kataKunci}`,
     );
 
     try {
-      const response = await scopusGet(
-        url.toString(),
-        apiKey,
-        SCOPUS_API_TIMEOUT_MS,
-      );
+      const { statusCode, body: responseBody } = await request(url.toString(), {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'X-ELS-APIKey': apiKey,
+          'User-Agent': BROWSER_USER_AGENT,
+          'Accept-Language': 'en-US,en;q=0.5',
+        },
+        bodyTimeout: SCOPUS_API_TIMEOUT_MS,
+        headersTimeout: SCOPUS_API_TIMEOUT_MS,
+      });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = `Scopus API request failed with status ${response.status}`;
+      if (statusCode < 200 || statusCode >= 300) {
+        const errorText = await responseBody.text();
+        let errorMessage = `Scopus API request failed with status ${statusCode}`;
         try {
           const errorJson = JSON.parse(errorText);
           if (errorJson?.['service-error']?.['status']?.[0]) {
@@ -201,8 +207,11 @@ class ScopusAnalyticTrendToolInvocation extends BaseToolInvocation<
         this.debugLogger.error(`[ScopusAnalyticTrendTool] ${errorMessage}`);
 
         return {
-          llmContent: JSON.stringify({ error: errorMessage, status: response.status }),
-          returnDisplay: `Scopus analytic failed: ${response.status}`,
+          llmContent: JSON.stringify({
+            error: errorMessage,
+            status: statusCode,
+          }),
+          returnDisplay: `Scopus analytic failed: ${statusCode}`,
           error: {
             type: ToolErrorType.SCOPE_SEARCH_FAILED,
             message: errorMessage,
@@ -210,63 +219,23 @@ class ScopusAnalyticTrendToolInvocation extends BaseToolInvocation<
         };
       }
 
-      const data = await response.json();
-      const searchResults = data['search-results'] || {};
-      const entries = searchResults.entry || [];
-      const totalHasilDiDatabase = parseInt(searchResults['opensearch:totalResults'] || '0', 10);
+      const data = await responseBody.json();
+      const searchResults =
+        ((data as Record<string, unknown>)['search-results'] as Record<
+          string,
+          unknown
+        >) || {};
+      const entries = (searchResults['entry'] || []) as Array<Record<
+        string,
+        unknown
+      >>;
+      const totalHasilDiDatabase = Number.parseInt(
+        strVal(searchResults['opensearch:totalResults'], '0'),
+        10,
+      );
 
-      const daftarArtikel: any[] = [];
-      const penghitungTahun: Record<string, number> = {};
-      const penghitungKataKunci: Record<string, number> = {};
-
-      for (const item of entries) {
-        const judul = item['dc:title'] || 'Tidak ada judul';
-        const coverDate = item['prism:coverDate'] || '';
-        const tahun = coverDate ? coverDate.substring(0, 4) : 'Tidak diketahui';
-        const sitasi = parseInt(item['citedby-count'] || '0', 10);
-        const abstrak = item['dc:description'] || item['abstract'] || 'Tidak ada abstrak';
-        
-        const penulisArray = parseAuthors(item['dc:creator']);
-        let penulisBerformat = '';
-        if (penulisArray.length > 0) {
-          if (penulisArray.length <= 3) {
-            penulisBerformat = penulisArray.join(', ');
-          } else {
-            penulisBerformat = `${penulisArray.slice(0, 3).join(', ')} dkk.`;
-          }
-        } else {
-          penulisBerformat = 'Penulis tidak diketahui';
-        }
-
-        let abstrakBerformat = abstrak;
-        if (abstrakBerformat.length > 200) {
-          abstrakBerformat = abstrakBerformat.substring(0, 200) + '...';
-        }
-
-        const authkeywordsStr = item['authkeywords'] || '';
-        const daftarKataKunci = authkeywordsStr
-          .split('|')
-          .map((k: string) => k.trim())
-          .filter(Boolean);
-
-        if (tahun !== 'Tidak diketahui') {
-          penghitungTahun[tahun] = (penghitungTahun[tahun] || 0) + 1;
-        }
-
-        for (const kk of daftarKataKunci) {
-          const kkl = kk.toLowerCase();
-          penghitungKataKunci[kkl] = (penghitungKataKunci[kkl] || 0) + 1;
-        }
-
-        daftarArtikel.push({
-          judul,
-          tahun,
-          penulis: penulisBerformat,
-          sitasi,
-          kata_kunci: daftarKataKunci,
-          abstrak: abstrakBerformat
-        });
-      }
+      const { daftarArtikel, penghitungTahun, penghitungKataKunci } =
+        processEntries(entries);
 
       const trenTahunBerurutan = Object.entries(penghitungTahun)
         .sort(([tahunA], [tahunB]) => tahunA.localeCompare(tahunB))
@@ -285,7 +254,7 @@ class ScopusAnalyticTrendToolInvocation extends BaseToolInvocation<
         jumlah_artikel_dianalisis: daftarArtikel.length,
         tren_publikasi_per_tahun: trenTahunBerurutan,
         kata_kunci_terpopuler: topKataKunci,
-        sampel_artikel_teratas: sampelArtikelTeratas
+        sampel_artikel_teratas: sampelArtikelTeratas,
       };
 
       const resultJson = JSON.stringify(hasilAnalisis, null, 2);
@@ -294,14 +263,16 @@ class ScopusAnalyticTrendToolInvocation extends BaseToolInvocation<
         llmContent: resultJson,
         returnDisplay: `Successfully analyzed trends for ${kataKunci}`,
       };
-
     } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
           : 'Unknown error occurred during Scopus analytic trend';
 
-      this.debugLogger.error(`[ScopusAnalyticTrendTool] ${errorMessage}`, error);
+      this.debugLogger.error(
+        `[ScopusAnalyticTrendTool] ${errorMessage}`,
+        error,
+      );
 
       return {
         llmContent: JSON.stringify({ error: errorMessage }),
@@ -320,7 +291,7 @@ export class ScopusAnalyticTrendTool extends BaseDeclarativeTool<
   ToolResult
 > {
   static readonly Name: string = ToolNames.SCOPUS_ANALYTIC_TREND;
-  private config?: Config;
+  private readonly config?: Config;
 
   constructor(config?: Config) {
     super(
@@ -335,7 +306,8 @@ export class ScopusAnalyticTrendTool extends BaseDeclarativeTool<
             type: 'string',
           },
           apiKey: {
-            description: 'Scopus API key for authentication. Optional if configured in settings.',
+            description:
+              'Scopus API key for authentication. Optional if configured in settings.',
             type: 'string',
           },
           maksHasil: {

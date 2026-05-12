@@ -806,10 +806,12 @@ describe('CoreToolScheduler', () => {
 
       if (completedCall.status === 'error') {
         const errorMessage = completedCall.response.error?.message;
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(errorMessage).toBe(
           'Vibe Code requires permission to use write_file, but that permission was declined.',
         );
         // Should NOT contain "not found in registry"
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(errorMessage).not.toContain('not found in registry');
       }
     });
@@ -896,8 +898,10 @@ describe('CoreToolScheduler', () => {
       if (completedCall.status === 'error') {
         const errorMessage = completedCall.response.error?.message;
         // Should contain "not found in registry"
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(errorMessage).toContain('not found in registry');
         // Should NOT contain permission message
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(errorMessage).not.toContain('requires permission');
       }
     });
@@ -1459,6 +1463,7 @@ describe('CoreToolScheduler YOLO mode', () => {
     const completedCall = completedCalls[0];
     expect(completedCall.status).toBe('success');
     if (completedCall.status === 'success') {
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(completedCall.response.resultDisplay).toBe('Tool executed');
     }
   });
@@ -1611,7 +1616,10 @@ describe('CoreToolScheduler execution diagnostics', () => {
 
     let resolveExecution: ((result: ToolResult) => void) | undefined;
 
-    class SlowInvocation extends BaseToolInvocation<{ id: string }, ToolResult> {
+    class SlowInvocation extends BaseToolInvocation<
+      { id: string },
+      ToolResult
+    > {
       getDescription(): string {
         return `Slow tool ${this.params.id}`;
       }
@@ -1711,7 +1719,9 @@ describe('CoreToolScheduler execution diagnostics', () => {
       const updates = onToolCallsUpdate.mock.calls;
       const last = updates[updates.length - 1]?.[0][0] as ToolCall | undefined;
       expect(last?.status).toBe('executing');
-      expect(last && 'liveOutput' in last ? last.liveOutput : undefined).toEqual(
+      expect(
+        last && 'liveOutput' in last ? last.liveOutput : undefined,
+      ).toEqual(
         expect.objectContaining({
           type: 'tool_execution_diagnostic',
           outputUpdates: 0,
@@ -1748,7 +1758,10 @@ describe('CoreToolScheduler execution diagnostics', () => {
       }
     }
 
-    class StreamingTool extends BaseDeclarativeTool<{ id: string }, ToolResult> {
+    class StreamingTool extends BaseDeclarativeTool<
+      { id: string },
+      ToolResult
+    > {
       constructor() {
         super(
           'streaming-debug-tool',
@@ -2321,7 +2334,9 @@ describe('CoreToolScheduler truncated output protection', () => {
 
     if (completedCall.status === 'error') {
       const errorMessage = completedCall.response.error?.message;
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(errorMessage).toContain('truncated due to max_tokens limit');
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(errorMessage).toContain(
         'rejected to prevent writing truncated content',
       );
@@ -2443,10 +2458,13 @@ describe('CoreToolScheduler truncated output protection', () => {
 
     if (completedCall.status === 'error') {
       const errorMessage = completedCall.response.error?.message;
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(errorMessage).toContain('truncated due to max_tokens limit');
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(errorMessage).toContain(
         'rejected to prevent writing truncated content',
       );
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(errorMessage).not.toContain(
         "params must have required property 'content'",
       );
@@ -2931,6 +2949,7 @@ describe('CoreToolScheduler plan mode with ask_user_question', () => {
       .calls[0][0] as ToolCall[];
     expect(completedCalls[0].status).toBe('success');
     if (completedCalls[0].status === 'success') {
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(completedCalls[0].response.resultDisplay).toContain(
         'User has provided the following answers',
       );
@@ -2970,6 +2989,7 @@ describe('CoreToolScheduler plan mode with ask_user_question', () => {
       .calls[0][0] as ToolCall[];
     expect(completedCalls[0].status).toBe('error');
     if (completedCalls[0].status === 'error') {
+      // eslint-disable-next-line vitest/no-conditional-expect
       expect(completedCalls[0].response.resultDisplay).toBe(
         'Plan mode blocked a non-read-only tool call.',
       );
@@ -3274,9 +3294,8 @@ describe('Fire hook functions integration', () => {
 
   describe('firePostToolUseFailureHook', () => {
     it('should return additional context when hook provides it', async () => {
-      const { firePostToolUseFailureHook } = await import(
-        './toolHookTriggers.js'
-      );
+      const { firePostToolUseFailureHook } =
+        await import('./toolHookTriggers.js');
 
       const mockResponse: HookExecutionResponse = {
         type: MessageBusType.HOOK_EXECUTION_RESPONSE,
@@ -3305,9 +3324,8 @@ describe('Fire hook functions integration', () => {
     });
 
     it('should return empty object when no message bus is provided', async () => {
-      const { firePostToolUseFailureHook } = await import(
-        './toolHookTriggers.js'
-      );
+      const { firePostToolUseFailureHook } =
+        await import('./toolHookTriggers.js');
 
       const result = await firePostToolUseFailureHook(
         undefined,
@@ -3378,9 +3396,8 @@ describe('Fire hook functions integration', () => {
 
   describe('firePermissionRequestHook', () => {
     it('should return hasDecision: false when hook makes no decision', async () => {
-      const { firePermissionRequestHook } = await import(
-        './toolHookTriggers.js'
-      );
+      const { firePermissionRequestHook } =
+        await import('./toolHookTriggers.js');
 
       const mockResponse: HookExecutionResponse = {
         type: MessageBusType.HOOK_EXECUTION_RESPONSE,
@@ -3404,9 +3421,8 @@ describe('Fire hook functions integration', () => {
     });
 
     it('should return hasDecision: true with allow decision when hook allows', async () => {
-      const { firePermissionRequestHook } = await import(
-        './toolHookTriggers.js'
-      );
+      const { firePermissionRequestHook } =
+        await import('./toolHookTriggers.js');
 
       const mockResponse: HookExecutionResponse = {
         type: MessageBusType.HOOK_EXECUTION_RESPONSE,
@@ -3437,9 +3453,8 @@ describe('Fire hook functions integration', () => {
     });
 
     it('should return hasDecision: true with deny decision when hook denies', async () => {
-      const { firePermissionRequestHook } = await import(
-        './toolHookTriggers.js'
-      );
+      const { firePermissionRequestHook } =
+        await import('./toolHookTriggers.js');
 
       const mockResponse: HookExecutionResponse = {
         type: MessageBusType.HOOK_EXECUTION_RESPONSE,
@@ -3472,9 +3487,8 @@ describe('Fire hook functions integration', () => {
     });
 
     it('should return hasDecision: false when no message bus is provided', async () => {
-      const { firePermissionRequestHook } = await import(
-        './toolHookTriggers.js'
-      );
+      const { firePermissionRequestHook } =
+        await import('./toolHookTriggers.js');
 
       const result = await firePermissionRequestHook(
         undefined,

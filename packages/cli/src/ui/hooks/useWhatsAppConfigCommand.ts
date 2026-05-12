@@ -7,7 +7,8 @@
 import { useState, useCallback } from 'react';
 
 export function useWhatsAppConfigCommand() {
-  const [isWhatsAppConfigDialogOpen, setIsWhatsAppConfigDialogOpen] = useState(false);
+  const [isWhatsAppConfigDialogOpen, setIsWhatsAppConfigDialogOpen] =
+    useState(false);
 
   const openWhatsAppConfigDialog = useCallback(() => {
     setIsWhatsAppConfigDialogOpen(true);

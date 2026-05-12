@@ -624,7 +624,10 @@ class AgentToolInvocation extends BaseToolInvocation<AgentParams, ToolResult> {
         }
         if (outputTokens > 0) {
           accumulatedOutputTokens += outputTokens;
-          this.updateDisplay({ tokenCount: accumulatedOutputTokens }, updateOutput);
+          this.updateDisplay(
+            { tokenCount: accumulatedOutputTokens },
+            updateOutput,
+          );
         }
         this.syncRounds(updateOutput);
       },

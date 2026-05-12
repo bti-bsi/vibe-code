@@ -164,9 +164,12 @@ export function AuthDialogWithMode({
   );
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [viewLevel, setViewLevel] = useState<ViewLevel>('custom-protocol-select');
-  const [customProtocol, setCustomProtocol] =
-    useState<CustomProtocol>(resolvedInitialProtocol);
+  const [viewLevel, setViewLevel] = useState<ViewLevel>(
+    'custom-protocol-select',
+  );
+  const [customProtocol, setCustomProtocol] = useState<CustomProtocol>(
+    resolvedInitialProtocol,
+  );
   const [customBaseUrl, setCustomBaseUrl] = useState(
     DEFAULT_CUSTOM_BASE_URLS[resolvedInitialProtocol],
   );
@@ -199,7 +202,8 @@ export function AuthDialogWithMode({
     setCustomBaseUrl(defaultBaseUrl);
     setIsCustomBaseUrlInput(
       !CUSTOM_BASE_URL_OPTIONS.some(
-        (option) => option.value !== 'custom' && option.value === defaultBaseUrl,
+        (option) =>
+          option.value !== 'custom' && option.value === defaultBaseUrl,
       ),
     );
     setCustomBaseUrlError(null);
@@ -325,6 +329,8 @@ export function AuthDialogWithMode({
       case 'custom-review-json':
         setViewLevel('custom-advanced-config');
         return;
+      default:
+        break;
     }
   };
 
@@ -415,7 +421,8 @@ export function AuthDialogWithMode({
             initialIndex={Math.max(
               0,
               CUSTOM_BASE_URL_OPTIONS.findIndex(
-                (option) => option.value !== 'custom' && option.value === customBaseUrl,
+                (option) =>
+                  option.value !== 'custom' && option.value === customBaseUrl,
               ),
             )}
             onSelect={handleCustomBaseUrlOptionSelect}
@@ -445,7 +452,9 @@ export function AuthDialogWithMode({
       <Box marginTop={1}>
         <Link url={MODEL_PROVIDERS_DOCUMENTATION_URL} fallback={false}>
           <Text color={theme.text.link}>
-            {t('Need advanced generationConfig or capabilities? See documentation')}
+            {t(
+              'Need advanced generationConfig or capabilities? See documentation',
+            )}
           </Text>
         </Link>
       </Box>
@@ -523,7 +532,8 @@ export function AuthDialogWithMode({
 
   const renderCustomAdvancedConfigView = () => {
     const checkmark = (value: boolean) => (value ? '◉' : '○');
-    const cursor = (index: number) => (focusedConfigIndex === index ? '›' : ' ');
+    const cursor = (index: number) =>
+      focusedConfigIndex === index ? '›' : ' ';
 
     return (
       <Box marginTop={1} flexDirection="column">
@@ -536,19 +546,23 @@ export function AuthDialogWithMode({
           <Text
             color={focusedConfigIndex === 0 ? theme.status.success : undefined}
           >
-            {cursor(0)} {checkmark(advancedThinkingEnabled)} {t('Enable thinking')}
+            {cursor(0)} {checkmark(advancedThinkingEnabled)}{' '}
+            {t('Enable thinking')}
           </Text>
         </Box>
         <Box marginTop={0} marginLeft={4}>
           <Text color={theme.text.secondary}>
-            {t('Allows the model to perform extended reasoning before responding.')}
+            {t(
+              'Allows the model to perform extended reasoning before responding.',
+            )}
           </Text>
         </Box>
         <Box marginTop={1} marginLeft={2}>
           <Text
             color={focusedConfigIndex === 1 ? theme.status.success : undefined}
           >
-            {cursor(1)} {checkmark(advancedModalityEnabled)} {t('Enable modality')}
+            {cursor(1)} {checkmark(advancedModalityEnabled)}{' '}
+            {t('Enable modality')}
           </Text>
         </Box>
         <Box marginTop={0} marginLeft={4}>
@@ -558,7 +572,9 @@ export function AuthDialogWithMode({
         </Box>
         <Box marginTop={1}>
           <Text color={theme.text.secondary}>
-            {t('↑↓ to navigate, Space to toggle, Enter to continue, Esc to go back')}
+            {t(
+              '↑↓ to navigate, Space to toggle, Enter to continue, Esc to go back',
+            )}
           </Text>
         </Box>
       </Box>
@@ -651,6 +667,8 @@ export function AuthDialogWithMode({
         return t('Step 5/6 · Advanced Config');
       case 'custom-review-json':
         return t('Step 6/6 · Review');
+      default:
+        return '';
     }
   };
 
@@ -664,7 +682,8 @@ export function AuthDialogWithMode({
     >
       <Text bold>{getViewTitle()}</Text>
 
-      {viewLevel === 'custom-protocol-select' && renderCustomProtocolSelectView()}
+      {viewLevel === 'custom-protocol-select' &&
+        renderCustomProtocolSelectView()}
       {viewLevel === 'custom-base-url-input' && renderCustomBaseUrlInputView()}
       {viewLevel === 'custom-api-key-input' && renderCustomApiKeyInputView()}
       {viewLevel === 'custom-model-id-input' && renderCustomModelIdInputView()}

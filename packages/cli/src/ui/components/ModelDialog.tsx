@@ -104,7 +104,9 @@ function persistAuthTypeSelection(
   settings.setValue(scope, 'security.auth.selectedType', authType);
 }
 
-function isCustomModelAuthType(value: AuthType | undefined): value is CustomModelAuthType {
+function isCustomModelAuthType(
+  value: AuthType | undefined,
+): value is CustomModelAuthType {
   return (
     value === AuthType.USE_OPENAI ||
     value === AuthType.USE_ANTHROPIC ||
@@ -295,17 +297,16 @@ export function ModelDialog({
                 <Text color={theme.status.warning}> (Runtime)</Text>
               )}
               {isVibeOAuth && !isRuntime && (
-                <Text color={theme.status.warning}>
-                  {' '}
-                  ({t('Discontinued')})
-                </Text>
+                <Text color={theme.status.warning}> ({t('Discontinued')})</Text>
               )}
             </Text>
           );
 
           let description = model.description || '';
           if (isRuntime) {
-            description = description ? `${description} (Runtime)` : 'Runtime model';
+            description = description
+              ? `${description} (Runtime)`
+              : 'Runtime model';
           }
           if (isVibeOAuth && !isRuntime) {
             description = t('Discontinued — switch to Coding Plan or API Key');
@@ -383,7 +384,9 @@ export function ModelDialog({
   );
 
   const initialIndex = useMemo(() => {
-    const index = modelOptions.findIndex((option) => option.value === preferredKey);
+    const index = modelOptions.findIndex(
+      (option) => option.value === preferredKey,
+    );
     return index === -1 ? 0 : index;
   }, [modelOptions, preferredKey]);
 
@@ -404,116 +407,120 @@ export function ModelDialog({
     );
   }, [availableModelEntries, highlightedValue, preferredKey]);
 
-  const saveCustomModel = useCallback(async (reasoningOverride?: ReasoningEffort) => {
-    if (!config) {
-      return;
-    }
+  const saveCustomModel = useCallback(
+    async (reasoningOverride?: ReasoningEffort) => {
+      if (!config) {
+        return;
+      }
 
-    const trimmedBaseUrl = customBaseUrl.trim();
-    const trimmedApiKey = customApiKey.trim();
-    const trimmedModelId = customModelId.trim();
-    const effectiveReasoningEffort =
-      reasoningOverride ?? customReasoningEffort;
+      const trimmedBaseUrl = customBaseUrl.trim();
+      const trimmedApiKey = customApiKey.trim();
+      const trimmedModelId = customModelId.trim();
+      const effectiveReasoningEffort =
+        reasoningOverride ?? customReasoningEffort;
 
-    if (!trimmedBaseUrl) {
-      setErrorMessage(t('API URL cannot be empty.'));
-      setDialogMode('create-base-url');
-      return;
-    }
-    if (!/^https?:\/\//i.test(trimmedBaseUrl)) {
-      setErrorMessage(t('API URL must start with http:// or https://.'));
-      setDialogMode('create-base-url');
-      return;
-    }
-    if (!trimmedApiKey) {
-      setErrorMessage(t('API key cannot be empty.'));
-      setDialogMode('create-api-key');
-      return;
-    }
-    if (!trimmedModelId) {
-      setErrorMessage(t('Model ID cannot be empty.'));
-      setDialogMode('create-model-id');
-      return;
-    }
+      if (!trimmedBaseUrl) {
+        setErrorMessage(t('API URL cannot be empty.'));
+        setDialogMode('create-base-url');
+        return;
+      }
+      if (!/^https?:\/\//i.test(trimmedBaseUrl)) {
+        setErrorMessage(t('API URL must start with http:// or https://.'));
+        setDialogMode('create-base-url');
+        return;
+      }
+      if (!trimmedApiKey) {
+        setErrorMessage(t('API key cannot be empty.'));
+        setDialogMode('create-api-key');
+        return;
+      }
+      if (!trimmedModelId) {
+        setErrorMessage(t('Model ID cannot be empty.'));
+        setDialogMode('create-model-id');
+        return;
+      }
 
-    const persistScope = getPersistScopeForModelSelection(settings);
-    const previousModelProviders = settings.merged
-      .modelProviders as ModelProvidersConfig | undefined;
-    const existingConfigs: ProviderModelConfig[] =
-      previousModelProviders?.[customModelAuthType] ?? [];
-    const envKey = generateCustomModelEnvKey(
-      customModelAuthType,
-      trimmedBaseUrl,
-    );
-    const nextModelConfig: ProviderModelConfig = {
-      id: trimmedModelId,
-      name: trimmedModelId,
-      baseUrl: trimmedBaseUrl,
-      envKey,
-      generationConfig: {
-        useStreaming: true,
-        reasoning: { effort: effectiveReasoningEffort },
-      } as ProviderModelConfig['generationConfig'],
-    };
-    const updatedConfigs: ProviderModelConfig[] = [
-      nextModelConfig,
-      ...existingConfigs.filter((entry) => entry.id !== trimmedModelId),
-    ];
-    const updatedModelProviders = {
-      ...(previousModelProviders ?? {}),
-      [customModelAuthType]: updatedConfigs,
-    } satisfies ModelProvidersConfig;
-
-    process.env[envKey] = trimmedApiKey;
-    config.reloadModelProvidersConfig(updatedModelProviders);
-
-    try {
-      await config.switchModel(customModelAuthType, trimmedModelId);
-
-      const settingsFile = settings.forScope(persistScope);
-      backupSettingsFile(settingsFile.path);
-      settings.setValue(persistScope, `env.${envKey}`, trimmedApiKey);
-      settings.setValue(
-        persistScope,
-        `modelProviders.${customModelAuthType}`,
-        updatedConfigs,
-      );
-      settings.setValue(
-        persistScope,
-        'security.auth.selectedType',
+      const persistScope = getPersistScopeForModelSelection(settings);
+      const previousModelProviders = settings.merged.modelProviders as
+        | ModelProvidersConfig
+        | undefined;
+      const existingConfigs: ProviderModelConfig[] =
+        previousModelProviders?.[customModelAuthType] ?? [];
+      const envKey = generateCustomModelEnvKey(
         customModelAuthType,
+        trimmedBaseUrl,
       );
-      settings.setValue(persistScope, 'model.name', trimmedModelId);
+      const nextModelConfig: ProviderModelConfig = {
+        id: trimmedModelId,
+        name: trimmedModelId,
+        baseUrl: trimmedBaseUrl,
+        envKey,
+        generationConfig: {
+          useStreaming: true,
+          reasoning: { effort: effectiveReasoningEffort },
+        } as ProviderModelConfig['generationConfig'],
+      };
+      const updatedConfigs: ProviderModelConfig[] = [
+        nextModelConfig,
+        ...existingConfigs.filter((entry) => entry.id !== trimmedModelId),
+      ];
+      const updatedModelProviders = {
+        ...(previousModelProviders ?? {}),
+        [customModelAuthType]: updatedConfigs,
+      } satisfies ModelProvidersConfig;
 
-      uiState?.historyManager.addItem(
-        {
-          type: 'success',
-          text: t(
-            'Custom model "{{modelId}}" saved to settings.json and selected.',
-            { modelId: trimmedModelId },
-          ),
-        },
-        Date.now(),
-      );
+      process.env[envKey] = trimmedApiKey;
+      config.reloadModelProvidersConfig(updatedModelProviders);
 
-      resetCustomModelFlow();
-      onClose();
-    } catch (error) {
-      config.reloadModelProvidersConfig(previousModelProviders);
-      setErrorMessage(error instanceof Error ? error.message : String(error));
-    }
-  }, [
-    config,
-    customApiKey,
-    customBaseUrl,
-    customModelAuthType,
-    customModelId,
-    customReasoningEffort,
-    onClose,
-    resetCustomModelFlow,
-    settings,
-    uiState,
-  ]);
+      try {
+        await config.switchModel(customModelAuthType, trimmedModelId);
+
+        const settingsFile = settings.forScope(persistScope);
+        backupSettingsFile(settingsFile.path);
+        settings.setValue(persistScope, `env.${envKey}`, trimmedApiKey);
+        settings.setValue(
+          persistScope,
+          `modelProviders.${customModelAuthType}`,
+          updatedConfigs,
+        );
+        settings.setValue(
+          persistScope,
+          'security.auth.selectedType',
+          customModelAuthType,
+        );
+        settings.setValue(persistScope, 'model.name', trimmedModelId);
+
+        uiState?.historyManager.addItem(
+          {
+            type: 'success',
+            text: t(
+              'Custom model "{{modelId}}" saved to settings.json and selected.',
+              { modelId: trimmedModelId },
+            ),
+          },
+          Date.now(),
+        );
+
+        resetCustomModelFlow();
+        onClose();
+      } catch (error) {
+        config.reloadModelProvidersConfig(previousModelProviders);
+        setErrorMessage(error instanceof Error ? error.message : String(error));
+      }
+    },
+    [
+      config,
+      customApiKey,
+      customBaseUrl,
+      customModelAuthType,
+      customModelId,
+      customReasoningEffort,
+      onClose,
+      resetCustomModelFlow,
+      settings,
+      uiState,
+    ],
+  );
 
   const handleSelect = useCallback(
     async (selected: string) => {
@@ -594,9 +601,7 @@ export function ModelDialog({
           const separator = '::';
           const separatorIndex = selected.indexOf(separator);
           selectedAuthType = (
-            separatorIndex >= 0
-              ? selected.slice(0, separatorIndex)
-              : authType
+            separatorIndex >= 0 ? selected.slice(0, separatorIndex) : authType
           ) as AuthType;
           modelId =
             separatorIndex >= 0
@@ -880,7 +885,9 @@ export function ModelDialog({
           />
           <DetailRow
             label={t('Context Window')}
-            value={formatContextWindow(highlightedEntry.model.contextWindowSize)}
+            value={formatContextWindow(
+              highlightedEntry.model.contextWindowSize,
+            )}
           />
           {highlightedEntry.authType !== AuthType.VIBE_OAUTH && (
             <>

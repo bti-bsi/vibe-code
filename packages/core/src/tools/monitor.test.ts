@@ -599,8 +599,7 @@ describe('MonitorTool', () => {
       const signal = new AbortController().signal;
       const result = await invocation.execute(signal);
 
-      expect(mockSpawn).toHaveBeenCalledOnce();
-      expect(mockSpawn).toHaveBeenCalledWith(
+      expect(mockSpawn).toHaveBeenCalledExactlyOnceWith(
         '/bin/bash',
         ['-c', 'tail -f /var/log/app.log'],
         expect.objectContaining({
@@ -756,12 +755,15 @@ describe('MonitorTool', () => {
         expect(result.llmContent).toContain('Monitor failed to start');
         expect(result.returnDisplay).toContain('limit reached');
         if (process.platform === 'win32') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(mockSpawn).toHaveBeenCalledWith(
             'taskkill',
             ['/pid', '12345', '/f', '/t'],
+            // eslint-disable-next-line vitest/no-conditional-expect
             expect.objectContaining({ stdio: 'ignore' }),
           );
         } else {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(killSpy).toHaveBeenCalledWith(-12345, 'SIGTERM');
         }
         expect(() => {
@@ -792,14 +794,18 @@ describe('MonitorTool', () => {
         await invocation.execute(new AbortController().signal);
 
         if (process.platform === 'win32') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(mockSpawn).toHaveBeenCalledWith(
             'taskkill',
             ['/pid', '12345', '/f', '/t'],
+            // eslint-disable-next-line vitest/no-conditional-expect
             expect.objectContaining({ stdio: 'ignore' }),
           );
         } else {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(killSpy).toHaveBeenCalledWith(-12345, 'SIGTERM');
           await vi.advanceTimersByTimeAsync(200);
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(killSpy).toHaveBeenCalledWith(-12345, 'SIGKILL');
         }
       } finally {
@@ -827,12 +833,15 @@ describe('MonitorTool', () => {
         await invocation.execute(new AbortController().signal);
 
         if (process.platform === 'win32') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(mockSpawn).toHaveBeenCalledWith(
             'taskkill',
             ['/pid', '12345', '/f', '/t'],
+            // eslint-disable-next-line vitest/no-conditional-expect
             expect.objectContaining({ stdio: 'ignore' }),
           );
         } else {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(killSpy).toHaveBeenCalledWith(-12345, 'SIGTERM');
         }
       } finally {

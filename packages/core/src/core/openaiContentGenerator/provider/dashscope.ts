@@ -174,7 +174,7 @@ export class DashScopeOpenAICompatibleProvider extends DefaultOpenAICompatiblePr
         : messages.map((message, index) => {
             const shouldAddCacheControl = Boolean(
               (index === systemIndex && systemIndex !== -1) ||
-                (index === lastIndex && cacheControl === 'all'),
+              (index === lastIndex && cacheControl === 'all'),
             );
 
             if (

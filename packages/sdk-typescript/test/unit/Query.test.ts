@@ -528,6 +528,7 @@ describe('Query', () => {
         expect(response).toBeDefined();
         expect(response?.response.subtype).toBe('success');
         if (response?.response.subtype === 'success') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(response.response.response).toMatchObject({
             behavior: 'allow',
           });
@@ -556,6 +557,7 @@ describe('Query', () => {
         expect(response).toBeDefined();
         expect(response?.response.subtype).toBe('success');
         if (response?.response.subtype === 'success') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(response.response.response).toMatchObject({
             behavior: 'deny',
           });
@@ -582,6 +584,7 @@ describe('Query', () => {
         expect(response).toBeDefined();
         expect(response?.response.subtype).toBe('success');
         if (response?.response.subtype === 'success') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(response.response.response).toMatchObject({
             behavior: 'deny',
           });
@@ -620,6 +623,7 @@ describe('Query', () => {
           expect(response).toBeDefined();
           expect(response?.response.subtype).toBe('success');
           if (response?.response.subtype === 'success') {
+            // eslint-disable-next-line vitest/no-conditional-expect
             expect(response.response.response).toMatchObject({
               behavior: 'deny',
             });
@@ -650,6 +654,7 @@ describe('Query', () => {
         expect(response).toBeDefined();
         expect(response?.response.subtype).toBe('success');
         if (response?.response.subtype === 'success') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(response.response.response).toMatchObject({
             behavior: 'deny',
           });
@@ -681,6 +686,7 @@ describe('Query', () => {
 
         expect(response).toBeDefined();
         if (response?.response.subtype === 'success') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(response.response.response).toMatchObject({
             behavior: 'allow',
             updatedInput: { arg: 'modified' },
@@ -714,6 +720,7 @@ describe('Query', () => {
 
         expect(response).toBeDefined();
         if (response?.response.subtype === 'success') {
+          // eslint-disable-next-line vitest/no-conditional-expect
           expect(response.response.response).toMatchObject({
             behavior: 'deny',
             message: 'Denied by user',
@@ -1208,9 +1215,9 @@ describe('Query', () => {
         ControlRequestType.GET_CONTEXT_USAGE,
       )!;
 
-      expect((usageMsg.request as CLIControlGetContextUsageRequest).show_details).toBe(
-        true,
-      );
+      expect(
+        (usageMsg.request as CLIControlGetContextUsageRequest).show_details,
+      ).toBe(true);
 
       transport.simulateMessage(
         createControlResponse(usageMsg.request_id, true, {

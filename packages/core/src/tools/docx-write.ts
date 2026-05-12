@@ -4,23 +4,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import fs from 'node:fs';
 import path from 'node:path';
-import { 
-  Document, 
-  Packer, 
-  Paragraph, 
-  TextRun, 
-  Table, 
-  TableRow, 
-  TableCell, 
-  ImageRun, 
-  HeadingLevel, 
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  Table,
+  TableRow,
+  TableCell,
+  ImageRun,
+  HeadingLevel,
   AlignmentType,
   ExternalHyperlink,
   LevelFormat,
   WidthType,
   BorderStyle,
+  ThematicBreak,
 } from 'docx';
 import { marked } from 'marked';
 import type { Config } from '../config/config.js';
@@ -70,14 +73,18 @@ class DocxWriteToolInvocation extends BaseToolInvocation<
   ToolResult
 > {
   private readonly debugLogger: DebugLogger;
+  private listCounter = 0;
+  private numberingConfigs: any[] = [];
 
   constructor(
     private readonly config: Config,
-    params: DocxWriteParams
+    params: DocxWriteParams,
   ) {
     super(params);
     this.debugLogger = createDebugLogger('DOCX_WRITE');
-    this.debugLogger.debug(`Initializing DocxWriteToolInvocation for ${this.config.getTargetDir()}`);
+    this.debugLogger.debug(
+      `Initializing DocxWriteToolInvocation for ${this.config.getTargetDir()}`,
+    );
   }
 
   getDescription(): string {
@@ -111,8 +118,8 @@ class DocxWriteToolInvocation extends BaseToolInvocation<
       const sections: any[] = [];
 
       // Default styles
-      const font = this.params.styles?.font || 'Calibri';
-      const fontSize = this.params.styles?.fontSize || 22; // 11pt
+      const font = this.params.styles?.font || 'Times New Roman';
+      const fontSize = this.params.styles?.fontSize || 24; // 12pt
       const headingFont = this.params.styles?.headingFont || font;
 
       if (this.params.title) {
@@ -122,12 +129,20 @@ class DocxWriteToolInvocation extends BaseToolInvocation<
             heading: HeadingLevel.TITLE,
             alignment: AlignmentType.CENTER,
             spacing: { after: 400 },
-          })
+          }),
         );
       }
 
+      this.listCounter = 0;
+      this.numberingConfigs = [];
+
       for (const token of tokens) {
-        const result = this.tokenToDocxElement(token, { font, fontSize, headingFont, styleMap: this.params.styles?.styleMap });
+        const result = await this.tokenToDocxElement(token, {
+          font,
+          fontSize,
+          headingFont,
+          styleMap: this.params.styles?.styleMap,
+        });
         if (result) {
           if (Array.isArray(result)) {
             sections.push(...result);
@@ -140,34 +155,46 @@ class DocxWriteToolInvocation extends BaseToolInvocation<
       const doc = new Document({
         styles: {
           default: {
+            document: {
+              run: {
+                font,
+                size: fontSize,
+              },
+              paragraph: {
+                alignment: AlignmentType.JUSTIFIED,
+              },
+            },
             heading1: {
               run: { font: headingFont, size: 32, bold: true, color: '2E74B5' },
-              paragraph: { spacing: { before: 240, after: 120 } },
+              paragraph: {
+                spacing: { before: 240, after: 120 },
+                alignment: AlignmentType.START,
+              },
             },
             heading2: {
               run: { font: headingFont, size: 28, bold: true, color: '2E74B5' },
-              paragraph: { spacing: { before: 240, after: 120 } },
+              paragraph: {
+                spacing: { before: 240, after: 120 },
+                alignment: AlignmentType.START,
+              },
             },
             listParagraph: {
               run: { font, size: fontSize },
-            }
+              paragraph: {
+                alignment: AlignmentType.START,
+              },
+            },
           },
         },
         numbering: {
-          config: [
-            {
-              reference: 'multi-level-numbering',
-              levels: [
-                { level: 0, format: LevelFormat.DECIMAL, text: '%1.', alignment: AlignmentType.START, style: { paragraph: { indent: { left: 720, hanging: 360 } } } },
-                { level: 1, format: LevelFormat.DECIMAL, text: '%1.%2.', alignment: AlignmentType.START, style: { paragraph: { indent: { left: 1440, hanging: 360 } } } },
-              ],
-            },
-          ],
+          config: this.numberingConfigs,
         },
-        sections: [{
-          properties: {},
-          children: sections,
-        }],
+        sections: [
+          {
+            properties: {},
+            children: sections,
+          },
+        ],
       });
 
       const buffer = await Packer.toBuffer(doc);
@@ -177,10 +204,13 @@ class DocxWriteToolInvocation extends BaseToolInvocation<
         llmContent: `Successfully wrote DOCX file to ${filePath}`,
         returnDisplay: `Wrote ${filePath}`,
       };
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.debugLogger.error(`[DocxWriteTool] Writing failed: ${errorMessage}`, error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.debugLogger.error(
+        `[DocxWriteTool] Writing failed: ${errorMessage}`,
+        error,
+      );
       return {
         llmContent: `DOCX writing failed: ${errorMessage}`,
         returnDisplay: `Writing failed: ${errorMessage}`,
@@ -192,117 +222,244 @@ class DocxWriteToolInvocation extends BaseToolInvocation<
     }
   }
 
-  private tokenToDocxElement(token: any, styles: any): any {
+  private async tokenToDocxElement(
+    token: any,
+    styles: any,
+    listContext?: { reference?: string; level: number },
+  ): Promise<any> {
     switch (token.type) {
       case 'heading': {
         let level: any;
         let style: string | undefined;
         switch (token.depth) {
-          case 1: 
-            level = HeadingLevel.HEADING_1; 
+          case 1:
+            level = HeadingLevel.HEADING_1;
             style = styles.styleMap?.h1;
             break;
-          case 2: 
-            level = HeadingLevel.HEADING_2; 
+          case 2:
+            level = HeadingLevel.HEADING_2;
             style = styles.styleMap?.h2;
             break;
-          case 3: 
-            level = HeadingLevel.HEADING_3; 
+          case 3:
+            level = HeadingLevel.HEADING_3;
             style = styles.styleMap?.h3;
             break;
-          case 4: level = HeadingLevel.HEADING_4; break;
-          case 5: level = HeadingLevel.HEADING_5; break;
-          case 6: level = HeadingLevel.HEADING_6; break;
-          default: level = HeadingLevel.HEADING_1;
+          case 4:
+            level = HeadingLevel.HEADING_4;
+            break;
+          case 5:
+            level = HeadingLevel.HEADING_5;
+            break;
+          case 6:
+            level = HeadingLevel.HEADING_6;
+            break;
+          default:
+            level = HeadingLevel.HEADING_1;
         }
         return new Paragraph({
-          text: token.text,
+          children: token.tokens
+            ? await this.renderInline(token.tokens, styles)
+            : [
+                new TextRun({
+                  text: token.text,
+                  font: styles.font,
+                  size: styles.fontSize,
+                }),
+              ],
           heading: style ? undefined : level,
-          style: style,
+          style,
         });
       }
 
       case 'paragraph': {
-        const children: any[] = [];
-        
-        // Handle inline tokens
-        if (token.tokens) {
-          for (const subToken of token.tokens) {
-            const run = this.inlineTokenToDocxRun(subToken, styles);
-            if (run) {
-              if (Array.isArray(run)) children.push(...run);
-              else children.push(run);
+        // Detect if this paragraph contains only image token(s)
+        // In that case, render each image as its own standalone paragraph
+        if (token.tokens && this.isImageOnlyParagraph(token.tokens)) {
+          const imageResults: any[] = [];
+          for (const t of token.tokens) {
+            if (t.type === 'image') {
+              const imgRun = await this.loadImageRun(t, styles);
+              if (this.isImageRun(imgRun)) {
+                // Image paragraph - centered
+                imageResults.push(
+                  new Paragraph({
+                    children: [imgRun],
+                    alignment: AlignmentType.CENTER,
+                    spacing: { before: 120, after: 60 },
+                  }),
+                );
+                // Optional caption using alt text
+                if (t.text) {
+                  imageResults.push(
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: t.text,
+                          font: styles.font,
+                          size: styles.fontSize - 2,
+                          italics: true,
+                          color: '666666',
+                        }),
+                      ],
+                      alignment: AlignmentType.CENTER,
+                      spacing: { before: 0, after: 120 },
+                    }),
+                  );
+                }
+              } else {
+                // Fallback: image not found, render as text
+                imageResults.push(new Paragraph({ children: [imgRun] }));
+              }
             }
           }
-        } else {
-          children.push(new TextRun({ text: token.text, font: styles.font, size: styles.fontSize }));
+          return imageResults;
         }
 
-        return new Paragraph({ 
-          children,
+        return new Paragraph({
+          children: token.tokens
+            ? await this.renderInline(token.tokens, styles)
+            : [
+                new TextRun({
+                  text: token.text,
+                  font: styles.font,
+                  size: styles.fontSize,
+                }),
+              ],
           style: styles.styleMap?.paragraph,
         });
       }
 
       case 'list': {
-        const items: Paragraph[] = [];
-        token.items.forEach((item: any) => {
+        const listItems: Paragraph[] = [];
+        const isOrdered = token.ordered;
+        const currentLevel = listContext?.level || 0;
+
+        // Use a new numbering instance for each top-level list to ensure numbering restarts.
+        // For nested lists, we share the same instance but increase the level.
+        let reference = listContext?.reference;
+        if (isOrdered && !reference) {
+          this.listCounter++;
+          reference = `ordered-list-${this.listCounter}`;
+          this.numberingConfigs.push({
+            reference,
+            levels: Array.from({ length: 9 }).map((_, i) => ({
+              level: i,
+              format: LevelFormat.DECIMAL,
+              text:
+                i === 0
+                  ? '%1.'
+                  : Array.from({ length: i + 1 })
+                      .map((_, j) => `%${j + 1}`)
+                      .join('.') + '.',
+              alignment: AlignmentType.START,
+              style: {
+                paragraph: {
+                  indent: { left: 720 * (i + 1), hanging: 360 },
+                },
+              },
+            })),
+          });
+        }
+
+        for (const item of token.items) {
           const itemChildren: any[] = [];
+          const nestedElements: any[] = [];
+
           if (item.tokens) {
-            item.tokens.forEach((t: any) => {
-               if (t.type === 'text') {
-                 if (t.tokens) {
-                    t.tokens.forEach((st: any) => {
-                        const run = this.inlineTokenToDocxRun(st, styles);
-                        if (run) {
-                          if (Array.isArray(run)) itemChildren.push(...run);
-                          else itemChildren.push(run);
-                        }
-                    });
-                 } else {
-                    itemChildren.push(new TextRun({ text: t.text, font: styles.font, size: styles.fontSize }));
-                 }
-               }
-            });
+            for (const t of item.tokens) {
+              if (t.type === 'text') {
+                if (t.tokens) {
+                  itemChildren.push(
+                    ...(await this.renderInline(t.tokens, styles)),
+                  );
+                } else {
+                  itemChildren.push(
+                    new TextRun({
+                      text: t.text,
+                      font: styles.font,
+                      size: styles.fontSize,
+                    }),
+                  );
+                }
+              } else if (t.type === 'list') {
+                const nested = await this.tokenToDocxElement(t, styles, {
+                  reference: t.ordered ? reference : undefined,
+                  level: currentLevel + 1,
+                });
+                if (Array.isArray(nested)) {
+                  nestedElements.push(...nested);
+                } else {
+                  nestedElements.push(nested);
+                }
+              }
+            }
           }
-          items.push(new Paragraph({
-            children: itemChildren,
-            bullet: token.ordered ? undefined : { level: 0 },
-            numbering: token.ordered ? { reference: 'multi-level-numbering', level: 0 } : undefined,
-          }));
-        });
-        return items;
+
+          listItems.push(
+            new Paragraph({
+              children: itemChildren,
+              bullet: isOrdered ? undefined : { level: currentLevel },
+              numbering: isOrdered
+                ? { reference: reference!, level: currentLevel }
+                : undefined,
+            }),
+          );
+
+          if (nestedElements.length > 0) {
+            listItems.push(...nestedElements);
+          }
+        }
+
+        return listItems;
       }
 
       case 'table': {
         const rows = [];
-        
+
         // Header
-        const headerCells = token.header.map((cell: any) => {
-          return new TableCell({
-            children: [
-                new Paragraph({ 
-                    children: [new TextRun({ text: cell.text || cell, bold: true, font: styles.font, size: styles.fontSize })] 
-                })
-            ],
-            shading: { fill: 'F2F2F2' },
-          });
-        });
+        const headerCells = await Promise.all(
+          token.header.map(async (cell: any) => {
+            const cellStyles = { ...styles, bold: true };
+            const children = cell.tokens
+              ? await this.renderInline(cell.tokens, cellStyles)
+              : [
+                  new TextRun({
+                    text: cell.text || cell,
+                    bold: true,
+                    font: styles.font,
+                    size: styles.fontSize,
+                  }),
+                ];
+
+            return new TableCell({
+              children: [new Paragraph({ children })],
+              shading: { fill: 'F2F2F2' },
+            });
+          }),
+        );
         rows.push(new TableRow({ children: headerCells }));
 
         // Body
-        token.rows.forEach((row: any) => {
-          const bodyCells = row.map((cell: any) => {
-            return new TableCell({
-              children: [
-                  new Paragraph({ 
-                      children: [new TextRun({ text: cell.text || cell, font: styles.font, size: styles.fontSize })] 
-                  })
-              ],
-            });
-          });
+        for (const row of token.rows) {
+          const bodyCells = await Promise.all(
+            row.map(async (cell: any) => {
+              const children = cell.tokens
+                ? await this.renderInline(cell.tokens, styles)
+                : [
+                    new TextRun({
+                      text: cell.text || cell,
+                      font: styles.font,
+                      size: styles.fontSize,
+                    }),
+                  ];
+
+              return new TableCell({
+                children: [new Paragraph({ children })],
+              });
+            }),
+          );
           rows.push(new TableRow({ children: bodyCells }));
-        });
+        }
 
         return new Table({
           rows,
@@ -312,79 +469,389 @@ class DocxWriteToolInvocation extends BaseToolInvocation<
             bottom: { style: BorderStyle.SINGLE, size: 1 },
             left: { style: BorderStyle.SINGLE, size: 1 },
             right: { style: BorderStyle.SINGLE, size: 1 },
-          }
+          },
         });
       }
 
       case 'blockquote': {
+        const children = token.tokens
+          ? await this.renderInline(token.tokens, styles)
+          : [
+              new TextRun({
+                text: token.text,
+                font: styles.font,
+                size: styles.fontSize,
+              }),
+            ];
         return new Paragraph({
-          text: token.text,
+          children,
           indent: { left: 720 },
-          border: { left: { color: 'CCCCCC', space: 1, style: BorderStyle.SINGLE, size: 24 } }
+          border: {
+            left: {
+              color: 'CCCCCC',
+              space: 1,
+              style: BorderStyle.SINGLE,
+              size: 24,
+            },
+          },
         });
       }
 
       case 'code': {
         return new Paragraph({
-          children: [new TextRun({ text: token.text, font: 'Courier New', size: styles.fontSize - 2 })],
+          children: [
+            new TextRun({
+              text: token.text,
+              font: 'Courier New',
+              size: styles.fontSize - 2,
+            }),
+          ],
           shading: { fill: 'F4F4F4' },
         });
       }
 
-      case 'space': return null;
+      case 'hr': {
+        return new ThematicBreak();
+      }
+
+      case 'image': {
+        // Block-level image (e.g. if marked parses it directly)
+        const imgRun = await this.loadImageRun(token, styles);
+        return new Paragraph({
+          children: [imgRun],
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 120, after: 120 },
+        });
+      }
+
+      case 'space':
+        return null;
 
       default:
-        this.debugLogger.debug(`[DocxWriteTool] Unsupported token type: ${token.type}`);
+        this.debugLogger.debug(
+          `[DocxWriteTool] Unsupported token type: ${token.type}`,
+        );
         return new Paragraph({ text: token.raw });
     }
   }
 
-  private inlineTokenToDocxRun(token: any, styles: any): any {
+  /**
+   * Detects whether a list of inline tokens represents a paragraph
+   * that contains only image(s) — possibly with whitespace.
+   */
+  private isImageOnlyParagraph(tokens: any[]): boolean {
+    const meaningful = tokens.filter(
+      (t) => !(t.type === 'text' && t.text.trim() === ''),
+    );
+    return meaningful.length > 0 && meaningful.every((t) => t.type === 'image');
+  }
+
+  /**
+   * Checks whether an element is an ImageRun by duck-typing.
+   * More reliable than instanceof ImageRun in bundled/esbuild contexts.
+   */
+  private isImageRun(element: any): boolean {
+    return (
+      element &&
+      typeof element === 'object' &&
+      ('Data' in element ||
+        'imageData' in element ||
+        'Transformation' in element)
+    );
+  }
+
+  /**
+   * Loads an image from disk and returns an ImageRun, or a TextRun fallback.
+   * Tries multiple paths:
+   *   1. Direct path.resolve(href) — relative to CWD
+   *   2. path.join(targetDir, href) — relative to project target
+   *   3. path.join(outputDir, href) — relative to the output .docx file's directory
+   */
+  private async loadImageRun(token: any, _styles: any): Promise<any> {
+    let href: string = token.href || token.src || '';
+    if (!href) {
+      this.debugLogger.warn(`[DocxWriteTool] Image token has no href/src`);
+      return new TextRun({ text: '[Image: missing path]', color: 'FF0000' });
+    }
+
+    if (href.startsWith('data:image/')) {
+      try {
+        const base64Data = href.split(',')[1];
+        if (base64Data) {
+          const data = Buffer.from(base64Data, 'base64');
+          return new ImageRun({
+            data,
+            transformation: { width: 450, height: 338 },
+          } as any);
+        }
+      } catch (e) {
+        this.debugLogger.error(
+          `[DocxWriteTool] Error parsing base64 image: ${e}`,
+        );
+      }
+    }
+
+    if (href.startsWith('file://')) {
+      try {
+        const { fileURLToPath } = await import('node:url');
+        href = fileURLToPath(href);
+      } catch (_e) {
+        href = href.replace(/^file:\/\//, '');
+      }
+    }
+
+    if (href.startsWith('http://') || href.startsWith('https://')) {
+      try {
+        const response = await fetch(href);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const data = Buffer.from(arrayBuffer);
+
+        return new ImageRun({
+          data,
+          transformation: { width: 450, height: 338 },
+        } as any);
+      } catch (e) {
+        this.debugLogger.error(
+          `[DocxWriteTool] Error fetching remote image "${href}": ${e}`,
+        );
+        return new TextRun({
+          text: `[Image Error: ${href}]`,
+          color: 'FF0000',
+        });
+      }
+    }
+
+    // Remove query parameters or hashes that might exist in markdown local links
+    const cleanHref = href.split('?')[0].split('#')[0];
+
+    // Candidate paths in priority order
+    const candidates = [
+      path.resolve(cleanHref),
+      path.resolve(process.cwd(), cleanHref),
+      path.join(this.config.getTargetDir(), cleanHref),
+      path.join(path.dirname(path.resolve(this.params.filePath)), cleanHref),
+    ];
+
+    // Deduplicate normalized paths
+    const seen = new Set<string>();
+    const uniqueCandidates: string[] = [];
+    for (const c of candidates) {
+      const normalized = path.resolve(c);
+      if (!seen.has(normalized)) {
+        seen.add(normalized);
+        uniqueCandidates.push(normalized);
+      }
+    }
+
+    let resolvedPath: string | null = null;
+    for (const candidate of uniqueCandidates) {
+      if (fs.existsSync(candidate)) {
+        resolvedPath = candidate;
+        break;
+      }
+    }
+
+    if (!resolvedPath) {
+      this.debugLogger.warn(
+        `[DocxWriteTool] Image not found: "${href}" tried: ${uniqueCandidates.join(', ')}`,
+      );
+      return new TextRun({
+        text: `[Image Not Found: ${href}]`,
+        color: 'FF0000',
+      });
+    }
+
+    try {
+      const data = fs.readFileSync(resolvedPath);
+      this.debugLogger.debug(
+        `[DocxWriteTool] Embedding image: ${resolvedPath} (${data.length} bytes)`,
+      );
+
+      return new ImageRun({
+        data,
+        transformation: { width: 450, height: 338 }, // ~4:3 default aspect
+      } as any);
+    } catch (e) {
+      this.debugLogger.error(
+        `[DocxWriteTool] Error reading image "${resolvedPath}": ${e}`,
+      );
+      return new TextRun({
+        text: `[Image Error: ${href}]`,
+        color: 'FF0000',
+      });
+    }
+  }
+
+  private async renderInline(tokens: any[], styles: any): Promise<any[]> {
+    const children: any[] = [];
+    for (const token of tokens) {
+      const run = await this.inlineTokenToDocxRun(token, styles);
+      if (run) {
+        if (Array.isArray(run)) {
+          children.push(...run);
+        } else {
+          children.push(run);
+        }
+      }
+    }
+    return children;
+  }
+
+  private async parseTextForImages(
+    text: string,
+    styles: any,
+    inherited: any,
+  ): Promise<any[]> {
+    const results: any[] = [];
+    // Match markdown images ![alt](url) or the custom text (Gambar alt: Lihat url)
+    const regex =
+      /!\[([^\]]*)\]\(([^)]+)\)|\(Gambar\s+(.*?):\s*Lihat\s+(.*?)\)/gi;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        results.push(
+          new TextRun({
+            ...inherited,
+            text: text.substring(lastIndex, match.index),
+          }),
+        );
+      }
+
+      const alt = match[1] !== undefined ? match[1] : match[3] || '';
+      const href = match[2] !== undefined ? match[2] : match[4] || '';
+
+      const imgRun = await this.loadImageRun(
+        { href: href.trim(), text: alt.trim() },
+        styles,
+      );
+      results.push(imgRun);
+
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex === 0) {
+      // No matches, just return the whole text
+      return [new TextRun({ ...inherited, text })];
+    }
+
+    if (lastIndex < text.length) {
+      results.push(
+        new TextRun({
+          ...inherited,
+          text: text.substring(lastIndex),
+        }),
+      );
+    }
+
+    return results;
+  }
+
+  private async inlineTokenToDocxRun(token: any, styles: any): Promise<any> {
+    const inherited = {
+      font: styles.font,
+      size: styles.fontSize,
+      bold: styles.bold || false,
+      italics: styles.italics || false,
+      color: styles.color,
+      underline: styles.underline,
+    };
+
     switch (token.type) {
       case 'text':
-        return new TextRun({ text: token.text, font: styles.font, size: styles.fontSize });
+        return await this.parseTextForImages(token.text, styles, inherited);
       case 'strong':
-        return new TextRun({ text: token.text, bold: true, font: styles.font, size: styles.fontSize });
+        if (token.tokens) {
+          return await this.renderInline(token.tokens, {
+            ...styles,
+            bold: true,
+          });
+        }
+        return new TextRun({
+          ...inherited,
+          text: token.text,
+          bold: true,
+        });
       case 'em':
-        return new TextRun({ text: token.text, italics: true, font: styles.font, size: styles.fontSize });
+        if (token.tokens) {
+          return await this.renderInline(token.tokens, {
+            ...styles,
+            italics: true,
+          });
+        }
+        return new TextRun({
+          ...inherited,
+          text: token.text,
+          italics: true,
+        });
       case 'codespan':
-        return new TextRun({ text: token.text, font: 'Courier New', size: styles.fontSize - 2, shading: { fill: 'F4F4F4' } });
-      case 'link':
+        return new TextRun({
+          ...inherited,
+          text: token.text,
+          font: 'Courier New',
+          size: styles.fontSize - 2,
+          shading: { fill: 'F4F4F4' },
+        });
+      case 'link': {
+        const linkStyle = {
+          ...styles,
+          color: '0563C1',
+          underline: {},
+        };
         return new ExternalHyperlink({
-          children: [new TextRun({ text: token.text, color: '0563C1', underline: {}, font: styles.font, size: styles.fontSize })],
+          children: token.tokens
+            ? await this.renderInline(token.tokens, linkStyle)
+            : [
+                new TextRun({
+                  ...inherited,
+                  text: token.text,
+                  color: '0563C1',
+                  underline: {},
+                }),
+              ],
           link: token.href,
         });
+      }
       case 'image': {
-        try {
-          const imagePath = path.resolve(token.href);
-          if (fs.existsSync(imagePath)) {
-            const data = fs.readFileSync(imagePath);
-            return new ImageRun({
-              data,
-              transformation: { width: 400, height: 300 },
-            } as any);
-          }
-        } catch (e) {
-          return new TextRun({ text: `[Image Error: ${token.href}]`, color: 'FF0000' });
-        }
-        return new TextRun({ text: `[Image Not Found: ${token.href}]`, color: 'FF0000' });
+        // Delegate to loadImageRun for consistent path resolution
+        const imgRun = await this.loadImageRun(token, styles);
+        return imgRun;
       }
       case 'br':
         return new TextRun({ break: 1 });
-      
+
       // LaTeX support
       case 'escape':
         if (token.text.startsWith('$') || token.text.includes('\\')) {
-            return new TextRun({ text: token.text, font: 'Cambria Math', size: styles.fontSize });
+          return new TextRun({
+            ...inherited,
+            text: token.text,
+            font: 'Cambria Math',
+          });
         }
-        return new TextRun({ text: token.text, font: styles.font, size: styles.fontSize });
+        return new TextRun({
+          ...inherited,
+          text: token.text,
+        });
 
       default:
-        if (token.raw.startsWith('$') && token.raw.endsWith('$')) {
-            const latex = token.raw.slice(1, -1);
-            return new TextRun({ text: latex, font: 'Cambria Math', size: styles.fontSize, italics: true });
+        if (token.raw && token.raw.startsWith('$') && token.raw.endsWith('$')) {
+          const latex = token.raw.slice(1, -1);
+          return new TextRun({
+            ...inherited,
+            text: latex,
+            font: 'Cambria Math',
+            italics: true,
+          });
         }
-        return new TextRun({ text: token.text || token.raw, font: styles.font, size: styles.fontSize });
+        return new TextRun({
+          ...inherited,
+          text: token.text || token.raw,
+        });
     }
   }
 }
@@ -407,7 +874,8 @@ export class DocxWriteTool extends BaseDeclarativeTool<
       {
         properties: {
           filePath: {
-            description: 'Path where the .docx file will be saved. Example: "./report.docx"',
+            description:
+              'Path where the .docx file will be saved. Example: "./report.docx"',
             type: 'string',
           },
           content: {
@@ -422,20 +890,33 @@ export class DocxWriteTool extends BaseDeclarativeTool<
             description: 'Optional: Style configurations.',
             type: 'object',
             properties: {
-              font: { type: 'string', description: 'Body font family (default: Calibri)' },
-              fontSize: { type: 'number', description: 'Font size in half-points (e.g., 24 for 12pt)' },
-              headingFont: { type: 'string', description: 'Heading font family' },
+              font: {
+                type: 'string',
+                description: 'Body font family (default: Calibri)',
+              },
+              fontSize: {
+                type: 'number',
+                description: 'Font size in half-points (e.g., 24 for 12pt)',
+              },
+              headingFont: {
+                type: 'string',
+                description: 'Heading font family',
+              },
               styleMap: {
                 type: 'object',
-                description: 'Optional: Map Markdown elements to DOCX style IDs.',
+                description:
+                  'Optional: Map Markdown elements to DOCX style IDs.',
                 properties: {
                   h1: { type: 'string', description: 'Style ID for H1' },
                   h2: { type: 'string', description: 'Style ID for H2' },
                   h3: { type: 'string', description: 'Style ID for H3' },
-                  paragraph: { type: 'string', description: 'Style ID for paragraphs' },
-                }
-              }
-            }
+                  paragraph: {
+                    type: 'string',
+                    description: 'Style ID for paragraphs',
+                  },
+                },
+              },
+            },
           },
         },
         required: ['filePath', 'content'],

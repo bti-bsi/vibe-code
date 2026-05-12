@@ -69,7 +69,8 @@ function getCurrentModuleDir(): string {
 function findSdkPackageRoot(): string | null {
   try {
     const require = createRequire(import.meta.url);
-    const packageJsonPath = require.resolve('@vibe-bti/vibe-code-sdk/package.json');
+    const packageJsonPath =
+      require.resolve('@vibe-bti/vibe-code-sdk/package.json');
     const packageRoot = path.dirname(packageJsonPath);
     const cliPath = path.join(packageRoot, 'dist', 'cli', 'cli.js');
     if (fs.existsSync(cliPath)) {

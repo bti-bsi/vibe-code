@@ -1,10 +1,16 @@
+/* global console */
 import fs from 'node:fs';
 import path from 'node:path';
 
 const baseDir = 'c:/Development/vibe-code/vibe-code';
 
 function processDir(dir) {
-  if (dir.includes('node_modules') || dir.includes('dist') || dir.includes('.git') || dir.includes('coverage')) {
+  if (
+    dir.includes('node_modules') ||
+    dir.includes('dist') ||
+    dir.includes('.git') ||
+    dir.includes('coverage')
+  ) {
     return;
   }
 
@@ -15,25 +21,27 @@ function processDir(dir) {
     let stats;
     try {
       stats = fs.statSync(filePath);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       continue;
     }
-    
+
     if (stats.isDirectory()) {
       processDir(filePath);
     } else {
       let content;
       try {
         content = fs.readFileSync(filePath, 'utf8');
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         continue;
       }
-      
+
       const newContent = content
         .replace(/Vibe Code/g, 'Vibe Code')
         .replace(/Vibe code/g, 'Vibe code')
         .replace(/vibe code/g, 'vibe code')
-        .replace(/VIBE\.md/g, 'VIBE\.md')
+        .replace(/VIBE\.md/g, 'VIBE.md')
         .replace(/Vibe OAuth/g, 'Vibe OAuth')
         .replace(/Vibe/g, 'Vibe')
         .replace(/vibe-code/g, 'vibe-code')
@@ -44,7 +52,7 @@ function processDir(dir) {
         .replace(/vibe_/g, 'vibe_')
         .replace(/vibe/g, 'vibe')
         .replace(/\bQWEN\b/g, 'VIBE');
-        
+
       if (content !== newContent) {
         fs.writeFileSync(filePath, newContent, 'utf8');
         console.log(`Updated content of ${path.relative(baseDir, filePath)}`);

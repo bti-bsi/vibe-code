@@ -149,7 +149,8 @@ export default {
     'open full Vibe Code documentation in your browser',
   'Configuration not available.': 'Configuration not available.',
   'change the auth method': 'change the auth method',
-  'View and edit Vibe Code configuration': 'View and edit Vibe Code configuration',
+  'View and edit Vibe Code configuration':
+    'View and edit Vibe Code configuration',
   'Configuration Menu': 'Configuration Menu',
   'Scopus API': 'Scopus API',
   'Telegram Channel': 'Telegram Channel',

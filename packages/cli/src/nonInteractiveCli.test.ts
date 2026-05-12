@@ -220,9 +220,8 @@ describe('runNonInteractive', () => {
       computeMergedSettings: vi.fn(),
     } as unknown as LoadedSettings;
 
-    const { handleAtCommand } = await import(
-      './ui/hooks/atCommandProcessor.js'
-    );
+    const { handleAtCommand } =
+      await import('./ui/hooks/atCommandProcessor.js');
     vi.mocked(handleAtCommand).mockImplementation(async ({ query }) => ({
       processedQuery: [{ text: query }],
       shouldProceed: true,
@@ -554,9 +553,8 @@ describe('runNonInteractive', () => {
   it('should preprocess @include commands before sending to the model', async () => {
     setupMetricsMock();
     // 1. Mock the imported atCommandProcessor
-    const { handleAtCommand } = await import(
-      './ui/hooks/atCommandProcessor.js'
-    );
+    const { handleAtCommand } =
+      await import('./ui/hooks/atCommandProcessor.js');
     const mockHandleAtCommand = vi.mocked(handleAtCommand);
 
     // 2. Define the raw input and the expected processed output
@@ -950,6 +948,7 @@ describe('runNonInteractive', () => {
       if (line.startsWith('[API Error: ')) {
         // The opening "[API Error: " should appear once; if it appears twice,
         // we have a "[API Error: [API Error: ..." line.
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(line.match(/\[API Error: /g)?.length ?? 0).toBe(1);
       }
     }
@@ -1388,62 +1387,65 @@ describe('runNonInteractive', () => {
     });
   });
 
-  it.skip('should emit a single user envelope when userEnvelope is provided', async () => {
-    (mockConfig.getOutputFormat as Mock).mockReturnValue('stream-json');
-    (mockConfig.getIncludePartialMessages as Mock).mockReturnValue(false);
+  it.todo(
+    'should emit a single user envelope when userEnvelope is provided',
+    async () => {
+      (mockConfig.getOutputFormat as Mock).mockReturnValue('stream-json');
+      (mockConfig.getIncludePartialMessages as Mock).mockReturnValue(false);
 
-    const writes: string[] = [];
-    processStdoutSpy.mockImplementation((chunk: string | Uint8Array) => {
-      if (typeof chunk === 'string') {
-        writes.push(chunk);
-      } else {
-        writes.push(Buffer.from(chunk).toString('utf8'));
-      }
-      return true;
-    });
+      const writes: string[] = [];
+      processStdoutSpy.mockImplementation((chunk: string | Uint8Array) => {
+        if (typeof chunk === 'string') {
+          writes.push(chunk);
+        } else {
+          writes.push(Buffer.from(chunk).toString('utf8'));
+        }
+        return true;
+      });
 
-    mockGeminiClient.sendMessageStream.mockReturnValue(
-      createStreamFromEvents([
-        { type: GeminiEventType.Content, value: 'Handled once' },
-        {
-          type: GeminiEventType.Finished,
-          value: { reason: undefined, usageMetadata: { totalTokenCount: 2 } },
-        },
-      ]),
-    );
-
-    const userEnvelope = {
-      type: 'user',
-      message: {
-        role: 'user',
-        content: [
+      mockGeminiClient.sendMessageStream.mockReturnValue(
+        createStreamFromEvents([
+          { type: GeminiEventType.Content, value: 'Handled once' },
           {
-            type: 'text',
-            text: '来自 envelope 的消息',
+            type: GeminiEventType.Finished,
+            value: { reason: undefined, usageMetadata: { totalTokenCount: 2 } },
           },
-        ],
-      },
-    } as unknown as CLIUserMessage;
+        ]),
+      );
 
-    await runNonInteractive(
-      mockConfig,
-      mockSettings,
-      'ignored input',
-      'prompt-envelope',
-      {
-        userMessage: userEnvelope,
-      },
-    );
+      const userEnvelope = {
+        type: 'user',
+        message: {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: '来自 envelope 的消息',
+            },
+          ],
+        },
+      } as unknown as CLIUserMessage;
 
-    const envelopes = writes
-      .join('')
-      .split('\n')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => JSON.parse(line));
+      await runNonInteractive(
+        mockConfig,
+        mockSettings,
+        'ignored input',
+        'prompt-envelope',
+        {
+          userMessage: userEnvelope,
+        },
+      );
 
-    const userEnvelopes = envelopes.filter((env) => env.type === 'user');
-    expect(userEnvelopes).toHaveLength(0);
-  });
+      const envelopes = writes
+        .join('')
+        .split('\n')
+        .filter((line) => line.trim().length > 0)
+        .map((line) => JSON.parse(line));
+
+      const userEnvelopes = envelopes.filter((env) => env.type === 'user');
+      expect(userEnvelopes).toHaveLength(0);
+    },
+  );
 
   it('does not let late monitor output keep one-shot runs alive', async () => {
     (mockConfig.getOutputFormat as Mock).mockReturnValue(
