@@ -145,9 +145,10 @@ class JournalSintaSearchInvocation extends BaseToolInvocation<
           returnDisplay: `Successfully scraped profile for ${profileData.title || profile_url}.`,
         };
       } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
         return {
-          llmContent: `Error scraping profile: ${error.message}`,
-          returnDisplay: `Error scraping profile: ${error.message}`,
+          llmContent: `Error scraping profile: ${msg}`,
+          returnDisplay: `Error scraping profile: ${msg}`,
         };
       }
     }
@@ -229,10 +230,11 @@ class JournalSintaSearchInvocation extends BaseToolInvocation<
         returnDisplay: `Successfully found ${allJournals.length} unique journals for query variations.`,
       };
     } catch (error) {
-      this.debugLogger.error(`SINTA Search failed: ${error.message}`);
+      const msg = error instanceof Error ? error.message : String(error);
+      this.debugLogger.error(`SINTA Search failed: ${msg}`);
       return {
-        llmContent: `Error during SINTA search: ${error.message}`,
-        returnDisplay: `Error during SINTA search: ${error.message}`,
+        llmContent: `Error during SINTA search: ${msg}`,
+        returnDisplay: `Error during SINTA search: ${msg}`,
       };
     }
   }
