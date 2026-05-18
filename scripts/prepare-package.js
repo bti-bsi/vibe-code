@@ -159,6 +159,7 @@ const distPackageJson = {
   },
   files: [
     'cli.js',
+    'pdf.worker.mjs',
     'vendor',
     '*.sb',
     'README.md',

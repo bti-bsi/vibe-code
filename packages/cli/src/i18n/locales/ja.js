@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @license
  * Copyright 2025 Vibe
  * SPDX-License-Identifier: Apache-2.0
@@ -902,7 +902,7 @@ export default {
   'Add MCP servers to your settings to get started.':
     '設定にMCPサーバーを追加して開始してください。',
   'Run.vibe --debug to see error logs':
-    .vibe --debug を実行してエラーログを確認してください',
+    '.vibe --debug を実行してエラーログを確認してください',
 
   // MCP OAuth Authentication
   'OAuth Authentication': 'OAuth 認証',
@@ -1223,7 +1223,7 @@ export default {
   'Type / to open the command popup; Tab autocompletes slash commands and saved prompts.':
     '/ を入力してコマンドポップアップを開きます。Tab でスラッシュコマンドと保存済みプロンプトを補完できます。',
   'You can resume a previous conversation by running.vibe --continue or.vibe --resume.':
-    .vibe --continue または.vibe --resume で前の会話を再開できます。',
+    '.vibe --continue または.vibe --resume で前の会話を再開できます。',
   'You can switch permission mode quickly with Shift+Tab or /approval-mode.':
     'Shift+Tab または /approval-mode で権限モードをすばやく切り替えられます。',
   'You can switch permission mode quickly with Tab or /approval-mode.':

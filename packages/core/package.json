@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-core",
-  "version": "0.16.6",
+  "version": "0.16.9",
   "description": "Vibe Code Core",
   "repository": {
     "type": "git",
@@ -71,6 +71,7 @@
     "openai": "5.11.0",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "5.4.296",
     "picomatch": "^4.0.1",
     "pptxgenjs": "^4.0.1",
     "prompts": "^2.4.2",

@@ -6,10 +6,11 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { URL } from 'node:url';
+import { URL, pathToFileURL, fileURLToPath } from 'node:url';
 import https from 'node:https';
 import http from 'node:http';
 import zlib from 'node:zlib';
+import { createRequire } from 'node:module';
 import { ToolErrorType } from './tool-error.js';
 import type { ToolInvocation, ToolResult } from './tools.js';
 import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
@@ -18,6 +19,16 @@ import { createDebugLogger, type DebugLogger } from '../utils/debugLogger.js';
 
 // pdf-parse is a CommonJS module
 import { PDFParse } from 'pdf-parse';
+
+/**
+ * Augment globalThis for pdfjs worker module preloading.
+ * The worker module (pdf.worker.mjs) sets globalThis.pdfjsWorker with a
+ * WorkerMessageHandler property. By preloading it ourselves we avoid pdfjs's
+ * own dynamic import() which can fail in bundled ESM on Windows.
+ */
+declare global {
+  var pdfjsWorker: { WorkerMessageHandler: unknown } | undefined;
+}
 
 /**
  * Firefox-like User-Agent string for robust HTTP requests.
@@ -388,6 +399,36 @@ class PDFExtractToolInvocation extends BaseToolInvocation<
           `[PDFExtractTool] Reading PDF from: ${filePath}`,
         );
         pdfBuffer = fs.readFileSync(filePath);
+      }
+
+      // Resolve and preload the pdfjs-dist worker module.
+      // We import the worker ourselves and set globalThis.pdfjsWorker so that
+      // pdfjs's _setupFakeWorkerGlobal finds WorkerMessageHandler immediately
+      // and skips its own dynamic import() (which can fail in bundled ESM on
+      // Windows). Two modes:
+      //   1. Bundled mode (dist/cli.js): worker is co-located as dist/pdf.worker.mjs
+      //   2. Source/dev mode: resolve from node_modules via require.resolve
+      try {
+        const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+        const bundledWorker = path.join(scriptDir, 'pdf.worker.mjs');
+        let workerUrl: string;
+        if (fs.existsSync(bundledWorker)) {
+          workerUrl = pathToFileURL(bundledWorker).href;
+        } else {
+          const workerRequire = createRequire(import.meta.url);
+          const workerPath = workerRequire.resolve(
+            'pdfjs-dist/legacy/build/pdf.worker.mjs',
+          );
+          workerUrl = pathToFileURL(workerPath).href;
+        }
+        // Pre-import the worker and set it on globalThis so pdfjs finds it
+        // without doing its own dynamic import, avoiding the
+        // "Cannot find module" error in bundled ESM contexts.
+        const workerModule = await import(workerUrl);
+        globalThis.pdfjsWorker = workerModule;
+      } catch {
+        // Fallback: let pdf-parse handle worker configuration.
+        // Extraction may still work if a worker is not required.
       }
 
       // Parse PDF

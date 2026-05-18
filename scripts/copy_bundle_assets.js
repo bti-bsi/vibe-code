@@ -20,6 +20,7 @@
 import { copyFileSync, existsSync, mkdirSync, statSync } from 'node:fs';
 import { dirname, join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import { glob } from 'glob';
 import fs from 'node:fs';
 
@@ -27,6 +28,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const distDir = join(root, 'dist');
 const coreVendorDir = join(root, 'packages', 'core', 'vendor');
+const require = createRequire(import.meta.url);
 
 // Create the dist directory if it doesn't exist
 if (!existsSync(distDir)) {
@@ -83,6 +85,19 @@ if (existsSync(userDocsDir)) {
 } else {
   console.warn(`Warning: User docs directory not found at ${userDocsDir}`);
 }
+
+// Copy pdfjs-dist worker file.
+// pdf-parse (used by PDFExtractTool) depends on pdfjs-dist, which loads a
+// worker file (pdf.worker.mjs) via dynamic import() at runtime. esbuild cannot
+// bundle this dynamically-loaded module, so we copy it to dist/ so it is
+// co-located with cli.js when the package is published and installed globally.
+const pdfjsWorkerPath =
+  require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
+const pdfWorkerDest = join(distDir, 'pdf.worker.mjs');
+copyFileSync(pdfjsWorkerPath, pdfWorkerDest);
+console.log(
+  `Copied pdf.worker.mjs to dist/ (${(statSync(pdfjsWorkerPath).size / 1024).toFixed(0)}KB)`,
+);
 
 console.log('\n✅ All bundle assets copied to dist/');
 
