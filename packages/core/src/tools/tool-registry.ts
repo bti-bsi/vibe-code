@@ -155,6 +155,10 @@ Stderr: Output on stderr stream. Can be \`(empty)\` or partial.
 Error: Error or \`(none)\` if no error was reported for the subprocess.
 Exit Code: Exit code or \`(none)\` if terminated by signal.
 Signal: Signal number or \`(none)\` if no signal was received.
+
+Tool Name: ${name}
+Parameters:
+${JSON.stringify((parameterSchema as any)?.properties ?? parameterSchema, null, 2)}
 `;
     super(
       name,

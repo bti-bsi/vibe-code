@@ -55,6 +55,10 @@ Usage notes:
 - If you recommend a specific option, make that the first option in the list and add "(Recommended)" at the end of the label
 
 Plan mode note: In plan mode, use this tool to clarify requirements or choose between approaches BEFORE finalizing your plan. Do NOT use this tool to ask "Is this plan ready?" or "Should I proceed?" - use ExitPlanMode for plan approval.
+
+Tool Name: ask_question
+Parameters:
+- questions (array): Questions to ask the user (1-4 questions). Contains question (string), header (string), options (array), multiSelect (boolean)
 `;
 
 const askUserQuestionToolSchemaData: FunctionDeclaration = {

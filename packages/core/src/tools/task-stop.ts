@@ -233,7 +233,11 @@ export class TaskStopTool extends BaseDeclarativeTool<
     super(
       TaskStopTool.Name,
       ToolDisplayNames.TASK_STOP,
-      'Stop a background task by its ID. Running agents and shells are cancelled; paused recovered agents are abandoned without resuming them.',
+      `Stop a background task by its ID. Running agents and shells are cancelled; paused recovered agents are abandoned without resuming them.
+
+Tool Name: manage_task
+Parameters:
+- task_id (string): The ID of the background task to stop (from the launch response or notification).`,
       Kind.Other,
       {
         type: 'object',

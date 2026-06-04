@@ -242,7 +242,11 @@ Important:
 
 <available_skills>
 ${skillDescriptions}
-</available_skills>`;
+</available_skills>
+
+Tool Name: skill
+Parameters:
+- skill (string): The skill name to run (no arguments). E.g., "pdf" or "xlsx"`;
     // Update description using object property assignment
     (this as { description: string }).description = baseDescription;
   }

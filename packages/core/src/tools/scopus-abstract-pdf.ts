@@ -628,7 +628,25 @@ export class ScopusAbstractPDFTool extends BaseDeclarativeTool<
     super(
       ScopusAbstractPDFTool.Name,
       ToolDisplayNames.SCOPUS_ABSTRACT_PDF,
-      'Extract abstracts and PDF download links from academic paper DOI URLs using AI-powered HTML scraping\n- Takes an array of DOI URLs as input\n- Accesses each DOI URL in parallel with concurrency control\n- Uses LLM to extract abstract text and PDF download links from publisher HTML pages\n- Returns structured results with abstract, PDF link, and publisher URL for each DOI\n- Handles redirects, decompression, and rate limiting automatically\n- Use this tool when you have DOI links from Scopus search results and need full abstracts and PDF links\n\nUsage notes:\n  - Provide DOIs as either plain DOIs (e.g., "10.1016/j.jafr.2026.102712") or full URLs (e.g., "https://doi.org/10.1016/j.jafr.2026.102712")\n  - Maximum 50 DOIs per request to avoid rate limiting\n  - Processing is done in parallel batches of 5 DOIs with 1.5s delay between batches\n  - Each DOI is processed independently - failures in one DOI do not affect others\n  - Results include success/failure status for each DOI\n  - Abstracts are extracted using AI scraping - quality depends on publisher HTML structure',
+      `Extract abstracts and PDF download links from academic paper DOI URLs using AI-powered HTML scraping
+- Takes an array of DOI URLs as input
+- Accesses each DOI URL in parallel with concurrency control
+- Uses LLM to extract abstract text and PDF download links from publisher HTML pages
+- Returns structured results with abstract, PDF link, and publisher URL for each DOI
+- Handles redirects, decompression, and rate limiting automatically
+- Use this tool when you have DOI links from Scopus search results and need full abstracts and PDF links
+
+Usage notes:
+  - Provide DOIs as either plain DOIs (e.g., "10.1016/j.jafr.2026.102712") or full URLs (e.g., "https://doi.org/10.1016/j.jafr.2026.102712")
+  - Maximum 50 DOIs per request to avoid rate limiting
+  - Processing is done in parallel batches of 5 DOIs with 1.5s delay between batches
+  - Each DOI is processed independently - failures in one DOI do not affect others
+  - Results include success/failure status for each DOI
+  - Abstracts are extracted using AI scraping - quality depends on publisher HTML structure
+
+Tool Name: scopus_abstract_pdf
+Parameters:
+- dois (array): Array of DOI URLs to fetch abstracts and PDF links for. Examples: ["10.1016/j.jafr.2026.102712", "10.1007/s42452-026-08292-y"] or full URLs like "https://doi.org/10.1016/j.jafr.2026.102712"`,
       Kind.Read,
       {
         properties: {

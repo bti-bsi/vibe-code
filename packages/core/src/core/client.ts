@@ -1303,6 +1303,7 @@ export class GeminiClient {
       AuthType.USE_VERTEX_AI,
       AuthType.USE_ANTHROPIC,
       AuthType.USE_GEMINI,
+      AuthType.USE_GOOGLE_ADC,
     ];
 
     // Try the main authType first for early exit

@@ -57,7 +57,8 @@ export interface UIActions {
     protocol:
       | AuthType.USE_OPENAI
       | AuthType.USE_ANTHROPIC
-      | AuthType.USE_GEMINI,
+      | AuthType.USE_GEMINI
+      | AuthType.USE_GOOGLE_ADC,
     baseUrl: string,
     apiKey: string,
     modelIdsInput: string,

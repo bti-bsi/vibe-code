@@ -494,7 +494,22 @@ export class RipGrepTool extends BaseDeclarativeTool<
     super(
       RipGrepTool.Name,
       'Grep',
-      'A powerful search tool built on ripgrep\n\n  Usage:\n  - ALWAYS use Grep for search tasks. NEVER invoke `grep` or `rg` as a Bash command. The Grep tool has been optimized for correct permissions and access.\n  - Supports full regex syntax (e.g., "log.*Error", "function\\s+\\w+")\n  - Filter files with glob parameter (e.g., "*.js", "**/*.tsx")\n  - Use Agent tool for open-ended searches requiring multiple rounds\n  - Pattern syntax: Uses ripgrep (not grep) - special regex characters need escaping (use `interface\\{\\}` to find `interface{}` in Go code)\n',
+      `A powerful search tool built on ripgrep
+
+  Usage:
+  - ALWAYS use Grep for search tasks. NEVER invoke \`grep\` or \`rg\` as a Bash command. The Grep tool has been optimized for correct permissions and access.
+  - Supports full regex syntax (e.g., "log.*Error", "function\s+\w+")
+  - Filter files with glob parameter (e.g., "*.js", "**/*.tsx")
+  - Use Agent tool for open-ended searches requiring multiple rounds
+  - Pattern syntax: Uses ripgrep (not grep) - special regex characters need escaping (use \`interface\{\}\` to find \`interface{}\` in Go code)
+
+
+Tool Name: grep_search
+Parameters:
+- pattern (string): The regular expression pattern to search for in file contents
+- glob (string): Glob pattern to filter files (e.g. "*.js", "*.{ts,tsx}") - maps to rg --glob
+- path (string): File or directory to search in (rg PATH). Defaults to current working directory.
+- limit (number): Limit output to first N lines/entries. Optional - shows all matches if not specified.`,
       Kind.Search,
       {
         properties: {

@@ -2,7 +2,7 @@
   "name": "vibe-code-vscode-ide-companion",
   "displayName": "Vibe Code Companion",
   "description": "Enable Vibe Code with direct access to your VS Code workspace.",
-  "version": "0.16.9",
+  "version": "1.0.1",
   "publisher": "vibelm",
   "icon": "assets/icon.png",
   "repository": {

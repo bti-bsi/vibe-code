@@ -58,6 +58,7 @@ export enum AuthType {
   USE_GEMINI = 'gemini',
   USE_VERTEX_AI = 'vertex-ai',
   USE_ANTHROPIC = 'anthropic',
+  USE_GOOGLE_ADC = 'google-adc',
 }
 
 /**
@@ -246,8 +247,11 @@ export function validateModelConfig(
 ): ModelConfigValidationResult {
   const errors: Error[] = [];
 
-  // Vibe OAuth doesn't need validation - it uses dynamic tokens
-  if (config.authType === AuthType.VIBE_OAUTH) {
+  // Vibe OAuth and Google ADC don't need validation - they use dynamic tokens
+  if (
+    config.authType === AuthType.VIBE_OAUTH ||
+    config.authType === AuthType.USE_GOOGLE_ADC
+  ) {
     return { valid: true, errors: [] };
   }
 
@@ -362,11 +366,37 @@ export async function createContentGenerator(
     baseGenerator = createAnthropicContentGenerator(generatorConfig, config);
   } else if (
     authType === AuthType.USE_GEMINI ||
-    authType === AuthType.USE_VERTEX_AI
+    authType === AuthType.USE_VERTEX_AI ||
+    authType === AuthType.USE_GOOGLE_ADC
   ) {
+    let finalConfig = generatorConfig;
+    if (authType === AuthType.USE_GOOGLE_ADC) {
+      const { GoogleAuth } = await import('google-auth-library');
+      const googleAuth = new GoogleAuth({
+        scopes: [
+          'https://www.googleapis.com/auth/generative-language',
+          'https://www.googleapis.com/auth/cloud-platform',
+        ],
+      });
+      const authClient = await googleAuth.getClient();
+      const accessTokenResponse = await authClient.getAccessToken();
+      if (!accessTokenResponse.token) {
+        throw new Error(
+          'Failed to retrieve Google Application Default Credentials token. Make sure you have configured ADC, e.g. via `gcloud auth application-default login`.',
+        );
+      }
+      finalConfig = {
+        ...generatorConfig,
+        apiKey: '',
+        customHeaders: {
+          ...generatorConfig.customHeaders,
+          'Authorization': `Bearer ${accessTokenResponse.token}`,
+        },
+      };
+    }
     const { createGeminiContentGenerator } =
       await import('./geminiContentGenerator/index.js');
-    baseGenerator = createGeminiContentGenerator(generatorConfig, config);
+    baseGenerator = createGeminiContentGenerator(finalConfig, config);
   } else {
     throw new Error(
       `Error creating contentGenerator: Unsupported authType: ${authType}`,

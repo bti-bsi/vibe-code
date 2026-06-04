@@ -700,7 +700,14 @@ Expectation for required parameters:
 3. \`new_string\` MUST be the exact literal text to replace \`old_string\` with (also including all whitespace, indentation, newlines, and surrounding code etc.). Ensure the resulting code is correct and idiomatic.
 4. NEVER escape \`old_string\` or \`new_string\`, that would break the exact literal text requirement.
 **Important:** If ANY of the above are not satisfied, the tool will fail. CRITICAL for \`old_string\`: Must uniquely identify the single instance to change. Include at least 3 lines of context BEFORE and AFTER the target text, matching whitespace and indentation precisely. If this string matches multiple locations, or does not match exactly, the tool will fail.
-**Multiple replacements:** Set \`replace_all\` to true when you want to replace every occurrence that matches \`old_string\`.`,
+**Multiple replacements:** Set \`replace_all\` to true when you want to replace every occurrence that matches \`old_string\`.
+
+Tool Name: multi_replace_file_content
+Parameters:
+- file_path (string): The absolute path to the file to modify. Must start with '/'.
+- old_string (string): The exact literal text to replace, preferably unescaped. For single replacements (default), include at least 3 lines of context BEFORE and AFTER the target text, matching whitespace and indentation precisely. If this string is not the exact literal text (i.e. you escaped it) or does not match exactly, the tool will fail.
+- new_string (string): The exact literal text to replace \`old_string\` with, preferably unescaped. Provide the EXACT text. Ensure the resulting code is correct and idiomatic.
+- replace_all (boolean): Replace all occurrences of old_string (default false).`,
       Kind.Edit,
       {
         properties: {

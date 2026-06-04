@@ -628,19 +628,27 @@ export class MonitorTool extends BaseDeclarativeTool<
       MonitorTool.Name,
       ToolDisplayNames.MONITOR,
       'Starts a long-running shell command and streams its stdout/stderr as event notifications back to you.\n\n' +
-        'Use this tool for:\n' +
-        '- Watching log files: `tail -f /var/log/app.log`\n' +
-        '- Monitoring build output: `npm run build --watch`\n' +
-        '- Polling for state changes: `while true; do curl -s http://localhost:8080/health; sleep 1; done`\n' +
-        '- Watching file changes: `fswatch -r ./src`\n\n' +
-        'Each output line from the command becomes a notification event delivered to you. ' +
-        'The monitor runs in the background — you can continue working while it streams events.\n\n' +
-        '**Auto-stop:** The monitor automatically stops after max_events (default 1000) events ' +
-        'or after idle_timeout_ms (default 5 minutes) of silence. The process is killed when the monitor stops.\n\n' +
-        '**Do NOT use this tool for:**\n' +
-        '- One-shot commands (use run_shell_command instead)\n' +
-        '- Commands you need the full output from (use run_shell_command instead)\n' +
-        '- Commands with no output (use run_shell_command with is_background: true instead)',
+              'Use this tool for:\n' +
+              '- Watching log files: `tail -f /var/log/app.log`\n' +
+              '- Monitoring build output: `npm run build --watch`\n' +
+              '- Polling for state changes: `while true; do curl -s http://localhost:8080/health; sleep 1; done`\n' +
+              '- Watching file changes: `fswatch -r ./src`\n\n' +
+              'Each output line from the command becomes a notification event delivered to you. ' +
+              'The monitor runs in the background — you can continue working while it streams events.\n\n' +
+              '**Auto-stop:** The monitor automatically stops after max_events (default 1000) events ' +
+              'or after idle_timeout_ms (default 5 minutes) of silence. The process is killed when the monitor stops.\n\n' +
+              '**Do NOT use this tool for:**\n' +
+              '- One-shot commands (use run_shell_command instead)\n' +
+              '- Commands you need the full output from (use run_shell_command instead)\n' +
+              '- Commands with no output (use run_shell_command with is_background: true instead)' + `
+
+Tool Name: monitor
+Parameters:
+- command (string): Shell command to run and monitor. Each output line (stdout and stderr) becomes an event notification.
+- description (string): Brief description of what this monitor watches (e.g., "webpack build output"). Truncated to 80 characters in display.
+- max_events (number): Stop the monitor after this many events. Default 1000. Max 10000.
+- idle_timeout_ms (number): Stop the monitor if no output for this many milliseconds. Default 300000 (5 min). Max 600000.
+- directory (string): (OPTIONAL) The absolute path of the directory to run the command in. If not provided, the project root directory is used. Must be within the workspace.`,
       Kind.Execute,
       {
         type: 'object',

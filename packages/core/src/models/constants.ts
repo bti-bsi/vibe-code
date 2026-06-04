@@ -89,11 +89,17 @@ export const AUTH_ENV_MAPPINGS = {
     baseUrl: [],
     model: [],
   },
+  'google-adc': {
+    apiKey: [],
+    baseUrl: [],
+    model: ['GEMINI_MODEL'],
+  },
 } as const satisfies Record<AuthType, AuthEnvMapping>;
 
 export const DEFAULT_MODELS = {
   openai: MAINLINE_CODER_MODEL,
   'vibe-oauth': DEFAULT_VIBE_MODEL,
+  'google-adc': 'gemini-2.5-flash',
 } as Partial<Record<AuthType, string>>;
 
 /**

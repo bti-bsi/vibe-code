@@ -1019,7 +1019,32 @@ export class LspTool extends BaseDeclarativeTool<LspToolParams, ToolResult> {
     super(
       LspTool.Name,
       ToolDisplayNames.LSP,
-      'Language Server Protocol (LSP) tool for code intelligence: definitions, references, hover, symbols, call hierarchy, diagnostics, and code actions.\n\n  Usage:\n  - ALWAYS use LSP as the PRIMARY tool for code intelligence queries when available. Do NOT use grep_search or glob first.\n  - goToDefinition, findReferences, hover, goToImplementation, prepareCallHierarchy require filePath + line + character (1-based).\n  - documentSymbol and diagnostics require filePath.\n  - workspaceSymbol requires query (use when user asks "where is X defined?" without specifying a file).\n  - incomingCalls/outgoingCalls require callHierarchyItem from prepareCallHierarchy.\n  - workspaceDiagnostics needs no parameters.\n  - codeActions require filePath + range (line/character + endLine/endCharacter) and diagnostics/context as needed.',
+      `Language Server Protocol (LSP) tool for code intelligence: definitions, references, hover, symbols, call hierarchy, diagnostics, and code actions.
+
+  Usage:
+  - ALWAYS use LSP as the PRIMARY tool for code intelligence queries when available. Do NOT use grep_search or glob first.
+  - goToDefinition, findReferences, hover, goToImplementation, prepareCallHierarchy require filePath + line + character (1-based).
+  - documentSymbol and diagnostics require filePath.
+  - workspaceSymbol requires query (use when user asks "where is X defined?" without specifying a file).
+  - incomingCalls/outgoingCalls require callHierarchyItem from prepareCallHierarchy.
+  - workspaceDiagnostics needs no parameters.
+  - codeActions require filePath + range (line/character + endLine/endCharacter) and diagnostics/context as needed.
+
+Tool Name: lsp
+Parameters:
+- operation (string): LSP operation to execute.
+- filePath (string): File path (absolute or workspace-relative).
+- line (number): 1-based line number for the target location.
+- character (number): 1-based character/column number for the target location.
+- endLine (number): 1-based end line number for range-based operations.
+- endCharacter (number): 1-based end character for range-based operations.
+- includeDeclaration (boolean): Include the declaration itself when looking up references.
+- query (string): Symbol query for workspace symbol search.
+- callHierarchyItem (string): Call hierarchy item for incoming/outgoing calls.
+- serverName (string): Optional LSP server name to target.
+- limit (number): Optional maximum number of results to return.
+- diagnostics (array): Diagnostics for code action context.
+- codeActionKinds (array): Filter code actions by kind (quickfix, refactor, etc.).`,
       Kind.Other,
       {
         type: 'object',

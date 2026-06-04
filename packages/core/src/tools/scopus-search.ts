@@ -406,7 +406,34 @@ export class ScopusSearchTool extends BaseDeclarativeTool<
     super(
       ScopusSearchTool.Name,
       ToolDisplayNames.SCOPUS_SEARCH,
-      'Search Scopus database for academic papers by title, abstract, keywords, or author\n- Takes a search query and API key as input\n- Searches the Scopus academic database\n- Returns paper titles, authors, publication info, citations, and DOI links\n- Supports boolean queries and field-specific searches\n- Returns results in card-like markdown format with sequential numbering\n- Default sort: newest papers first (-coverDate)\n- Use this tool when you need to find academic literature\n- To fetch abstracts and PDF links, use the scopus_abstract_pdf tool with DOI links from search results\n\nUsage notes:\n  - You MUST have a valid Scopus API key from https://dev.elsevier.com/\n  - Default returns 10 results, max 25 per request\n  - Query examples:\n    - "machine learning" (searches title/abstract/keywords)\n    - "TITLE-ABS-KEY(artificial intelligence)"\n    - "authlname(Einstein)" (search by author)\n    - "machine learning AND deep learning" (boolean)\n  - Sort options: relevancy, coverDate, citedby-count, creator, publicationName, pubyear (default: -coverDate)\n  - Results table format include: No., title, authors, year, publisher, citations, DOI link',
+      `Search Scopus database for academic papers by title, abstract, keywords, or author
+- Takes a search query and API key as input
+- Searches the Scopus academic database
+- Returns paper titles, authors, publication info, citations, and DOI links
+- Supports boolean queries and field-specific searches
+- Returns results in card-like markdown format with sequential numbering
+- Default sort: newest papers first (-coverDate)
+- Use this tool when you need to find academic literature
+- To fetch abstracts and PDF links, use the scopus_abstract_pdf tool with DOI links from search results
+
+Usage notes:
+  - You MUST have a valid Scopus API key from https://dev.elsevier.com/
+  - Default returns 10 results, max 25 per request
+  - Query examples:
+    - "machine learning" (searches title/abstract/keywords)
+    - "TITLE-ABS-KEY(artificial intelligence)"
+    - "authlname(Einstein)" (search by author)
+    - "machine learning AND deep learning" (boolean)
+  - Sort options: relevancy, coverDate, citedby-count, creator, publicationName, pubyear (default: -coverDate)
+  - Results table format include: No., title, authors, year, publisher, citations, DOI link
+
+Tool Name: scopus_search
+Parameters:
+- query (string): The search query using Scopus boolean logic. Examples: "machine learning", "TITLE-ABS-KEY(artificial intelligence)", "authlname(Einstein)"
+- apiKey (string): Scopus API key for authentication. Get one from https://dev.elsevier.com/. Optional if already configured in settings.
+- count (number): Maximum number of results to return (default: 10, max: 25)
+- start (number): Starting offset for pagination (default: 0)
+- sort (string): Sort order: relevancy, coverDate, citedby-count, creator, publicationName, pubyear. Default: -coverDate (newest first). Prefix with + for ascending, - for descending`,
       Kind.Read,
       {
         properties: {

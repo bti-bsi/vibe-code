@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-web-templates",
-  "version": "0.16.9",
+  "version": "1.0.1",
   "description": "Web templates bundled as embeddable JS/CSS strings",
   "repository": {
     "type": "git",

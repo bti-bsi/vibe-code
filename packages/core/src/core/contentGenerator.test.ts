@@ -15,6 +15,17 @@ import type { Config } from '../config/config.js';
 import { LoggingContentGenerator } from './loggingContentGenerator/index.js';
 
 vi.mock('@google/genai');
+vi.mock('google-auth-library', () => {
+  return {
+    GoogleAuth: vi.fn().mockImplementation(() => {
+      return {
+        getClient: vi.fn().mockResolvedValue({
+          getAccessToken: vi.fn().mockResolvedValue({ token: 'mock-google-adc-token' }),
+        }),
+      };
+    }),
+  };
+});
 
 describe('createContentGenerator', () => {
   it('should create a Gemini content generator', async () => {
@@ -76,6 +87,39 @@ describe('createContentGenerator', () => {
       httpOptions: {
         headers: {
           'User-Agent': expect.any(String),
+        },
+      },
+    });
+    expect(generator).toBeInstanceOf(LoggingContentGenerator);
+  });
+
+  it('should create a Gemini content generator using Google ADC', async () => {
+    const mockConfig = {
+      getUsageStatisticsEnabled: () => false,
+      getContentGeneratorConfig: () => ({}),
+      getCliVersion: () => '1.0.0',
+    } as unknown as Config;
+
+    const mockGenerator = {
+      models: {},
+    } as unknown as GoogleGenAI;
+    vi.mocked(GoogleGenAI).mockImplementation(() => mockGenerator as never);
+
+    const generator = await createContentGenerator(
+      {
+        model: 'test-adc-model',
+        authType: AuthType.USE_GOOGLE_ADC,
+      },
+      mockConfig,
+    );
+
+    expect(GoogleGenAI).toHaveBeenCalledWith({
+      apiKey: undefined,
+      vertexai: undefined,
+      httpOptions: {
+        headers: {
+          'User-Agent': expect.any(String),
+          'Authorization': 'Bearer mock-google-adc-token',
         },
       },
     });

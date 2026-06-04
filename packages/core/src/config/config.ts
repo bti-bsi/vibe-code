@@ -2824,6 +2824,10 @@ export class Config {
         await import('../tools/sinta-search.js');
       return new JournalSintaSearchTool();
     });
+    await registerLazy(ToolNames.BEALLS_LIST, async () => {
+      const { BeallsListTool } = await import('../tools/bealls-list.js');
+      return new BeallsListTool();
+    });
     await registerLazy(ToolNames.SEARCH_WEB, async () => {
       const { SearchWebTool } = await import('../tools/search-web.js');
       return new SearchWebTool(this);

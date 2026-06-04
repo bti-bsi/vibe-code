@@ -55,7 +55,11 @@ export class CronDeleteTool extends BaseDeclarativeTool<
     super(
       CronDeleteTool.Name,
       ToolDisplayNames.CRON_DELETE,
-      'Cancel a cron job previously scheduled with CronCreate. Removes it from the in-memory session store.',
+      `Cancel a cron job previously scheduled with CronCreate. Removes it from the in-memory session store.
+
+Tool Name: cron_delete
+Parameters:
+- id (string): Job ID returned by CronCreate.`,
       Kind.Other,
       {
         type: 'object',

@@ -111,7 +111,12 @@ export class SendMessageTool extends BaseDeclarativeTool<
     super(
       SendMessageTool.Name,
       ToolDisplayNames.SEND_MESSAGE,
-      'Send a text message to a background task. Running tasks receive it at the next tool-round boundary. Paused recovered tasks are resumed first and use the message as their first continuation instruction.',
+      `Send a text message to a background task. Running tasks receive it at the next tool-round boundary. Paused recovered tasks are resumed first and use the message as their first continuation instruction.
+
+Tool Name: send_message
+Parameters:
+- task_id (string): The ID of the background task (from the launch response or a recovered paused task).
+- message (string): The text message to send to the task.`,
       Kind.Other,
       {
         type: 'object',

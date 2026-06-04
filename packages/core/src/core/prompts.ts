@@ -7,6 +7,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import os from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { ToolNames } from '../tools/tool-names.js';
 import process from 'node:process';
 import { isGitRepository } from '../utils/gitUtils.js';
@@ -15,6 +16,258 @@ import type { GenerateContentConfig } from '@google/genai';
 import { createDebugLogger } from '../utils/debugLogger.js';
 
 const debugLogger = createDebugLogger('PROMPTS');
+
+let cachedToolsDocsPrompt: string | null = null;
+
+/**
+ * Reads all tool documentation files from the docs/developers/tools folder
+ * and formats them into a single system prompt section.
+ */
+export function getToolsDocsPrompt(): string {
+  if (cachedToolsDocsPrompt !== null) {
+    return cachedToolsDocsPrompt;
+  }
+
+  try {
+    const currentDir = path.dirname(fileURLToPath(import.meta.url));
+    let toolsDocsDir = path.resolve(
+      currentDir,
+      '../../..',
+      'docs/developers/tools',
+    );
+    if (!fs.existsSync(toolsDocsDir)) {
+      toolsDocsDir = path.join(process.cwd(), 'docs/developers/tools');
+    }
+
+    if (!fs.existsSync(toolsDocsDir)) {
+      cachedToolsDocsPrompt = '';
+      return cachedToolsDocsPrompt;
+    }
+
+    const files = fs.readdirSync(toolsDocsDir);
+    const docContents: string[] = [];
+
+    for (const file of files) {
+      if (file.startsWith('_')) {
+        continue;
+      }
+      const ext = path.extname(file).toLowerCase();
+      if (ext !== '.md') {
+        continue;
+      }
+
+      const filePath = path.join(toolsDocsDir, file);
+      const stat = fs.statSync(filePath);
+      if (stat.isFile()) {
+        const content = fs.readFileSync(filePath, 'utf8');
+        docContents.push(`## Tool Reference: ${file}\n\n${content}\n`);
+      }
+    }
+
+    if (docContents.length === 0) {
+      cachedToolsDocsPrompt = '';
+      return cachedToolsDocsPrompt;
+    }
+
+    let compiled = `\n# Detailed Tool Documentation and Parameter Guidelines\n\nHere is the documentation for the tools you have access to, detailing how to use them and their expected parameters:\n\n${docContents.join('\n---\n\n')}\n`.trim();
+    if (compiled) {
+      compiled = `\n\n${compiled}`;
+    }
+    cachedToolsDocsPrompt = compiled;
+  } catch (error) {
+    debugLogger.warn('Failed to load tool documentation prompts:', error);
+    cachedToolsDocsPrompt = '';
+  }
+
+  return cachedToolsDocsPrompt;
+}
+
+export interface TSToolParamInfo {
+  name: string;
+  type: string;
+  required: boolean;
+  description: string;
+}
+
+export interface TSToolInfo {
+  name: string;
+  description: string;
+  parameters: TSToolParamInfo[];
+}
+
+export function parseTSToolContent(content: string, filename: string): TSToolInfo {
+  const toolInfo: TSToolInfo = {
+    name: path.basename(filename, '.ts'),
+    description: '',
+    parameters: [],
+  };
+
+  // Try to find JSDoc block
+  const jsdocRegex = /\/\*\*([\s\S]*?)\*\//;
+  const match = jsdocRegex.exec(content);
+
+  if (match) {
+    const jsdoc = match[1];
+    const lines = jsdoc.split('\n').map(l => l.replace(/^\s*\*\s?/, '').trim());
+
+    let currentTag = '';
+    let descriptionLines: string[] = [];
+
+    for (const line of lines) {
+      if (line.startsWith('@')) {
+        const tagMatch = line.match(/^@(\w+)/);
+        currentTag = tagMatch ? tagMatch[1] : '';
+      }
+
+      if (line.startsWith('@tool') || line.startsWith('@name')) {
+        const nameMatch = line.match(/@(tool|name)\s+(\S+)/);
+        if (nameMatch) {
+          toolInfo.name = nameMatch[2];
+        }
+      } else if (line.startsWith('@description')) {
+        const descMatch = line.match(/@description\s+(.+)/);
+        if (descMatch) {
+          descriptionLines.push(descMatch[1]);
+        }
+      } else if (line.startsWith('@param') || line.startsWith('@property')) {
+        const paramMatch = line.match(/@(param|property)\s+(?:\{([^}]+)\}\s+)?(\S+)\s*(?:-\s*)?([\s\S]*)/);
+        if (paramMatch) {
+          const type = paramMatch[2] || 'any';
+          let rawName = paramMatch[3];
+          const description = paramMatch[4] || '';
+
+          let required = true;
+          if (rawName.startsWith('[') && rawName.endsWith(']')) {
+            rawName = rawName.slice(1, -1);
+            required = false;
+          }
+
+          toolInfo.parameters.push({
+            name: rawName,
+            type,
+            required,
+            description: description.trim(),
+          });
+        }
+      } else if (line) {
+        if (currentTag === 'description' || currentTag === '') {
+          descriptionLines.push(line);
+        } else if (currentTag === 'param' || currentTag === 'property') {
+          if (toolInfo.parameters.length > 0) {
+            const lastParam = toolInfo.parameters[toolInfo.parameters.length - 1];
+            lastParam.description = (lastParam.description + ' ' + line).trim();
+          }
+        }
+      }
+    }
+
+    if (descriptionLines.length > 0) {
+      toolInfo.description = descriptionLines.join(' ').trim();
+    }
+  }
+
+  // Fallback parsing via regex for name and description if JSDoc was insufficient or missing name
+  if (!toolInfo.description || toolInfo.name === path.basename(filename, '.ts')) {
+    const nameMatch = content.match(/name\s*:\s*['"`]([^'"`]+)['"`]/);
+    if (nameMatch && nameMatch[1]) {
+      toolInfo.name = nameMatch[1];
+    }
+
+    const descMatch = content.match(/description\s*:\s*['"`]([^'"`]+)['"`]/);
+    if (descMatch && descMatch[1]) {
+      toolInfo.description = descMatch[1];
+    }
+  }
+
+  return toolInfo;
+}
+
+export function formatTSToolPrompt(tool: TSToolInfo): string {
+  let prompt = `### Tool: ${tool.name}\n`;
+  if (tool.description) {
+    prompt += `Description: ${tool.description}\n`;
+  }
+  if (tool.parameters.length > 0) {
+    prompt += `Parameters:\n`;
+    for (const param of tool.parameters) {
+      const reqStr = param.required ? 'required' : 'optional';
+      prompt += `- ${param.name} (${param.type}, ${reqStr}): ${param.description}\n`;
+    }
+  }
+  return prompt.trim();
+}
+
+let cachedTSToolsPrompt: string | null = null;
+
+export function getTSToolsPrompt(): string {
+  if (cachedTSToolsPrompt !== null) {
+    return cachedTSToolsPrompt;
+  }
+
+  try {
+    const currentDir = path.dirname(fileURLToPath(import.meta.url));
+    let toolsDocsDir = path.resolve(
+      currentDir,
+      '../../..',
+      'docs/developers/tools',
+    );
+    if (!fs.existsSync(toolsDocsDir)) {
+      toolsDocsDir = path.join(process.cwd(), 'docs/developers/tools');
+    }
+
+    if (!fs.existsSync(toolsDocsDir)) {
+      cachedTSToolsPrompt = '';
+      return cachedTSToolsPrompt;
+    }
+
+    const files = fs.readdirSync(toolsDocsDir);
+    const tsToolContents: string[] = [];
+
+    for (const file of files) {
+      if (file.startsWith('_') || file.endsWith('.test.ts')) {
+        continue;
+      }
+      const ext = path.extname(file).toLowerCase();
+      if (ext !== '.ts') {
+        continue;
+      }
+
+      const filePath = path.join(toolsDocsDir, file);
+      const stat = fs.statSync(filePath);
+      if (stat.isFile()) {
+        const content = fs.readFileSync(filePath, 'utf8');
+        const toolInfo = parseTSToolContent(content, file);
+        const formatted = formatTSToolPrompt(toolInfo);
+        tsToolContents.push(formatted);
+      }
+    }
+
+    if (tsToolContents.length === 0) {
+      cachedTSToolsPrompt = '';
+      return cachedTSToolsPrompt;
+    }
+
+    let compiled = `\n# TS Tools Reference\n\nHere is the usage documentation and parameters for the TS tools:\n\n${tsToolContents.join('\n---\n\n')}\n`.trim();
+    if (compiled) {
+      compiled = `\n\n${compiled}`;
+    }
+    cachedTSToolsPrompt = compiled;
+  } catch (error) {
+    debugLogger.warn('Failed to load TS tool documentation prompts:', error);
+    cachedTSToolsPrompt = '';
+  }
+
+  return cachedTSToolsPrompt;
+}
+
+export function resetTSToolsPromptCache(): void {
+  cachedTSToolsPrompt = null;
+}
+
+export function resetToolsDocsPromptCache(): void {
+  cachedToolsDocsPrompt = null;
+  resetTSToolsPromptCache();
+}
 
 export function resolvePathFromEnv(envVar?: string): {
   isSwitch: boolean;
@@ -284,6 +537,8 @@ IMPORTANT: Always use the ${ToolNames.TODO_WRITE} tool to plan and track tasks t
 - **Subagent Delegation:** When doing file search, prefer to use the '${ToolNames.AGENT}' tool in order to reduce context usage. You should proactively use the '${ToolNames.AGENT}' tool with specialized agents when the task at hand matches the agent's description.
 - **Web & Academic Search:** Use '${ToolNames.SEARCH_WEB}' for general web searches. Use '${ToolNames.SCOPUS_SEARCH}' for high-quality literature reviews from the Scopus database. Use '${ToolNames.JOURNAL_SINTA_SEARCH}' to search for accredited Indonesian journals and their SINTA rankings; it can also scrape full journal profiles (history, metrics, articles) if 'fullDetail' is enabled or 'profile_url' is provided. '.
 - **Respect User Confirmations:** Most tool calls (also denoted as 'function calls') will first require confirmation from the user, where they will either approve or cancel the function call. If a user cancels a function call, respect their choice and do _not_ try to make the function call again. It is okay to request the tool call again _only_ if the user requests that same tool call on a subsequent prompt. When a user cancels a function call, assume best intentions from the user and consider inquiring if they prefer any alternative paths forward.
+${getToolsDocsPrompt()}
+${getTSToolsPrompt()}
 
 ## Interaction Details
 - **Help Command:** The user can use '/help' to display help information.

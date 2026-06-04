@@ -586,9 +586,10 @@ export const AppContainer = (props: AppContainerProps) => {
     handleCustomApiKeySubmit,
     openAuthDialog,
     cancelAuthentication,
+    setAuthError,
   } = useAuthCommand(settings, config, historyManager.addItem, refreshStatic);
 
-  useInitializationAuthError(initializationResult.authError, onAuthError);
+  useInitializationAuthError(initializationResult.authError, setAuthError);
 
   // Sync user tier from config when authentication changes
   // TODO: Implement getUserTier() method on Config if needed
@@ -623,7 +624,7 @@ export const AppContainer = (props: AppContainerProps) => {
       if (currentAuthType) {
         const error = validateAuthMethod(currentAuthType, config);
         if (error) {
-          onAuthError(error);
+          setAuthError(error);
         }
       }
     }

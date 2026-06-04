@@ -474,7 +474,7 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<
       nameOverride ??
         generateValidName(`mcp__${serverName}__${serverToolName}`),
       `${serverToolName} (${serverName} MCP Server)`,
-      description,
+      `${description}\n\nTool Name: ${nameOverride ?? generateValidName(`mcp__${serverName}__${serverToolName}`)}\nParameters:\n${JSON.stringify((parameterSchema as any)?.properties ?? parameterSchema, null, 2)}`,
       annotations?.readOnlyHint === true ? Kind.Read : Kind.Other,
       parameterSchema,
       true, // isOutputMarkdown

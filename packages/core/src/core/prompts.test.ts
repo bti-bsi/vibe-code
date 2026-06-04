@@ -11,6 +11,12 @@ import {
   getSubagentSystemReminder,
   getPlanModeSystemReminder,
   resolvePathFromEnv,
+  getToolsDocsPrompt,
+  resetToolsDocsPromptCache,
+  parseTSToolContent,
+  formatTSToolPrompt,
+  getTSToolsPrompt,
+  resetTSToolsPromptCache,
 } from './prompts.js';
 import { isGitRepository } from '../utils/gitUtils.js';
 import fs from 'node:fs';
@@ -641,6 +647,194 @@ describe('resolvePathFromEnv helper function', () => {
         isSwitch: false,
         value: null,
         isDisabled: false,
+      });
+    });
+  });
+
+  describe('getToolsDocsPrompt', () => {
+    beforeEach(() => {
+      resetToolsDocsPromptCache();
+    });
+
+    it('should return empty string if tools documentation folder does not exist', () => {
+      vi.mocked(fs.existsSync).mockReturnValue(false);
+      const result = getToolsDocsPrompt();
+      expect(result).toBe('');
+    });
+
+    it('should read and compile markdown files in the docs folder, ignoring others', () => {
+      vi.mocked(fs.existsSync).mockReturnValue(true);
+      vi.mocked(fs.readdirSync).mockReturnValue([
+        '_meta.ts',
+        'file-system.md',
+        'shell.md',
+        'unused.txt',
+        'my-tool.ts',
+      ] as any);
+      vi.mocked(fs.statSync).mockReturnValue({ isFile: () => true } as any);
+      vi.mocked(fs.readFileSync).mockImplementation((filePath) => {
+        if (filePath.toString().endsWith('file-system.md')) {
+          return 'This is file system doc';
+        }
+        if (filePath.toString().endsWith('shell.md')) {
+          return 'This is shell doc';
+        }
+        return '';
+      });
+
+      const result = getToolsDocsPrompt();
+      expect(result).toContain('# Detailed Tool Documentation and Parameter Guidelines');
+      expect(result).toContain('## Tool Reference: file-system.md');
+      expect(result).toContain('This is file system doc');
+      expect(result).toContain('## Tool Reference: shell.md');
+      expect(result).toContain('This is shell doc');
+      expect(result).not.toContain('_meta.ts');
+      expect(result).not.toContain('unused.txt');
+      expect(result).not.toContain('my-tool.ts');
+    });
+
+    it('should return cached result on subsequent calls', () => {
+      vi.mocked(fs.existsSync).mockReturnValue(true);
+      vi.mocked(fs.readdirSync).mockReturnValue(['shell.md'] as any);
+      vi.mocked(fs.statSync).mockReturnValue({ isFile: () => true } as any);
+      vi.mocked(fs.readFileSync).mockReturnValue('Shell content');
+
+      const result1 = getToolsDocsPrompt();
+      const result2 = getToolsDocsPrompt();
+
+      expect(result1).toBe(result2);
+      expect(fs.readdirSync).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('TS Tools Prompt Parsing and Formatting', () => {
+    it('should parse TS tool content with JSDoc successfully', () => {
+      const tsContent = `
+        /**
+         * @tool test_tool
+         * @description This is a description of the test tool.
+         * It spans multiple lines maybe.
+         * @param {string} param1 - The first parameter description.
+         * @param {number} [param2] - Optional second parameter.
+         */
+        const schema = {};
+      `;
+      const toolInfo = parseTSToolContent(tsContent, 'test_tool.ts');
+      expect(toolInfo.name).toBe('test_tool');
+      expect(toolInfo.description).toBe('This is a description of the test tool. It spans multiple lines maybe.');
+      expect(toolInfo.parameters).toHaveLength(2);
+      expect(toolInfo.parameters[0]).toEqual({
+        name: 'param1',
+        type: 'string',
+        required: true,
+        description: 'The first parameter description.',
+      });
+      expect(toolInfo.parameters[1]).toEqual({
+        name: 'param2',
+        type: 'number',
+        required: false,
+        description: 'Optional second parameter.',
+      });
+    });
+
+    it('should fall back to filename and regex matching when JSDoc name/description is missing', () => {
+      const tsContent = `
+        const schema = {
+          name: 'fallback_tool',
+          description: 'Fallback tool description',
+        };
+      `;
+      const toolInfo = parseTSToolContent(tsContent, 'fallback-tool.ts');
+      expect(toolInfo.name).toBe('fallback_tool');
+      expect(toolInfo.description).toBe('Fallback tool description');
+    });
+
+    it('should format ToolInfo to Markdown prompt string correctly', () => {
+      const tool = {
+        name: 'test_tool',
+        description: 'A tool for testing',
+        parameters: [
+          { name: 'p1', type: 'string', required: true, description: 'Desc 1' },
+          { name: 'p2', type: 'boolean', required: false, description: 'Desc 2' },
+        ],
+      };
+      const formatted = formatTSToolPrompt(tool);
+      expect(formatted).toBe(
+        `### Tool: test_tool\n` +
+        `Description: A tool for testing\n` +
+        `Parameters:\n` +
+        `- p1 (string, required): Desc 1\n` +
+        `- p2 (boolean, optional): Desc 2`
+      );
+    });
+
+    describe('getTSToolsPrompt', () => {
+      beforeEach(() => {
+        resetToolsDocsPromptCache();
+      });
+
+      it('should return empty string if tools directory does not exist', () => {
+        vi.mocked(fs.existsSync).mockReturnValue(false);
+        const result = getTSToolsPrompt();
+        expect(result).toBe('');
+      });
+
+      it('should read, parse, and format TS files from directory', () => {
+        vi.mocked(fs.existsSync).mockReturnValue(true);
+        vi.mocked(fs.readdirSync).mockReturnValue([
+          '_meta.ts',
+          'tool-one.ts',
+          'tool-two.ts',
+          'some-doc.md',
+        ] as any);
+        vi.mocked(fs.statSync).mockReturnValue({ isFile: () => true } as any);
+        vi.mocked(fs.readFileSync).mockImplementation((filePath) => {
+          if (filePath.toString().endsWith('tool-one.ts')) {
+            return `
+              /**
+               * @tool tool_one
+               * @description A description for tool one.
+               * @param {string} arg1 - Argument one.
+               */
+            `;
+          }
+          if (filePath.toString().endsWith('tool-two.ts')) {
+            return `
+              /**
+               * @tool tool_two
+               * @description A description for tool two.
+               */
+            `;
+          }
+          return '';
+        });
+
+        const result = getTSToolsPrompt();
+        expect(result).toContain('# TS Tools Reference');
+        expect(result).toContain('### Tool: tool_one');
+        expect(result).toContain('Description: A description for tool one.');
+        expect(result).toContain('- arg1 (string, required): Argument one.');
+        expect(result).toContain('### Tool: tool_two');
+        expect(result).toContain('Description: A description for tool two.');
+        expect(result).not.toContain('_meta.ts');
+        expect(result).not.toContain('some-doc.md');
+      });
+
+      it('should return cached TS tools prompt on subsequent calls', () => {
+        vi.mocked(fs.existsSync).mockReturnValue(true);
+        vi.mocked(fs.readdirSync).mockReturnValue(['my-tool.ts'] as any);
+        vi.mocked(fs.statSync).mockReturnValue({ isFile: () => true } as any);
+        vi.mocked(fs.readFileSync).mockReturnValue(`
+          /**
+           * @tool my_tool
+           * @description My description.
+           */
+        `);
+
+        const r1 = getTSToolsPrompt();
+        const r2 = getTSToolsPrompt();
+        expect(r1).toBe(r2);
+        expect(fs.readdirSync).toHaveBeenCalledTimes(1);
       });
     });
   });

@@ -298,7 +298,16 @@ Usage notes:
 - Always include a short description (3-5 words) summarizing what the agent will do
 - Launch multiple agents concurrently whenever possible, to maximize performance; to do that, use a single message with multiple tool uses
 - When the agent is done, it will return a single message back to you. The result returned by the agent is not visible to the user. To show the user the result, you should send a text message back to the user with a concise summary of the result.
-- Provide clear, detailed prompts so the agent can work autonomously and return exactly the information you need.
+- If you run the agent in the background (run_in_background=true), the tool call will return immediately and the agent will run asynchronously. You will receive a system message when it completes.
+
+Tool Name: invoke_subagent
+Parameters:
+- description (string): A short (3-5 word) description of the task
+- prompt (string): The task for the agent to perform
+- subagent_type (string): The type of specialized agent to use for this task
+- run_in_background (boolean): Set to true to run this agent in the background. You will be notified when it completes.
+
+Provide clear, detailed prompts so the agent can work autonomously and return exactly the information you need.
 - The agent's outputs should generally be trusted
 - Clearly tell the agent whether you expect it to write code or just to do research (search, file reads, web fetches, etc.), since it is not aware of the user's intent
 - If the agent description mentions that it should be used proactively, then you should try your best to use it without the user having to ask for it first. Use your judgement.

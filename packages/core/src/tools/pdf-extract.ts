@@ -752,7 +752,29 @@ export class PDFExtractTool extends BaseDeclarativeTool<
     super(
       PDFExtractTool.Name,
       ToolDisplayNames.PDF_EXTRACT,
-      'Extract text, images, and tables from PDF files into structured markdown\n- Takes a PDF file path or URL as input\n- Extracts all text content and saves as .md file\n- Extracts embedded images and saves them in images/ subfolder\n- Detects tabular data and formats as markdown tables\n- Default output: ./extract-data/ in current working directory\n- Supports custom output directory via outputDir parameter\n- Use this tool when you need to extract data from PDF files\n\nUsage notes:\n  - Local file: pass file path for source parameter\n  - Remote PDF: pass URL for source parameter\n  - Images are saved to images/ subfolder within output directory\n  - Tables are detected heuristically and embedded in markdown\n  - Max PDF size: 50MB\n  - Output includes: .md file, extracted images, and summary',
+      `Extract text, images, and tables from PDF files into structured markdown
+- Takes a PDF file path or URL as input
+- Extracts all text content and saves as .md file
+- Extracts embedded images and saves them in images/ subfolder
+- Detects tabular data and formats as markdown tables
+- Default output: ./extract-data/ in current working directory
+- Supports custom output directory via outputDir parameter
+- Use this tool when you need to extract data from PDF files
+
+Usage notes:
+  - Local file: pass file path for source parameter
+  - Remote PDF: pass URL for source parameter
+  - Images are saved to images/ subfolder within output directory
+  - Tables are detected heuristically and embedded in markdown
+  - Max PDF size: 50MB
+  - Output includes: .md file, extracted images, and summary
+
+Tool Name: pdf_extract
+Parameters:
+- source (string): Path to the local PDF file or URL of a remote PDF. Examples: "./paper.pdf", "https://example.com/paper.pdf"
+- outputDir (string): Optional: directory to save extracted files to. Default: ./extract-data in the current working directory.
+- extractImages (boolean): Whether to extract embedded images. Default: true.
+- extractTables (boolean): Whether to detect and extract tables. Default: true.`,
       Kind.Read,
       {
         properties: {

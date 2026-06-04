@@ -600,7 +600,22 @@ export class GrepTool extends BaseDeclarativeTool<GrepToolParams, ToolResult> {
     super(
       GrepTool.Name,
       ToolDisplayNames.GREP,
-      'A powerful search tool for finding patterns in files\n\n  Usage:\n  - ALWAYS use Grep for search tasks. NEVER invoke `grep` or `rg` as a Bash command. The Grep tool has been optimized for correct permissions and access.\n  - Supports full regex syntax (e.g., "log.*Error", "function\\s+\\w+")\n  - Filter files with glob parameter (e.g., "*.js", "**/*.tsx")\n  - Case-insensitive by default\n  - Use Agent tool for open-ended searches requiring multiple rounds\n',
+      `A powerful search tool for finding patterns in files
+
+  Usage:
+  - ALWAYS use Grep for search tasks. NEVER invoke \`grep\` or \`rg\` as a Bash command. The Grep tool has been optimized for correct permissions and access.
+  - Supports full regex syntax (e.g., "log.*Error", "function\s+\w+")
+  - Filter files with glob parameter (e.g., "*.js", "**/*.tsx")
+  - Case-insensitive by default
+  - Use Agent tool for open-ended searches requiring multiple rounds
+
+
+Tool Name: grep_search
+Parameters:
+- pattern (string): The regular expression pattern to search for in file contents
+- glob (string): Glob pattern to filter files (e.g. "*.js", "*.{ts,tsx}")
+- path (string): File or directory to search in. Defaults to current working directory.
+- limit (number): Limit output to first N matching lines. Optional - shows all matches if not specified.`,
       Kind.Search,
       {
         properties: {

@@ -512,7 +512,18 @@ export class DocxEditTool extends BaseDeclarativeTool<
     super(
       DocxEditTool.Name,
       ToolDisplayNames.EDIT_DOCX,
-      'Edit an existing .docx file\n- Replace text while maintaining styles\n- Insert tables and equations\n- Append rows to existing tables\n- Supports Markdown content for new tables\n- Supports LaTeX for equations',
+      `Edit an existing .docx file
+- Replace text while maintaining styles
+- Insert tables and equations
+- Append rows to existing tables
+- Supports Markdown content for new tables
+- Supports LaTeX for equations
+
+Tool Name: edit_docx
+Parameters:
+- sourceFile (string): Path to the existing .docx file.
+- outputFile (string): Path where the edited .docx file will be saved.
+- operations (array): `,
       Kind.Edit,
       {
         properties: {

@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-channel-dingtalk",
-  "version": "0.16.9",
+  "version": "1.0.1",
   "description": "DingTalk channel adapter for Vibe Code",
   "type": "module",
   "main": "dist/index.js",

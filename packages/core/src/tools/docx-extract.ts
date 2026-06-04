@@ -241,7 +241,19 @@ export class DocxExtractTool extends BaseDeclarativeTool<
     super(
       DocxExtractTool.Name,
       ToolDisplayNames.DOCX_EXTRACT,
-      'Extract text, images, and tables from DOCX files into structured markdown\n- Takes a .docx file path as input\n- Extracts all text content and saves as .md file\n- Extracts embedded images and saves them in images/ subfolder\n- Converts tables to markdown format\n- Default output: ./extract-doc/ in current working directory\n- Supports custom output directory via outputDir parameter',
+      `Extract text, images, and tables from DOCX files into structured markdown
+- Takes a .docx file path as input
+- Extracts all text content and saves as .md file
+- Extracts embedded images and saves them in images/ subfolder
+- Converts tables to markdown format
+- Default output: ./extract-doc/ in current working directory
+- Supports custom output directory via outputDir parameter
+
+Tool Name: docx_extract
+Parameters:
+- source (string): Path to the local .docx file.
+- outputDir (string): Optional: directory to save extracted files to. Default: ./extract-doc
+- extractImages (boolean): Whether to extract embedded images. Default: true.`,
       Kind.Read,
       {
         properties: {

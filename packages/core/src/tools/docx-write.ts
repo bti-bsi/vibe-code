@@ -869,7 +869,20 @@ export class DocxWriteTool extends BaseDeclarativeTool<
     super(
       DocxWriteTool.Name,
       ToolDisplayNames.WRITE_DOCX,
-      'Create a .docx file from markdown content\n- Supports headings, paragraphs, lists, tables, and images\n- Supports basic styling (font, font size)\n- Supports numbered subheadings\n- Supports inserting images from local paths\n- Supports LaTeX-like equations (uses Cambria Math font)\n- Ideal for generating reports or documents from markdown data',
+      `Create a .docx file from markdown content
+- Supports headings, paragraphs, lists, tables, and images
+- Supports basic styling (font, font size)
+- Supports numbered subheadings
+- Supports inserting images from local paths
+- Supports LaTeX-like equations (uses Cambria Math font)
+- Ideal for generating reports or documents from markdown data
+
+Tool Name: write_docx
+Parameters:
+- filePath (string): Path where the .docx file will be saved. Example: "./report.docx"
+- content (string): Markdown content to be converted to DOCX.
+- title (string): Optional: Title of the document.
+- styles (object): Optional: Style configurations.`,
       Kind.Edit,
       {
         properties: {

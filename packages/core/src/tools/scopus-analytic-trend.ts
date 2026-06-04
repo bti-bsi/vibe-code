@@ -297,7 +297,13 @@ export class ScopusAnalyticTrendTool extends BaseDeclarativeTool<
     super(
       ScopusAnalyticTrendTool.Name,
       ToolDisplayNames.SCOPUS_ANALYTIC_TREND,
-      'Perform Scopus Analytic Trend. Takes kataKunci and maksHasil to analyze publication trends, top keywords, and top sample articles.',
+      `Perform Scopus Analytic Trend. Takes kataKunci and maksHasil to analyze publication trends, top keywords, and top sample articles.
+
+Tool Name: scopus_analytic_trend
+Parameters:
+- kataKunci (string): Topic or keyword to search for
+- apiKey (string): Scopus API key for authentication. Optional if configured in settings.
+- maksHasil (number): Maximum number of articles to process (Default: 50)`,
       Kind.Read,
       {
         properties: {

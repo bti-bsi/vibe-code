@@ -267,7 +267,32 @@ export class WebFetchTool extends BaseDeclarativeTool<
     super(
       WebFetchTool.Name,
       ToolDisplayNames.WEB_FETCH,
-      'Fetches content from a specified URL and processes it using an AI model\n- Takes a URL and a prompt as input\n- Supports content negotiation for markdown (reduces tokens by ~80%)\n- Fetches the URL content, converts HTML to text if needed\n- Processes the content with the prompt using a small, fast model\n- Returns the model\'s response about the content\n- Use this tool when you need to retrieve and analyze web content\n\nUsage notes:\n  - IMPORTANT: If an MCP-provided web fetch tool is available, prefer using that tool instead of this one, as it may have fewer restrictions. All MCP-provided tools start with "mcp__".\n  - The URL must be a fully-formed valid URL\n  - The prompt should describe what information you want to extract from the page\n  - format parameter (optional): controls only the Accept header sent to the server. All content is normalized to plain text for LLM processing, regardless of format.\n  - "auto" (default): Prefers markdown via content negotiation, accepts HTML as fallback. Use when user does NOT specify a format.\n  - "markdown": Sends Accept: text/markdown. Use when user explicitly asks for markdown content.\n  - "html": Sends Accept: text/html. Content is still converted to plain text for LLM processing.\n  - "text": Sends Accept: text/plain. Use when user explicitly asks for plain text.\n  - This tool is read-only and does not modify any files\n  - Results may be summarized if the content is very large\n  - Supports both public and private/localhost URLs using direct fetch',
+      `Fetches content from a specified URL and processes it using an AI model
+- Takes a URL and a prompt as input
+- Supports content negotiation for markdown (reduces tokens by ~80%)
+- Fetches the URL content, converts HTML to text if needed
+- Processes the content with the prompt using a small, fast model
+- Returns the model's response about the content
+- Use this tool when you need to retrieve and analyze web content
+
+Usage notes:
+  - IMPORTANT: If an MCP-provided web fetch tool is available, prefer using that tool instead of this one, as it may have fewer restrictions. All MCP-provided tools start with "mcp__".
+  - The URL must be a fully-formed valid URL
+  - The prompt should describe what information you want to extract from the page
+  - format parameter (optional): controls only the Accept header sent to the server. All content is normalized to plain text for LLM processing, regardless of format.
+  - "auto" (default): Prefers markdown via content negotiation, accepts HTML as fallback. Use when user does NOT specify a format.
+  - "markdown": Sends Accept: text/markdown. Use when user explicitly asks for markdown content.
+  - "html": Sends Accept: text/html. Content is still converted to plain text for LLM processing.
+  - "text": Sends Accept: text/plain. Use when user explicitly asks for plain text.
+  - This tool is read-only and does not modify any files
+  - Results may be summarized if the content is very large
+  - Supports both public and private/localhost URLs using direct fetch
+
+Tool Name: read_url_content
+Parameters:
+- url (string): The URL to fetch content from
+- prompt (string): The prompt to run on the fetched content
+- format (string): Preferred content format (Accept header only): auto (default, prefers markdown), markdown, html, or text. All content is normalized to plain text.`,
       Kind.Fetch,
       {
         properties: {

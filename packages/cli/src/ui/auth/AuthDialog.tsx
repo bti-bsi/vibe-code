@@ -29,7 +29,8 @@ const MODEL_PROVIDERS_DOCUMENTATION_URL =
 type CustomProtocol =
   | AuthType.USE_OPENAI
   | AuthType.USE_ANTHROPIC
-  | AuthType.USE_GEMINI;
+  | AuthType.USE_GEMINI
+  | AuthType.USE_GOOGLE_ADC;
 
 type ViewLevel =
   | 'custom-protocol-select'
@@ -56,9 +57,10 @@ function parseDefaultAuthType(
   if (
     defaultAuthType === AuthType.USE_OPENAI ||
     defaultAuthType === AuthType.USE_ANTHROPIC ||
-    defaultAuthType === AuthType.USE_GEMINI
+    defaultAuthType === AuthType.USE_GEMINI ||
+    defaultAuthType === AuthType.USE_GOOGLE_ADC
   ) {
-    return defaultAuthType;
+    return defaultAuthType as CustomProtocol;
   }
   return null;
 }
@@ -69,9 +71,10 @@ function toCustomProtocol(
   if (
     authType === AuthType.USE_OPENAI ||
     authType === AuthType.USE_ANTHROPIC ||
-    authType === AuthType.USE_GEMINI
+    authType === AuthType.USE_GEMINI ||
+    authType === AuthType.USE_GOOGLE_ADC
   ) {
-    return authType;
+    return authType as CustomProtocol;
   }
   return null;
 }
@@ -80,6 +83,7 @@ const DEFAULT_CUSTOM_BASE_URLS: Record<CustomProtocol, string> = {
   [AuthType.USE_OPENAI]: 'https://api.openai.com/v1',
   [AuthType.USE_ANTHROPIC]: 'https://api.anthropic.com/v1',
   [AuthType.USE_GEMINI]: 'https://generativelanguage.googleapis.com',
+  [AuthType.USE_GOOGLE_ADC]: 'https://generativelanguage.googleapis.com',
 };
 
 const CUSTOM_BASE_URL_OPTIONS: Array<{
@@ -156,6 +160,13 @@ export function AuthDialogWithMode({
       description: t('Google Gemini API'),
       value: AuthType.USE_GEMINI as CustomProtocol,
     },
+    {
+      key: AuthType.USE_GOOGLE_ADC,
+      title: t('Google Auth (ADC)'),
+      label: t('Google Auth (ADC)'),
+      description: t('Google Application Default Credentials for Gemini'),
+      value: AuthType.USE_GOOGLE_ADC as CustomProtocol,
+    },
   ];
 
   const initialProtocolIndex = Math.max(
@@ -219,6 +230,15 @@ export function AuthDialogWithMode({
   const handleCustomProtocolSelect = (protocol: CustomProtocol) => {
     setErrorMessage(null);
     onAuthError(null);
+    if (protocol === AuthType.USE_GOOGLE_ADC) {
+      void handleCustomApiKeySubmit(
+        protocol,
+        'https://generativelanguage.googleapis.com',
+        '',
+        'gemini-1.5-pro,gemini-2.5-pro',
+      );
+      return;
+    }
     resetCustomFlowState(protocol);
     setViewLevel('custom-base-url-input');
   };
@@ -312,6 +332,15 @@ export function AuthDialogWithMode({
         return;
       case 'custom-base-url-input':
         if (isCustomBaseUrlInput) {
+          const defaultBaseUrl = DEFAULT_CUSTOM_BASE_URLS[customProtocol];
+          const hasRadioOption = CUSTOM_BASE_URL_OPTIONS.some(
+            (option) =>
+              option.value !== 'custom' && option.value === defaultBaseUrl,
+          );
+          if (!hasRadioOption) {
+            setViewLevel('custom-protocol-select');
+            return;
+          }
           setIsCustomBaseUrlInput(false);
           return;
         }
@@ -337,7 +366,11 @@ export function AuthDialogWithMode({
   useKeypress(
     (key) => {
       if (key.name !== 'escape') return;
-      if (errorMessage) return;
+      if (errorMessage || authError) {
+        if (errorMessage) setErrorMessage(null);
+        if (authError) onAuthError(null);
+        return;
+      }
       handleGoBack();
     },
     { isActive: true },

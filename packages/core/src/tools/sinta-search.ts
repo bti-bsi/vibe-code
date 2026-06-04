@@ -620,8 +620,15 @@ export class JournalSintaSearchTool extends BaseDeclarativeTool<
       JournalSintaSearchTool.Name,
       ToolDisplayNames.JOURNAL_SINTA_SEARCH,
       'Searches for journals on SINTA or scrapes a specific journal profile.\n' +
-        'Returns journal titles, accreditation levels (S1-S6), history, articles, and citation metrics.\n' +
-        'Use "query" to search or "profile_url" to get details for a specific journal.',
+              'Returns journal titles, accreditation levels (S1-S6), history, articles, and citation metrics.\n' +
+              'Use "query" to search or "profile_url" to get details for a specific journal.' + `
+
+Tool Name: journal_sinta_search
+Parameters:
+- query (string): The search keyword for journals
+- profile_url (string): Direct SINTA profile URL to scrape (e.g. https://sinta.kemdiktisaintek.go.id/journals/profile/123)
+- maxPages (integer): Maximum number of pages to scrape during search
+- fullDetail (boolean): If true, fetches full details for each journal in search results (warning: slow)`,
       Kind.Fetch,
       {
         properties: {

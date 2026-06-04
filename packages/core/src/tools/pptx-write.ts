@@ -317,7 +317,19 @@ export class WritePptxTool extends BaseDeclarativeTool<
     super(
       WritePptxTool.Name,
       ToolDisplayNames.WRITE_PPTX,
-      'Create a .pptx presentation from markdown content with professional presets\n- Presets: professional, ecommerce, futuristic, babies, techno\n- Supports headings (as slide titles), paragraphs, and lists\n- Supports basic image insertion from local paths\n- Automatically creates slides based on heading structure',
+      `Create a .pptx presentation from markdown content with professional presets
+- Presets: professional, ecommerce, futuristic, babies, techno
+- Supports headings (as slide titles), paragraphs, and lists
+- Supports basic image insertion from local paths
+- Automatically creates slides based on heading structure
+
+Tool Name: write_pptx
+Parameters:
+- filePath (string): Path where the .pptx file will be saved. Example: "./presentation.pptx"
+- content (string): Markdown content to be converted to PPTX.
+- title (string): Optional: Title of the presentation.
+- preset (string): Optional: Predefined style preset.
+- theme (object): Optional: Theme configurations (overrides preset).`,
       Kind.Edit,
       {
         properties: {

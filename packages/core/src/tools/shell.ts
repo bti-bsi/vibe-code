@@ -1186,7 +1186,15 @@ export class ShellTool extends BaseDeclarativeTool<
     super(
       ShellTool.Name,
       ToolDisplayNames.SHELL,
-      getShellToolDescription(),
+      getShellToolDescription() + `
+
+Tool Name: run_command
+Parameters:
+- command (string): 
+- is_background (boolean): Optional: Whether to run the command in background. If not specified, defaults to false (foreground execution). Explicitly set to true for long-running processes like development servers, watchers, or daemons that should continue running without blocking further commands.
+- timeout (number): Optional timeout in milliseconds (max 600000)
+- description (string): Brief description of the command for the user. Be specific and concise. Ideally a single sentence. Can be up to 3 sentences for clarity. No line breaks.
+- directory (string): (OPTIONAL) The absolute path of the directory to run the command in. If not provided, the project root directory is used. Must be a directory within the workspace and must already exist.`,
       Kind.Execute,
       {
         type: 'object',

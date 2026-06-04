@@ -467,7 +467,28 @@ export class FileDownloadTool extends BaseDeclarativeTool<
     super(
       FileDownloadTool.Name,
       ToolDisplayNames.FILE_DOWNLOAD,
-      'Download files from URLs to a specified directory\n- Takes one or more URLs and an optional save directory\n- Uses browser-like HTTP GET with Firefox User-Agent\n- Handles redirects, gzip/br/deflate compression automatically\n- Saves files to the current working directory by default\n- Supports custom save directory (relative or absolute path)\n- Handles duplicate filenames by appending counters\n- Use this tool when the user asks you to download files\n\nUsage notes:\n  - Single URL: pass a string for urls parameter\n  - Multiple URLs: pass an array of strings for urls parameter\n  - Custom directory: set saveDir to the target folder path\n  - Supports HTTP and HTTPS URLs\n  - Max file size: 100MB per file\n  - Automatically sanitizes filenames for cross-platform compatibility\n  - Works well with PDF links from Scopus search results',
+      `Download files from URLs to a specified directory
+- Takes one or more URLs and an optional save directory
+- Uses browser-like HTTP GET with Firefox User-Agent
+- Handles redirects, gzip/br/deflate compression automatically
+- Saves files to the current working directory by default
+- Supports custom save directory (relative or absolute path)
+- Handles duplicate filenames by appending counters
+- Use this tool when the user asks you to download files
+
+Usage notes:
+  - Single URL: pass a string for urls parameter
+  - Multiple URLs: pass an array of strings for urls parameter
+  - Custom directory: set saveDir to the target folder path
+  - Supports HTTP and HTTPS URLs
+  - Max file size: 100MB per file
+  - Automatically sanitizes filenames for cross-platform compatibility
+  - Works well with PDF links from Scopus search results
+
+Tool Name: file_download
+Parameters:
+- urls (string): URL(s) of the file(s) to download. Can be a single URL string or an array of URLs for batch downloads. Examples: "https://example.com/file.pdf", ["https://example.com/file1.pdf", "https://example.com/file2.pdf"]
+- saveDir (string): Optional: directory to save the file(s) to. If not specified, files are saved to the current working directory. Relative paths are resolved against cwd.`,
       Kind.Read,
       {
         properties: {

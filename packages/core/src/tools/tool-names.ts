@@ -18,18 +18,18 @@
  * per-declaration `pathFields?: string[]` annotation on the tool class.)
  */
 export const ToolNames = {
-  EDIT: 'edit',
-  WRITE_FILE: 'write_file',
-  READ_FILE: 'read_file',
+  EDIT: 'multi_replace_file_content',
+  WRITE_FILE: 'write_to_file',
+  READ_FILE: 'view_file',
   GREP: 'grep_search',
   GLOB: 'glob',
-  SHELL: 'run_shell_command',
+  SHELL: 'run_command',
   TODO_WRITE: 'todo_write',
   MEMORY: 'save_memory',
-  AGENT: 'agent',
+  AGENT: 'invoke_subagent',
   SKILL: 'skill',
   EXIT_PLAN_MODE: 'exit_plan_mode',
-  WEB_FETCH: 'web_fetch',
+  WEB_FETCH: 'read_url_content',
   SCOPUS_SEARCH: 'scopus_search',
   SCOPUS_ANALYTIC_TREND: 'scopus_analytic_trend',
   SCOPUS_ABSTRACT_PDF: 'scopus_abstract_pdf',
@@ -40,17 +40,18 @@ export const ToolNames = {
   READ_STYLE_DOCX: 'read_style_docx',
   EDIT_DOCX: 'edit_docx',
   WRITE_PPTX: 'write_pptx',
-  LS: 'list_directory',
+  LS: 'list_dir',
   LSP: 'lsp',
-  ASK_USER_QUESTION: 'ask_user_question',
-  CRON_CREATE: 'cron_create',
+  ASK_USER_QUESTION: 'ask_question',
+  CRON_CREATE: 'schedule',
   CRON_LIST: 'cron_list',
   CRON_DELETE: 'cron_delete',
-  TASK_STOP: 'task_stop',
+  TASK_STOP: 'manage_task',
   SEND_MESSAGE: 'send_message',
   MONITOR: 'monitor',
   SEARCH_WEB: 'search_web',
   JOURNAL_SINTA_SEARCH: 'journal_sinta_search',
+  BEALLS_LIST: 'bealls_list',
 } as const;
 
 /**
@@ -92,6 +93,7 @@ export const ToolDisplayNames = {
   MONITOR: 'Monitor',
   SEARCH_WEB: 'SearchWeb',
   JOURNAL_SINTA_SEARCH: 'JournalSintaSearch',
+  BEALLS_LIST: 'BeallsList',
 } as const;
 
 // Migration from old tool names to new tool names
@@ -100,7 +102,17 @@ export const ToolDisplayNames = {
 export const ToolNamesMigration = {
   search_file_content: ToolNames.GREP, // Legacy name from grep tool
   replace: ToolNames.EDIT, // Legacy name from edit tool
+  edit: ToolNames.EDIT,
+  write_file: ToolNames.WRITE_FILE,
+  read_file: ToolNames.READ_FILE,
+  run_shell_command: ToolNames.SHELL,
   task: ToolNames.AGENT, // Legacy name from agent tool (renamed from task)
+  agent: ToolNames.AGENT,
+  web_fetch: ToolNames.WEB_FETCH,
+  list_directory: ToolNames.LS,
+  ask_user_question: ToolNames.ASK_USER_QUESTION,
+  cron_create: ToolNames.CRON_CREATE,
+  task_stop: ToolNames.TASK_STOP,
 } as const;
 
 // Migration from old tool display names to new tool display names

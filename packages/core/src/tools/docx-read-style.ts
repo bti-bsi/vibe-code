@@ -152,7 +152,14 @@ export class DocxReadStyleTool extends BaseDeclarativeTool<
     super(
       DocxReadStyleTool.Name,
       ToolDisplayNames.READ_STYLE_DOCX,
-      'Read style definitions from an existing .docx file\n- Extracts style IDs, names, and basic formatting (font, size, color)\n- Useful for understanding the available styles in a template document\n- Helps in maintaining consistency when generating new documents based on a template',
+      `Read style definitions from an existing .docx file
+- Extracts style IDs, names, and basic formatting (font, size, color)
+- Useful for understanding the available styles in a template document
+- Helps in maintaining consistency when generating new documents based on a template
+
+Tool Name: read_style_docx
+Parameters:
+- filePath (string): Path to the .docx file to read styles from.`,
       Kind.Read,
       {
         properties: {

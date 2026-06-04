@@ -8,6 +8,7 @@ import type { CommandModule, Argv } from 'yargs';
 import {
   handleApiKeyAuth,
   showAuthStatus,
+  handleGoogleAdcAuth,
 } from './auth/handler.js';
 import { t } from '../i18n/index.js';
 
@@ -27,6 +28,14 @@ const statusCommand = {
   },
 };
 
+const googleAdcCommand = {
+  command: 'google-adc',
+  describe: t('Authenticate using Google Application Default Credentials (ADC)'),
+  handler: async () => {
+    await handleGoogleAdcAuth();
+  },
+};
+
 export const authCommand: CommandModule = {
   command: 'auth',
   describe: t('Configure a custom API provider'),
@@ -34,6 +43,7 @@ export const authCommand: CommandModule = {
     yargs
       .command(apiKeyCommand)
       .command(statusCommand)
+      .command(googleAdcCommand)
       .demandCommand(0) // Don't require a subcommand
       .version(false),
   handler: async () => {

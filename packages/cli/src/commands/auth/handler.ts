@@ -539,6 +539,12 @@ export async function handleApiKeyAuth() {
     const settings = loadSettings();
     const config = await loadAuthConfig(settings);
     const protocol = await promptForCustomProtocol();
+
+    if (protocol === AuthType.USE_GOOGLE_ADC) {
+      await handleGoogleAdcAuth();
+      return;
+    }
+
     const defaultBaseUrl = getDefaultCustomBaseUrl(protocol);
     const baseUrl = (
       await promptForInput(
@@ -586,12 +592,17 @@ export async function handleApiKeyAuth() {
 }
 
 function getDefaultCustomBaseUrl(
-  protocol: AuthType.USE_OPENAI | AuthType.USE_ANTHROPIC | AuthType.USE_GEMINI,
+  protocol:
+    | AuthType.USE_OPENAI
+    | AuthType.USE_ANTHROPIC
+    | AuthType.USE_GEMINI
+    | AuthType.USE_GOOGLE_ADC,
 ): string {
   switch (protocol) {
     case AuthType.USE_ANTHROPIC:
       return 'https://api.anthropic.com/v1';
     case AuthType.USE_GEMINI:
+    case AuthType.USE_GOOGLE_ADC:
       return 'https://generativelanguage.googleapis.com';
     case AuthType.USE_OPENAI:
     default:
@@ -600,7 +611,7 @@ function getDefaultCustomBaseUrl(
 }
 
 async function promptForCustomProtocol(): Promise<
-  AuthType.USE_OPENAI | AuthType.USE_ANTHROPIC | AuthType.USE_GEMINI
+  AuthType.USE_OPENAI | AuthType.USE_ANTHROPIC | AuthType.USE_GEMINI | AuthType.USE_GOOGLE_ADC
 > {
   const selector = new InteractiveSelector(
     [
@@ -620,6 +631,11 @@ async function promptForCustomProtocol(): Promise<
         value: AuthType.USE_GEMINI as const,
         label: t('Gemini-compatible'),
         description: t('Google Gemini API'),
+      },
+      {
+        value: AuthType.USE_GOOGLE_ADC as const,
+        label: t('Google Auth (ADC)'),
+        description: t('Google Application Default Credentials for Gemini'),
       },
     ],
     t('Select custom API protocol:'),
@@ -690,6 +706,82 @@ async function handleCustomApiKeyAuth(
 }
 
 /**
+ * Handles Google Application Default Credentials (ADC) authentication
+ */
+export async function handleGoogleAdcAuth(): Promise<void> {
+  writeStdoutLine(t('Checking Google Application Default Credentials...'));
+  try {
+    const authStartMs = Date.now();
+    const { GoogleAuth } = await import('google-auth-library');
+    const googleAuth = new GoogleAuth({
+      scopes: [
+        'https://www.googleapis.com/auth/generative-language',
+        'https://www.googleapis.com/auth/cloud-platform',
+      ],
+    });
+
+    const authClient = await googleAuth.getClient();
+    const tokenResponse = await authClient.getAccessToken();
+    if (!tokenResponse.token) {
+      throw new Error('No access token returned from Google ADC.');
+    }
+
+    const elapsed = formatElapsedTime(authStartMs);
+    writeStdoutLine(
+      t('Google Application Default Credentials verified in {{elapsed}}.', { elapsed }),
+    );
+
+    const settings = loadSettings();
+    const config = await loadAuthConfig(settings);
+    const persistScope = getPersistScopeForModelSelection(settings);
+    const settingsFile = settings.forScope(persistScope);
+    backupSettingsFile(settingsFile.path);
+
+    const defaultAdcModels: ModelConfig[] = [
+      {
+        id: 'gemini-2.5-flash',
+        name: 'Gemini 2.5 Flash (ADC)',
+        baseUrl: 'https://generativelanguage.googleapis.com',
+      },
+      {
+        id: 'gemini-2.5-pro',
+        name: 'Gemini 2.5 Pro (ADC)',
+        baseUrl: 'https://generativelanguage.googleapis.com',
+      },
+    ];
+
+    settings.setValue(
+      persistScope,
+      `modelProviders.${AuthType.USE_GOOGLE_ADC}`,
+      defaultAdcModels,
+    );
+    settings.setValue(persistScope, 'security.auth.selectedType', AuthType.USE_GOOGLE_ADC);
+    settings.setValue(persistScope, 'model.name', 'gemini-2.5-flash');
+
+    const updatedModelProviders: Record<string, ModelConfig[]> = {
+      ...(settings.merged.modelProviders as Record<string, ModelConfig[]>),
+      [AuthType.USE_GOOGLE_ADC]: defaultAdcModels,
+    };
+    config.reloadModelProvidersConfig(updatedModelProviders);
+    await config.refreshAuth(AuthType.USE_GOOGLE_ADC);
+
+    writeStdoutLine(t('Successfully configured Google ADC authentication.'));
+    writeStdoutLine(t('Default model set to gemini-2.5-flash.'));
+    process.exit(0);
+  } catch (error) {
+    writeStderrLine(
+      t(
+        'Failed to verify Google Application Default Credentials: {{error}}\n\n' +
+        'Please ensure you have configured Google ADC locally by running:\n' +
+        '  gcloud auth application-default login',
+        { error: getErrorMessage(error) },
+      ),
+    );
+    process.exit(1);
+  }
+}
+
+/**
  * Shows the current authentication status
  */
 export async function showAuthStatus(): Promise<void> {
@@ -708,6 +800,9 @@ export async function showAuthStatus(): Promise<void> {
       writeStdoutLine(
         t('  vibe auth api-key        - Authenticate with an API key'),
       );
+      writeStdoutLine(
+        t('  vibe auth google-adc     - Authenticate with Google Credentials (ADC)'),
+      );
       writeStdoutLine(t('Or simply run:'));
       writeStdoutLine(
         t('  vibe auth                - Interactive authentication setup\n'),
@@ -724,6 +819,15 @@ export async function showAuthStatus(): Promise<void> {
       writeStdoutLine(
         t('\n  ⚠ Run /auth to switch to Coding Plan or another provider.\n'),
       );
+    } else if (selectedType === AuthType.USE_GOOGLE_ADC) {
+      writeStdoutLine(t('✓ Authentication Method: Google Application Default Credentials (ADC)'));
+      const modelName = mergedSettings.model?.name;
+      if (modelName) {
+        writeStdoutLine(
+          t('  Current Model: {{model}}', { model: modelName }),
+        );
+      }
+      writeStdoutLine(t('  Status: Configured via local Google credentials\n'));
     } else if (selectedType === AuthType.USE_OPENAI) {
       const codingPlanRegion = mergedSettings.codingPlan?.region;
       const codingPlanVersion = mergedSettings.codingPlan?.version;

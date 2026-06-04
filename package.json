@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code",
-  "version": "0.16.9",
+  "version": "1.0.1",
   "engines": {
     "node": ">=20.0.0"
   },

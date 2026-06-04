@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-sdk",
-  "version": "0.1.8",
+  "version": "1.0.1",
   "description": "TypeScript SDK for programmatic access to vibe-code CLI",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

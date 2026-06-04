@@ -59,7 +59,10 @@ export class CronListTool extends BaseDeclarativeTool<
     super(
       CronListTool.Name,
       ToolDisplayNames.CRON_LIST,
-      'List all cron jobs scheduled via CronCreate in this session.',
+      `List all cron jobs scheduled via CronCreate in this session.
+
+Tool Name: cron_list
+Parameters: None.`,
       Kind.Other,
       {
         type: 'object',

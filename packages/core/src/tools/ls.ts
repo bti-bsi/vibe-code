@@ -312,7 +312,13 @@ export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
     super(
       LSTool.Name,
       ToolDisplayNames.LS,
-      'Lists the names of files and subdirectories directly within a specified directory path. Can optionally ignore entries matching provided glob patterns.',
+      `Lists the names of files and subdirectories directly within a specified directory path. Can optionally ignore entries matching provided glob patterns.
+
+Tool Name: list_dir
+Parameters:
+- path (string): The absolute path to the directory to list (must be absolute, not relative)
+- ignore (array): List of glob patterns to ignore
+- file_filtering_options (object): Optional: Whether to respect ignore patterns from .gitignore or .vibeignore`,
       Kind.Search,
       {
         properties: {

@@ -5,7 +5,7 @@
  */
 
 import { Buffer } from 'buffer';
-import * as https from 'https';
+import * as https from 'node:https';
 import * as os from 'node:os';
 import fs from 'node:fs';
 import path from 'node:path';

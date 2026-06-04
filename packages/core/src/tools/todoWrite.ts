@@ -241,6 +241,10 @@ The assistant did not use the todo list because this is a single command executi
    - Use clear, descriptive task names
 
 When in doubt, use this tool. Being proactive with task management demonstrates attentiveness and ensures you complete all requirements successfully.
+
+Tool Name: todo_write
+Parameters:
+- todos (array): The updated todo list. Each item has title (string), status (enum: pending, in_progress, completed, cancelled) and id (number).
 `;
 
 const TODO_SUBDIR = 'todos';

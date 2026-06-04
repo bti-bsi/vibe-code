@@ -95,7 +95,9 @@ export const useAuthCommand = (
   addItem: (item: Omit<HistoryItem, 'id'>, timestamp: number) => void,
   onAuthChange?: () => void,
 ) => {
-  const unAuthenticated = config.getAuthType() === undefined;
+  const unAuthenticated =
+    (config.getAuthType() ?? config.getModelsConfig().getCurrentAuthType()) ===
+    undefined;
 
   const [authState, setAuthState] = useState<AuthState>(
     unAuthenticated ? AuthState.Updating : AuthState.Unauthenticated,
@@ -738,7 +740,8 @@ export const useAuthCommand = (
       protocol:
         | AuthType.USE_OPENAI
         | AuthType.USE_ANTHROPIC
-        | AuthType.USE_GEMINI,
+        | AuthType.USE_GEMINI
+        | AuthType.USE_GOOGLE_ADC,
       baseUrl: string,
       apiKey: string,
       modelIdsInput: string,
@@ -760,7 +763,7 @@ export const useAuthCommand = (
         const trimmedBaseUrl = baseUrl.trim();
         const modelIds = normalizeCustomModelIds(modelIdsInput);
 
-        if (!trimmedApiKey) {
+        if (!trimmedApiKey && protocol !== AuthType.USE_GOOGLE_ADC) {
           throw new Error(t('API key cannot be empty.'));
         }
         if (!trimmedBaseUrl) {
@@ -783,12 +786,14 @@ export const useAuthCommand = (
         backupSettingsFile(settingsFile.path);
 
         // Persist API key to env
-        settings.setValue(
-          persistScope,
-          `env.${generatedEnvKey}`,
-          trimmedApiKey,
-        );
-        process.env[generatedEnvKey] = trimmedApiKey;
+        if (protocol !== AuthType.USE_GOOGLE_ADC) {
+          settings.setValue(
+            persistScope,
+            `env.${generatedEnvKey}`,
+            trimmedApiKey,
+          );
+          process.env[generatedEnvKey] = trimmedApiKey;
+        }
 
         // Build generationConfig if any option is set
         let genConfig: ProviderModelConfig['generationConfig'] | undefined;
@@ -828,7 +833,7 @@ export const useAuthCommand = (
           id: modelId,
           name: modelId,
           baseUrl: trimmedBaseUrl,
-          envKey: generatedEnvKey,
+          envKey: protocol === AuthType.USE_GOOGLE_ADC ? '' : generatedEnvKey,
           ...(genConfig ? { generationConfig: genConfig } : {}),
         }));
 
@@ -954,5 +959,6 @@ export const useAuthCommand = (
     handleCustomApiKeySubmit,
     openAuthDialog,
     cancelAuthentication,
+    setAuthError,
   };
 };

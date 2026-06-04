@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-channel-plugin-example",
-  "version": "0.16.9",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "main": "dist/index.js",

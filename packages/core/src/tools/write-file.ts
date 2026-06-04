@@ -566,7 +566,12 @@ export class WriteFileTool
       ToolDisplayNames.WRITE_FILE,
       `Writes content to a specified file in the local filesystem.
 
-      The user has the ability to modify \`content\`. If modified, this will be stated in the response.`,
+      The user has the ability to modify \`content\`. If modified, this will be stated in the response.
+
+Tool Name: write_to_file
+Parameters:
+- file_path (string): The absolute path to the file to write to (e.g., '/home/user/project/file.txt'). Relative paths are not supported.
+- content (string): The content to write to the file.`,
       Kind.Edit,
       {
         properties: {

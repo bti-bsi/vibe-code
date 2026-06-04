@@ -741,5 +741,33 @@ describe('showAuthStatus', () => {
       );
       expect(process.exit).toHaveBeenCalledWith(0);
     });
+
+    it('should show Google ADC status when configured', async () => {
+      vi.mocked(loadSettings).mockReturnValue(
+        createMockSettings({
+          security: {
+            auth: {
+              selectedType: AuthType.USE_GOOGLE_ADC,
+            },
+          },
+          model: {
+            name: 'gemini-2.5-flash',
+          },
+        }),
+      );
+
+      await showAuthStatus();
+
+      expect(writeStdoutLine).toHaveBeenCalledWith(
+        expect.stringContaining('Google Application Default Credentials (ADC)'),
+      );
+      expect(writeStdoutLine).toHaveBeenCalledWith(
+        expect.stringContaining('gemini-2.5-flash'),
+      );
+      expect(writeStdoutLine).toHaveBeenCalledWith(
+        expect.stringContaining('Configured via local Google credentials'),
+      );
+      expect(process.exit).toHaveBeenCalledWith(0);
+    });
   });
 });

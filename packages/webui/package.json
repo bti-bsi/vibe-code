@@ -1,6 +1,6 @@
 {
   "name": "@vibe-bti/vibe-code-webui",
-  "version": "0.16.9",
+  "version": "1.0.1",
   "description": "Shared UI components for Vibe Code packages",
   "type": "module",
   "main": "./dist/index.cjs",

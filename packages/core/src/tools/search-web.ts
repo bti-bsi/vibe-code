@@ -226,7 +226,17 @@ export class SearchWebTool extends BaseDeclarativeTool<
     super(
       SearchWebTool.Name,
       ToolDisplayNames.SEARCH_WEB || 'Search Web',
-      'Search the web using Google via SerpAPI. Configure the API key via /config (serperApiKey) or SERPAPI_API_KEY environment variable.',
+      `Search the web using Google via SerpAPI. Configure the API key via /config (serperApiKey) or SERPAPI_API_KEY environment variable.
+
+Tool Name: search_web
+Parameters:
+- query (string): Search query
+- count (number): Number of results (default: 10)
+- location (string): Location for search context (default: Indonesia)
+- google_domain (string): Google domain to use (default: google.co.id)
+- hl (string): Language code (default: id)
+- gl (string): Country code (default: id)
+- apiKey (string): SerpAPI key. Optional if configured in settings.`,
       Kind.Search,
       {
         properties: {
